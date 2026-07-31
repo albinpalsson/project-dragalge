@@ -1,4 +1,4 @@
-﻿import type { BundlerConfig } from './main.ts';
+﻿import type { BundlerConfig } from "./main.ts";
 
 /**
  * Type-safe config helper. Create a bundler.config.cjs in your project
@@ -9,5 +9,5 @@
  *   module.exports = { entry: 'src/index.ts', outputDir: 'dist', transforms: [] };
  */
 export function configure(config: BundlerConfig): BundlerConfig {
-  return config;
+	return config;
 }

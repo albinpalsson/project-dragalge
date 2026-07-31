@@ -1,29 +1,29 @@
 {
-  "name": "@pokedb2/bundler",
-  "version": "0.1.0",
-  "private": true,
-  "type": "module",
-  "bin": {
-    "pokedb2-bundle": "./dist/bundle.js",
-    "pokedb2-dev-server": "./dist/dev-server.js"
-  },
-  "files": [
-    "dist"
-  ],
-  "exports": {
-    "./configure": "./dist/configure.js",
-    "./dev-server": "./dist/dev-server/index.js"
-  },
-  "scripts": {
-    "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
-    "build": "npm run clean && tsc -p tsconfig.build.json && node -e \"require('node:fs').writeFileSync('dist/package.json', JSON.stringify({ type: 'commonjs' }, null, 2))\"",
-    "dev": "node --strip-types src/dev-server.js",
-    "test": "node --strip-types --test \"src/**/*.test.ts\"",
-    "lint": "tsc --noEmit"
-  },
-  "dependencies": {
-    "@pokedb2/validator": "*",
-    "@types/node": "^20.19.43",
-    "typescript": "^7.0.1-rc"
-  }
+	"name": "@pokedb2/bundler",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"bin": {
+		"pokedb2-bundle": "./dist/bundle.js",
+		"pokedb2-dev-server": "./dist/dev-server.js"
+	},
+	"files": [
+		"dist"
+	],
+	"exports": {
+		"./configure": "./dist/configure.js",
+		"./dev-server": "./dist/dev-server/index.js"
+	},
+	"scripts": {
+		"clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
+		"build": "npm run clean && tsc -p tsconfig.build.json && node -e \"require('node:fs').writeFileSync('dist/package.json', JSON.stringify({ type: 'commonjs' }, null, 2))\"",
+		"dev": "node --strip-types src/dev-server.js",
+		"test": "node --strip-types --test \"src/**/*.test.ts\"",
+		"lint": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@pokedb2/validator": "*",
+		"@types/node": "^20.19.43",
+		"typescript": "^7.0.1-rc"
+	}
 }

@@ -1,28 +1,30 @@
 :root {
-  --primary-color: #1e90ff;
-  --secondary-color: red;
+	--primary-color: #1e90ff;
+	--secondary-color: red;
 }
 
-*, *::before, *::after {
-  box-sizing: border-box;
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
 }
 
 body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
-  background: #f5f7fa;
-  color: #1a1a2e;
+	margin: 0;
+	font-family: system-ui, sans-serif;
+	background: #f5f7fa;
+	color: #1a1a2e;
 }
 
 main {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 24px;
-  padding: 48px;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	gap: 24px;
+	padding: 48px;
 }
 
 h1 {
-  margin: 0;
-  font-size: 28px;
+	margin: 0;
+	font-size: 28px;
 }

@@ -1,16 +1,16 @@
 {
-  "compilerOptions": {
-    "target": "ES2022",
-    "module": "Preserve",
-    "moduleResolution": "Bundler",
-    "strict": true,
-    "noEmit": true,
-    "skipLibCheck": true,
-    "types": ["node"],
-    "allowImportingTsExtensions": true,
-    "rewriteRelativeImportExtensions": true,
-    "jsx": "react-jsx",
-    "jsxImportSource": "react",
-  },
-  "include": ["src"]
+	"compilerOptions": {
+		"target": "ES2022",
+		"module": "Preserve",
+		"moduleResolution": "Bundler",
+		"strict": true,
+		"noEmit": true,
+		"skipLibCheck": true,
+		"types": ["node"],
+		"allowImportingTsExtensions": true,
+		"rewriteRelativeImportExtensions": true,
+		"jsx": "react-jsx",
+		"jsxImportSource": "react"
+	},
+	"include": ["src"]
 }

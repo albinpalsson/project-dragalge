@@ -1,36 +1,35 @@
-﻿
-import type {  ModuleTransformMetadata } from '../main.ts';
+﻿import type { ModuleTransformMetadata } from "../main.ts";
 
 export interface ParsedDependency {
-  type: 'require';
-  specifier: string;
+	type: "require";
+	specifier: string;
 }
 
 export interface ResolvedRequire {
-  specifier: string;
-  resolvedPath: string;
+	specifier: string;
+	resolvedPath: string;
 }
 
 export interface DependencyModule {
-  type: 'js';
-  path: string;
-  code: string;
-  requires: ResolvedRequire[];
-  metadata: ModuleTransformMetadata;
+	type: "js";
+	path: string;
+	code: string;
+	requires: ResolvedRequire[];
+	metadata: ModuleTransformMetadata;
 }
 
 export interface CssDependency {
-  type: 'css';
-  path: string;
-  code: string;
+	type: "css";
+	path: string;
+	code: string;
 }
 
 export type DependencyEntry = DependencyModule | CssDependency;
 
 export type VisitState =
-  | { status: 'pending' }
-  | { status: 'ready'; entry: DependencyEntry };
+	| { status: "pending" }
+	| { status: "ready"; entry: DependencyEntry };
 
 export interface BuildDependencyTreeResult {
-  entries: DependencyEntry[];
+	entries: DependencyEntry[];
 }
