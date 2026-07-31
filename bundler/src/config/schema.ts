@@ -1,4 +1,4 @@
-import { array, func, literal, object, optional, record, string, union } from '@pokedb2/validator';
+﻿import { array, func, literal, object, optional, record, string, union } from '@pokedb2/validator';
 
 export const transformSchema = object({
   version: string(),

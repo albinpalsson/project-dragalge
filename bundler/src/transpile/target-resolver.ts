@@ -1,4 +1,4 @@
-import type { BundlerTarget } from '../main';
+﻿import type { BundlerTarget } from '../main.ts';
 
 export function resolveTscTarget(target: BundlerTarget | undefined): string {
   switch (target) {

@@ -1,7 +1,7 @@
-import { readFile, stat } from 'node:fs/promises';
+﻿import { readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
-import { InferOutput, object, optional, parse, record, string, union } from '@pokedb2/validator';
-import { assert } from './assert';
+import { type InferOutput, object, optional, parse, record, string, union } from '@pokedb2/validator';
+import { assert } from './assert.ts';
 
 
 interface ParsedBareSpecifier {

@@ -1,6 +1,6 @@
-import type { BundlerConfig, BundlerMode } from '../main';
-import { loadCjsConfig, resolveConfigPath } from './loader';
-import { buildProcessEnv, resolveMode } from './resolver';
+﻿import type { BundlerConfig, BundlerMode } from '../main.ts';
+import { loadCjsConfig, resolveConfigPath } from './loader.ts';
+import { buildProcessEnv, resolveMode } from './resolver.ts';
 
 export async function loadResolvedConfig(
   cwd: string,

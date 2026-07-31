@@ -1,4 +1,4 @@
-export const SCANNER_VERSION = 'v1';
+﻿export const SCANNER_VERSION = 'v1';
 
 export interface Range {
   start: number;

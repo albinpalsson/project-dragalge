@@ -1,7 +1,7 @@
-import { readFile, writeFile } from 'node:fs/promises';
+﻿import { readFile, writeFile } from 'node:fs/promises';
 import { brotliCompress, constants as zlibConstants } from 'node:zlib';
 import { promisify } from 'node:util';
-import type { BundlerMode } from '../main';
+import type { BundlerMode } from '../main.ts';
 
 const brotliCompressAsync = promisify(brotliCompress);
 

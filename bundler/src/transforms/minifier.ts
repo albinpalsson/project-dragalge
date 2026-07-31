@@ -1,4 +1,4 @@
-import type { AstNode, BlobNode, CommentNode, ConditionalNode, ProgramNode } from '../ast-lite/types';
+﻿import type { AstNode, BlobNode, CommentNode, ConditionalNode, ProgramNode } from '../ast-lite/types.ts';
 
 export function createMinifierTransform() {
   return {
@@ -88,7 +88,7 @@ function shouldPreserveComment(node: CommentNode): boolean {
 }
 
 function minifyBlobNode(node: BlobNode): BlobNode {
-  // trimStart only — trailing whitespace must be preserved so that a blob
+  // trimStart only â€” trailing whitespace must be preserved so that a blob
   // ending with a keyword (e.g. "else ") does not concatenate with the next
   // node (e.g. a conditional written as "if (...)") to form "elseif".
   const compacted = compactPunctuationSpacing(node.code).trimStart();

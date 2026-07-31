@@ -1,4 +1,4 @@
-import { assert } from "./assert";
+﻿import { assert } from "./assert.ts";
 
 export type PerformanceEntryType = 'moduleTransform' | 'transpile';
 

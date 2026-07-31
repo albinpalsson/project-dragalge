@@ -1,7 +1,7 @@
-import { writeFile } from 'node:fs/promises';
+﻿import { writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
-import type { CssDependency } from '../graph';
+import type { CssDependency } from '../graph/index.ts';
 
 function shortContentHash(contents: string): string {
   return createHash('sha1').update(contents, 'utf8').digest('hex').slice(0, 8);
@@ -28,8 +28,8 @@ export async function writeLinkedHtmlFile(input: {
   cssOutputPaths: string[];
 }): Promise<string | null> {
   const { readFile, writeFile: write } = await import('node:fs/promises');
-  const { pathExists } = await import('../node-modules-resolver');
-  const { injectBundledAssetsIntoHtml } = await import('./injector');
+  const { pathExists } = await import('../node-modules-resolver.ts');
+  const { injectBundledAssetsIntoHtml } = await import('./injector.ts');
 
   const sourceHtmlPath = path.resolve(path.dirname(input.entryPath), 'index.html');
   if (!(await pathExists(sourceHtmlPath))) {

@@ -1,7 +1,7 @@
-import path from 'node:path';
+﻿import path from 'node:path';
 
-import type { RuntimeOptions } from './main';
-import type { DependencyEntry, DependencyModule} from './graph/';
+import type { RuntimeOptions } from './main.ts';
+import type { DependencyEntry, DependencyModule} from './graph/index.ts';
 
 export function generateRuntimeCode(modules: DependencyEntry[], options: RuntimeOptions): string {
   const normalizedEntryPath = path.resolve(options.entryPath);

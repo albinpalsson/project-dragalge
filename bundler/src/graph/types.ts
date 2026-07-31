@@ -1,5 +1,5 @@
-
-import type {  ModuleTransformMetadata } from '../main';
+﻿
+import type {  ModuleTransformMetadata } from '../main.ts';
 
 export interface ParsedDependency {
   type: 'require';

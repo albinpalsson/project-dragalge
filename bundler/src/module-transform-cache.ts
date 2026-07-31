@@ -1,8 +1,8 @@
-import { mkdir, readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
+﻿import { mkdir, readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 
-import type { ProcessedFileResult, ProcessedFileResultRef } from './processed-file-result';
-import { assert } from './assert';
+import type { ProcessedFileResult, ProcessedFileResultRef } from './processed-file-result.ts';
+import { assert } from './assert.ts';
 
 const MODULE_TRANSFORM_CACHE_VERSION = 4;
 

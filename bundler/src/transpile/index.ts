@@ -1,7 +1,7 @@
-import { mkdir, stat } from 'node:fs/promises';
+﻿import { mkdir, stat } from 'node:fs/promises';
 import path from 'node:path';
-import type { BundlerTarget, BundlerMode } from '../main';
-import { buildTranspileArgs, runCommand } from './compiler';
+import type { BundlerTarget, BundlerMode } from '../main.ts';
+import { buildTranspileArgs, runCommand } from './compiler.ts';
 
 export async function transpile(
   cwd: string,

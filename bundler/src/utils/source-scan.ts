@@ -1,4 +1,4 @@
-export function extractAdditionalImports(sourceCode: string): string[] {
+﻿export function extractAdditionalImports(sourceCode: string): string[] {
   const regex = /^import\s+(?:[^'"]*\s+from\s+)?['"]([^'"]+)['"]/gm;
   const fileEndings = ['.css'];
   return [...sourceCode.matchAll(regex)]

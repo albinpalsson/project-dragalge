@@ -1,5 +1,5 @@
-export { cleanOutputDir, clearCssDependencyRuntimeSource } from './cleaner';
-export { writeMergedCssBundle, writeLinkedHtmlFile } from './writer';
-export { compressOutputFiles } from './compressor';
-export { collectOutputFiles } from './collector';
-export type { PublicAssetCopyResult } from './cleaner';
+﻿export { cleanOutputDir, clearCssDependencyRuntimeSource } from './cleaner.ts';
+export { writeMergedCssBundle, writeLinkedHtmlFile } from './writer.ts';
+export { compressOutputFiles } from './compressor.ts';
+export { collectOutputFiles } from './collector.ts';
+export type { PublicAssetCopyResult } from './cleaner.ts';

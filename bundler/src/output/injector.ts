@@ -1,4 +1,4 @@
-export function injectBundledAssetsIntoHtml(
+﻿export function injectBundledAssetsIntoHtml(
   sourceHtml: string,
   input: { jsFileName: string; cssFileNames: string[] },
 ): string {

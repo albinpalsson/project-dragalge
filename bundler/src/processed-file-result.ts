@@ -1,4 +1,4 @@
-export interface ProcessedJsFile {
+﻿export interface ProcessedJsFile {
   type: 'js';
   code: string;
   dependencies: string[];

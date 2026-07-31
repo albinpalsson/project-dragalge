@@ -1,10 +1,10 @@
-#!/usr/bin/env node
+﻿#!/usr/bin/env node
 import {
   parseEnvArgs,
   parseHostArg,
   parsePortArg,
-} from './cli-utils';
-import { startDevServer } from './dev-server/';
+} from './cli-utils.ts';
+import { startDevServer } from './dev-server/index.ts';
 
 const cwd = process.cwd();
 const argv = process.argv.slice(2);

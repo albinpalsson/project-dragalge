@@ -1,4 +1,4 @@
-import type { BundlerConfig } from './main';
+﻿import type { BundlerConfig } from './main.ts';
 
 /**
  * Type-safe config helper. Create a bundler.config.cjs in your project

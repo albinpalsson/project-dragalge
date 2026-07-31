@@ -1,2 +1,2 @@
-export { buildDependencyTree } from './builder';
-export type { BuildDependencyTreeResult, DependencyEntry, DependencyModule, CssDependency } from './types';
+﻿export { buildDependencyTree } from './builder.ts';
+export type { BuildDependencyTreeResult, DependencyEntry, DependencyModule, CssDependency } from './types.ts';

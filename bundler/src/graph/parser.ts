@@ -1,5 +1,5 @@
-import type { AstNode } from '../ast-lite/';
-import type { ParsedDependency } from './types';
+﻿import type { AstNode } from '../ast-lite/index.ts';
+import type { ParsedDependency } from './types.ts';
 
 const requireRegex = /require\(\s*$/;
 

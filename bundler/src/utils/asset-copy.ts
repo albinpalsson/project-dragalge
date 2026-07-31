@@ -1,8 +1,8 @@
-import { copyFile, mkdir, readdir } from 'node:fs/promises';
+﻿import { copyFile, mkdir, readdir } from 'node:fs/promises';
 import path from 'node:path';
 
 export async function copyPublicAssetsToOutput(entryPath: string, outputDirPath: string) {
-  const { pathExists } = await import('../node-modules-resolver');
+  const { pathExists } = await import('../node-modules-resolver.ts');
 
   const sourceDirPath = path.resolve(path.dirname(entryPath), '..', 'public');
 

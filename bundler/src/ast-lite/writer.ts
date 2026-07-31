@@ -1,4 +1,4 @@
-import type { AstNode, ConditionalNode, ProgramNode } from './types';
+﻿import type { AstNode, ConditionalNode, ProgramNode } from './types.ts';
 
 export const AST_LITE_WRITER_VERSION = 'v2';
 

@@ -1,4 +1,4 @@
-import type { BundlerMode } from '../main';
+﻿import type { BundlerMode } from '../main.ts';
 
 export function resolveMode(
   explicitMode: BundlerMode | undefined,

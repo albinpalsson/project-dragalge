@@ -1,11 +1,11 @@
-import { readFile } from 'node:fs/promises';
+﻿import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-import { parseProgram, writeProgram } from '../ast-lite/';
-import type { Transform, ModuleTransformMetadata } from '../main';
-import type { ProcessedFileResult } from '../processed-file-result';
-import { BundlerPerformanceCollector } from '../performance-collector';
-import { findDependencies } from './parser';
-import { isCssFilePath, extractAdditionalImports } from '../utils/';
+import { parseProgram, writeProgram } from '../ast-lite/index.ts';
+import type { Transform, ModuleTransformMetadata } from '../main.ts';
+import type { ProcessedFileResult } from '../processed-file-result.ts';
+import { BundlerPerformanceCollector } from '../performance-collector.ts';
+import { findDependencies } from './parser.ts';
+import { isCssFilePath, extractAdditionalImports } from '../utils/index.ts';
 
 export async function processFile(
   filePath: string,

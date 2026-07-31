@@ -1,14 +1,14 @@
-import { readFile, stat } from 'node:fs/promises';
+﻿import { readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
-import type { Transform } from '../main';
-import { ModuleTransformCache } from '../module-transform-cache';
-import { NodeModulesResolver } from '../node-modules-resolver';
-import { BundlerPerformanceCollector } from '../performance-collector';
-import { SCANNER_VERSION } from '../scanner/';
-import { processFile } from './processor';
-import { emitDeterministicEntries } from './emitter';
-import type { BuildDependencyTreeResult, VisitState, ResolvedRequire } from './types';
-import { isRelativeSpecifier, resolveRelativePath } from '../utils/';
+import type { Transform } from '../main.ts';
+import { ModuleTransformCache } from '../module-transform-cache.ts';
+import { NodeModulesResolver } from '../node-modules-resolver.ts';
+import { BundlerPerformanceCollector } from '../performance-collector.ts';
+import { SCANNER_VERSION } from '../scanner/index.ts';
+import { processFile } from './processor.ts';
+import { emitDeterministicEntries } from './emitter.ts';
+import type { BuildDependencyTreeResult, VisitState, ResolvedRequire } from './types.ts';
+import { isRelativeSpecifier, resolveRelativePath } from '../utils/index.ts';
 
 const buildTransformCacheKey = (transforms: Transform[], cacheSalt?: string): string => {
   const BUNDLER_VERSION = '0.1.0';
@@ -31,8 +31,8 @@ export async function buildDependencyTree(
   perfCollect: BundlerPerformanceCollector,
 ): Promise<BuildDependencyTreeResult> {
   const normalizedEntryPath = path.resolve(entryFilePath);
-  const { createEnvInjectTransform } = await import('../transforms/env-inject');
-  const { createMinifierTransform } = await import('../transforms/minifier');
+  const { createEnvInjectTransform } = await import('../transforms/env-inject.ts');
+  const { createMinifierTransform } = await import('../transforms/minifier.ts');
 
   const transforms: Transform[] = [
     createEnvInjectTransform(processEnv),

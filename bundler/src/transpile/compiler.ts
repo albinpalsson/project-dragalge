@@ -1,7 +1,7 @@
-import { spawn } from 'node:child_process';
+﻿import { spawn } from 'node:child_process';
 import path from 'node:path';
-import type { BundlerTarget, BundlerMode } from '../main';
-import { resolveTscTarget, resolveTscLib } from './target-resolver';
+import type { BundlerTarget, BundlerMode } from '../main.ts';
+import { resolveTscTarget, resolveTscLib } from './target-resolver.ts';
 
 export function buildTranspileArgs(input: {
   entryPath: string;

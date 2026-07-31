@@ -1,15 +1,15 @@
-import path from 'node:path';
+﻿import path from 'node:path';
 import { writeFile } from 'node:fs/promises';
 
-import { generateRuntimeCode } from './generate-runtime';
+import { generateRuntimeCode } from './generate-runtime.ts';
 import {
   BundlerPerformanceCollector,
 
-} from './performance-collector';
+} from './performance-collector.ts';
 
-import { loadResolvedConfig } from './config/';
-import { transpile } from './transpile/';
-import { buildDependencyTree, type DependencyEntry } from './graph/';
+import { loadResolvedConfig } from './config/index.ts';
+import { transpile } from './transpile/index.ts';
+import { buildDependencyTree, type DependencyEntry } from './graph/index.ts';
 
 import {
   cleanOutputDir,
@@ -18,11 +18,11 @@ import {
   writeLinkedHtmlFile,
   compressOutputFiles,
   collectOutputFiles,
-} from './output/';
+} from './output/index.ts';
 
-import { buildWatchedFilePaths, copyPublicAssetsToOutput } from './utils/';
+import { buildWatchedFilePaths, copyPublicAssetsToOutput } from './utils/index.ts';
 
-import type { ProgramNode } from './ast-lite/';
+import type { ProgramNode } from './ast-lite/index.ts';
 import { createHash } from 'node:crypto';
 
 export type BundlerMode = 'production' | 'dev';
@@ -87,7 +87,7 @@ export interface RunBundlerResult {
   watchedFilePaths: string[];
 }
 
-export type { ProcessedCssFile, ProcessedFileResult, ProcessedJsFile } from './processed-file-result';
+export type { ProcessedCssFile, ProcessedFileResult, ProcessedJsFile } from './processed-file-result.ts';
 
 function shortContentHash(contents: string): string {
   return createHash('sha1').update(contents, 'utf8').digest('hex').slice(0, 8);

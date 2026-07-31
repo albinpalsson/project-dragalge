@@ -1,5 +1,5 @@
-import path from 'node:path';
-import { pathExists } from '../node-modules-resolver';
+﻿import path from 'node:path';
+import { pathExists } from '../node-modules-resolver.ts';
 
 export async function resolveRelativePath(
   specifier: string,

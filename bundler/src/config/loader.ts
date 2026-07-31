@@ -1,8 +1,8 @@
-import path from 'node:path';
+﻿import path from 'node:path';
 import { parse } from '@pokedb2/validator';
-import { pathExists } from '../node-modules-resolver';
-import type { BundlerConfig } from '../main';
-import { bundlerConfigSchema } from './schema';
+import { pathExists } from '../node-modules-resolver.ts';
+import type { BundlerConfig } from '../main.ts';
+import { bundlerConfigSchema } from './schema.ts';
 
 const DEFAULT_CONFIG_FILE_NAME = 'bundler.config.cjs';
 

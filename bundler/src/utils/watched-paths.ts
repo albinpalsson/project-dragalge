@@ -1,6 +1,6 @@
-import { readdir } from 'node:fs/promises';
+﻿import { readdir } from 'node:fs/promises';
 import path from 'node:path';
-import { pathExists } from '../node-modules-resolver';
+import { pathExists } from '../node-modules-resolver.ts';
 
 export async function buildWatchedFilePaths(
   entryPath: string,

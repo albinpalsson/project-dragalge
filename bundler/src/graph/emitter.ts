@@ -1,4 +1,4 @@
-import type { DependencyEntry, VisitState } from './types';
+﻿import type { DependencyEntry, VisitState } from './types.ts';
 
 export function emitDeterministicEntries(
   entryPath: string,

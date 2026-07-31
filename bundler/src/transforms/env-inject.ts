@@ -1,5 +1,5 @@
-
-import type { AstNode, ConditionalNode, ProgramNode } from '../ast-lite/types';
+﻿
+import type { AstNode, ConditionalNode, ProgramNode } from '../ast-lite/types.ts';
 
 export function createEnvInjectTransform(
   processEnv: Record<string, string | undefined>,

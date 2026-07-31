@@ -1,4 +1,4 @@
-
+﻿
 import { literal,  parse, union } from '@pokedb2/validator';
 
 

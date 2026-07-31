@@ -1,9 +1,9 @@
-#!/usr/bin/env node
+﻿#!/usr/bin/env node
 import {
   parseEnvArgs,
   parseModeArg,
-} from './cli-utils';
-import { main } from './main';
+} from './cli-utils.ts';
+import { main } from './main.ts';
 
 const cwd = process.cwd();
 const mode = parseModeArg(process.argv.slice(2), { required: true });

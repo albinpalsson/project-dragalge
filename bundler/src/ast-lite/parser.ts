@@ -1,11 +1,11 @@
-import {
+﻿import {
   AST_LITE_VERSION,
   type AstNode,
   type CommentNode,
   type ConditionalBranch,
   type ConditionalNode,
   type ProgramNode,
-} from './types';
+} from './types.ts';
 
 export const AST_LITE_PARSER_VERSION = 'v4';
 

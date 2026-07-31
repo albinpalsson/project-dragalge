@@ -1,4 +1,4 @@
-import type {  CssDependency } from '../graph/';
+﻿import type {  CssDependency } from '../graph/index.ts';
 
 export interface PublicAssetCopyResult {
   sourceDirPath: string;

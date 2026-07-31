@@ -1,12 +1,12 @@
-import { createHash } from 'node:crypto';
+﻿import { createHash } from 'node:crypto';
 import { watch, type FSWatcher } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { createServer, type Server } from 'node:http';
 import path from 'node:path';
 
-import { type BundlerConfig, runBundler } from '../main';
-import { BundlerPerformanceCollector } from '../performance-collector';
+import { type BundlerConfig, runBundler } from '../main.ts';
+import { BundlerPerformanceCollector } from '../performance-collector.ts';
 
 export interface DevServerConfig {
   cwd?: string;
