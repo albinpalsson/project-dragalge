@@ -25,7 +25,11 @@ interface ButtonProps {
 
 export function Button({ label, onClick }: ButtonProps) {
 	return (
-    <button type="button" className={cx(buttonBase, buttonPrimary)} onClick={onClick}>
+		<button
+			type="button"
+			className={cx(buttonBase, buttonPrimary)}
+			onClick={onClick}
+		>
 			{label}
 		</button>
 	);

@@ -1,7 +1,7 @@
 ﻿import { readdir } from "node:fs/promises";
 import path from "node:path";
-import { pathExists } from "../node-modules-resolver.ts";
 import type { DependencyEntry } from "../graph/types.ts";
+import { pathExists } from "../node-modules-resolver.ts";
 
 export async function buildWatchedFilePaths(
 	entryPath: string,

@@ -308,7 +308,10 @@ export class DevServer {
 			return;
 		}
 
-		const waitMs = Math.max(this.lastChangeAt, this.lastBuildEndAt) + this.debounceMs - Date.now();
+		const waitMs =
+			Math.max(this.lastChangeAt, this.lastBuildEndAt) +
+			this.debounceMs -
+			Date.now();
 		if (waitMs > 0) {
 			this.rebuildTimer = setTimeout(() => {
 				this.rebuildTimer = undefined;
