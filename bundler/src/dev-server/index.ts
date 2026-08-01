@@ -49,6 +49,7 @@ export class DevServer {
 	private pendingRebuild = false;
 	private rebuildLoopPromise: Promise<void> | null = null;
 	private lastChangeAt = 0;
+	private lastBuildEndAt = 0;
 	private rebuildTimer: NodeJS.Timeout | undefined;
 	private isStopping = false;
 	private rebuildCounter = 0;
@@ -61,7 +62,7 @@ export class DevServer {
 		this.cwd = path.resolve(config.cwd ?? process.cwd());
 		this.host = config.host ?? "127.0.0.1";
 		this.port = config.port ?? 3000;
-		this.debounceMs = config.debounceMs ?? 100;
+		this.debounceMs = config.debounceMs ?? 250;
 		this.configOverrides = {
 			...(config.configOverrides ?? {}),
 			mode: "dev",
@@ -307,7 +308,7 @@ export class DevServer {
 			return;
 		}
 
-		const waitMs = this.lastChangeAt + this.debounceMs - Date.now();
+		const waitMs = Math.max(this.lastChangeAt, this.lastBuildEndAt) + this.debounceMs - Date.now();
 		if (waitMs > 0) {
 			this.rebuildTimer = setTimeout(() => {
 				this.rebuildTimer = undefined;
@@ -330,6 +331,7 @@ export class DevServer {
 
 		const result = await this.runBuild();
 		this.buildInFlight = false;
+		this.lastBuildEndAt = Date.now();
 
 		if (!result.success && result.error) {
 			this.log(
