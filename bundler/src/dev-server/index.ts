@@ -51,7 +51,6 @@ export class DevServer {
 	private lastChangeAt = 0;
 	private rebuildTimer: NodeJS.Timeout | undefined;
 	private isStopping = false;
-	private lastBuildError: string | undefined;
 	private rebuildCounter = 0;
 	private queuedFollowUpNotified = false;
 	private pendingChangedPaths = new Set<string>();
@@ -94,10 +93,15 @@ export class DevServer {
 			this.handleWsUpgrade(request, socket);
 		});
 
+		const server = this.server;
+		if (!server) {
+			throw new Error("Expected HTTP server to be created before listen.");
+		}
+
 		await new Promise<void>((resolve, reject) => {
-			this.server!.once("error", reject);
-			this.server!.listen(this.port, this.host, () => {
-				this.server!.off("error", reject);
+			server.once("error", reject);
+			server.listen(this.port, this.host, () => {
+				server.off("error", reject);
 				resolve();
 			});
 		});
@@ -137,9 +141,10 @@ export class DevServer {
 		if (!this.server) {
 			return;
 		}
+		const server = this.server;
 
 		await new Promise<void>((resolve, reject) => {
-			this.server!.close((error) => {
+			server.close((error) => {
 				if (error) {
 					reject(error);
 					return;
@@ -188,7 +193,6 @@ export class DevServer {
 				performance: perf,
 			});
 
-			this.lastBuildError = undefined;
 			this.outputDirPath = path.resolve(this.cwd, result.config.outputDir);
 
 			const previousVersion = this.currentVersion;
@@ -217,7 +221,6 @@ export class DevServer {
 		} catch (error) {
 			const message =
 				error instanceof Error ? (error.stack ?? error.message) : String(error);
-			this.lastBuildError = message;
 			return {
 				success: false,
 				error: message,
@@ -411,11 +414,7 @@ export class DevServer {
 
 		const upgrade = request.headers.upgrade;
 		const wsKey = request.headers["sec-websocket-key"];
-		if (
-			!upgrade ||
-			upgrade.toLowerCase() !== "websocket" ||
-			typeof wsKey !== "string"
-		) {
+		if (upgrade?.toLowerCase() !== "websocket" || typeof wsKey !== "string") {
 			socket.destroy();
 			return;
 		}

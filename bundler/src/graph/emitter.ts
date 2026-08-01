@@ -14,7 +14,7 @@ export function emitDeterministicEntries(
 
 		emitted.add(modulePath);
 		const state = visited.get(modulePath);
-		if (!state || state.status !== "ready") {
+		if (state?.status !== "ready") {
 			return;
 		}
 

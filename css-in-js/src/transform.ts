@@ -151,7 +151,7 @@ function tryRewriteTemplateAt(
 	}
 
 	const next = nodes[i + 1];
-	if (!next || next.type !== "protected" || next.kind !== "template") {
+	if (next?.type !== "protected" || next.kind !== "template") {
 		return false;
 	}
 

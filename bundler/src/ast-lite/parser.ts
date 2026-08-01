@@ -116,7 +116,10 @@ class Scanner {
 
 	getNext(): ScanResult | undefined {
 		if (this.queue.length > 0) {
-			const result = this.queue.shift()!;
+			const result = this.queue.shift();
+			if (!result) {
+				return undefined;
+			}
 			this.cursor += result.code.length;
 			return result;
 		}

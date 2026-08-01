@@ -84,7 +84,7 @@ function createSchema<TOutput>(
 
 export function isStandardSchema(
 	value: unknown,
-): value is StandardSchema<any, any> {
+): value is StandardSchema<unknown, unknown> {
 	return (
 		typeof value === "object" &&
 		value !== null &&
@@ -94,7 +94,7 @@ export function isStandardSchema(
 	);
 }
 
-export function safeParse<TSchema extends StandardSchema<any, any>>(
+export function safeParse<TSchema extends StandardSchema<unknown, unknown>>(
 	schema: TSchema,
 	value: unknown,
 ):
@@ -114,7 +114,7 @@ export function safeParse<TSchema extends StandardSchema<any, any>>(
 	};
 }
 
-export function parse<TSchema extends StandardSchema<any, any>>(
+export function parse<TSchema extends StandardSchema<unknown, unknown>>(
 	schema: TSchema,
 	value: unknown,
 ): InferOutput<TSchema> {
@@ -172,7 +172,7 @@ export function literal<TValue extends string | number | boolean | null>(
 	});
 }
 
-export function optional<TSchema extends StandardSchema<any, any>>(
+export function optional<TSchema extends StandardSchema<unknown, unknown>>(
 	schema: TSchema,
 ): StandardSchema<unknown, InferOutput<TSchema> | undefined> {
 	return createSchema((value) => {
@@ -186,7 +186,7 @@ export function optional<TSchema extends StandardSchema<any, any>>(
 	});
 }
 
-export function array<TSchema extends StandardSchema<any, any>>(
+export function array<TSchema extends StandardSchema<unknown, unknown>>(
 	itemSchema: TSchema,
 ): StandardSchema<unknown, Array<InferOutput<TSchema>>> {
 	return createSchema((value) => {
@@ -214,7 +214,7 @@ export function array<TSchema extends StandardSchema<any, any>>(
 	});
 }
 
-export function record<TSchema extends StandardSchema<any, any>>(
+export function record<TSchema extends StandardSchema<unknown, unknown>>(
 	valueSchema: TSchema,
 ): StandardSchema<unknown, Record<string, InferOutput<TSchema>>> {
 	return createSchema((value) => {
@@ -249,7 +249,7 @@ export function record<TSchema extends StandardSchema<any, any>>(
 	});
 }
 
-type Shape = Record<string, StandardSchema<any, any>>;
+type Shape = Record<string, StandardSchema<unknown, unknown>>;
 
 type ShapeOutput<TShape extends Shape> = {
 	[TKey in keyof TShape]: InferOutput<TShape[TKey]>;
@@ -293,8 +293,8 @@ export function object<TShape extends Shape>(
 
 export function union<
 	const TSchemas extends readonly [
-		StandardSchema<any, any>,
-		...StandardSchema<any, any>[],
+		StandardSchema<unknown, unknown>,
+		...StandardSchema<unknown, unknown>[],
 	],
 >(schemas: TSchemas): StandardSchema<unknown, InferOutput<TSchemas[number]>> {
 	return createSchema((value) => {
@@ -316,14 +316,14 @@ export function union<
 	});
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-export function func(): StandardSchema<unknown, Function> {
+type GenericFunction = (...args: never[]) => unknown;
+
+export function func(): StandardSchema<unknown, GenericFunction> {
 	return createSchema((value) => {
 		if (typeof value !== "function") {
 			return fail([issue("Expected function", "function", typeof value)]);
 		}
 
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-		return ok(value as Function);
+		return ok(value as GenericFunction);
 	});
 }

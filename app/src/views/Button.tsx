@@ -1,5 +1,4 @@
 import { css, cx } from "@pokedb2/css-in-js";
-import React from "react";
 
 const buttonBase = css`
   display: inline-flex;
@@ -26,7 +25,7 @@ interface ButtonProps {
 
 export function Button({ label, onClick }: ButtonProps) {
 	return (
-		<button className={cx(buttonBase, buttonPrimary)} onClick={onClick}>
+    <button type="button" className={cx(buttonBase, buttonPrimary)} onClick={onClick}>
 			{label}
 		</button>
 	);

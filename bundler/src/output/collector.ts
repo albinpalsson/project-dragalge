@@ -1,5 +1,4 @@
 ﻿import { stat } from "node:fs/promises";
-import path from "node:path";
 import type { PerformanceOutputFile } from "../performance-collector.ts";
 
 function inferCompressedKind(filePath: string): "js" | "css" | "html" {

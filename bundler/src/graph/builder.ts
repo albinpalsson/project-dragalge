@@ -1,9 +1,10 @@
-﻿import { readFile, stat } from "node:fs/promises";
+﻿import { stat } from "node:fs/promises";
 import path from "node:path";
 import type { Transform } from "../main.ts";
 import { ModuleTransformCache } from "../module-transform-cache.ts";
 import { NodeModulesResolver } from "../node-modules-resolver.ts";
 import type { BundlerPerformanceCollector } from "../performance-collector.ts";
+import type { ProcessedFileResult } from "../processed-file-result.ts";
 import { SCANNER_VERSION } from "../scanner/index.ts";
 import { isRelativeSpecifier, resolveRelativePath } from "../utils/index.ts";
 import { emitDeterministicEntries } from "./emitter.ts";
@@ -76,7 +77,7 @@ export async function buildDependencyTree(
 			sourceSize: sourceStats.size,
 		});
 
-		let result;
+		let result: ProcessedFileResult;
 		if (cacheLookup) {
 			const elapsedMs = performance.now() - visitStartTime;
 			perfCollect?.add(

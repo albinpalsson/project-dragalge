@@ -1,10 +1,13 @@
 // Database Module
 // SQL-first interface with executor pattern for future migration
 
+type SQLValue = unknown;
+type SQLRow = Record<string, SQLValue>;
+
 // ===== Executor Interface (Abstract - enables backend swapping) =====
 export interface SQLExecutor {
 	// Execute raw SQL with parameterized values
-	execute(sql: string, params?: any[]): ExecuteResult;
+	execute(sql: string, params?: SQLValue[]): ExecuteResult;
 
 	// Prepare statement for repeated execution
 	prepare(sql: string): PreparedStatement;
@@ -18,13 +21,13 @@ export interface SQLExecutor {
 export interface ExecuteResult {
 	changes: number; // For INSERT/UPDATE/DELETE
 	lastInsertRowid?: number; // For INSERT
-	rows?: Record<string, any>[]; // For SELECT
+	rows?: SQLRow[]; // For SELECT
 }
 
 export interface PreparedStatement {
-	bind(params: any[]): this;
-	all(): Record<string, any>[];
-	get(): Record<string, any> | undefined;
+	bind(params: SQLValue[]): this;
+	all(): SQLRow[];
+	get(): SQLRow | undefined;
 	run(): ExecuteResult;
 	reset(): void;
 }
@@ -38,7 +41,7 @@ export interface WhereClause {
 	conditions: Array<{
 		column: string;
 		operator: "=" | ">" | "<" | ">=" | "<=" | "IN" | "LIKE";
-		value: any;
+		value: SQLValue;
 	}>;
 	logic: "AND";
 }
@@ -53,7 +56,7 @@ export class DB {
 	}
 
 	// ===== Raw SQL Interface (Primary) =====
-	execute(sql: string, params?: any[]): ExecuteResult {
+	execute(sql: string, params?: SQLValue[]): ExecuteResult {
 		const result = this.executor.execute(sql, params);
 		// Emit change event for write operations
 		if (
@@ -62,7 +65,9 @@ export class DB {
 			sql.trim().toUpperCase().startsWith("DELETE")
 		) {
 			// Extract table name (simplified - real implementation would parse properly)
-			this.changeListeners.forEach((cb) => cb("*"));
+			this.changeListeners.forEach((cb) => {
+				cb("*");
+			});
 		}
 		return result;
 	}
@@ -82,7 +87,7 @@ export class DB {
 		this.execute(`CREATE TABLE IF NOT EXISTS ${name} (${columns})`);
 	}
 
-	insert(table: string, row: Record<string, any>): void {
+	insert(table: string, row: SQLRow): void {
 		const columns = Object.keys(row);
 		const placeholders = columns.map(() => "?").join(", ");
 		const sql = `INSERT INTO ${table} (${columns.join(", ")}) VALUES (${placeholders})`;
@@ -94,13 +99,13 @@ export class DB {
 		where?: WhereClause,
 		orderBy?: { column: string; asc: boolean },
 		limit?: number,
-	): Record<string, any>[] {
+	): SQLRow[] {
 		let sql = `SELECT * FROM ${table}`;
-		const params: any[] = [];
+		const params: SQLValue[] = [];
 
 		if (where) {
 			const whereStr = where.conditions
-				.map((cond, i) => {
+				.map((cond) => {
 					params.push(cond.value);
 					return `${cond.column} ${cond.operator} ?`;
 				})
@@ -117,14 +122,14 @@ export class DB {
 		}
 
 		const result = this.execute(sql, params);
-		return result.rows || [];
+		return result.rows ?? [];
 	}
 
-	update(table: string, set: Record<string, any>, where: WhereClause): number {
+	update(table: string, set: SQLRow, where: WhereClause): number {
 		const setClauses = Object.keys(set)
 			.map(() => "? = ?")
 			.join(", ");
-		const params: any[] = [];
+		const params: SQLValue[] = [];
 
 		Object.entries(set).forEach(([k, v]) => {
 			params.push(k, v);
@@ -147,7 +152,7 @@ export class DB {
 	}
 
 	delete(table: string, where: WhereClause): number {
-		const params: any[] = [];
+		const params: SQLValue[] = [];
 		const whereStr = where.conditions
 			.map((cond) => {
 				params.push(cond.value);
@@ -166,7 +171,7 @@ export class DB {
 		return new Uint8Array();
 	}
 
-	import(data: Uint8Array): void {
+	import(_data: Uint8Array): void {
 		// Implementation will follow
 	}
 

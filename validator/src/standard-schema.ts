@@ -23,5 +23,5 @@ export interface StandardSchema<Input = unknown, Output = Input> {
 	};
 }
 
-export type InferOutput<TSchema extends StandardSchema<any, any>> =
-	TSchema extends StandardSchema<any, infer TOutput> ? TOutput : never;
+export type InferOutput<TSchema extends StandardSchema<unknown, unknown>> =
+	TSchema extends StandardSchema<unknown, infer TOutput> ? TOutput : never;

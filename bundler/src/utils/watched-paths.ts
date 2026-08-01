@@ -1,10 +1,11 @@
 ﻿import { readdir } from "node:fs/promises";
 import path from "node:path";
 import { pathExists } from "../node-modules-resolver.ts";
+import type { DependencyEntry } from "../graph/types.ts";
 
 export async function buildWatchedFilePaths(
 	entryPath: string,
-	dependencyEntries: any[],
+	dependencyEntries: DependencyEntry[],
 	publicDirPath: string,
 ): Promise<string[]> {
 	const sourceHtmlPath = path.resolve(path.dirname(entryPath), "index.html");
@@ -27,7 +28,10 @@ export async function collectWatchPathsForPublicDir(
 	const pendingDirs: string[] = [publicDirPath];
 
 	while (pendingDirs.length > 0) {
-		const currentDir = pendingDirs.pop()!;
+		const currentDir = pendingDirs.pop();
+		if (!currentDir) {
+			continue;
+		}
 		const entries = await readdir(currentDir, { withFileTypes: true });
 		for (const entry of entries) {
 			const absolutePath = path.resolve(currentDir, entry.name);

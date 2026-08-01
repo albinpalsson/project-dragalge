@@ -45,7 +45,7 @@ export function parseEnvArgs(argv: string[]): Record<string, string> {
 			continue;
 		}
 
-		if (!pair || !pair.includes("=")) {
+		if (!pair?.includes("=")) {
 			throw new Error(
 				"--env requires KEY=VALUE. Example: --env API_URL=https://example.com",
 			);

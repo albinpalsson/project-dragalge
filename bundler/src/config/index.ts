@@ -1,4 +1,4 @@
-﻿import type { BundlerConfig, BundlerMode } from "../main.ts";
+﻿import type { BundlerConfig } from "../main.ts";
 import { loadCjsConfig, resolveConfigPath } from "./loader.ts";
 import { buildProcessEnv, resolveMode } from "./resolver.ts";
 

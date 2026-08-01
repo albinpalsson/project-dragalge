@@ -4,11 +4,7 @@ import test from "node:test";
 
 import { AST_LITE_VERSION, type ProgramNode } from "./ast-types.ts";
 import { LONGHAND_PRIORITY_PROPERTIES } from "./longhand-properties.ts";
-import {
-	CSS_IN_JS_METADATA_KEY,
-	type CssTransformModuleMetadata,
-	cssInJsTransform,
-} from "./transform.ts";
+import { cssInJsTransform } from "./transform.ts";
 
 function programFrom(code: string): ProgramNode {
 	return {
@@ -111,17 +107,6 @@ async function completeCss(
 	return cssDependency.code;
 }
 
-function getCssMetadata(
-	metadata: Record<string, unknown>,
-): CssTransformModuleMetadata {
-	const value = metadata[CSS_IN_JS_METADATA_KEY];
-	if (!value || typeof value !== "object") {
-		throw new Error("Expected CSS metadata namespace.");
-	}
-
-	return value as CssTransformModuleMetadata;
-}
-
 test("transform emits atomic classes for plain declarations", async () => {
 	const modulePath = path.resolve("virtual-css/plain.js");
 	const { metadata, output } = await runModuleTransform(
@@ -187,7 +172,9 @@ test("transform expands repeated ampersands", async () => {
 
 test("transform rejects dynamic template values", async () => {
 	const transform = cssInJsTransform();
-	const input = programFrom("const cls = css`color: ${theme.color};`;");
+	const input = programFrom(
+		"const cls = css`color: " + "${" + "theme.color};`;",
+	);
 
 	await assert.rejects(
 		async () =>

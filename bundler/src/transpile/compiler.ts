@@ -54,10 +54,10 @@ export async function runCommand(
 		});
 
 		const chunks: Buffer[] = [];
-		child.stdout!.on("data", (chunk: Buffer) => chunks.push(chunk));
+		child.stdout?.on("data", (chunk: Buffer) => chunks.push(chunk));
 
 		const chunksErr: Buffer[] = [];
-		child.stderr!.on("data", (chunk: Buffer) => {
+		child.stderr?.on("data", (chunk: Buffer) => {
 			chunksErr.push(chunk);
 		});
 

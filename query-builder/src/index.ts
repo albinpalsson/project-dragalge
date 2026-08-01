@@ -1,47 +1,50 @@
 // Query Builder Module
 // Exports Query class and executor interface
 
+type QueryValue = unknown;
+type QueryRow = Record<string, QueryValue>;
+type QueryFilter = QueryValue;
+
 export class Query {
-	// Implementation will follow from spec
-	constructor(table: string) {}
+	constructor(public readonly table: string) {}
 
-	where(column: string, operator: string, value: any): Query {
+	where(_column: string, _operator: string, _value: QueryValue): Query {
 		return this;
 	}
-	whereIn(column: string, values: any[]): Query {
+	whereIn(_column: string, _values: QueryValue[]): Query {
 		return this;
 	}
-	whereNot(column: string, value: any): Query {
-		return this;
-	}
-
-	select(...columns: string[]): Query {
-		return this;
-	}
-	orderBy(column: string, direction?: "asc" | "desc"): Query {
-		return this;
-	}
-	limit(count: number): Query {
+	whereNot(_column: string, _value: QueryValue): Query {
 		return this;
 	}
 
-	get(): Record<string, any>[] {
+	select(..._columns: string[]): Query {
+		return this;
+	}
+	orderBy(_column: string, _direction?: "asc" | "desc"): Query {
+		return this;
+	}
+	limit(_count: number): Query {
+		return this;
+	}
+
+	get(): QueryRow[] {
 		return [];
 	}
-	first(): Record<string, any> | null {
+	first(): QueryRow | null {
 		return null;
 	}
 	count(): number {
 		return 0;
 	}
-	pluck(column: string): any[] {
+	pluck(_column: string): QueryValue[] {
 		return [];
 	}
 
-	insert(rows: Record<string, any>[] | Record<string, any>): number {
+	insert(_rows: QueryRow[] | QueryRow): number {
 		return 0;
 	}
-	update(set: Record<string, any>): number {
+	update(_set: QueryRow): number {
 		return 0;
 	}
 	delete(): number {
@@ -50,17 +53,17 @@ export class Query {
 }
 
 export interface QueryExecutor {
-	select(builder: any): Record<string, any>[];
-	insert(table: string, rows: Record<string, any>[]): number;
-	update(table: string, set: Record<string, any>, where: any[]): number;
-	delete(table: string, where: any[]): number;
-	count(table: string, where: any[]): number;
+	select(builder: Query): QueryRow[];
+	insert(table: string, rows: QueryRow[]): number;
+	update(table: string, set: QueryRow, where: QueryFilter[]): number;
+	delete(table: string, where: QueryFilter[]): number;
+	count(table: string, where: QueryFilter[]): number;
 }
 
 export function query(table: string): Query {
 	return new Query(table);
 }
 
-export function setExecutor(executor: QueryExecutor): void {
+export function setExecutor(_executor: QueryExecutor): void {
 	// Implementation will follow
 }
