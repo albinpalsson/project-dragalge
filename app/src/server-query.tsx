@@ -9,6 +9,7 @@ import {
 import {
 	createContext,
 	type ReactNode,
+	useCallback,
 	useContext,
 	useEffect,
 	useRef,
@@ -60,21 +61,30 @@ export function useQuery<TData>(
 	const queryFnRef = useRef(options.queryFn);
 	queryFnRef.current = options.queryFn;
 
-	const subscribe = useRef((onStoreChange: () => void) =>
-		client.subscribe(key, onStoreChange),
-	).current;
+	const subscribe = useCallback(
+		(onStoreChange: () => void) => client.subscribe(key, onStoreChange),
+		[client, key],
+	);
 
-	const getSnapshot = () => client.getQuerySnapshot<TData>(key);
+	const getSnapshot = useCallback(
+		() => client.getQuerySnapshot<TData>(key),
+		[client, key],
+	);
 
 	const state = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 
-	useEffect(() => {
+	const refetch = useCallback(() => {
 		client
 			.fetch(key, () => queryFnRef.current(), staleTime)
 			.catch(() => {
 				// error is captured in state; no need to rethrow
 			});
 	}, [client, key, staleTime]);
+
+	useEffect(() => {
+		refetch();
+		return client.registerQueryRefetch(key, refetch);
+	}, [client, key, refetch]);
 
 	return {
 		data: state.data,

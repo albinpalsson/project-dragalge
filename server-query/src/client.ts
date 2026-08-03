@@ -18,8 +18,19 @@ export class QueryClient {
 	private queryStates = new Map<string, QueryState>();
 	private mutationStates = new Map<string, MutationState>();
 	private listeners = new Map<string, Set<() => void>>();
+	private queryRefetchers = new Map<string, Set<() => void>>();
 	// inflight promises deduplicate concurrent fetches for the same key
 	private inflightPromises = new Map<string, Promise<unknown>>();
+
+	registerQueryRefetch(key: string, refetch: () => void): () => void {
+		let set = this.queryRefetchers.get(key);
+		if (!set) {
+			set = new Set();
+			this.queryRefetchers.set(key, set);
+		}
+		set.add(refetch);
+		return () => set?.delete(refetch);
+	}
 
 	subscribe(key: string, listener: () => void): () => void {
 		let set = this.listeners.get(key);
@@ -122,6 +133,7 @@ export class QueryClient {
 		if (current) {
 			this.setQueryState(key, { ...current, dataUpdatedAt: 0 });
 		}
+		for (const refetch of this.queryRefetchers.get(key) ?? []) refetch();
 	}
 
 	private setQueryState(key: string, state: QueryState): void {
