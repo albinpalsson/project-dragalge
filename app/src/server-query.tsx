@@ -1,166 +1,169 @@
 import {
-	createQueryClient,
-	type MutationOptions,
-	type MutationStatus,
-	type QueryClient,
-	type QueryOptions,
-	type QueryState,
-} from "@pokedb2/server-query";
+    createQueryClient,
+    type MutationOptions,
+    type MutationStatus,
+    type QueryClient,
+    type QueryOptions,
+    type QueryState,
+} from '@pokedb2/server-query';
 import {
-	createContext,
-	type ReactNode,
-	useCallback,
-	useContext,
-	useEffect,
-	useRef,
-	useState,
-	useSyncExternalStore,
-} from "react";
+    createContext,
+    type ReactNode,
+    useCallback,
+    useContext,
+    useEffect,
+    useRef,
+    useState,
+    useSyncExternalStore,
+} from 'react';
 
 // ─── Client context ──────────────────────────────────────────────────────────
 
 const QueryClientContext = createContext<QueryClient | null>(null);
 
 export function QueryClientProvider({
-	client,
-	children,
+    client,
+    children,
 }: {
-	client: QueryClient;
-	children: ReactNode;
+    client: QueryClient;
+    children: ReactNode;
 }) {
-	return <QueryClientContext value={client}>{children}</QueryClientContext>;
+    return <QueryClientContext value={client}>{children}</QueryClientContext>;
 }
 
 export function useClient(): QueryClient {
-	const client = useContext(QueryClientContext);
-	if (!client)
-		throw new Error("useClient must be used inside <QueryClientProvider>");
-	return client;
+    const client = useContext(QueryClientContext);
+    if (!client) {
+        throw new Error('useClient must be used inside <QueryClientProvider>');
+    }
+    return client;
 }
 
 // ─── useQuery ────────────────────────────────────────────────────────────────
 
 export interface UseQueryResult<TData> {
-	data: TData | undefined;
-	status: QueryState["status"];
-	error: unknown;
-	isPending: boolean;
-	isSuccess: boolean;
-	isError: boolean;
-	isFetching: boolean;
+    data: TData | undefined;
+    status: QueryState['status'];
+    error: unknown;
+    isPending: boolean;
+    isSuccess: boolean;
+    isError: boolean;
+    isFetching: boolean;
 }
 
 export function useQuery<TData>(
-	options: QueryOptions<TData>,
+    options: QueryOptions<TData>,
 ): UseQueryResult<TData> {
-	const client = useClient();
-	const key = JSON.stringify(options.queryKey);
-	const staleTime = options.staleTime ?? 0;
+    const client = useClient();
+    const key = JSON.stringify(options.queryKey);
+    const staleTime = options.staleTime ?? 0;
 
-	// keep a stable ref to queryFn to avoid re-triggering the effect
-	const queryFnRef = useRef(options.queryFn);
-	queryFnRef.current = options.queryFn;
+    // keep a stable ref to queryFn to avoid re-triggering the effect
+    const queryFnRef = useRef(options.queryFn);
+    queryFnRef.current = options.queryFn;
 
-	const subscribe = useCallback(
-		(onStoreChange: () => void) => client.subscribe(key, onStoreChange),
-		[client, key],
-	);
+    const subscribe = useCallback(
+        (onStoreChange: () => void) => client.subscribe(key, onStoreChange),
+        [client, key],
+    );
 
-	const getSnapshot = useCallback(
-		() => client.getQuerySnapshot<TData>(key),
-		[client, key],
-	);
+    const getSnapshot = useCallback(
+        () => client.getQuerySnapshot<TData>(key),
+        [client, key],
+    );
 
-	const state = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+    const state = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 
-	const refetch = useCallback(() => {
-		client
-			.fetch(key, () => queryFnRef.current(), staleTime)
-			.catch(() => {
-				// error is captured in state; no need to rethrow
-			});
-	}, [client, key, staleTime]);
+    const refetch = useCallback(() => {
+        client
+            .fetch(key, () => queryFnRef.current(), staleTime)
+            .catch(() => {
+                // error is captured in state; no need to rethrow
+            });
+    }, [client, key, staleTime]);
 
-	useEffect(() => {
-		refetch();
-		return client.registerQueryRefetch(key, refetch);
-	}, [client, key, refetch]);
+    useEffect(() => {
+        refetch();
+        return client.registerQueryRefetch(key, refetch);
+    }, [client, key, refetch]);
 
-	return {
-		data: state.data,
-		status: state.status,
-		error: state.error,
-		isPending: state.status === "pending",
-		isSuccess: state.status === "success",
-		isError: state.status === "error",
-		isFetching: state.isFetching,
-	};
+    return {
+        data: state.data,
+        status: state.status,
+        error: state.error,
+        isPending: state.status === 'pending',
+        isSuccess: state.status === 'success',
+        isError: state.status === 'error',
+        isFetching: state.isFetching,
+    };
 }
 
 // ─── useMutation ─────────────────────────────────────────────────────────────
 
 export interface UseMutationResult<TData, TVariables> {
-	mutate: (variables: TVariables) => void;
-	mutateAsync: (variables: TVariables) => Promise<TData>;
-	status: MutationStatus;
-	data: TData | undefined;
-	error: unknown;
-	isPending: boolean;
-	isSuccess: boolean;
-	isError: boolean;
-	isIdle: boolean;
-	reset: () => void;
+    mutate: (variables: TVariables) => void;
+    mutateAsync: (variables: TVariables) => Promise<TData>;
+    status: MutationStatus;
+    data: TData | undefined;
+    error: unknown;
+    isPending: boolean;
+    isSuccess: boolean;
+    isError: boolean;
+    isIdle: boolean;
+    reset: () => void;
 }
 
 interface MutationState<TData> {
-	status: MutationStatus;
-	data: TData | undefined;
-	error: unknown;
+    status: MutationStatus;
+    data: TData | undefined;
+    error: unknown;
 }
 
-const IDLE_STATE = { status: "idle" as const, data: undefined, error: null };
+const IDLE_STATE = { status: 'idle' as const, data: undefined, error: null };
 
 export function useMutation<TData, TVariables = void>(
-	options: MutationOptions<TData, TVariables>,
+    options: MutationOptions<TData, TVariables>,
 ): UseMutationResult<TData, TVariables> {
-	const [state, setState] = useState<MutationState<TData>>(IDLE_STATE);
+    const [state, setState] = useState<MutationState<TData>>(IDLE_STATE);
 
-	// keep stable ref so mutate callbacks always use the latest mutationFn
-	const mutationFnRef = useRef(options.mutationFn);
-	mutationFnRef.current = options.mutationFn;
+    // keep stable ref so mutate callbacks always use the latest mutationFn
+    const mutationFnRef = useRef(options.mutationFn);
+    mutationFnRef.current = options.mutationFn;
 
-	const mutateAsync = useRef(async (variables: TVariables): Promise<TData> => {
-		setState({ status: "pending", data: undefined, error: null });
-		try {
-			const data = await mutationFnRef.current(variables);
-			setState({ status: "success", data, error: null });
-			return data;
-		} catch (error) {
-			setState({ status: "error", data: undefined, error });
-			throw error;
-		}
-	}).current;
+    const mutateAsync = useRef(
+        async (variables: TVariables): Promise<TData> => {
+            setState({ status: 'pending', data: undefined, error: null });
+            try {
+                const data = await mutationFnRef.current(variables);
+                setState({ status: 'success', data, error: null });
+                return data;
+            } catch (error) {
+                setState({ status: 'error', data: undefined, error });
+                throw error;
+            }
+        },
+    ).current;
 
-	const mutate = useRef((variables: TVariables) => {
-		mutateAsync(variables).catch(() => {
-			// error captured in state
-		});
-	}).current;
+    const mutate = useRef((variables: TVariables) => {
+        mutateAsync(variables).catch(() => {
+            // error captured in state
+        });
+    }).current;
 
-	const reset = useRef(() => setState(IDLE_STATE)).current;
+    const reset = useRef(() => setState(IDLE_STATE)).current;
 
-	return {
-		mutate,
-		mutateAsync,
-		status: state.status,
-		data: state.data,
-		error: state.error,
-		isPending: state.status === "pending",
-		isSuccess: state.status === "success",
-		isError: state.status === "error",
-		isIdle: state.status === "idle",
-		reset,
-	};
+    return {
+        mutate,
+        mutateAsync,
+        status: state.status,
+        data: state.data,
+        error: state.error,
+        isPending: state.status === 'pending',
+        isSuccess: state.status === 'success',
+        isError: state.status === 'error',
+        isIdle: state.status === 'idle',
+        reset,
+    };
 }
 
 export type { QueryClient };

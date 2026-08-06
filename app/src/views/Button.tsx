@@ -1,4 +1,4 @@
-import { css, cx } from "@pokedb2/css-in-js";
+import { css, cx } from '@pokedb2/css-in-js';
 
 const buttonBase = css`
   display: inline-flex;
@@ -19,18 +19,18 @@ const buttonPrimary = css`
 `;
 
 interface ButtonProps {
-	label: string;
-	onClick?: () => void;
+    label: string;
+    onClick?: () => void;
 }
 
 export function Button({ label, onClick }: ButtonProps) {
-	return (
-		<button
-			type="button"
-			className={cx(buttonBase, buttonPrimary)}
-			onClick={onClick}
-		>
-			{label}
-		</button>
-	);
+    return (
+        <button
+            type="button"
+            className={cx(buttonBase, buttonPrimary)}
+            onClick={onClick}
+        >
+            {label}
+        </button>
+    );
 }

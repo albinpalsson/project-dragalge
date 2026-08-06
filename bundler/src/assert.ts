@@ -1,10 +1,10 @@
 ﻿export function assert(
-	condition: unknown,
-	message?: string,
+    condition: unknown,
+    message?: string,
 ): asserts condition {
-	if (!condition) {
-		throw new Error(
-			message ?? `Assertion failed, condition ${condition} is false`,
-		);
-	}
+    if (!condition) {
+        throw new Error(
+            message ?? `Assertion failed, condition ${condition} is false`,
+        );
+    }
 }

@@ -1,19 +1,19 @@
-﻿import type { CssDependency } from "../graph/index.ts";
+﻿import type { CssDependency } from '../graph/index.ts';
 
 export interface PublicAssetCopyResult {
-	sourceDirPath: string;
+    sourceDirPath: string;
 }
 
 export async function cleanOutputDir(outputDirPath: string): Promise<void> {
-	const { mkdir, rm } = await import("node:fs/promises");
-	await rm(outputDirPath, { recursive: true, force: true });
-	await mkdir(outputDirPath, { recursive: true });
+    const { mkdir, rm } = await import('node:fs/promises');
+    await rm(outputDirPath, { recursive: true, force: true });
+    await mkdir(outputDirPath, { recursive: true });
 }
 
 export function clearCssDependencyRuntimeSource(
-	cssDependencies: CssDependency[],
+    cssDependencies: CssDependency[],
 ): void {
-	for (const dependency of cssDependencies) {
-		dependency.code = "";
-	}
+    for (const dependency of cssDependencies) {
+        dependency.code = '';
+    }
 }

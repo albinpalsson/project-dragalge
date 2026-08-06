@@ -1,28 +1,28 @@
 {
-	"name": "@pokedb2/app",
-	"version": "0.1.0",
-	"private": true,
-	"type": "module",
-	"scripts": {
-		"build": "pokedb2-bundle --mode production",
-		"dev": "pokedb2-dev-server --port 3000",
-		"test": "npm run lint",
-		"lint": "tsc --noEmit",
-		"tsc": "tsc --rootDir C:\\Dev\\pokedb2\\app\\src --outDir C:\\Dev\\pokedb2\\app\\.cache\\bundler\\tsgo-cjs --module commonjs --moduleResolution bundler"
-	},
-	"dependencies": {
-		"@pokedb2/css-in-js": "*",
-		"@pokedb2/db": "*",
-		"@pokedb2/query-builder": "*",
-		"@pokedb2/server-query": "*",
-		"@types/react-dom": "^19.2.3",
-		"react": "^19.2.7",
-		"react-dom": "^19.2.7",
-		"typescript": "^7.0.2"
-	},
-	"devDependencies": {
-		"@pokedb2/bundler": "*",
-		"@types/node": "^20.19.43",
-		"@types/react": "^19.2.17"
-	}
+    "name": "@pokedb2/app",
+    "version": "0.1.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "pokedb2-bundle --mode production",
+        "dev": "pokedb2-dev-server --port 3000",
+        "test": "npm run lint",
+        "lint": "tsc --noEmit",
+        "tsc": "tsc --rootDir C:\\Dev\\pokedb2\\app\\src --outDir C:\\Dev\\pokedb2\\app\\.cache\\bundler\\tsgo-cjs --module commonjs --moduleResolution bundler"
+    },
+    "dependencies": {
+        "@pokedb2/css-in-js": "*",
+        "@pokedb2/db": "*",
+        "@pokedb2/query-builder": "*",
+        "@pokedb2/server-query": "*",
+        "@types/react-dom": "^19.2.3",
+        "react": "^19.2.7",
+        "react-dom": "^19.2.7",
+        "typescript": "^7.0.2"
+    },
+    "devDependencies": {
+        "@pokedb2/bundler": "*",
+        "@types/node": "^20.19.43",
+        "@types/react": "^19.2.17"
+    }
 }
