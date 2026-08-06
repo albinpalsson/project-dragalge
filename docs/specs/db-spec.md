@@ -99,6 +99,23 @@ Engine-level constraints are intentionally minimal for v1.
 - Values passed separately in `parameters` array
 - Protects against SQL injection
 
+### External Data Source Licensing (Bulbapedia Seed Data)
+
+If seed data is copied or adapted from Bulbapedia, treat it as licensed under
+Creative Commons Attribution-NonCommercial-ShareAlike 2.5 (CC BY-NC-SA 2.5).
+
+- Attribution is required to Bulbapedia (include source links in docs/app legal notice)
+- Non-commercial use only for data derived from Bulbapedia text/table content
+- Share-alike applies to derivative data files based on Bulbapedia content
+- Some imported historical content may have different terms (for example GFDL);
+  verify page-level licensing before bulk import
+- Media (images/audio) must be checked file-by-file and is out of scope for v1 seed import
+
+Implementation requirements for provenance:
+- Keep a machine-readable source record for imported datasets (source page URL,
+  retrieval date, and notes per dataset)
+- Keep app-visible attribution and license links available from Settings/About in UI
+
 ### Persistence
 - `save()`: concatenate raw table buffers with a directory header and hand to `StoragePlugin`
 - `load()`: read blob from `StoragePlugin`, slice into table buffers, rebuild `freeList`
@@ -517,6 +534,7 @@ class FilePersistencePlugin implements StoragePlugin {
 - [ ] Nullable columns and null bitmaps
 - [ ] Page-based storage and incremental compaction
 - [ ] Real SQLite backend: swap `DB` for a `BetterSqliteClient implements DbClient` adapter
+- [ ] Replace Bulbapedia-derived seed data with a commercially compatible source before monetization
 
 ### Documentation
 - [ ] API reference: `DB` class and `DbClient` interface

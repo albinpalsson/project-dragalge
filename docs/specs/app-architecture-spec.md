@@ -59,6 +59,15 @@ Output:
 8. **Level Cap Selector**: Set/adjust level limit for team
 9. **Settings**: Reset run, export data, etc.
 
+### Legal Attribution (When Using Bulbapedia-Derived Seed Data)
+- The app must expose a visible legal notice in Settings/About linking to:
+  - Bulbapedia source page(s)
+  - Bulbapedia copyright/license page
+  - CC BY-NC-SA 2.5 license text
+- The legal notice must state that Bulbapedia-derived data is used under
+  CC BY-NC-SA 2.5 and is non-commercial/share-alike.
+- This requirement applies even when data is bundled inline in app assets.
+
 ### Data Model
 
 ```typescript
@@ -407,6 +416,7 @@ CREATE TABLE game_runs (
 - [ ] Import run data: Load from JSON, restore DB state
 - [ ] Mobile responsiveness: Test on 320px, 768px, 1024px, 1440px
 - [ ] Offline mode: Disable network, verify app works
+- [ ] Legal notice visible from Settings/About with required attribution and license links
 
 ### User Flows
 1. **First-time user**: Home → Choose starter → Party view
@@ -434,6 +444,7 @@ CREATE TABLE game_runs (
 - [ ] Build Tera raid tracker
 - [ ] Build Level cap selector
 - [ ] Build Settings view
+- [ ] Add Settings/About legal notice section for data attribution links
 
 ### Router & Navigation
 - [ ] Implement in-memory router (no URL changes)
