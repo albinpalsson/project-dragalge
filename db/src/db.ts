@@ -74,11 +74,11 @@ export class DB {
         this.storage = storage;
     }
 
-    createTable(name: string, schema: { columns: ColumnInput[] }): void {
+    private createTableInternal(name: string, columns: ColumnInput[]): void {
         if (this.tables.has(name)) {
             throw new Error(`Table "${name}" already exists`);
         }
-        const resolved = makeSchema(schema.columns);
+        const resolved = makeSchema(columns);
         const { buffer, view } = allocateBuffer(
             resolved.rowSize,
             INITIAL_CAPACITY,
@@ -126,6 +126,12 @@ export class DB {
         if (stmt.type === 'delete') {
             const table = this.getTable(stmt.table);
             this.executeDelete(table, stmt.wheres, parameters);
+            this.scheduleWrite();
+            return [];
+        }
+
+        if (stmt.type === 'createTable') {
+            this.createTableInternal(stmt.table, stmt.columns);
             this.scheduleWrite();
             return [];
         }

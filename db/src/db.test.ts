@@ -15,20 +15,14 @@ class MemoryStoragePlugin implements StoragePlugin {
 
 function makePokemonDb(plugin?: StoragePlugin) {
     const engine = new DB(plugin);
-    engine.createTable('pokemon', {
-        columns: [
-            { name: 'id', type: 'int32' },
-            { name: 'name', type: 'char', length: 32 },
-            { name: 'caught', type: 'boolean' },
-            { name: 'level', type: 'int32' },
-        ],
-    });
-    engine.createTable('encounters', {
-        columns: [
-            { name: 'pokemon_id', type: 'int32' },
-            { name: 'location', type: 'char', length: 48 },
-        ],
-    });
+    engine.execute(
+        'CREATE TABLE pokemon (id INT, name CHAR(32), caught BOOLEAN, level INT)',
+        [],
+    );
+    engine.execute(
+        'CREATE TABLE encounters (pokemon_id INT, location CHAR(48))',
+        [],
+    );
     return engine;
 }
 
@@ -97,12 +91,10 @@ describe('high-level: pokémon game scenarios', () => {
     });
 });
 
-describe('unit: createTable + insert + selectAll', () => {
+describe('unit: SQL operations', () => {
     it('inserts and reads back int32 rows', () => {
         const engine = new DB();
-        engine.createTable('numbers', {
-            columns: [{ name: 'id', type: 'int32' }],
-        });
+        engine.execute('CREATE TABLE numbers (id INT)', []);
 
         engine.execute('INSERT INTO numbers (id) VALUES (?)', [42]);
         engine.execute('INSERT INTO numbers (id) VALUES (?)', [7]);
@@ -113,12 +105,7 @@ describe('unit: createTable + insert + selectAll', () => {
 
     it('handles multiple columns', () => {
         const engine = new DB();
-        engine.createTable('pokemon', {
-            columns: [
-                { name: 'id', type: 'int32' },
-                { name: 'level', type: 'int32' },
-            ],
-        });
+        engine.execute('CREATE TABLE pokemon (id INT, level INT)', []);
 
         engine.execute('INSERT INTO pokemon (id, level) VALUES (?, ?)', [1, 5]);
         engine.execute(
@@ -133,14 +120,10 @@ describe('unit: createTable + insert + selectAll', () => {
         ]);
     });
 
-    it('throws on duplicate createTable', () => {
+    it('CREATE TABLE throws on duplicate table name', () => {
         const engine = new DB();
-        engine.createTable('t', { columns: [{ name: 'id', type: 'int32' }] });
-        assert.throws(() =>
-            engine.createTable('t', {
-                columns: [{ name: 'id', type: 'int32' }],
-            }),
-        );
+        engine.execute('CREATE TABLE t (id INT)', []);
+        assert.throws(() => engine.execute('CREATE TABLE t (id INT)', []));
     });
 
     it('throws on unknown table', () => {
@@ -150,13 +133,13 @@ describe('unit: createTable + insert + selectAll', () => {
 
     it('throws on unsupported SQL', () => {
         const engine = new DB();
-        engine.createTable('t', { columns: [{ name: 'id', type: 'int32' }] });
+        engine.execute('CREATE TABLE t (id INT)', []);
         assert.throws(() => engine.execute('DROP TABLE t', []));
     });
 
     it('buffer grows beyond initial capacity', () => {
         const engine = new DB();
-        engine.createTable('ids', { columns: [{ name: 'n', type: 'int32' }] });
+        engine.execute('CREATE TABLE ids (n INT)', []);
         for (let i = 0; i < 20; i++) {
             engine.execute('INSERT INTO ids (n) VALUES (?)', [i]);
         }
@@ -167,7 +150,7 @@ describe('unit: createTable + insert + selectAll', () => {
 
     it('delete keeps row count correct for later inserts', () => {
         const engine = new DB();
-        engine.createTable('ids', { columns: [{ name: 'n', type: 'int32' }] });
+        engine.execute('CREATE TABLE ids (n INT)', []);
         engine.execute('INSERT INTO ids (n) VALUES (?)', [1]);
         engine.execute('INSERT INTO ids (n) VALUES (?)', [2]);
         engine.execute('DELETE FROM ids WHERE n = ?', [1]);
@@ -182,12 +165,7 @@ describe('persistence', () => {
     it('save and load round-trip preserves multi-column rows', async () => {
         const plugin = new MemoryStoragePlugin();
         const engine1 = new DB(plugin);
-        engine1.createTable('pokemon', {
-            columns: [
-                { name: 'id', type: 'int32' },
-                { name: 'level', type: 'int32' },
-            ],
-        });
+        engine1.execute('CREATE TABLE pokemon (id INT, level INT)', []);
         engine1.execute(
             'INSERT INTO pokemon (id, level) VALUES (?, ?)',
             [1, 5],

@@ -1,3 +1,5 @@
+import type { ColumnInput } from './types.ts';
+
 export interface WhereClause {
     column: string;
 }
@@ -33,11 +35,18 @@ export interface ParsedDelete {
     wheres: WhereClause[];
 }
 
+export interface ParsedCreateTable {
+    type: 'createTable';
+    table: string;
+    columns: ColumnInput[];
+}
+
 export type ParsedStatement =
     | ParsedSelect
     | ParsedInsert
     | ParsedUpdate
-    | ParsedDelete;
+    | ParsedDelete
+    | ParsedCreateTable;
 
 function tokenize(sql: string): string[] {
     const tokens: string[] = [];
@@ -198,7 +207,54 @@ export function parse(sql: string): ParsedStatement {
         return { type: 'delete', table, wheres };
     }
 
+    if (keyword === 'CREATE') {
+        p.expect('CREATE');
+        p.expect('TABLE');
+        const table = p.consume();
+        p.expect('(');
+        const columns: ColumnInput[] = [];
+        while (p.peek() !== ')') {
+            const colName = p.consume();
+            columns.push(parseColumnType(p, colName));
+            p.skip(',');
+        }
+        p.expect(')');
+        return { type: 'createTable', table, columns };
+    }
+
     throw new Error(`Unsupported SQL: ${sql}`);
+}
+
+function parseColumnType(p: Parser, colName: string): ColumnInput {
+    const token = p.peek();
+
+    if (token === 'INT' || token === 'INTEGER') {
+        p.consume();
+        return { name: colName, type: 'int32' };
+    }
+
+    if (token === 'BOOLEAN' || token === 'BOOL') {
+        p.consume();
+        return { name: colName, type: 'boolean' };
+    }
+
+    if (token === 'TIMESTAMP') {
+        p.consume();
+        return { name: colName, type: 'timestamp' };
+    }
+
+    if (token === 'CHAR') {
+        p.consume();
+        p.expect('(');
+        const length = Number.parseInt(p.consume(), 10);
+        if (!Number.isFinite(length) || length <= 0) {
+            throw new Error('Invalid CHAR length');
+        }
+        p.expect(')');
+        return { name: colName, type: 'char', length };
+    }
+
+    throw new Error(`Unknown column type: ${p.raw() || 'end of input'}`);
 }
 
 function parseWhere(p: Parser): WhereClause[] {
