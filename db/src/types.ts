@@ -19,7 +19,6 @@ export interface TableSchema {
 
 // buffer layout: [rowCount: u32][rowCapacity: u32][slot 0][slot 1]...
 export const HEADER_BYTES = 8;
-export const INITIAL_CAPACITY = 16;
 
 export interface TableStorage {
     name: string;

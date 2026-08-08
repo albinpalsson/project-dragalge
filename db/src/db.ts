@@ -16,7 +16,11 @@ import type {
     TableSchema,
     TableStorage,
 } from './types.ts';
-import { HEADER_BYTES, INITIAL_CAPACITY } from './types.ts';
+import { HEADER_BYTES } from './types.ts';
+
+interface DBOptions {
+    growthFactor?: number;
+}
 
 function makeSchema(columns: ColumnInput[]): TableSchema {
     let offset = 1; // byte 0 is the status byte
@@ -49,9 +53,10 @@ function allocateBuffer(
     return { buffer, view };
 }
 
-function growBuffer(table: TableStorage): void {
+function growBuffer(table: TableStorage, growthFactor: number): void {
     const oldCapacity = table.view.getUint32(4, true);
-    const newCapacity = oldCapacity * 2;
+    const scaledCapacity = Math.floor(oldCapacity * growthFactor);
+    const newCapacity = Math.max(oldCapacity + 1, scaledCapacity);
     const { buffer, view } = allocateBuffer(table.schema.rowSize, newCapacity);
     new Uint8Array(buffer).set(
         new Uint8Array(
@@ -69,9 +74,11 @@ export class DB {
     private tables = new Map<string, TableStorage>();
     private storage: StoragePlugin | undefined;
     private writeTimer: ReturnType<typeof setTimeout> | null = null;
+    private readonly growthFactor: number;
 
-    constructor(storage?: StoragePlugin) {
+    constructor(storage?: StoragePlugin, options?: DBOptions) {
         this.storage = storage;
+        this.growthFactor = options?.growthFactor ?? 2;
     }
 
     private createTableInternal(name: string, columns: ColumnInput[]): void {
@@ -79,10 +86,7 @@ export class DB {
             throw new Error(`Table "${name}" already exists`);
         }
         const resolved = makeSchema(columns);
-        const { buffer, view } = allocateBuffer(
-            resolved.rowSize,
-            INITIAL_CAPACITY,
-        );
+        const { buffer, view } = allocateBuffer(resolved.rowSize, 1);
         this.tables.set(name, { name, schema: resolved, buffer, view });
     }
 
@@ -367,7 +371,7 @@ export class DB {
         const rowCount = table.view.getUint32(0, true);
         const capacity = table.view.getUint32(4, true);
         if (rowCount >= capacity) {
-            growBuffer(table);
+            growBuffer(table, this.growthFactor);
         }
         encodeRow(table, rowCount, values);
         table.view.setUint32(0, rowCount + 1, true);
