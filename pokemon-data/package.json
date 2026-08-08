@@ -1,0 +1,34 @@
+{
+    "name": "@pokedb2/pokemon-data",
+    "version": "0.1.0",
+    "private": true,
+    "type": "module",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        }
+    },
+    "files": [
+        "dist",
+        "artifacts"
+    ],
+    "scripts": {
+        "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
+        "build": "npm run clean && tsc -p tsconfig.build.json && node -e \"require('node:fs').writeFileSync('dist/package.json', JSON.stringify({ type: 'commonjs' }, null, 2))\"",
+        "lint": "tsc --noEmit",
+        "test": "node -e \"process.exit(0)\"",
+        "run-sql": "npm --prefix ../db run build && npm --prefix ../db exec -- pokedb2-db-sql",
+        "build-pokemon-db": "npm --prefix ../db run build && npm run build && node dist/build/main.js"
+    },
+    "dependencies": {
+        "@pokedb2/db": "*",
+        "@pokedb2/query-builder": "*"
+    },
+    "devDependencies": {
+        "@types/node": "^20.19.43",
+        "typescript": "^7.0.1-rc"
+    }
+}
