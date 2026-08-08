@@ -20,6 +20,7 @@ export interface ParsedInsert {
     type: 'insert';
     table: string;
     columns: string[];
+    rowCount: number;
 }
 
 export interface ParsedUpdate {
@@ -175,13 +176,29 @@ export function parse(sql: string): ParsedStatement {
         }
         p.expect(')');
         p.expect('VALUES');
-        p.expect('(');
-        while (p.peek() !== ')') {
-            p.consume();
-            p.skip(',');
+
+        let rowCount = 0;
+        do {
+            p.expect('(');
+            const valueCount = parseInsertTupleValueCount(p);
+            p.expect(')');
+            if (valueCount !== columns.length) {
+                throw new Error(
+                    `INSERT tuple size ${valueCount} does not match column count ${columns.length}`,
+                );
+            }
+            rowCount++;
+            if (p.peek() !== ',') {
+                break;
+            }
+            p.expect(',');
+        } while (!p.done());
+
+        if (rowCount === 0) {
+            throw new Error('INSERT requires at least one VALUES tuple');
         }
-        p.expect(')');
-        return { type: 'insert', table, columns };
+
+        return { type: 'insert', table, columns, rowCount };
     }
 
     if (keyword === 'UPDATE') {
@@ -223,6 +240,20 @@ export function parse(sql: string): ParsedStatement {
     }
 
     throw new Error(`Unsupported SQL: ${sql}`);
+}
+
+function parseInsertTupleValueCount(p: Parser): number {
+    let count = 0;
+    while (p.peek() !== ')') {
+        p.consume();
+        count++;
+        if (p.peek() === ',') {
+            p.expect(',');
+        } else if (p.peek() !== ')') {
+            throw new Error(`Expected , or ), got ${p.raw() || 'end of input'}`);
+        }
+    }
+    return count;
 }
 
 function parseColumnType(p: Parser, colName: string): ColumnInput {

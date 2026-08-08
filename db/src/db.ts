@@ -107,11 +107,24 @@ export class DB {
 
         if (stmt.type === 'insert') {
             const table = this.getTable(stmt.table);
-            const values: Record<string, unknown> = {};
-            stmt.columns.forEach((col, i) => {
-                values[col] = parameters[i];
-            });
-            this.insertRow(table, values);
+
+            const valuesPerRow = stmt.columns.length;
+            const expectedParamCount = valuesPerRow * stmt.rowCount;
+            if (parameters.length !== expectedParamCount) {
+                throw new Error(
+                    `INSERT expected ${expectedParamCount} parameters, got ${parameters.length}`,
+                );
+            }
+
+            for (let row = 0; row < stmt.rowCount; row++) {
+                const rowOffset = row * valuesPerRow;
+                const values: Record<string, unknown> = {};
+                stmt.columns.forEach((col, i) => {
+                    values[col] = parameters[rowOffset + i];
+                });
+                this.insertRow(table, values);
+            }
+
             this.scheduleWrite();
             return [];
         }

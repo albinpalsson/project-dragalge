@@ -120,6 +120,43 @@ describe('unit: SQL operations', () => {
         ]);
     });
 
+    it('supports multi-row INSERT tuples in one statement', () => {
+        const engine = new DB();
+        engine.execute('CREATE TABLE pokemon (id INT, level INT)', []);
+
+        engine.execute(
+            'INSERT INTO pokemon (id, level) VALUES (?, ?), (?, ?)',
+            [1, 5, 2, 12],
+        );
+
+        const rows = engine.execute('SELECT * FROM pokemon', []);
+        assert.deepEqual(rows, [
+            { id: 1, level: 5 },
+            { id: 2, level: 12 },
+        ]);
+    });
+
+    it('rejects INSERT tuples that do not match column count', () => {
+        const engine = new DB();
+        engine.execute('CREATE TABLE pokemon (id INT, level INT)', []);
+
+        assert.throws(() =>
+            engine.execute('INSERT INTO pokemon (id, level) VALUES (?)', [1]),
+        );
+    });
+
+    it('rejects INSERT with wrong parameter count for multiple tuples', () => {
+        const engine = new DB();
+        engine.execute('CREATE TABLE pokemon (id INT, level INT)', []);
+
+        assert.throws(() =>
+            engine.execute(
+                'INSERT INTO pokemon (id, level) VALUES (?, ?), (?, ?)',
+                [1, 5, 2],
+            ),
+        );
+    });
+
     it('CREATE TABLE throws on duplicate table name', () => {
         const engine = new DB();
         engine.execute('CREATE TABLE t (id INT)', []);
