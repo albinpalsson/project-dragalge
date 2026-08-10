@@ -3,7 +3,7 @@
     "scripts": {
         "dev": "npm --prefix app run dev",
         "build": "npm run build:all",
-        "build:all": "npm --prefix validator run build && npm --prefix css-in-js run build && npm --prefix db run build && npm --prefix query-builder run build && npm --prefix server-query run build && npm --prefix bundler run build && npm --prefix app run build",
+        "build:all": "npm --prefix validator run build && npm --prefix css-in-js run build && npm --prefix db run build && npm --prefix query-builder run build && npm --prefix pokemon-data run build && npm --prefix server-query run build && npm --prefix bundler run build && npm --prefix app run build",
         "test": "npm run test:all",
         "test:all": "npm --prefix validator run test && npm --prefix css-in-js run test && npm --prefix db run test && npm --prefix query-builder run test && npm --prefix server-query run test && npm --prefix bundler run test && npm --prefix app run test",
         "lint": "biome lint .",
@@ -16,6 +16,7 @@
         "bundler",
         "css-in-js",
         "db",
+        "pokemon-data",
         "query-builder",
         "server-query",
         "validator"
