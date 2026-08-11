@@ -4,22 +4,23 @@
     "private": true,
     "type": "module",
     "main": "./artifacts/paldea-db.js",
-    "types": "./src/index.ts",
+    "types": "./src/schema.ts",
     "exports": {
         ".": {
-            "types": "./src/index.ts",
+            "types": "./src/schema.ts",
             "default": "./artifacts/paldea-db.js"
         }
     },
     "files": [
-        "src/index.ts",
+        "src/schema.ts",
         "artifacts"
     ],
     "scripts": {
-        "build": "node --strip-types src/build/main.ts",
+        "build": "node --strip-types src/main.ts",
         "lint": "tsc --noEmit",
         "test": "node -e \"process.exit(0)\"",
-        "run-sql": "npm --prefix ../db run build && npm --prefix ../db exec -- pokedb2-db-sql"
+        "run-sql": "npm --prefix ../db run build && npm --prefix ../db exec -- pokedb2-db-sql",
+        "build-pokemon-db": "npm run build"
     },
     "dependencies": {
         "@pokedb2/db": "*",

@@ -1,0 +1,202 @@
+[
+    {
+        "id": "nemona-1",
+        "name": "Nemona (First Battle)",
+        "type": "rival",
+        "levelCap": 9,
+        "order": 1,
+        "location": "South Province (Area One)"
+    },
+    {
+        "id": "katy",
+        "name": "Katy (Bug Gym)",
+        "type": "gym",
+        "levelCap": 15,
+        "order": 2,
+        "location": "Cortondo"
+    },
+    {
+        "id": "brassius",
+        "name": "Brassius (Grass Gym)",
+        "type": "gym",
+        "levelCap": 17,
+        "order": 4,
+        "location": "Artazon"
+    },
+    {
+        "id": "klawf-titan",
+        "name": "Klawf (Stony Cliff Titan)",
+        "type": "titan",
+        "levelCap": 16,
+        "order": 3,
+        "location": "South Province (Area Three)"
+    },
+    {
+        "id": "giacomo",
+        "name": "Giacomo (Dark Star)",
+        "type": "starfall",
+        "levelCap": 21,
+        "order": 6,
+        "location": "West Province (Area One)"
+    },
+    {
+        "id": "iono",
+        "name": "Iono (Electric Gym)",
+        "type": "gym",
+        "levelCap": 24,
+        "order": 7,
+        "location": "Levincia"
+    },
+    {
+        "id": "bombirdier-titan",
+        "name": "Bombirdier (Open Sky Titan)",
+        "type": "titan",
+        "levelCap": 20,
+        "order": 5,
+        "location": "West Province (Area One)"
+    },
+    {
+        "id": "mela",
+        "name": "Mela (Fire Star)",
+        "type": "starfall",
+        "levelCap": 27,
+        "order": 8,
+        "location": "East Province (Area One)"
+    },
+    {
+        "id": "kofu",
+        "name": "Kofu (Water Gym)",
+        "type": "gym",
+        "levelCap": 30,
+        "order": 9,
+        "location": "Cascarrafa"
+    },
+    {
+        "id": "orthworm-titan",
+        "name": "Orthworm (Lurking Steel Titan)",
+        "type": "titan",
+        "levelCap": 29,
+        "order": 10,
+        "location": "East Province (Area Three)"
+    },
+    {
+        "id": "atticus",
+        "name": "Atticus (Poison Star)",
+        "type": "starfall",
+        "levelCap": 33,
+        "order": 11,
+        "location": "Tagtree Thicket"
+    },
+    {
+        "id": "larry",
+        "name": "Larry (Normal Gym)",
+        "type": "gym",
+        "levelCap": 36,
+        "order": 12,
+        "location": "Medali"
+    },
+    {
+        "id": "great-tusk-titan",
+        "name": "Great Tusk/Iron Treads (Quaking Earth Titan)",
+        "type": "titan",
+        "levelCap": 45,
+        "order": 14,
+        "location": "Asado Desert"
+    },
+    {
+        "id": "ortega",
+        "name": "Ortega (Fairy Star)",
+        "type": "starfall",
+        "levelCap": 50,
+        "order": 17,
+        "location": "North Province (Area One)"
+    },
+    {
+        "id": "ryme",
+        "name": "Ryme (Ghost Gym)",
+        "type": "gym",
+        "levelCap": 42,
+        "order": 13,
+        "location": "Montenevera"
+    },
+    {
+        "id": "tulip",
+        "name": "Tulip (Psychic Gym)",
+        "type": "gym",
+        "levelCap": 45,
+        "order": 15,
+        "location": "Alfornada"
+    },
+    {
+        "id": "eri",
+        "name": "Eri (Fighting Star)",
+        "type": "starfall",
+        "levelCap": 56,
+        "order": 18,
+        "location": "North Province (Area Three)"
+    },
+    {
+        "id": "grusha",
+        "name": "Grusha (Ice Gym)",
+        "type": "gym",
+        "levelCap": 48,
+        "order": 16,
+        "location": "Glaseado Mountain"
+    },
+    {
+        "id": "dondozo-titan",
+        "name": "Dondozo (False Dragon Titan)",
+        "type": "titan",
+        "levelCap": 56,
+        "order": 19,
+        "location": "Casseroya Lake"
+    },
+    {
+        "id": "elite-four-rika",
+        "name": "Rika (Elite Four)",
+        "type": "elite4",
+        "levelCap": 58,
+        "order": 20,
+        "location": "Pokémon League"
+    },
+    {
+        "id": "elite-four-poppy",
+        "name": "Poppy (Elite Four)",
+        "type": "elite4",
+        "levelCap": 59,
+        "order": 21,
+        "location": "Pokémon League"
+    },
+    {
+        "id": "elite-four-larry",
+        "name": "Larry (Elite Four)",
+        "type": "elite4",
+        "levelCap": 60,
+        "order": 22,
+        "location": "Pokémon League"
+    },
+    {
+        "id": "elite-four-hassel",
+        "name": "Hassel (Elite Four)",
+        "type": "elite4",
+        "levelCap": 61,
+        "order": 23,
+        "location": "Pokémon League"
+    },
+    {
+        "id": "geeta",
+        "name": "Geeta (Top Champion)",
+        "type": "elite4",
+        "levelCap": 62,
+        "order": 24,
+        "location": "Pokémon League"
+    },
+    {
+        "id": "nemona-final",
+        "name": "Nemona (Final Battle)",
+        "type": "rival",
+        "levelCap": 66,
+        "order": 25,
+        "location": "Mesagoza"
+    }
+]

@@ -1,7 +1,5 @@
 export const SCHEMA_VERSION = '0.1.0-provisional';
 
-export type BattleType = 'gym' | 'team_star' | 'special_pokemon';
-
 export interface PokemonRow {
     id: number;
     name: string;
@@ -24,23 +22,16 @@ export interface EvolutionLinkRow {
 }
 
 export interface LocationRow {
-    id: number;
+    id: string;
     name: string;
     region: string;
-}
-
-export interface LocationEncounterRow {
-    id: number;
-    location_id: number;
-    pokemon_id: number;
-    encounter_rate: string;
-    sub_region: string;
+    province: string;
 }
 
 export interface BossBattleRow {
     id: number;
     name: string;
-    battle_type: BattleType;
+    battle_type: string;
 }
 
 export interface BossBattlePokemonRow {
@@ -50,11 +41,27 @@ export interface BossBattlePokemonRow {
     slot_order: number;
 }
 
-export interface PokemonDataDb {
+interface StaticPokemonDataDb {
     pokemon: PokemonRow;
     evolution_links: EvolutionLinkRow;
     locations: LocationRow;
-    location_encounters: LocationEncounterRow;
     boss_battles: BossBattleRow;
     boss_battle_pokemon: BossBattlePokemonRow;
 }
+
+export interface LocationEncounterRow {
+    id: number;
+    sub_area: string;
+    pokemon_name: string;
+    games: string;
+    terrain: string;
+    min_level: number;
+    max_level: number;
+    morning_rate: number;
+    day_rate: number;
+    evening_rate: number;
+    night_rate: number;
+}
+
+export type PokemonDataDb = StaticPokemonDataDb &
+    Record<string, LocationEncounterRow>;

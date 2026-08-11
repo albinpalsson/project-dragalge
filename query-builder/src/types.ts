@@ -4,7 +4,10 @@ export interface CompiledQuery {
 }
 
 export interface DbClient {
-    execute(sql: string, parameters: readonly unknown[]): Promise<unknown[]>;
+    execute(
+        sql: string,
+        parameters: readonly unknown[],
+    ): unknown[] | Promise<unknown[]>;
 }
 
 export type Selectable<T> = T;
