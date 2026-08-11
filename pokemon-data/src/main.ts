@@ -7,13 +7,8 @@ import type { PokemonDataDb } from './schema.ts';
 import { initializeDb, insertLocationEncounters } from './schema-init.ts';
 import { fetchBossFightSeeds, fetchLocationSeeds } from './sources/index.ts';
 
-function packageRoot(): string {
-    const thisFilePath = fileURLToPath(import.meta.url);
-    return resolve(dirname(thisFilePath), '..', '..');
-}
-
 async function main(): Promise<void> {
-    const root = packageRoot();
+    const root = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
     const artifactsDir = resolve(root, 'artifacts');
     const dbPath = resolve(artifactsDir, 'paldea-db.js');
 
