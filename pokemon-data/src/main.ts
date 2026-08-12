@@ -4,8 +4,9 @@ import { fileURLToPath } from 'node:url';
 import { createDb } from '@pokedb2/query-builder';
 import { DbClient } from './logging-db-client.ts';
 import type { PokemonDataDb } from './schema.ts';
-import { initializeDb, insertLocationEncounters } from './schema-init.ts';
+import { initializeDb, insertLocationEncounters, buildPokemonIdMap } from './schema-init.ts';
 import { fetchBossFightSeeds, fetchLocationSeeds } from './sources/index.ts';
+import { fetchPokemonData } from './fetch/fetch-pokemon-data.ts';
 
 async function main(): Promise<void> {
     const root = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
@@ -26,10 +27,21 @@ async function main(): Promise<void> {
     // Insert normalized locations and per-location encounter rows.
     const locationRows = locations.map((location) => ({
         id: location.slug,
-        ...location,
+        name: location.name,
+        region: location.region,
+        province: location.province,
     }));
     await db.insertInto('locations').values(locationRows).execute();
-    await insertLocationEncounters(db, locations);
+
+    const pokemonIds = buildPokemonIdMap(locations);
+    const pokemonRows = await Promise.all(
+        [...pokemonIds.entries()].map(async ([name, id]) => ({
+            id,
+            ...(await fetchPokemonData(name)),
+        }))
+    );
+    await db.insertInto('pokemon').values(pokemonRows).execute();
+    await insertLocationEncounters(db, locations, pokemonIds);
 
     // Insert boss identity/order seeds; roster mapping will be web-enriched later.
     const bossRows = bossSeeds.map((boss, index) => ({

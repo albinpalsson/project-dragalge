@@ -5,11 +5,13 @@ import type { PokemonDataDb } from './schema.ts';
 import type { LocationSeed } from './sources/fetch-location-seeds.ts';
 
 export const PROVISIONAL_SCHEMA_SQL: readonly string[] = [
-    'CREATE TABLE pokemon (id INT, name CHAR(64), primary_type CHAR(24), secondary_type CHAR(24), base_hp INT, base_attack INT, base_defense INT, base_sp_attack INT, base_sp_defense INT, base_speed INT)',
-    'CREATE TABLE evolution_links (id INT, from_pokemon_id INT, to_pokemon_id INT, direction CHAR(16), notes CHAR(96))',
-    'CREATE TABLE locations (id INT, name CHAR(96), region CHAR(64), province CHAR(64))',
-    'CREATE TABLE boss_battles (id INT, name CHAR(96), battle_type CHAR(24))',
-    'CREATE TABLE boss_battle_pokemon (id INT, boss_battle_id INT, pokemon_id INT, slot_order INT)',
+    'CREATE TABLE pokemon (id INT, name CHAR(64), primary_type CHAR(24), secondary_type CHAR(24), base_hp TINYINT, base_attack TINYINT, base_defense TINYINT, base_sp_attack TINYINT, base_sp_defense TINYINT, base_speed TINYINT)',
+    'CREATE TABLE evolution_methods (id TINYINT, description CHAR(64))',
+    'CREATE TABLE evolution_transitions (from_pokemon_id INT, to_pokemon_id INT, method_id TINYINT)',
+    'CREATE TABLE locations (id CHAR(32), name CHAR(27), region CHAR(6), province CHAR(14))',
+    'CREATE TABLE abilities (id TINYINT, name CHAR(24), description CHAR(160))',
+    'CREATE TABLE boss_battles (id TINYINT, name CHAR(44), battle_type CHAR(8))',
+    'CREATE TABLE boss_battle_pokemon (boss_battle_id TINYINT, pokemon_id INT, level TINYINT, ability_id TINYINT),'
 ];
 
 export function applyProvisionalSchema(db: DB): void {
@@ -34,7 +36,7 @@ export async function initializeDb(
 }
 
 function createEncounterTableSql(tableName: string): string {
-    return `CREATE TABLE ${tableName} (id INT, location_id INT, sub_area CHAR(96), pokemon_name CHAR(64), games CHAR(32), terrain CHAR(64), min_level INT, max_level INT, morning_rate INT, day_rate INT, evening_rate INT, night_rate INT)`;
+    return `CREATE TABLE ${tableName} (id INT, sub_area CHAR(10), pokemon_id INT, games CHAR(3), terrain CHAR(29), min_level TINYINT, max_level TINYINT, morning_rate TINYINT, day_rate TINYINT, evening_rate TINYINT, night_rate TINYINT)`;
 }
 
 export function buildLocationIdMap(
@@ -47,15 +49,30 @@ export function buildLocationIdMap(
     return ids;
 }
 
+export function buildPokemonIdMap(
+    locations: readonly LocationSeed[],
+): Map<string, number> {
+    const ids = new Map<string, number>();
+    for (const location of locations) {
+        for (const encounter of location.encounters) {
+            if (!ids.has(encounter.pokemonName)) {
+                ids.set(encounter.pokemonName, ids.size + 1);
+            }
+        }
+    }
+    return ids;
+}
+
 export async function insertLocationEncounters(
     db: Database<PokemonDataDb>,
     locations: readonly LocationSeed[],
+    pokemonIds: Map<string, number>,
 ): Promise<void> {
     for (const location of locations) {
         const rows = location.encounters.map((encounter, index) => ({
             id: index + 1,
             sub_area: encounter.subArea,
-            pokemon_name: encounter.pokemonName,
+            pokemon_id: pokemonIds.get(encounter.pokemonName)!,
             games: encounter.games.join(','),
             terrain: encounter.terrain.join(','),
             min_level: encounter.minLevel,

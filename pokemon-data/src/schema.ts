@@ -13,12 +13,15 @@ export interface PokemonRow {
     base_speed: number;
 }
 
-export interface EvolutionLinkRow {
+export interface EvolutionMethodRow {
     id: number;
+    description: string;
+}
+
+export interface EvolutionTransitionRow {
     from_pokemon_id: number;
     to_pokemon_id: number;
-    direction: string;
-    notes: string;
+    method_id: number;
 }
 
 export interface LocationRow {
@@ -28,6 +31,12 @@ export interface LocationRow {
     province: string;
 }
 
+export interface AbilityRow {
+    id: number;
+    name: string;
+    description: string;
+}
+
 export interface BossBattleRow {
     id: number;
     name: string;
@@ -35,16 +44,18 @@ export interface BossBattleRow {
 }
 
 export interface BossBattlePokemonRow {
-    id: number;
     boss_battle_id: number;
     pokemon_id: number;
-    slot_order: number;
+    level: number;
+    ability_id: number;
 }
 
 interface StaticPokemonDataDb {
     pokemon: PokemonRow;
-    evolution_links: EvolutionLinkRow;
+    evolution_methods: EvolutionMethodRow;
+    evolution_transitions: EvolutionTransitionRow;
     locations: LocationRow;
+    abilities: AbilityRow;
     boss_battles: BossBattleRow;
     boss_battle_pokemon: BossBattlePokemonRow;
 }
@@ -52,7 +63,7 @@ interface StaticPokemonDataDb {
 export interface LocationEncounterRow {
     id: number;
     sub_area: string;
-    pokemon_name: string;
+    pokemon_id: number;
     games: string;
     terrain: string;
     min_level: number;
