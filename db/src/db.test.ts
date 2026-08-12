@@ -16,7 +16,7 @@ class MemoryStoragePlugin implements StoragePlugin {
 function makePokemonDb(plugin?: StoragePlugin) {
     const engine = new DB(plugin);
     engine.execute(
-        'CREATE TABLE pokemon (id INT, name CHAR(32), caught BOOLEAN, level INT)',
+        'CREATE TABLE pokemon (id INT, name CHAR(32), caught BOOLEAN, level TINYINT)',
         [],
     );
     engine.execute(
@@ -105,7 +105,7 @@ describe('unit: SQL operations', () => {
 
     it('handles multiple columns', () => {
         const engine = new DB();
-        engine.execute('CREATE TABLE pokemon (id INT, level INT)', []);
+        engine.execute('CREATE TABLE pokemon (id INT, level TINYINT)', []);
 
         engine.execute('INSERT INTO pokemon (id, level) VALUES (?, ?)', [1, 5]);
         engine.execute(
@@ -195,6 +195,29 @@ describe('unit: SQL operations', () => {
         const rows = engine.execute('SELECT * FROM ids', []);
         assert.equal(rows.length, 2);
         assert.deepEqual(rows.map((r) => r.n).sort(), [2, 3]);
+    });
+
+    it('uint8 / TINYINT: boundary values round-trip', () => {
+        const engine = new DB();
+        engine.execute('CREATE TABLE stats (hp TINYINT, atk TINYINT)', []);
+        engine.execute('INSERT INTO stats (hp, atk) VALUES (?, ?)', [0, 255]);
+        engine.execute('INSERT INTO stats (hp, atk) VALUES (?, ?)', [128, 100]);
+        const rows = engine.execute('SELECT * FROM stats', []);
+        assert.deepEqual(rows, [
+            { hp: 0, atk: 255 },
+            { hp: 128, atk: 100 },
+        ]);
+    });
+
+    it('uint8 / TINYINT: throws on out-of-range values', () => {
+        const engine = new DB();
+        engine.execute('CREATE TABLE stats (hp TINYINT)', []);
+        assert.throws(() =>
+            engine.execute('INSERT INTO stats (hp) VALUES (?)', [256]),
+        );
+        assert.throws(() =>
+            engine.execute('INSERT INTO stats (hp) VALUES (?)', [-1]),
+        );
     });
 });
 

@@ -264,6 +264,11 @@ function parseColumnType(p: Parser, colName: string): ColumnInput {
         return { name: colName, type: 'int32' };
     }
 
+    if (token === 'TINYINT') {
+        p.consume();
+        return { name: colName, type: 'uint8' };
+    }
+
     if (token === 'BOOLEAN' || token === 'BOOL') {
         p.consume();
         return { name: colName, type: 'boolean' };

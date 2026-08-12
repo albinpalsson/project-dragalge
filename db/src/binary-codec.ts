@@ -8,6 +8,8 @@ export function columnByteWidth(col: ColumnDefinition): number {
     switch (col.type) {
         case 'int32':
             return 4;
+        case 'uint8':
+            return 1;
         case 'boolean':
             return 1;
         case 'timestamp':
@@ -27,6 +29,14 @@ export function encodeValue(
         case 'int32':
             view.setInt32(byteOffset, value as number, true);
             break;
+        case 'uint8': {
+            const n = value as number;
+            if (!Number.isInteger(n) || n < 0 || n > 255) {
+                throw new RangeError(`uint8 value out of range [0, 255]: ${col.name} -> ${n}`);
+            }
+            view.setUint8(byteOffset, n);
+            break;
+        }
         case 'boolean':
             view.setUint8(byteOffset, (value as boolean) ? 1 : 0);
             break;
@@ -61,6 +71,8 @@ export function decodeValue(
     switch (col.type) {
         case 'int32':
             return view.getInt32(byteOffset, true);
+        case 'uint8':
+            return view.getUint8(byteOffset);
         case 'boolean':
             return view.getUint8(byteOffset) !== 0;
         case 'timestamp':

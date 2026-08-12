@@ -31,6 +31,7 @@ function makeSchema(columns: ColumnInput[]): TableSchema {
                 c = { ...col, offset };
                 break;
             case 'int32':
+            case 'uint8':
             case 'boolean':
             case 'timestamp':
                 c = { ...col, offset };
@@ -94,6 +95,16 @@ export class DB {
         sql: string,
         parameters: readonly unknown[],
     ): Record<string, unknown>[] {
+        try {
+            return this.tryRunQuery(sql, parameters);
+        } catch (e) {
+            throw new Error(`Query failed: ${getErrorMessage(e)}. Query: ${sql} Par: ${JSON.stringify(parameters)}`, {cause: e});
+        }
+    }
+
+    private tryRunQuery(
+        sql: string,
+        parameters: readonly unknown[]) {
         const stmt = parse(sql);
 
         if (stmt.type === 'select') {
@@ -154,6 +165,7 @@ export class DB {
         }
 
         throw new Error('Unsupported statement');
+
     }
 
     async save(): Promise<void> {
@@ -376,4 +388,11 @@ export class DB {
         encodeRow(table, rowCount, values);
         table.view.setUint32(0, rowCount + 1, true);
     }
+}
+
+function getErrorMessage(e: unknown): string {
+    if (e instanceof Error) {
+        return e.message;
+    }
+    return String(e);
 }

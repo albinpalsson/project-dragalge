@@ -22,6 +22,8 @@ function typeToId(t: ColumnType): number {
             return 2;
         case 'char':
             return 3;
+        case 'uint8':
+            return 4;
     }
 }
 
@@ -37,6 +39,9 @@ function idToType(id: number): ColumnType {
     }
     if (id === 3) {
         return 'char';
+    }
+    if (id === 4) {
+        return 'uint8';
     }
     throw new Error(`Unknown column type id: ${id}`);
 }
@@ -117,6 +122,7 @@ export function decodeBlob(blob: Uint8Array): Map<string, TableStorage> {
                     base = { name: colName, type: 'char', length: byteWidth };
                     break;
                 case 'int32':
+                case 'uint8':
                 case 'boolean':
                 case 'timestamp':
                     base = { name: colName, type };

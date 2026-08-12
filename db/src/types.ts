@@ -1,13 +1,15 @@
-export type ColumnType = 'int32' | 'boolean' | 'timestamp' | 'char';
+export type ColumnType = 'int32' | 'uint8' | 'boolean' | 'timestamp' | 'char';
 
 export type ColumnDefinition =
     | { name: string; type: 'int32'; offset: number }
+    | { name: string; type: 'uint8'; offset: number }
     | { name: string; type: 'boolean'; offset: number }
     | { name: string; type: 'timestamp'; offset: number }
     | { name: string; type: 'char'; length: number; offset: number };
 
 export type ColumnInput =
     | { name: string; type: 'int32' }
+    | { name: string; type: 'uint8' }
     | { name: string; type: 'boolean' }
     | { name: string; type: 'timestamp' }
     | { name: string; type: 'char'; length: number };
