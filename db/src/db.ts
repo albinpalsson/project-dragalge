@@ -76,6 +76,8 @@ export class DB {
     private storage: StoragePlugin | undefined;
     private writeTimer: ReturnType<typeof setTimeout> | null = null;
     private readonly growthFactor: number;
+    // keyed by "tableName.columnName"; invalidated on any write to that table
+    private joinIndexCache = new Map<string, Map<unknown, number[]>>();
 
     constructor(storage?: StoragePlugin, options?: DBOptions) {
         this.storage = storage;
@@ -238,21 +240,26 @@ export class DB {
         const rightCount = rightTable.view.getUint32(0, true);
         const leftJoinCol = this.getColumn(leftTable, join.leftCol);
         const rightJoinCol = this.getColumn(rightTable, join.rightCol);
-        const rightIndexByKey = new Map<unknown, number[]>();
-        for (let j = 0; j < rightCount; j++) {
-            const rightSlotOffset =
-                HEADER_BYTES + j * rightTable.schema.rowSize;
-            const key = decodeValue(
-                rightTable.view,
-                rightSlotOffset + rightJoinCol.offset,
-                rightJoinCol,
-            );
-            const bucket = rightIndexByKey.get(key);
-            if (bucket) {
-                bucket.push(j);
-            } else {
-                rightIndexByKey.set(key, [j]);
+        const cacheKey = `${rightTable.name}.${join.rightCol}`;
+        let rightIndexByKey = this.joinIndexCache.get(cacheKey);
+        if (!rightIndexByKey) {
+            rightIndexByKey = new Map<unknown, number[]>();
+            for (let j = 0; j < rightCount; j++) {
+                const rightSlotOffset =
+                    HEADER_BYTES + j * rightTable.schema.rowSize;
+                const key = decodeValue(
+                    rightTable.view,
+                    rightSlotOffset + rightJoinCol.offset,
+                    rightJoinCol,
+                );
+                const bucket = rightIndexByKey.get(key);
+                if (bucket) {
+                    bucket.push(j);
+                } else {
+                    rightIndexByKey.set(key, [j]);
+                }
             }
+            this.joinIndexCache.set(cacheKey, rightIndexByKey);
         }
 
         const result: Record<string, unknown>[] = [];
@@ -310,6 +317,7 @@ export class DB {
                 }
             }
         }
+        this.invalidateTableIndexes(table.name);
     }
 
     private executeDelete(
@@ -331,6 +339,7 @@ export class DB {
                 i++;
             }
         }
+        this.invalidateTableIndexes(table.name);
     }
 
     private matchesWhere(
@@ -376,6 +385,15 @@ export class DB {
         return true;
     }
 
+    private invalidateTableIndexes(name: string): void {
+        const prefix = `${name}.`;
+        for (const key of this.joinIndexCache.keys()) {
+            if (key.startsWith(prefix)) {
+                this.joinIndexCache.delete(key);
+            }
+        }
+    }
+
     private insertRow(
         table: TableStorage,
         values: Record<string, unknown>,
@@ -387,6 +405,7 @@ export class DB {
         }
         encodeRow(table, rowCount, values);
         table.view.setUint32(0, rowCount + 1, true);
+        this.invalidateTableIndexes(table.name);
     }
 }
 
