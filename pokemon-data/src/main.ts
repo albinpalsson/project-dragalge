@@ -9,7 +9,7 @@ import { fetchBossFightSeeds, fetchLocationSeeds } from './sources/index.ts';
 import { fetchPokemonData } from './fetch/fetch-pokemon-data.ts';
 
 async function main(): Promise<void> {
-    const root = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
+    const root = resolve(dirname(fileURLToPath(import.meta.url)));
     const artifactsDir = resolve(root, 'artifacts');
     const dbPath = resolve(artifactsDir, 'paldea-db.js');
 
