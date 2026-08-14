@@ -1,4 +1,4 @@
-[
+﻿[
     {
         "id": "pokemon-league",
         "name": "Pokemon League (Paldea)",
@@ -1441,7 +1441,7 @@
                         }
                     },
                     {
-                        "pokemon": "Flab??b??",
+                        "pokemon": "Flabébé",
                         "games": ["S", "V"],
                         "terrain": ["overland"],
                         "levels": { "min": 10, "max": 10 },
@@ -3380,13 +3380,13 @@
                         }
                     },
                     {
-                        "pokemon": "Flab??b??",
+                        "pokemon": "Flabébé",
                         "games": ["S", "V"],
                         "terrain": ["overland"],
                         "levels": { "min": 14, "max": 20 },
                         "subArea": "Flower",
                         "groupRate": "50%",
-                        "groupPokemon": "Flab??b??",
+                        "groupPokemon": "Flabébé",
                         "probabilityByTime": {
                             "morning": 60,
                             "day": 60,
@@ -8210,13 +8210,13 @@
                         }
                     },
                     {
-                        "pokemon": "Flab??b?? (Red Flower)",
+                        "pokemon": "Flabébé (Red Flower)",
                         "games": ["S", "V"],
                         "terrain": ["overland"],
                         "levels": { "min": 16, "max": 23 },
                         "subArea": "Flower",
                         "groupRate": "50%",
-                        "groupPokemon": "Flab??b?? Red Flower",
+                        "groupPokemon": "Flabébé Red Flower",
                         "probabilityByTime": {
                             "morning": 0,
                             "day": 0,
@@ -8225,13 +8225,13 @@
                         }
                     },
                     {
-                        "pokemon": "Flab??b?? (Yellow Flower)",
+                        "pokemon": "Flabébé (Yellow Flower)",
                         "games": ["S", "V"],
                         "terrain": ["overland"],
                         "levels": { "min": 16, "max": 23 },
                         "subArea": "Flower",
                         "groupRate": "50%",
-                        "groupPokemon": "Flab??b?? Yellow Flower",
+                        "groupPokemon": "Flabébé Yellow Flower",
                         "probabilityByTime": {
                             "morning": 0,
                             "day": 0,
@@ -8240,13 +8240,13 @@
                         }
                     },
                     {
-                        "pokemon": "Flab??b?? (Orange Flower)",
+                        "pokemon": "Flabébé (Orange Flower)",
                         "games": ["S", "V"],
                         "terrain": ["overland"],
                         "levels": { "min": 16, "max": 23 },
                         "subArea": "Flower",
                         "groupRate": "50%",
-                        "groupPokemon": "Flab??b?? Orange Flower",
+                        "groupPokemon": "Flabébé Orange Flower",
                         "probabilityByTime": {
                             "morning": 0,
                             "day": 0,
@@ -8255,13 +8255,13 @@
                         }
                     },
                     {
-                        "pokemon": "Flab??b?? (Blue Flower)",
+                        "pokemon": "Flabébé (Blue Flower)",
                         "games": ["S", "V"],
                         "terrain": ["overland"],
                         "levels": { "min": 16, "max": 23 },
                         "subArea": "Flower",
                         "groupRate": "50%",
-                        "groupPokemon": "Flab??b?? Blue Flower",
+                        "groupPokemon": "Flabébé Blue Flower",
                         "probabilityByTime": {
                             "morning": 0,
                             "day": 0,
@@ -8270,13 +8270,13 @@
                         }
                     },
                     {
-                        "pokemon": "Flab??b?? (White Flower)",
+                        "pokemon": "Flabébé (White Flower)",
                         "games": ["S", "V"],
                         "terrain": ["overland"],
                         "levels": { "min": 16, "max": 23 },
                         "subArea": "Flower",
                         "groupRate": "50%",
-                        "groupPokemon": "Flab??b?? White Flower",
+                        "groupPokemon": "Flabébé White Flower",
                         "probabilityByTime": {
                             "morning": 0,
                             "day": 0,
@@ -9011,13 +9011,13 @@
                         }
                     },
                     {
-                        "pokemon": "Flab??b?? (Red Flower)",
+                        "pokemon": "Flabébé (Red Flower)",
                         "games": ["S", "V"],
                         "terrain": ["overland"],
                         "levels": { "min": 20, "max": 23 },
                         "subArea": "Flower",
                         "groupRate": "50%",
-                        "groupPokemon": "Flab??b?? Red Flower",
+                        "groupPokemon": "Flabébé Red Flower",
                         "probabilityByTime": {
                             "morning": 0,
                             "day": 0,
@@ -9026,13 +9026,13 @@
                         }
                     },
                     {
-                        "pokemon": "Flab??b?? (Yellow Flower)",
+                        "pokemon": "Flabébé (Yellow Flower)",
                         "games": ["S", "V"],
                         "terrain": ["overland"],
                         "levels": { "min": 20, "max": 23 },
                         "subArea": "Flower",
                         "groupRate": "50%",
-                        "groupPokemon": "Flab??b?? Yellow Flower",
+                        "groupPokemon": "Flabébé Yellow Flower",
                         "probabilityByTime": {
                             "morning": 0,
                             "day": 0,
@@ -9041,13 +9041,13 @@
                         }
                     },
                     {
-                        "pokemon": "Flab??b?? (Orange Flower)",
+                        "pokemon": "Flabébé (Orange Flower)",
                         "games": ["S", "V"],
                         "terrain": ["overland"],
                         "levels": { "min": 20, "max": 23 },
                         "subArea": "Flower",
                         "groupRate": "50%",
-                        "groupPokemon": "Flab??b?? Orange Flower",
+                        "groupPokemon": "Flabébé Orange Flower",
                         "probabilityByTime": {
                             "morning": 0,
                             "day": 0,
@@ -9056,13 +9056,13 @@
                         }
                     },
                     {
-                        "pokemon": "Flab??b?? (Blue Flower)",
+                        "pokemon": "Flabébé (Blue Flower)",
                         "games": ["S", "V"],
                         "terrain": ["overland"],
                         "levels": { "min": 20, "max": 23 },
                         "subArea": "Flower",
                         "groupRate": "50%",
-                        "groupPokemon": "Flab??b?? Blue Flower",
+                        "groupPokemon": "Flabébé Blue Flower",
                         "probabilityByTime": {
                             "morning": 0,
                             "day": 0,
@@ -9071,13 +9071,13 @@
                         }
                     },
                     {
-                        "pokemon": "Flab??b?? (White Flower)",
+                        "pokemon": "Flabébé (White Flower)",
                         "games": ["S", "V"],
                         "terrain": ["overland"],
                         "levels": { "min": 20, "max": 23 },
                         "subArea": "Flower",
                         "groupRate": "50%",
-                        "groupPokemon": "Flab??b?? White Flower",
+                        "groupPokemon": "Flabébé White Flower",
                         "probabilityByTime": {
                             "morning": 0,
                             "day": 0,
@@ -17004,7 +17004,7 @@
                         }
                     },
                     {
-                        "pokemon": "Toxtricity (Low\u0026nbsp;Key\u0026nbsp;Form)",
+                        "pokemon": "Toxtricity (Low Key Form)",
                         "games": ["S", "V"],
                         "terrain": ["land"],
                         "levels": { "min": 37, "max": 44 },
@@ -20379,7 +20379,7 @@
                         }
                     },
                     {
-                        "pokemon": "Lycanroc (Midnight\u0026nbsp;Form)",
+                        "pokemon": "Lycanroc (Midnight Form)",
                         "games": ["S", "V"],
                         "terrain": ["land"],
                         "levels": { "min": 34, "max": 37 },
@@ -25378,7 +25378,7 @@
                             "night": 1
                         },
                         "groupRate": "100%",
-                        "groupPokemon": "Flab??b??"
+                        "groupPokemon": "Flabébé"
                     },
                     {
                         "pokemon": "Florges (Yellow Flower)",
@@ -25393,7 +25393,7 @@
                             "night": 1
                         },
                         "groupRate": "100%",
-                        "groupPokemon": "Flab??b??"
+                        "groupPokemon": "Flabébé"
                     },
                     {
                         "pokemon": "Florges (Orange Flower)",
@@ -25408,7 +25408,7 @@
                             "night": 1
                         },
                         "groupRate": "100%",
-                        "groupPokemon": "Flab??b??"
+                        "groupPokemon": "Flabébé"
                     },
                     {
                         "pokemon": "Florges (Blue Flower)",
@@ -25423,7 +25423,7 @@
                             "night": 1
                         },
                         "groupRate": "100%",
-                        "groupPokemon": "Flab??b??"
+                        "groupPokemon": "Flabébé"
                     },
                     {
                         "pokemon": "Florges (White Flower)",
@@ -25438,7 +25438,7 @@
                             "night": 1
                         },
                         "groupRate": "100%",
-                        "groupPokemon": "Flab??b??"
+                        "groupPokemon": "Flabébé"
                     },
                     {
                         "pokemon": "Dedenne",

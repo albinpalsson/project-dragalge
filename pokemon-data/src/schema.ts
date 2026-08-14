@@ -3,14 +3,29 @@ export const SCHEMA_VERSION = '0.1.0-provisional';
 export interface PokemonRow {
     id: number;
     name: string;
-    primary_type: string;
-    secondary_type: string;
+    primary_type_id: number;
+    secondary_type_id: number;
     base_hp: number;
     base_attack: number;
     base_defense: number;
     base_sp_attack: number;
     base_sp_defense: number;
     base_speed: number;
+}
+
+export interface PokemonTypeRow {
+    id: number;
+    name: string;
+}
+
+export interface TerrainTypeRow {
+    id: number;
+    key: string;
+}
+
+export interface SubAreaRow {
+    id: number;
+    name: string;
 }
 
 export interface EvolutionMethodRow {
@@ -52,6 +67,9 @@ export interface BossBattlePokemonRow {
 
 interface StaticPokemonDataDb {
     pokemon: PokemonRow;
+    pokemon_types: PokemonTypeRow;
+    sub_areas: SubAreaRow;
+    terrain_types: TerrainTypeRow;
     evolution_methods: EvolutionMethodRow;
     evolution_transitions: EvolutionTransitionRow;
     locations: LocationRow;
@@ -62,10 +80,10 @@ interface StaticPokemonDataDb {
 
 export interface LocationEncounterRow {
     id: number;
-    sub_area: string;
+    sub_area_id: number;
     pokemon_id: number;
     games: string;
-    terrain: string;
+    terrain_id: number;
     min_level: number;
     max_level: number;
     morning_rate: number;

@@ -1,15 +1,23 @@
-import { mkdir } from 'node:fs/promises';
+import { mkdir, readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createDb } from '@pokedb2/query-builder';
 import { DbClient } from './logging-db-client.ts';
 import type { PokemonDataDb } from './schema.ts';
-import { initializeDb, insertLocationEncounters, buildPokemonIdMap, fetchAllPokemonRows } from './schema-init.ts';
+import {
+    initializeDb,
+    insertLocationEncounters,
+    buildPokemonIdMap,
+    fetchAllPokemonRows,
+    buildSubAreaRows,
+    buildTypeRowsAndPokemonRows,
+    buildTerrainRows,
+} from './schema-init.ts';
 import { fetchBossFightSeeds, fetchLocationSeeds } from './sources/index.ts';
 
 async function main(): Promise<void> {
     const root = resolve(dirname(fileURLToPath(import.meta.url)));
-    const artifactsDir = resolve(root, 'artifacts');
+    const artifactsDir = resolve(root, '..', 'artifacts');
     const dbPath = resolve(artifactsDir, 'paldea-db.js');
 
     await mkdir(artifactsDir, { recursive: true });
@@ -34,8 +42,18 @@ async function main(): Promise<void> {
 
     const pokemonIds = buildPokemonIdMap(locations);
     const pokemonRows = await fetchAllPokemonRows(pokemonIds);
-    await db.insertInto('pokemon').values(pokemonRows).execute();
-    await insertLocationEncounters(db, locations, pokemonIds);
+
+    const { typeRows, mappedPokemonRows } = buildTypeRowsAndPokemonRows(pokemonRows);
+    await db.insertInto('pokemon_types').values(typeRows).execute();
+    await db.insertInto('pokemon').values(mappedPokemonRows).execute();
+
+    const { subAreaRows, subAreaIds } = buildSubAreaRows(locations);
+    await db.insertInto('sub_areas').values(subAreaRows).execute();
+
+    const { terrainRows, terrainIds } = buildTerrainRows(locations);
+    await db.insertInto('terrain_types').values(terrainRows).execute();
+    
+    await insertLocationEncounters(db, locations, pokemonIds, subAreaIds, terrainIds);
 
     // Insert boss identity/order seeds; roster mapping will be web-enriched later.
     const bossRows = bossSeeds.map((boss, index) => ({
@@ -46,8 +64,16 @@ async function main(): Promise<void> {
     await db.insertInto('boss_battles').values(bossRows).execute();
     await client.save();
 
+    const size = (await readFile(dbPath))?.byteLength ?? 0;
+
     process.stdout.write(
-        `Built db with\n ${pokemonRows.length} pokemon,\n ${locationRows.length} locations,\n ${bossRows.length} boss battles\n`,
+        `Built db (${(size/1000).toFixed(2)} KB) with
+  ${pokemonRows.length} pokemon,
+  ${locationRows.length} locations,
+  ${bossRows.length} boss battles,
+  ${subAreaRows.length} sub-areas,
+  ${terrainRows.length} terrain types,
+  ${typeRows.length} types`,
     );
 }
 
