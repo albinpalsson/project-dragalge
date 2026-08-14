@@ -4,9 +4,8 @@ import { fileURLToPath } from 'node:url';
 import { createDb } from '@pokedb2/query-builder';
 import { DbClient } from './logging-db-client.ts';
 import type { PokemonDataDb } from './schema.ts';
-import { initializeDb, insertLocationEncounters, buildPokemonIdMap } from './schema-init.ts';
+import { initializeDb, insertLocationEncounters, buildPokemonIdMap, fetchAllPokemonRows } from './schema-init.ts';
 import { fetchBossFightSeeds, fetchLocationSeeds } from './sources/index.ts';
-import { fetchPokemonData } from './fetch/fetch-pokemon-data.ts';
 
 async function main(): Promise<void> {
     const root = resolve(dirname(fileURLToPath(import.meta.url)));
@@ -34,12 +33,7 @@ async function main(): Promise<void> {
     await db.insertInto('locations').values(locationRows).execute();
 
     const pokemonIds = buildPokemonIdMap(locations);
-    const pokemonRows = await Promise.all(
-        [...pokemonIds.entries()].map(async ([name, id]) => ({
-            id,
-            ...(await fetchPokemonData(name)),
-        }))
-    );
+    const pokemonRows = await fetchAllPokemonRows(pokemonIds);
     await db.insertInto('pokemon').values(pokemonRows).execute();
     await insertLocationEncounters(db, locations, pokemonIds);
 
@@ -53,16 +47,11 @@ async function main(): Promise<void> {
     await client.save();
 
     process.stdout.write(
-        `${JSON.stringify({
-            ok: true,
-            dbPath,
-            locations: locationRows.length,
-            bossBattles: bossRows.length,
-        })}\n`,
+        `Built db with\n ${pokemonRows.length} pokemon,\n ${locationRows.length} locations,\n ${bossRows.length} boss battles\n`,
     );
 }
 
-void main().catch((error) => {
-    process.stderr.write(`${(error as Error).message}\n`);
+void main().catch((err: unknown) => {
+    process.stderr.write(`${err instanceof Error ? err.message : String(err)}\n`);
     process.exitCode = 1;
 });

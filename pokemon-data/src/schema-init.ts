@@ -3,6 +3,7 @@ import type { DB } from '@pokedb2/db';
 import type { Database, DbClient } from '@pokedb2/query-builder';
 import type { PokemonDataDb } from './schema.ts';
 import type { LocationSeed } from './sources/fetch-location-seeds.ts';
+import { fetchPokemonData, type PokemonData } from './fetch/fetch-pokemon-data.ts';
 
 export const PROVISIONAL_SCHEMA_SQL: readonly string[] = [
     'CREATE TABLE pokemon (id INT, name CHAR(64), primary_type CHAR(24), secondary_type CHAR(24), base_hp TINYINT, base_attack TINYINT, base_defense TINYINT, base_sp_attack TINYINT, base_sp_defense TINYINT, base_speed TINYINT)',
@@ -37,6 +38,34 @@ export async function initializeDb(
 
 function createEncounterTableSql(tableName: string): string {
     return `CREATE TABLE ${tableName} (id INT, sub_area CHAR(10), pokemon_id INT, games CHAR(3), terrain CHAR(29), min_level TINYINT, max_level TINYINT, morning_rate TINYINT, day_rate TINYINT, evening_rate TINYINT, night_rate TINYINT)`;
+}
+
+
+export async function fetchAllPokemonRows(
+    pokemonIds: Map<string, number>,
+): Promise<(PokemonData & { id: number })[]> {
+
+    const buildReturnEntry = async ([name, id]: [string, number]) => ({
+        id,
+        ...(await fetchPokemonData(name)),
+    });
+    const promises = await Promise.allSettled([...pokemonIds.entries()].map(buildReturnEntry));
+
+    const result: (PokemonData & { id: number })[] = []
+    let failed = false;
+    for (const r of promises) {
+        if (r.status === 'fulfilled') {
+            result.push(r.value);
+        }
+        if (r.status === 'rejected') {
+            failed = true;
+            process.stderr.write(`${r.reason instanceof Error ? r.reason.message : String(r.reason)}\n`);
+        }
+    }
+    if (failed) {
+        throw new Error(`Some pokemon failed to fetch/parse`);
+    }
+    return result;
 }
 
 export function buildLocationIdMap(

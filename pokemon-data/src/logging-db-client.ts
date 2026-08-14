@@ -19,7 +19,6 @@ export class DbClient extends DB {
 
     execute(sql: string, parameters: readonly unknown[]) {
         const result = super.execute(sql, parameters);
-        console.log(sql.length > 80 ? sql.slice(0, 80) + '...' : sql);
         this.logger.append(sql, parameters);
         return result;
     }
