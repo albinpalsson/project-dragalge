@@ -7,9 +7,10 @@ import type { PokemonDataDb } from './schema.ts';
 import {
     initializeDb,
     insertLocationEncounters,
-    buildPokemonIdMap,
+    buildPokemonNameMap,
     fetchAllPokemonRows,
     buildSubAreaRows,
+    buildEvolutionRows,
     buildTypeRowsAndPokemonRows,
     buildTerrainRows,
 } from './schema-init.ts';
@@ -40,12 +41,16 @@ async function main(): Promise<void> {
     }));
     await db.insertInto('locations').values(locationRows).execute();
 
-    const pokemonIds = buildPokemonIdMap(locations);
+    const pokemonIds = buildPokemonNameMap(locations);
     const pokemonRows = await fetchAllPokemonRows(pokemonIds);
 
     const { typeRows, mappedPokemonRows } = buildTypeRowsAndPokemonRows(pokemonRows);
     await db.insertInto('pokemon_types').values(typeRows).execute();
     await db.insertInto('pokemon').values(mappedPokemonRows).execute();
+
+    const { evolutionMethodRows, evolutionTransitionRows } = buildEvolutionRows(pokemonRows, pokemonIds);
+    await db.insertInto('evolution_methods').values(evolutionMethodRows).execute();
+    await db.insertInto('evolution_transitions').values(evolutionTransitionRows).execute();
 
     const { subAreaRows, subAreaIds } = buildSubAreaRows(locations);
     await db.insertInto('sub_areas').values(subAreaRows).execute();
@@ -69,6 +74,7 @@ async function main(): Promise<void> {
     process.stdout.write(
         `Built db (${(size/1000).toFixed(2)} KB) with
   ${pokemonRows.length} pokemon,
+  ${evolutionMethodRows.length} evolution methods,
   ${locationRows.length} locations,
   ${bossRows.length} boss battles,
   ${subAreaRows.length} sub-areas,

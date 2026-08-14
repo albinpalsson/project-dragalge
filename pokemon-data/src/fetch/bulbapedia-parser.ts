@@ -7,6 +7,12 @@ export interface BaseStats {
     base_speed: number;
 }
 
+export interface EvolutionEdge {
+    from: string;
+    to: string;
+    method: string;
+}
+
 // Encounter names that don't map directly to a Bulbapedia page name
 const POKEMON_PAGE_NAME: Record<string, string> = {
     'Deerling Autumn Form': 'Deerling',
@@ -68,6 +74,144 @@ function extractTemplate(wikitext: string, templateName: string): string | null 
     const start = wikitext.search(new RegExp(`\\{\\{\\s*${templateName}`, 'i'));
     return start === -1 ? null : extractTemplateAtPosition(wikitext, start);
 }
+
+    function extractTemplates(wikitext: string, templatePattern: RegExp): string[] {
+        const results: string[] = [];
+        let from = 0;
+        while (from < wikitext.length) {
+            const rel = wikitext.slice(from).search(templatePattern);
+            if (rel === -1) {
+                break;
+            }
+            const start = from + rel;
+            const block = extractTemplateAtPosition(wikitext, start);
+            if (block) {
+                results.push(block);
+                from = start + block.length;
+                continue;
+            }
+            from = start + 2;
+        }
+        return results;
+    }
+
+    function parseTemplateParameters(block: string): Record<string, string> {
+        const params: Record<string, string> = {};
+        const lines = block.slice(2, -2).split(/\r?\n/);
+        for (const line of lines) {
+            const trimmed = line.trim();
+            if (!trimmed.startsWith('|')) {
+                continue;
+            }
+            const equalsIndex = trimmed.indexOf('=');
+            if (equalsIndex === -1) {
+                continue;
+            }
+            const key = trimmed.slice(1, equalsIndex).trim().toLowerCase();
+            params[key] = trimmed.slice(equalsIndex + 1).trim();
+        }
+        return params;
+    }
+
+    function stripWikiMarkup(value: string): string {
+        let text = value.replace(/<br\s*\/?\s*>/gi, ' + ');
+        text = text.replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, '$2');
+        text = text.replace(/\[\[([^\]]+)\]\]/g, '$1');
+        text = text.replace(/\{\{\s*Bag\/s\|([^|}]+)(?:\|[^}]*)?\}\}/gi, '$1');
+        text = text.replace(/\{\{\s*color2\|[^|}]+\|[^|}]+\|([^|}]+)\}\}/gi, '$1');
+        text = text.replace(/\{\{\s*p\|([^}]+)\}\}/gi, '$1');
+        text = text.replace(/\{\{\s*([^|}]+)\|([^}]+)\}\}/g, '$2');
+        text = text.replace(/<[^>]+>/g, ' ');
+        text = text.replace(/\b(?:link|t|t1|t2|s|v|gen|form)=/gi, '');
+        text = text.replace(/\b\d+px\|/gi, '');
+        text = text.replace(/\b\d+\|/g, '');
+        text = text.replace(/\|/g, ' ');
+        text = text.replace(/\s+/g, ' ').trim();
+        return text;
+    }
+
+    function extractConditionSentence(raw: string): string {
+        const conditionPattern = /(level|friendship|holding|knowing|during|night|day|time|outside|steps|trade|male|female|bag|evolve)/i;
+        const lines = raw
+            .replace(/<br\s*\/?\s*>/gi, '\n')
+            .split(/\r?\n/)
+            .map((line) => stripWikiMarkup(line).trim())
+            .filter((line) => line.length > 0)
+            .filter((line) => conditionPattern.test(line));
+
+        const sentence = lines.join(' ').replace(/\s+/g, ' ').trim();
+        return sentence;
+    }
+
+    function parseEvolutionMethod(value: string): string {
+        const raw = value.trim();
+        const cleaned = stripWikiMarkup(raw).trim();
+        const lower = cleaned.toLowerCase();
+
+        const levelMatch = /\blevel\s*(\d+)\b/i.exec(cleaned);
+        if (lower.includes('rare candy') && levelMatch) {
+            return `level ${levelMatch[1]}`;
+        }
+
+        const stoneMatch = /\b([a-z]+)\s+stone\b/i.exec(cleaned);
+        if (stoneMatch) {
+            return `${stoneMatch[1].toLowerCase()} stone`;
+        }
+
+        const sentence = extractConditionSentence(raw);
+        return sentence.length > 0 ? sentence : 'unknown';
+    }
+
+    function cleanEvolutionPokemonName(value: string): string {
+        return stripWikiMarkup(value).split('|', 1)[0].trim();
+    }
+
+    function parseEvoboxTemplate(block: string): EvolutionEdge[] {
+        const params = parseTemplateParameters(block);
+        const stageIndexes = new Set<number>();
+        for (const key of Object.keys(params)) {
+            const match = /^(?:name|evo)(\d+)$/i.exec(key);
+            if (match) {
+                stageIndexes.add(parseInt(match[1], 10));
+            }
+        }
+
+        const maxStage = Math.max(...stageIndexes, 0);
+        const edges: EvolutionEdge[] = [];
+        for (let index = 1; index < maxStage; index += 1) {
+            const from = cleanEvolutionPokemonName(params[`name${index}`] ?? '');
+            const to = cleanEvolutionPokemonName(params[`name${index + 1}`] ?? '');
+            const method = params[`evo${index}`]?.trim();
+            if (!from || !to || !method) {
+                continue;
+            }
+            edges.push({ from, to, method: parseEvolutionMethod(method) });
+        }
+
+        return edges;
+    }
+
+    function parseNarrativeEvolutionEdges(wikitext: string): EvolutionEdge[] {
+        const matches = wikitext.matchAll(/([A-Za-z0-9'()\- ]+?)\s+evolves\s+into\s+\{\{p\|([^}]+)\}\}/gi);
+        const edges: EvolutionEdge[] = [];
+        for (const match of matches) {
+            const from = cleanEvolutionPokemonName(match[1]);
+            const to = cleanEvolutionPokemonName(match[2]);
+            if (from.length === 0 || to.length === 0) {
+                continue;
+            }
+            edges.push({ from, to, method: 'unknown' });
+        }
+        return edges;
+    }
+
+    export function parseEvolutionEdges(wikitext: string): EvolutionEdge[] {
+        const templateEdges = extractTemplates(wikitext, /\{\{\s*Evobox-\d+/i).flatMap(parseEvoboxTemplate);
+        if (templateEdges.length > 0) {
+            return templateEdges;
+        }
+        return parseNarrativeEvolutionEdges(wikitext);
+    }
 
 function collectStatsBlocks(wikitext: string): { block: string; start: number }[] {
     const results: { block: string; start: number }[] = [];

@@ -10,7 +10,7 @@ export const PROVISIONAL_SCHEMA_SQL: readonly string[] = [
     'CREATE TABLE pokemon_types (id TINYINT, name CHAR(12))',
     'CREATE TABLE sub_areas (id TINYINT, name CHAR(16))',
     'CREATE TABLE terrain_types (id TINYINT, key CHAR(29))',
-    'CREATE TABLE evolution_methods (id TINYINT, description CHAR(64))',
+    'CREATE TABLE evolution_methods (id TINYINT, description CHAR(95))',
     'CREATE TABLE evolution_transitions (from_pokemon_id INT, to_pokemon_id INT, method_id TINYINT)',
     'CREATE TABLE locations (id CHAR(32), name CHAR(27), region CHAR(6), province CHAR(14))',
     'CREATE TABLE abilities (id TINYINT, name CHAR(24), description CHAR(160))',
@@ -64,7 +64,7 @@ function canonicalGameValue(values: readonly string[]): 's' | 'v' | 'sv' {
     throw new Error(`Unexpected games value: ${values.join(',')}`);
 }
 
-export interface PokemonRowWithTypeIds extends Omit<PokemonData, 'primary_type' | 'secondary_type'> {
+export interface PokemonRowWithTypeIds extends Omit<PokemonData, 'primary_type' | 'secondary_type' | 'evolution_edges'> {
     id: number;
     primary_type_id: number;
     secondary_type_id: number;
@@ -144,6 +144,52 @@ export function buildSubAreaRows(
     return { subAreaRows, subAreaIds };
 }
 
+export function buildEvolutionRows(
+    pokemonRows: readonly (PokemonData & { id: number })[],
+    pokemonIds: Map<string, number>,
+): {
+    evolutionMethodRows: { id: number; description: string }[];
+    evolutionTransitionRows: { from_pokemon_id: number; to_pokemon_id: number; method_id: number }[];
+} {
+    const methodIds = new Map<string, number>();
+    const evolutionMethodRows: { id: number; description: string }[] = [];
+    const evolutionTransitionRows: { from_pokemon_id: number; to_pokemon_id: number; method_id: number }[] = [];
+
+    for (const row of pokemonRows) {
+        const fromPokemonId = pokemonIds.get(row.name);
+        if (fromPokemonId === undefined) {
+            continue;
+        }
+
+        for (const edge of row.evolution_edges) {
+            const toPokemonId = pokemonIds.get(edge.to);
+            if (toPokemonId === undefined) {
+                continue;
+            }
+
+            const description = edge.method.trim();
+            if (description.length === 0) {
+                continue;
+            }
+
+            const methodKey = description.toLowerCase();
+            let methodId = methodIds.get(methodKey);
+            if (methodId === undefined) {
+                methodId = evolutionMethodRows.length + 1;
+                methodIds.set(methodKey, methodId);
+                evolutionMethodRows.push({ id: methodId, description });
+            }
+
+            evolutionTransitionRows.push({
+                from_pokemon_id: fromPokemonId,
+                to_pokemon_id: toPokemonId,
+                method_id: methodId,
+            });
+        }
+    }
+    return { evolutionMethodRows, evolutionTransitionRows };
+}
+
 
 export async function fetchAllPokemonRows(
     pokemonIds: Map<string, number>,
@@ -182,7 +228,7 @@ export function buildLocationIdMap(
     return ids;
 }
 
-export function buildPokemonIdMap(
+export function buildPokemonNameMap(
     locations: readonly LocationSeed[],
 ): Map<string, number> {
     const ids = new Map<string, number>();
@@ -191,6 +237,18 @@ export function buildPokemonIdMap(
             if (!ids.has(encounter.pokemonName)) {
                 ids.set(encounter.pokemonName, ids.size + 1);
             }
+        }
+    }
+    return ids;
+}
+
+export function buildPokemonIdMap(
+    pokemonRows: readonly { name: string }[],
+): Map<string, number> {
+    const ids = new Map<string, number>();
+    for (const row of pokemonRows) {
+        if (!ids.has(row.name)) {
+            ids.set(row.name, ids.size + 1);
         }
     }
     return ids;

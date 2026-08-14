@@ -1,5 +1,5 @@
 import { cachedFetcher } from './cached-fetcher.ts';
-import { buildWikitextUrl, parseBaseStats, parseTypes } from './bulbapedia-parser.ts';
+import { buildWikitextUrl, parseBaseStats, parseEvolutionEdges, parseTypes, type EvolutionEdge } from './bulbapedia-parser.ts';
 import { POKEMON_CACHE } from './pokemon-cache.ts';
 
 export interface PokemonData {
@@ -12,15 +12,10 @@ export interface PokemonData {
     base_sp_attack: number;
     base_sp_defense: number;
     base_speed: number;
+    evolution_edges: EvolutionEdge[];
 }
 
 export async function fetchPokemonData(name: string): Promise<PokemonData> {
-
-    const stats = POKEMON_CACHE[name];
-    if (stats) {
-        return {name, ...stats};
-    }
-
     const json = await cachedFetcher.get(buildWikitextUrl(name));
     const parsed = JSON.parse(json) as { parse?: { wikitext: { '*': string } } };
     if (!parsed.parse) {
@@ -28,16 +23,17 @@ export async function fetchPokemonData(name: string): Promise<PokemonData> {
     }
 
     const wikitext = parsed.parse.wikitext['*'];
-    const baseStats = parseBaseStats(wikitext, name);
+    const cached = POKEMON_CACHE[name];
+    const baseStats = cached ?? parseBaseStats(wikitext, name);
 
     if (!baseStats) {
         throw new Error(`[${name}] Failed to parse base stats from Bulbapedia wikitext`);
     }
 
-    const types = parseTypes(wikitext);
+    const types = cached ?? parseTypes(wikitext);
     if (!types.primary_type) {
         throw new Error(`[${name}] Failed to parse types from Bulbapedia wikitext`);
     }
 
-    return {name, ...baseStats, ...types};
+    return { name, ...baseStats, ...types, evolution_edges: parseEvolutionEdges(wikitext) };
 }
