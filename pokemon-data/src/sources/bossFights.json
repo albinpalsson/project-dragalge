@@ -1,11 +1,36 @@
-[
+﻿[
     {
-        "id": "nemona-1",
-        "name": "Nemona (First Battle)",
+        "id": "nemona-1-sprigatito",
+        "name": "Nemona (First Battle - Sprigatito)",
         "type": "rival",
         "levelCap": 9,
         "order": 1,
-        "location": "South Province (Area One)"
+        "location": "South Province (Area One)",
+        "bulbapediaPage": "Nemona",
+        "battleSection": "First battle",
+        "starterVariant": "sprigatito"
+    },
+    {
+        "id": "nemona-1-fuecoco",
+        "name": "Nemona (First Battle - Fuecoco)",
+        "type": "rival",
+        "levelCap": 9,
+        "order": 1,
+        "location": "South Province (Area One)",
+        "bulbapediaPage": "Nemona",
+        "battleSection": "First battle",
+        "starterVariant": "fuecoco"
+    },
+    {
+        "id": "nemona-1-quaxly",
+        "name": "Nemona (First Battle - Quaxly)",
+        "type": "rival",
+        "levelCap": 9,
+        "order": 1,
+        "location": "South Province (Area One)",
+        "bulbapediaPage": "Nemona",
+        "battleSection": "First battle",
+        "starterVariant": "quaxly"
     },
     {
         "id": "katy",
@@ -13,7 +38,10 @@
         "type": "gym",
         "levelCap": 15,
         "order": 2,
-        "location": "Cortondo"
+        "location": "Cortondo",
+        "bulbapediaPage": "Katy",
+        "battleSection": "Gym battle",
+        "starterVariant": null
     },
     {
         "id": "brassius",
@@ -21,7 +49,10 @@
         "type": "gym",
         "levelCap": 17,
         "order": 4,
-        "location": "Artazon"
+        "location": "Artazon",
+        "bulbapediaPage": "Brassius",
+        "battleSection": "Gym battle",
+        "starterVariant": null
     },
     {
         "id": "klawf-titan",
@@ -29,7 +60,10 @@
         "type": "titan",
         "levelCap": 16,
         "order": 3,
-        "location": "South Province (Area Three)"
+        "location": "South Province (Area Three)",
+        "bulbapediaPage": "Titan Pok\u00e9mon",
+        "battleSection": "The Stony Cliff Titan",
+        "starterVariant": null
     },
     {
         "id": "giacomo",
@@ -37,7 +71,10 @@
         "type": "starfall",
         "levelCap": 21,
         "order": 6,
-        "location": "West Province (Area One)"
+        "location": "West Province (Area One)",
+        "bulbapediaPage": "Giacomo",
+        "battleSection": "First battle",
+        "starterVariant": null
     },
     {
         "id": "iono",
@@ -45,7 +82,10 @@
         "type": "gym",
         "levelCap": 24,
         "order": 7,
-        "location": "Levincia"
+        "location": "Levincia",
+        "bulbapediaPage": "Iono",
+        "battleSection": "Gym battle",
+        "starterVariant": null
     },
     {
         "id": "bombirdier-titan",
@@ -53,7 +93,10 @@
         "type": "titan",
         "levelCap": 20,
         "order": 5,
-        "location": "West Province (Area One)"
+        "location": "West Province (Area One)",
+        "bulbapediaPage": "Titan Pok\u00e9mon",
+        "battleSection": "The Open Sky Titan",
+        "starterVariant": null
     },
     {
         "id": "mela",
@@ -61,7 +104,10 @@
         "type": "starfall",
         "levelCap": 27,
         "order": 8,
-        "location": "East Province (Area One)"
+        "location": "East Province (Area One)",
+        "bulbapediaPage": "Mela",
+        "battleSection": "First battle",
+        "starterVariant": null
     },
     {
         "id": "kofu",
@@ -69,7 +115,10 @@
         "type": "gym",
         "levelCap": 30,
         "order": 9,
-        "location": "Cascarrafa"
+        "location": "Cascarrafa",
+        "bulbapediaPage": "Kofu",
+        "battleSection": "Gym battle",
+        "starterVariant": null
     },
     {
         "id": "orthworm-titan",
@@ -77,7 +126,10 @@
         "type": "titan",
         "levelCap": 29,
         "order": 10,
-        "location": "East Province (Area Three)"
+        "location": "East Province (Area Three)",
+        "bulbapediaPage": "Titan Pok\u00e9mon",
+        "battleSection": "The Lurking Steel Titan",
+        "starterVariant": null
     },
     {
         "id": "atticus",
@@ -85,7 +137,10 @@
         "type": "starfall",
         "levelCap": 33,
         "order": 11,
-        "location": "Tagtree Thicket"
+        "location": "Tagtree Thicket",
+        "bulbapediaPage": "Atticus",
+        "battleSection": "First battle",
+        "starterVariant": null
     },
     {
         "id": "larry",
@@ -93,7 +148,10 @@
         "type": "gym",
         "levelCap": 36,
         "order": 12,
-        "location": "Medali"
+        "location": "Medali",
+        "bulbapediaPage": "Larry",
+        "battleSection": "Gym battle",
+        "starterVariant": null
     },
     {
         "id": "great-tusk-titan",
@@ -101,7 +159,10 @@
         "type": "titan",
         "levelCap": 45,
         "order": 14,
-        "location": "Asado Desert"
+        "location": "Asado Desert",
+        "bulbapediaPage": "Titan Pok\u00e9mon",
+        "battleSection": "The Quaking Earth Titan",
+        "starterVariant": null
     },
     {
         "id": "ortega",
@@ -109,7 +170,10 @@
         "type": "starfall",
         "levelCap": 50,
         "order": 17,
-        "location": "North Province (Area One)"
+        "location": "North Province (Area One)",
+        "bulbapediaPage": "Ortega",
+        "battleSection": "First battle",
+        "starterVariant": null
     },
     {
         "id": "ryme",
@@ -117,7 +181,10 @@
         "type": "gym",
         "levelCap": 42,
         "order": 13,
-        "location": "Montenevera"
+        "location": "Montenevera",
+        "bulbapediaPage": "Ryme",
+        "battleSection": "Gym battle",
+        "starterVariant": null
     },
     {
         "id": "tulip",
@@ -125,7 +192,10 @@
         "type": "gym",
         "levelCap": 45,
         "order": 15,
-        "location": "Alfornada"
+        "location": "Alfornada",
+        "bulbapediaPage": "Tulip",
+        "battleSection": "Gym battle",
+        "starterVariant": null
     },
     {
         "id": "eri",
@@ -133,7 +203,10 @@
         "type": "starfall",
         "levelCap": 56,
         "order": 18,
-        "location": "North Province (Area Three)"
+        "location": "North Province (Area Three)",
+        "bulbapediaPage": "Eri",
+        "battleSection": "First battle",
+        "starterVariant": null
     },
     {
         "id": "grusha",
@@ -141,7 +214,10 @@
         "type": "gym",
         "levelCap": 48,
         "order": 16,
-        "location": "Glaseado Mountain"
+        "location": "Glaseado Mountain",
+        "bulbapediaPage": "Grusha",
+        "battleSection": "Gym battle",
+        "starterVariant": null
     },
     {
         "id": "dondozo-titan",
@@ -149,7 +225,10 @@
         "type": "titan",
         "levelCap": 56,
         "order": 19,
-        "location": "Casseroya Lake"
+        "location": "Casseroya Lake",
+        "bulbapediaPage": "Titan Pok\u00e9mon",
+        "battleSection": "The False Dragon Titan",
+        "starterVariant": null
     },
     {
         "id": "elite-four-rika",
@@ -157,7 +236,10 @@
         "type": "elite4",
         "levelCap": 58,
         "order": 20,
-        "location": "Pokémon League"
+        "location": "Pok\u00e9mon League",
+        "bulbapediaPage": "Rika",
+        "battleSection": "Champion Assessment",
+        "starterVariant": null
     },
     {
         "id": "elite-four-poppy",
@@ -165,7 +247,10 @@
         "type": "elite4",
         "levelCap": 59,
         "order": 21,
-        "location": "Pokémon League"
+        "location": "Pok\u00e9mon League",
+        "bulbapediaPage": "Poppy",
+        "battleSection": "Champion Assessment",
+        "starterVariant": null
     },
     {
         "id": "elite-four-larry",
@@ -173,7 +258,10 @@
         "type": "elite4",
         "levelCap": 60,
         "order": 22,
-        "location": "Pokémon League"
+        "location": "Pok\u00e9mon League",
+        "bulbapediaPage": "Larry",
+        "battleSection": "Champion Assessment",
+        "starterVariant": null
     },
     {
         "id": "elite-four-hassel",
@@ -181,7 +269,10 @@
         "type": "elite4",
         "levelCap": 61,
         "order": 23,
-        "location": "Pokémon League"
+        "location": "Pok\u00e9mon League",
+        "bulbapediaPage": "Hassel",
+        "battleSection": "Champion Assessment",
+        "starterVariant": null
     },
     {
         "id": "geeta",
@@ -189,14 +280,42 @@
         "type": "elite4",
         "levelCap": 62,
         "order": 24,
-        "location": "Pokémon League"
+        "location": "Pok\u00e9mon League",
+        "bulbapediaPage": "Geeta",
+        "battleSection": "Paldea battles",
+        "starterVariant": null
     },
     {
-        "id": "nemona-final",
-        "name": "Nemona (Final Battle)",
+        "id": "nemona-final-sprigatito",
+        "name": "Nemona (Final Battle - Sprigatito)",
         "type": "rival",
         "levelCap": 66,
         "order": 25,
-        "location": "Mesagoza"
+        "location": "Mesagoza",
+        "bulbapediaPage": "Nemona",
+        "battleSection": "Sixth battle",
+        "starterVariant": "sprigatito"
+    },
+    {
+        "id": "nemona-final-fuecoco",
+        "name": "Nemona (Final Battle - Fuecoco)",
+        "type": "rival",
+        "levelCap": 66,
+        "order": 25,
+        "location": "Mesagoza",
+        "bulbapediaPage": "Nemona",
+        "battleSection": "Sixth battle",
+        "starterVariant": "fuecoco"
+    },
+    {
+        "id": "nemona-final-quaxly",
+        "name": "Nemona (Final Battle - Quaxly)",
+        "type": "rival",
+        "levelCap": 66,
+        "order": 25,
+        "location": "Mesagoza",
+        "bulbapediaPage": "Nemona",
+        "battleSection": "Sixth battle",
+        "starterVariant": "quaxly"
     }
 ]

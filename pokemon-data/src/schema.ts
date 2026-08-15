@@ -60,9 +60,27 @@ export interface BossBattleRow {
 
 export interface BossBattlePokemonRow {
     boss_battle_id: number;
+    slot: number;
     pokemon_id: number;
     level: number;
     ability_id: number;
+}
+
+export interface MoveRow {
+    id: number;
+    name: string;
+    type_id: number;
+    category: string;
+    power: number;
+    accuracy: number;
+    effect: string;
+}
+
+export interface BossBattlePokemonMoveRow {
+    boss_battle_id: number;
+    pokemon_slot: number;
+    move_slot: number;
+    move_id: number;
 }
 
 interface StaticPokemonDataDb {
@@ -76,6 +94,8 @@ interface StaticPokemonDataDb {
     abilities: AbilityRow;
     boss_battles: BossBattleRow;
     boss_battle_pokemon: BossBattlePokemonRow;
+    moves: MoveRow;
+    boss_battle_pokemon_moves: BossBattlePokemonMoveRow;
 }
 
 export interface LocationEncounterRow {

@@ -1,9 +1,15 @@
 import { rm } from 'node:fs/promises';
 import type { DB } from '@pokedb2/db';
 import type { Database, DbClient } from '@pokedb2/query-builder';
-import type { PokemonDataDb } from './schema.ts';
+import type { PokemonDataDb, AbilityRow, BossBattlePokemonRow, BossBattlePokemonMoveRow, MoveRow } from './schema.ts';
 import type { LocationSeed } from './sources/fetch-location-seeds.ts';
+import type { BossFightSeed } from './sources/fetch-boss-fight-seeds.ts';
 import { fetchPokemonData, type PokemonData } from './fetch/fetch-pokemon-data.ts';
+import { fetchTrainerParty, type TrainerPartyEntry } from './fetch/fetch-trainer-party.ts';
+import { fetchMoveData } from './fetch/fetch-move-data.ts';
+import { fetchAbilityData } from './fetch/fetch-ability-data.ts';
+
+const ABILITY_DESCRIPTION_MAX_LENGTH = 131;
 
 export const PROVISIONAL_SCHEMA_SQL: readonly string[] = [
     'CREATE TABLE pokemon (id INT, name CHAR(32), primary_type_id TINYINT, secondary_type_id TINYINT, base_hp TINYINT, base_attack TINYINT, base_defense TINYINT, base_sp_attack TINYINT, base_sp_defense TINYINT, base_speed TINYINT)',
@@ -13,9 +19,11 @@ export const PROVISIONAL_SCHEMA_SQL: readonly string[] = [
     'CREATE TABLE evolution_methods (id TINYINT, description CHAR(95))',
     'CREATE TABLE evolution_transitions (from_pokemon_id INT, to_pokemon_id INT, method_id TINYINT)',
     'CREATE TABLE locations (id CHAR(32), name CHAR(27), region CHAR(6), province CHAR(14))',
-    'CREATE TABLE abilities (id TINYINT, name CHAR(24), description CHAR(160))',
+    `CREATE TABLE abilities (id TINYINT, name CHAR(24), description CHAR(${ABILITY_DESCRIPTION_MAX_LENGTH}))`,
     'CREATE TABLE boss_battles (id TINYINT, name CHAR(44), battle_type CHAR(8))',
-    'CREATE TABLE boss_battle_pokemon (boss_battle_id TINYINT, pokemon_id INT, level TINYINT, ability_id TINYINT),'
+    'CREATE TABLE boss_battle_pokemon (boss_battle_id TINYINT, slot TINYINT, pokemon_id INT, level TINYINT, ability_id TINYINT)',
+    'CREATE TABLE moves (id INT, name CHAR(32), type_id TINYINT, category CHAR(8), power TINYINT, accuracy TINYINT, effect CHAR(154))',
+    'CREATE TABLE boss_battle_pokemon_moves (boss_battle_id TINYINT, pokemon_slot TINYINT, move_slot TINYINT, move_id INT)',
 ];
 
 export function applyProvisionalSchema(db: DB): void {
@@ -230,12 +238,20 @@ export function buildLocationIdMap(
 
 export function buildPokemonNameMap(
     locations: readonly LocationSeed[],
+    rosters: readonly RawBossRoster[],
 ): Map<string, number> {
     const ids = new Map<string, number>();
     for (const location of locations) {
         for (const encounter of location.encounters) {
             if (!ids.has(encounter.pokemonName)) {
                 ids.set(encounter.pokemonName, ids.size + 1);
+            }
+        }
+    }
+    for (const roster of rosters) {
+        for (const entry of roster.party) {
+            if (!ids.has(entry.pokemon)) {
+                ids.set(entry.pokemon, ids.size + 1);
             }
         }
     }
@@ -282,4 +298,184 @@ export async function insertLocationEncounters(
 
         await db.insertInto(location.slug).values(rows).execute();
     }
+}
+
+export interface RawBossRoster {
+    bossIndex: number;
+    party: TrainerPartyEntry[];
+}
+
+export async function fetchAllBossRosters(
+    bossSeeds: readonly BossFightSeed[],
+): Promise<RawBossRoster[]> {
+    process.stdout.write(`Fetching boss rosters (${bossSeeds.length} fights)...\n`);
+    const results = await Promise.allSettled(
+        bossSeeds.map(async (seed, index) => {
+            const party = await fetchTrainerParty(seed);
+            process.stdout.write(`  roster: ${seed.name} → ${party.length} Pokémon\n`);
+            return { bossIndex: index, party };
+        }),
+    );
+    const rosters: RawBossRoster[] = [];
+    let failed = false;
+    for (const r of results) {
+        if (r.status === 'fulfilled') {
+            rosters.push(r.value);
+        } else {
+            failed = true;
+            process.stderr.write(`${r.reason instanceof Error ? r.reason.message : String(r.reason)}\n`);
+        }
+    }
+    if (failed) throw new Error('Some boss rosters failed to fetch/parse');
+    process.stdout.write(`  → ${rosters.length} rosters loaded\n`);
+    return rosters;
+}
+
+function truncateUtf8(value: string, maxBytes: number): string {
+    const encoder = new TextEncoder();
+    if (encoder.encode(value).length <= maxBytes) {
+        return value;
+    }
+    let result = '';
+    for (const char of value) {
+        const next = result + char;
+        if (encoder.encode(next).length > maxBytes) {
+            break;
+        }
+        result = next;
+    }
+    return result;
+}
+
+export async function buildAbilityRows(
+    abilityNames: ReadonlySet<string>,
+): Promise<{ abilityRows: AbilityRow[]; abilityIds: Map<string, number> }> {
+    const uniqueNames = [...abilityNames];
+    process.stdout.write(`Fetching ability data (${uniqueNames.length} unique abilities)...\n`);
+    const results = await Promise.allSettled(
+        uniqueNames.map(async (name) => {
+            const data = await fetchAbilityData(name);
+            process.stdout.write(`  ability: ${name}\n`);
+            return { name, data };
+        }),
+    );
+
+    const abilityIds = new Map<string, number>();
+    const abilityRows: AbilityRow[] = [];
+    let truncatedCount = 0;
+    let failed = false;
+
+    for (const r of results) {
+        if (r.status === 'rejected') {
+            failed = true;
+            process.stderr.write(`${r.reason instanceof Error ? r.reason.message : String(r.reason)}\n`);
+            continue;
+        }
+
+        const { name, data } = r.value;
+        const id = abilityRows.length + 1;
+        abilityIds.set(name, id);
+        const description = truncateUtf8(data.description, ABILITY_DESCRIPTION_MAX_LENGTH);
+        if (description.length < data.description.length) {
+            truncatedCount++;
+        }
+        abilityRows.push({
+            id,
+            name,
+            description,
+        });
+    }
+
+    if (failed) throw new Error('Some abilities failed to fetch/parse');
+
+    process.stdout.write(`  → ${abilityRows.length} abilities loaded (${truncatedCount} truncated @ ${ABILITY_DESCRIPTION_MAX_LENGTH})\n`);
+
+    return { abilityRows, abilityIds };
+}
+
+export function buildBossBattlePokemonRows(
+    rosters: readonly RawBossRoster[],
+    pokemonIds: Map<string, number>,
+    abilityIds: Map<string, number>,
+): BossBattlePokemonRow[] {
+    const rows: BossBattlePokemonRow[] = [];
+    for (const roster of rosters) {
+        const bossId = roster.bossIndex + 1;
+        for (let slot = 0; slot < roster.party.length; slot++) {
+            const entry = roster.party[slot];
+            const pokemonId = pokemonIds.get(entry.pokemon);
+            if (pokemonId === undefined) {
+                throw new Error(`[Boss id=${bossId}] Unknown Pokémon: "${entry.pokemon}"`);
+            }
+            const abilityId = abilityIds.get(entry.ability) ?? 0;
+            rows.push({
+                boss_battle_id: bossId,
+                slot: slot + 1,
+                pokemon_id: pokemonId,
+                level: entry.level,
+                ability_id: abilityId,
+            });
+        }
+    }
+    return rows;
+}
+
+export async function buildMoveRows(
+    allMoveNames: readonly string[],
+    typeIds: Map<string, number>,
+): Promise<{ moveRows: MoveRow[]; moveIds: Map<string, number> }> {
+    const uniqueNames = [...new Set(allMoveNames)];
+    process.stdout.write(`Fetching move data (${uniqueNames.length} unique moves)...\n`);
+    const results = await Promise.allSettled(
+        uniqueNames.map(async (name) => {
+            const data = await fetchMoveData(name);
+            process.stdout.write(`  move: ${name} (${data.type} ${data.category})\n`);
+            return { name, data };
+        }),
+    );
+    const moveRows: MoveRow[] = [];
+    const moveIds = new Map<string, number>();
+    let failed = false;
+    for (const r of results) {
+        if (r.status === 'rejected') {
+            failed = true;
+            process.stderr.write(`${r.reason instanceof Error ? r.reason.message : String(r.reason)}\n`);
+            continue;
+        }
+        const { name, data } = r.value;
+        const id = moveRows.length + 1;
+        const typeId = typeIds.get(data.type) ?? 0;
+        moveIds.set(name, id);
+        moveRows.push({ id, name, type_id: typeId, category: data.category, power: data.power, accuracy: data.accuracy, effect: data.effect });
+    }
+    if (failed) throw new Error('Some moves failed to fetch/parse');
+    process.stdout.write(`  → ${moveRows.length} moves loaded\n`);
+    return { moveRows, moveIds };
+}
+
+export function buildBossBattlePokemonMoveRows(
+    rosters: readonly RawBossRoster[],
+    moveIds: Map<string, number>,
+): BossBattlePokemonMoveRow[] {
+    const rows: BossBattlePokemonMoveRow[] = [];
+    for (const roster of rosters) {
+        const bossId = roster.bossIndex + 1;
+        for (let slot = 0; slot < roster.party.length; slot++) {
+            const entry = roster.party[slot];
+            for (let moveSlot = 0; moveSlot < entry.moves.length; moveSlot++) {
+                const moveName = entry.moves[moveSlot];
+                const moveId = moveIds.get(moveName);
+                if (moveId === undefined) {
+                    throw new Error(`[Boss id=${bossId}, slot ${slot + 1}] Unknown move: "${moveName}"`);
+                }
+                rows.push({
+                    boss_battle_id: bossId,
+                    pokemon_slot: slot + 1,
+                    move_slot: moveSlot + 1,
+                    move_id: moveId,
+                });
+            }
+        }
+    }
+    return rows;
 }

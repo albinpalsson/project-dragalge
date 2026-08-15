@@ -31,6 +31,20 @@ export function buildWikitextUrl(name: string): string {
     return `https://bulbapedia.bulbagarden.net/w/api.php?action=parse&page=${encodeURIComponent(pageName)}&prop=wikitext&format=json`;
 }
 
+export function buildPageWikitextUrl(pageName: string): string {
+    return `https://bulbapedia.bulbagarden.net/w/api.php?action=parse&page=${encodeURIComponent(pageName.replace(/ /g, '_'))}&prop=wikitext&format=json`;
+}
+
+export function buildMoveWikitextUrl(moveName: string): string {
+    const pageName = `${moveName.replace(/ /g, '_')}_(move)`;
+    return `https://bulbapedia.bulbagarden.net/w/api.php?action=parse&page=${encodeURIComponent(pageName)}&prop=wikitext&format=json`;
+}
+
+export function buildAbilityWikitextUrl(abilityName: string): string {
+    const pageName = `${abilityName.replace(/ /g, '_')}_(Ability)`;
+    return `https://bulbapedia.bulbagarden.net/w/api.php?action=parse&page=${encodeURIComponent(pageName)}&prop=wikitext&format=json`;
+}
+
 // Stats block headings matching these patterns are excluded before comparing or returning
 export const STATS_IGNORE_PATTERNS: string[] = [
     '*Mega*',
@@ -56,7 +70,7 @@ function matchesIgnorePattern(heading: string, pattern: string): boolean {
     return regex.test(heading);
 }
 
-function extractTemplateAtPosition(wikitext: string, start: number): string | null {
+export function extractTemplateAtPosition(wikitext: string, start: number): string | null {
     let depth = 0;
     let i = start;
     while (i < wikitext.length) {
@@ -70,12 +84,12 @@ function extractTemplateAtPosition(wikitext: string, start: number): string | nu
 }
 
 // Counts {{ / }} pairs to extract a full template block without cutting at nested braces.
-function extractTemplate(wikitext: string, templateName: string): string | null {
+export function extractTemplate(wikitext: string, templateName: string): string | null {
     const start = wikitext.search(new RegExp(`\\{\\{\\s*${templateName}`, 'i'));
     return start === -1 ? null : extractTemplateAtPosition(wikitext, start);
 }
 
-    function extractTemplates(wikitext: string, templatePattern: RegExp): string[] {
+    export function extractTemplates(wikitext: string, templatePattern: RegExp): string[] {
         const results: string[] = [];
         let from = 0;
         while (from < wikitext.length) {
@@ -95,7 +109,7 @@ function extractTemplate(wikitext: string, templateName: string): string | null 
         return results;
     }
 
-    function parseTemplateParameters(block: string): Record<string, string> {
+    export function parseTemplateParameters(block: string): Record<string, string> {
         const params: Record<string, string> = {};
         const lines = block.slice(2, -2).split(/\r?\n/);
         for (const line of lines) {
@@ -113,7 +127,7 @@ function extractTemplate(wikitext: string, templateName: string): string | null 
         return params;
     }
 
-    function stripWikiMarkup(value: string): string {
+    export function stripWikiMarkup(value: string): string {
         let text = value.replace(/<br\s*\/?\s*>/gi, ' + ');
         text = text.replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, '$2');
         text = text.replace(/\[\[([^\]]+)\]\]/g, '$1');

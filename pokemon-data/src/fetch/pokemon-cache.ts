@@ -33,6 +33,7 @@ export const POKEMON_CACHE: Record<string, CachedPokemonData | undefined> = {
     'Rotom': { primary_type: 'electric', secondary_type: 'ghost', base_hp: 50, base_attack: 50, base_defense: 77, base_sp_attack: 95, base_sp_defense: 77, base_speed: 91 },
 
     // Lycanroc: three forms with genuinely different stats
+    'Lycanroc': { primary_type: 'rock', secondary_type: '', base_hp: 75, base_attack: 115, base_defense: 65, base_sp_attack: 55, base_sp_defense: 65, base_speed: 112 },
     'Lycanroc (Midday Form)': { primary_type: 'rock', secondary_type: '', base_hp: 75, base_attack: 115, base_defense: 65, base_sp_attack: 55, base_sp_defense: 65, base_speed: 112 },
     'Lycanroc (Midnight Form)': { primary_type: 'rock', secondary_type: '', base_hp: 85, base_attack: 115, base_defense: 75, base_sp_attack: 55, base_sp_defense: 75, base_speed: 82 },
     'Lycanroc (Dusk Form)': { primary_type: 'rock', secondary_type: '', base_hp: 75, base_attack: 117, base_defense: 65, base_sp_attack: 55, base_sp_defense: 65, base_speed: 110 },

@@ -13,6 +13,11 @@ import {
     buildEvolutionRows,
     buildTypeRowsAndPokemonRows,
     buildTerrainRows,
+    fetchAllBossRosters,
+    buildAbilityRows,
+    buildBossBattlePokemonRows,
+    buildMoveRows,
+    buildBossBattlePokemonMoveRows,
 } from './schema-init.ts';
 import { fetchBossFightSeeds, fetchLocationSeeds } from './sources/index.ts';
 
@@ -28,6 +33,10 @@ async function main(): Promise<void> {
     const { locations } = await fetchLocationSeeds();
     const bossSeeds = await fetchBossFightSeeds();
 
+    // Fetch boss rosters early so boss Pokémon are included in the unified pokemonIds map.
+    process.stdout.write('--- Boss rosters ---\n');
+    const rawRosters = await fetchAllBossRosters(bossSeeds);
+
     // Initialize schema and one physical encounter table per location.
     await initializeDb(dbPath, client, locations);
     const db = createDb<PokemonDataDb>(client);
@@ -41,7 +50,9 @@ async function main(): Promise<void> {
     }));
     await db.insertInto('locations').values(locationRows).execute();
 
-    const pokemonIds = buildPokemonNameMap(locations);
+    // Build a unified Pokémon name→id map covering both wild encounters and boss rosters.
+    const pokemonIds = buildPokemonNameMap(locations, rawRosters);
+
     const pokemonRows = await fetchAllPokemonRows(pokemonIds);
 
     const { typeRows, mappedPokemonRows } = buildTypeRowsAndPokemonRows(pokemonRows);
@@ -60,13 +71,36 @@ async function main(): Promise<void> {
     
     await insertLocationEncounters(db, locations, pokemonIds, subAreaIds, terrainIds);
 
-    // Insert boss identity/order seeds; roster mapping will be web-enriched later.
+    // Insert boss identity/order seeds.
     const bossRows = bossSeeds.map((boss, index) => ({
         id: index + 1,
         name: boss.name,
         battle_type: boss.type,
     }));
     await db.insertInto('boss_battles').values(bossRows).execute();
+
+    // Build and insert abilities (de-duped from all boss rosters).
+    const allAbilityNames = new Set(
+        rawRosters.flatMap((r) => r.party.map((p) => p.ability)).filter(Boolean),
+    );
+    const { abilityRows, abilityIds } = await buildAbilityRows(allAbilityNames);
+    await db.insertInto('abilities').values(abilityRows).execute();
+
+    // Build and insert boss_battle_pokemon (with slot positions).
+    const bossBattlePokemonRows = buildBossBattlePokemonRows(rawRosters, pokemonIds, abilityIds);
+    await db.insertInto('boss_battle_pokemon').values(bossBattlePokemonRows).execute();
+
+    // Fetch move data for every unique move used in boss battles.
+    process.stdout.write('--- Boss moves ---\n');
+    const allMoveNames = rawRosters.flatMap((r) => r.party.flatMap((p) => p.moves));
+    const typeIds = new Map(typeRows.map((row) => [row.name, row.id]));
+    const { moveRows, moveIds } = await buildMoveRows(allMoveNames, typeIds);
+    await db.insertInto('moves').values(moveRows).execute();
+
+    // Build and insert boss_battle_pokemon_moves join rows.
+    const bossMoveLinkRows = buildBossBattlePokemonMoveRows(rawRosters, moveIds);
+    await db.insertInto('boss_battle_pokemon_moves').values(bossMoveLinkRows).execute();
+
     await client.save();
 
     const size = (await readFile(dbPath))?.byteLength ?? 0;
@@ -77,6 +111,8 @@ async function main(): Promise<void> {
   ${evolutionMethodRows.length} evolution methods,
   ${locationRows.length} locations,
   ${bossRows.length} boss battles,
+  ${bossBattlePokemonRows.length} boss battle pokemon,
+  ${moveRows.length} moves,
   ${subAreaRows.length} sub-areas,
   ${terrainRows.length} terrain types,
   ${typeRows.length} types`,
