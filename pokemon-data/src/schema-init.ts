@@ -100,7 +100,14 @@ export function buildTypeRowsAndPokemonRows(
     };
 
     const mappedPokemonRows: PokemonRowWithTypeIds[] = pokemonRows.map((row) => ({
-        ...row,
+        id: row.id,
+        name: row.name,
+        base_hp: row.base_hp,
+        base_attack: row.base_attack,
+        base_defense: row.base_defense,
+        base_sp_attack: row.base_sp_attack,
+        base_sp_defense: row.base_sp_defense,
+        base_speed: row.base_speed,
         primary_type_id: resolveTypeId(row.primary_type),
         secondary_type_id: resolveTypeId(row.secondary_type),
     }));
@@ -308,11 +315,9 @@ export interface RawBossRoster {
 export async function fetchAllBossRosters(
     bossSeeds: readonly BossFightSeed[],
 ): Promise<RawBossRoster[]> {
-    process.stdout.write(`Fetching boss rosters (${bossSeeds.length} fights)...\n`);
     const results = await Promise.allSettled(
         bossSeeds.map(async (seed, index) => {
             const party = await fetchTrainerParty(seed);
-            process.stdout.write(`  roster: ${seed.name} → ${party.length} Pokémon\n`);
             return { bossIndex: index, party };
         }),
     );
@@ -327,7 +332,6 @@ export async function fetchAllBossRosters(
         }
     }
     if (failed) throw new Error('Some boss rosters failed to fetch/parse');
-    process.stdout.write(`  → ${rosters.length} rosters loaded\n`);
     return rosters;
 }
 
@@ -351,11 +355,9 @@ export async function buildAbilityRows(
     abilityNames: ReadonlySet<string>,
 ): Promise<{ abilityRows: AbilityRow[]; abilityIds: Map<string, number> }> {
     const uniqueNames = [...abilityNames];
-    process.stdout.write(`Fetching ability data (${uniqueNames.length} unique abilities)...\n`);
     const results = await Promise.allSettled(
         uniqueNames.map(async (name) => {
             const data = await fetchAbilityData(name);
-            process.stdout.write(`  ability: ${name}\n`);
             return { name, data };
         }),
     );
@@ -387,8 +389,6 @@ export async function buildAbilityRows(
     }
 
     if (failed) throw new Error('Some abilities failed to fetch/parse');
-
-    process.stdout.write(`  → ${abilityRows.length} abilities loaded (${truncatedCount} truncated @ ${ABILITY_DESCRIPTION_MAX_LENGTH})\n`);
 
     return { abilityRows, abilityIds };
 }
@@ -425,11 +425,9 @@ export async function buildMoveRows(
     typeIds: Map<string, number>,
 ): Promise<{ moveRows: MoveRow[]; moveIds: Map<string, number> }> {
     const uniqueNames = [...new Set(allMoveNames)];
-    process.stdout.write(`Fetching move data (${uniqueNames.length} unique moves)...\n`);
     const results = await Promise.allSettled(
         uniqueNames.map(async (name) => {
             const data = await fetchMoveData(name);
-            process.stdout.write(`  move: ${name} (${data.type} ${data.category})\n`);
             return { name, data };
         }),
     );
@@ -449,7 +447,6 @@ export async function buildMoveRows(
         moveRows.push({ id, name, type_id: typeId, category: data.category, power: data.power, accuracy: data.accuracy, effect: data.effect });
     }
     if (failed) throw new Error('Some moves failed to fetch/parse');
-    process.stdout.write(`  → ${moveRows.length} moves loaded\n`);
     return { moveRows, moveIds };
 }
 

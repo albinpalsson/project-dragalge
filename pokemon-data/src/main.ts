@@ -34,7 +34,6 @@ async function main(): Promise<void> {
     const bossSeeds = await fetchBossFightSeeds();
 
     // Fetch boss rosters early so boss Pokémon are included in the unified pokemonIds map.
-    process.stdout.write('--- Boss rosters ---\n');
     const rawRosters = await fetchAllBossRosters(bossSeeds);
 
     // Initialize schema and one physical encounter table per location.
@@ -91,7 +90,6 @@ async function main(): Promise<void> {
     await db.insertInto('boss_battle_pokemon').values(bossBattlePokemonRows).execute();
 
     // Fetch move data for every unique move used in boss battles.
-    process.stdout.write('--- Boss moves ---\n');
     const allMoveNames = rawRosters.flatMap((r) => r.party.flatMap((p) => p.moves));
     const typeIds = new Map(typeRows.map((row) => [row.name, row.id]));
     const { moveRows, moveIds } = await buildMoveRows(allMoveNames, typeIds);
