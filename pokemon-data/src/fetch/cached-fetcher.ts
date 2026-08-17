@@ -38,6 +38,7 @@ async function runExecutor(): Promise<void> {
     executorRunning = true;
     while (requestQueue.length > 0 && !executorCancelled) {
         const item = requestQueue.shift()!;
+        process.stdout.write(`Fetching ${item.url}\n`);
         try {
             let response: Response;
             try {
