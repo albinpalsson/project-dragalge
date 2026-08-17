@@ -9,7 +9,8 @@
         ".": {
             "types": "./src/schema.ts",
             "default": "./artifacts/paldea-db.js"
-        }
+        },
+        "./assets/*": "./artifacts/assets/*"
     },
     "files": [
         "src/schema.ts",

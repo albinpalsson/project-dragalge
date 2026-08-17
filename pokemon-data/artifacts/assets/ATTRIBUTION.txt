@@ -1,0 +1,4 @@
+Pokémon icon sprites fetched from Pokémon Database (https://img.pokemondb.net/sprites/scarlet-violet/icon/avif).
+Pokémon images & names © 1995-2026 Nintendo/Game Freak/The Pokémon Company.
+Pokémon Database uses these official assets under a fair use policy and states they are free to reuse.
+See pokemon-data/POKEMONDB_SPRITES_NOTICE.md for full terms. Non-commercial use only.

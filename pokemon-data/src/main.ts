@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { createDb } from '@pokedb2/query-builder';
 import { DbClient } from './logging-db-client.ts';
 import type { PokemonDataDb } from './schema.ts';
+import { fetchPokemonIcons } from './fetch/index.ts';
 import {
     initializeDb,
     insertLocationEncounters,
@@ -24,9 +25,11 @@ import { fetchBossFightSeeds, fetchLocationSeeds } from './sources/index.ts';
 async function main(): Promise<void> {
     const root = resolve(dirname(fileURLToPath(import.meta.url)));
     const artifactsDir = resolve(root, '..', 'artifacts');
+    const assetsDir = resolve(artifactsDir, 'assets');
     const dbPath = resolve(artifactsDir, 'paldea-db.js');
 
     await mkdir(artifactsDir, { recursive: true });
+    await mkdir(assetsDir, { recursive: true });
     const client = new DbClient(dbPath, { growthFactor: 1 });
 
     // Load local seed data first so schema generation can follow data shape.
@@ -51,6 +54,8 @@ async function main(): Promise<void> {
 
     // Build a unified Pokémon name→id map covering both wild encounters and boss rosters.
     const pokemonIds = buildPokemonNameMap(locations, rawRosters);
+
+    const iconData = await fetchPokemonIcons([...pokemonIds.keys()], assetsDir);
 
     const pokemonRows = await fetchAllPokemonRows(pokemonIds);
 
@@ -104,7 +109,8 @@ async function main(): Promise<void> {
     const size = (await readFile(dbPath))?.byteLength ?? 0;
 
     process.stdout.write(
-        `Built db (${(size/1000).toFixed(2)} KB) with
+        `Exported ${iconData.written.length} icons (${(iconData.totalBytes / 1000).toFixed(2)} KB).
+Built db (${(size/1000).toFixed(2)} KB) with:
   ${pokemonRows.length} pokemon,
   ${evolutionMethodRows.length} evolution methods,
   ${locationRows.length} locations,
@@ -113,7 +119,7 @@ async function main(): Promise<void> {
   ${moveRows.length} moves,
   ${subAreaRows.length} sub-areas,
   ${terrainRows.length} terrain types,
-  ${typeRows.length} types`,
+  ${typeRows.length} types\n`,
     );
 }
 

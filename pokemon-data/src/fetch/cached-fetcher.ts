@@ -13,11 +13,12 @@ const CACHE_DIR = resolve(
 
 export interface CachedFetcher {
     get(url: string): Promise<string>;
+    getBinary(url: string): Promise<Uint8Array>;
 }
 
 interface QueueItem {
     url: string;
-    resolve: (text: string) => void;
+    resolve: (bytes: Uint8Array) => void;
     reject: (err: unknown) => void;
 }
 
@@ -47,7 +48,7 @@ async function runExecutor(): Promise<void> {
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status} fetching ${item.url}`);
             }
-            item.resolve(await response.text());
+            item.resolve(new Uint8Array(await response.arrayBuffer()));
             consecutiveFailures = 0;
         } catch (err) {
             consecutiveFailures++;
@@ -66,7 +67,7 @@ async function runExecutor(): Promise<void> {
     executorRunning = false;
 }
 
-function enqueue(url: string): Promise<string> {
+function enqueue(url: string): Promise<Uint8Array> {
     return new Promise((resolve, reject) => {
         requestQueue.push({ url, resolve, reject });
         if (!executorRunning) {
@@ -75,22 +76,31 @@ function enqueue(url: string): Promise<string> {
     });
 }
 
+async function getCachedBytes(url: string, extension: 'txt' | 'bin'): Promise<Uint8Array> {
+    const hash = createHash('sha256').update(url).digest('hex');
+    const cachePath = join(CACHE_DIR, `${hash}.${extension}`);
+
+    try {
+        return await readFile(cachePath);
+    } catch {
+        // cache miss — fall through to fetch
+    }
+
+    const bytes = await enqueue(url);
+
+    await mkdir(CACHE_DIR, { recursive: true });
+    await writeFile(cachePath, bytes);
+
+    return bytes;
+}
+
 export const cachedFetcher: CachedFetcher = {
     async get(url: string): Promise<string> {
-        const hash = createHash('sha256').update(url).digest('hex');
-        const cachePath = join(CACHE_DIR, `${hash}.txt`);
+        const bytes = await getCachedBytes(url, 'txt');
+        return new TextDecoder().decode(bytes);
+    },
 
-        try {
-            return await readFile(cachePath, 'utf-8');
-        } catch {
-            // cache miss — fall through to fetch
-        }
-
-        const text = await enqueue(url);
-
-        await mkdir(CACHE_DIR, { recursive: true });
-        await writeFile(cachePath, text, 'utf-8');
-
-        return text;
+    async getBinary(url: string): Promise<Uint8Array> {
+        return getCachedBytes(url, 'bin');
     },
 };
