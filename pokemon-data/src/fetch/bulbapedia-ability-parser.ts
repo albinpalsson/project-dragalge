@@ -14,8 +14,11 @@ interface Heading {
 function collectHeadings(wikitext: string): Heading[] {
     const headings: Heading[] = [];
     const regex = /^(={2,5})\s*([^=\n]+?)\s*\1\s*$/gm;
-    let match: RegExpExecArray | null;
-    while ((match = regex.exec(wikitext)) !== null) {
+    while (true) {
+        const match = regex.exec(wikitext);
+        if (match === null) {
+            break;
+        }
         const start = match.index;
         const lineEnd = wikitext.indexOf('\n', start);
         headings.push({
@@ -92,13 +95,19 @@ function splitTopLevelParams(block: string): string[] {
     let depth = 0;
     let current = '';
     for (let i = 0; i < inner.length; i++) {
-        if ((inner[i] === '{' || inner[i] === '[') && inner[i + 1] === inner[i]) {
+        if (
+            (inner[i] === '{' || inner[i] === '[') &&
+            inner[i + 1] === inner[i]
+        ) {
             depth++;
             current += inner[i] + inner[i + 1];
             i++;
             continue;
         }
-        if ((inner[i] === '}' || inner[i] === ']') && inner[i + 1] === inner[i]) {
+        if (
+            (inner[i] === '}' || inner[i] === ']') &&
+            inner[i + 1] === inner[i]
+        ) {
             depth--;
             current += inner[i] + inner[i + 1];
             i++;
@@ -134,7 +143,10 @@ function scoreGenerationTag(rawTag: string): number {
 }
 
 function extractInfoboxDescription(wikitext: string): string | null {
-    const templates = extractTemplates(wikitext, /\{\{\s*AbilityInfobox\/desc/i);
+    const templates = extractTemplates(
+        wikitext,
+        /\{\{\s*AbilityInfobox\/desc/i,
+    );
     if (templates.length === 0) {
         return null;
     }
@@ -184,12 +196,17 @@ interface GenerationSubsection {
     content: string;
 }
 
-function collectGenerationSubsections(inBattleContent: string): GenerationSubsection[] {
+function collectGenerationSubsections(
+    inBattleContent: string,
+): GenerationSubsection[] {
     const rows: GenerationSubsection[] = [];
     const headingRegex = /^====\s*([^=\n]+?)\s*====\s*$/gm;
-    let match: RegExpExecArray | null;
     const headings: { title: string; start: number; end: number }[] = [];
-    while ((match = headingRegex.exec(inBattleContent)) !== null) {
+    while (true) {
+        const match =headingRegex.exec(inBattleContent);
+        if (match === null) {
+            break;
+        } 
         const start = match.index;
         const lineEnd = inBattleContent.indexOf('\n', start);
         headings.push({
@@ -208,7 +225,10 @@ function collectGenerationSubsections(inBattleContent: string): GenerationSubsec
         const next = headings[i + 1];
         rows.push({
             title: cur.title,
-            content: inBattleContent.slice(cur.end, next?.start ?? inBattleContent.length),
+            content: inBattleContent.slice(
+                cur.end,
+                next?.start ?? inBattleContent.length,
+            ),
         });
     }
     return rows;
@@ -246,7 +266,10 @@ function pickBestInBattleDescription(inBattleContent: string): string {
     return best.content;
 }
 
-export function parseAbilityData(wikitext: string, abilityName: string): AbilityData {
+export function parseAbilityData(
+    wikitext: string,
+    abilityName: string,
+): AbilityData {
     const infoboxDescription = extractInfoboxDescription(wikitext);
     if (infoboxDescription) {
         return { description: infoboxDescription };
@@ -255,21 +278,35 @@ export function parseAbilityData(wikitext: string, abilityName: string): Ability
     const headings = collectHeadings(wikitext);
     const effect = extractSection(wikitext, headings, 2, 'Effect');
     if (!effect) {
-        throw new Error(`[${abilityName}] Effect section not found on ability page`);
+        throw new Error(
+            `[${abilityName}] Effect section not found on ability page`,
+        );
     }
 
     const inBattle =
-        extractSection(wikitext, headings, 3, 'In battle', { start: effect.start, end: effect.end }) ??
-        extractSection(wikitext, headings, 3, 'In-battle', { start: effect.start, end: effect.end }) ??
+        extractSection(wikitext, headings, 3, 'In battle', {
+            start: effect.start,
+            end: effect.end,
+        }) ??
+        extractSection(wikitext, headings, 3, 'In-battle', {
+            start: effect.start,
+            end: effect.end,
+        }) ??
         extractSection(wikitext, headings, 3, 'In battle');
 
     if (!inBattle) {
-        throw new Error(`[${abilityName}] In battle subsection not found in Effect section`);
+        throw new Error(
+            `[${abilityName}] In battle subsection not found in Effect section`,
+        );
     }
 
-    const description = normalizeAbilityDescription(pickBestInBattleDescription(inBattle.content));
+    const description = normalizeAbilityDescription(
+        pickBestInBattleDescription(inBattle.content),
+    );
     if (!description) {
-        throw new Error(`[${abilityName}] Parsed in-battle ability description is empty`);
+        throw new Error(
+            `[${abilityName}] Parsed in-battle ability description is empty`,
+        );
     }
 
     return {

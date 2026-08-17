@@ -1,13 +1,26 @@
 import { rm } from 'node:fs/promises';
 import type { DB } from '@pokedb2/db';
 import type { Database, DbClient } from '@pokedb2/query-builder';
-import type { PokemonDataDb, AbilityRow, BossBattlePokemonRow, BossBattlePokemonMoveRow, MoveRow } from './schema.ts';
-import type { LocationSeed } from './sources/fetch-location-seeds.ts';
-import type { BossFightSeed } from './sources/fetch-boss-fight-seeds.ts';
-import { fetchPokemonData, type PokemonData } from './fetch/fetch-pokemon-data.ts';
-import { fetchTrainerParty, type TrainerPartyEntry } from './fetch/fetch-trainer-party.ts';
-import { fetchMoveData } from './fetch/fetch-move-data.ts';
 import { fetchAbilityData } from './fetch/fetch-ability-data.ts';
+import { fetchMoveData } from './fetch/fetch-move-data.ts';
+import {
+    fetchPokemonData,
+    type PokemonData,
+} from './fetch/fetch-pokemon-data.ts';
+import {
+    fetchTrainerParty,
+    type TrainerPartyEntry,
+} from './fetch/fetch-trainer-party.ts';
+import type {
+    AbilityRow,
+    BossBattlePokemonMoveRow,
+    BossBattlePokemonRow,
+    MoveRow,
+    PokemonDataDb,
+} from './schema.ts';
+import type { BossFightSeed } from './sources/fetch-boss-fight-seeds.ts';
+import type { LocationSeed } from './sources/fetch-location-seeds.ts';
+import { assert } from './assert.ts';
 
 const ABILITY_DESCRIPTION_MAX_LENGTH = 131;
 
@@ -72,7 +85,11 @@ function canonicalGameValue(values: readonly string[]): 's' | 'v' | 'sv' {
     throw new Error(`Unexpected games value: ${values.join(',')}`);
 }
 
-export interface PokemonRowWithTypeIds extends Omit<PokemonData, 'primary_type' | 'secondary_type' | 'evolution_edges'> {
+export interface PokemonRowWithTypeIds
+    extends Omit<
+        PokemonData,
+        'primary_type' | 'secondary_type' | 'evolution_edges'
+    > {
     id: number;
     primary_type_id: number;
     secondary_type_id: number;
@@ -99,25 +116,25 @@ export function buildTypeRowsAndPokemonRows(
         return id;
     };
 
-    const mappedPokemonRows: PokemonRowWithTypeIds[] = pokemonRows.map((row) => ({
-        id: row.id,
-        name: row.name,
-        base_hp: row.base_hp,
-        base_attack: row.base_attack,
-        base_defense: row.base_defense,
-        base_sp_attack: row.base_sp_attack,
-        base_sp_defense: row.base_sp_defense,
-        base_speed: row.base_speed,
-        primary_type_id: resolveTypeId(row.primary_type),
-        secondary_type_id: resolveTypeId(row.secondary_type),
-    }));
+    const mappedPokemonRows: PokemonRowWithTypeIds[] = pokemonRows.map(
+        (row) => ({
+            id: row.id,
+            name: row.name,
+            base_hp: row.base_hp,
+            base_attack: row.base_attack,
+            base_defense: row.base_defense,
+            base_sp_attack: row.base_sp_attack,
+            base_sp_defense: row.base_sp_defense,
+            base_speed: row.base_speed,
+            primary_type_id: resolveTypeId(row.primary_type),
+            secondary_type_id: resolveTypeId(row.secondary_type),
+        }),
+    );
 
     return { typeRows, mappedPokemonRows };
 }
 
-export function buildTerrainRows(
-    locations: readonly LocationSeed[],
-): {
+export function buildTerrainRows(locations: readonly LocationSeed[]): {
     terrainRows: { id: number; key: string }[];
     terrainIds: Map<string, number>;
 } {
@@ -137,9 +154,7 @@ export function buildTerrainRows(
     return { terrainRows, terrainIds };
 }
 
-export function buildSubAreaRows(
-    locations: readonly LocationSeed[],
-): {
+export function buildSubAreaRows(locations: readonly LocationSeed[]): {
     subAreaRows: { id: number; name: string }[];
     subAreaIds: Map<string, number>;
 } {
@@ -164,11 +179,19 @@ export function buildEvolutionRows(
     pokemonIds: Map<string, number>,
 ): {
     evolutionMethodRows: { id: number; description: string }[];
-    evolutionTransitionRows: { from_pokemon_id: number; to_pokemon_id: number; method_id: number }[];
+    evolutionTransitionRows: {
+        from_pokemon_id: number;
+        to_pokemon_id: number;
+        method_id: number;
+    }[];
 } {
     const methodIds = new Map<string, number>();
     const evolutionMethodRows: { id: number; description: string }[] = [];
-    const evolutionTransitionRows: { from_pokemon_id: number; to_pokemon_id: number; method_id: number }[] = [];
+    const evolutionTransitionRows: {
+        from_pokemon_id: number;
+        to_pokemon_id: number;
+        method_id: number;
+    }[] = [];
 
     for (const row of pokemonRows) {
         const fromPokemonId = pokemonIds.get(row.name);
@@ -205,18 +228,18 @@ export function buildEvolutionRows(
     return { evolutionMethodRows, evolutionTransitionRows };
 }
 
-
 export async function fetchAllPokemonRows(
     pokemonIds: Map<string, number>,
 ): Promise<(PokemonData & { id: number })[]> {
-
     const buildReturnEntry = async ([name, id]: [string, number]) => ({
         id,
         ...(await fetchPokemonData(name)),
     });
-    const promises = await Promise.allSettled([...pokemonIds.entries()].map(buildReturnEntry));
+    const promises = await Promise.allSettled(
+        [...pokemonIds.entries()].map(buildReturnEntry),
+    );
 
-    const result: (PokemonData & { id: number })[] = []
+    const result: (PokemonData & { id: number })[] = [];
     let failed = false;
     for (const r of promises) {
         if (r.status === 'fulfilled') {
@@ -224,7 +247,9 @@ export async function fetchAllPokemonRows(
         }
         if (r.status === 'rejected') {
             failed = true;
-            process.stderr.write(`${r.reason instanceof Error ? r.reason.message : String(r.reason)}\n`);
+            process.stderr.write(
+                `${r.reason instanceof Error ? r.reason.message : String(r.reason)}\n`,
+            );
         }
     }
     if (failed) {
@@ -285,19 +310,27 @@ export async function insertLocationEncounters(
     terrainIds: Map<string, number>,
 ): Promise<void> {
     for (const location of locations) {
-        const rows = location.encounters.map((encounter, index) => ({
+        const rows = location.encounters.map((encounter, index) => {
+            const sub_area_id = subAreaIds.get(encounter.subArea.trim());
+            assert(sub_area_id);
+            const pokemon_id = pokemonIds.get(encounter.pokemonName);
+            assert(pokemon_id);
+            const terrain_id = terrainIds.get(canonicalTerrainKey(encounter.terrain));
+            assert(terrain_id);
+
+            return ({
             id: index + 1,
-            sub_area_id: subAreaIds.get(encounter.subArea.trim())!,
-            pokemon_id: pokemonIds.get(encounter.pokemonName)!,
+            sub_area_id,
+            pokemon_id,
             games: canonicalGameValue(encounter.games),
-            terrain_id: terrainIds.get(canonicalTerrainKey(encounter.terrain))!,
+            terrain_id,
             min_level: encounter.minLevel,
             max_level: encounter.maxLevel,
             morning_rate: encounter.morningRate,
             day_rate: encounter.dayRate,
             evening_rate: encounter.eveningRate,
             night_rate: encounter.nightRate,
-        }));
+        })});
 
         if (rows.length === 0) {
             continue;
@@ -328,10 +361,14 @@ export async function fetchAllBossRosters(
             rosters.push(r.value);
         } else {
             failed = true;
-            process.stderr.write(`${r.reason instanceof Error ? r.reason.message : String(r.reason)}\n`);
+            process.stderr.write(
+                `${r.reason instanceof Error ? r.reason.message : String(r.reason)}\n`,
+            );
         }
     }
-    if (failed) throw new Error('Some boss rosters failed to fetch/parse');
+    if (failed) {
+        throw new Error('Some boss rosters failed to fetch/parse');
+    }
     return rosters;
 }
 
@@ -364,22 +401,27 @@ export async function buildAbilityRows(
 
     const abilityIds = new Map<string, number>();
     const abilityRows: AbilityRow[] = [];
-    let truncatedCount = 0;
+    let _truncatedCount = 0;
     let failed = false;
 
     for (const r of results) {
         if (r.status === 'rejected') {
             failed = true;
-            process.stderr.write(`${r.reason instanceof Error ? r.reason.message : String(r.reason)}\n`);
+            process.stderr.write(
+                `${r.reason instanceof Error ? r.reason.message : String(r.reason)}\n`,
+            );
             continue;
         }
 
         const { name, data } = r.value;
         const id = abilityRows.length + 1;
         abilityIds.set(name, id);
-        const description = truncateUtf8(data.description, ABILITY_DESCRIPTION_MAX_LENGTH);
+        const description = truncateUtf8(
+            data.description,
+            ABILITY_DESCRIPTION_MAX_LENGTH,
+        );
         if (description.length < data.description.length) {
-            truncatedCount++;
+            _truncatedCount++;
         }
         abilityRows.push({
             id,
@@ -388,7 +430,9 @@ export async function buildAbilityRows(
         });
     }
 
-    if (failed) throw new Error('Some abilities failed to fetch/parse');
+    if (failed) {
+        throw new Error('Some abilities failed to fetch/parse');
+    }
 
     return { abilityRows, abilityIds };
 }
@@ -405,7 +449,9 @@ export function buildBossBattlePokemonRows(
             const entry = roster.party[slot];
             const pokemonId = pokemonIds.get(entry.pokemon);
             if (pokemonId === undefined) {
-                throw new Error(`[Boss id=${bossId}] Unknown Pokémon: "${entry.pokemon}"`);
+                throw new Error(
+                    `[Boss id=${bossId}] Unknown Pokémon: "${entry.pokemon}"`,
+                );
             }
             const abilityId = abilityIds.get(entry.ability) ?? 0;
             rows.push({
@@ -437,16 +483,28 @@ export async function buildMoveRows(
     for (const r of results) {
         if (r.status === 'rejected') {
             failed = true;
-            process.stderr.write(`${r.reason instanceof Error ? r.reason.message : String(r.reason)}\n`);
+            process.stderr.write(
+                `${r.reason instanceof Error ? r.reason.message : String(r.reason)}\n`,
+            );
             continue;
         }
         const { name, data } = r.value;
         const id = moveRows.length + 1;
         const typeId = typeIds.get(data.type) ?? 0;
         moveIds.set(name, id);
-        moveRows.push({ id, name, type_id: typeId, category: data.category, power: data.power, accuracy: data.accuracy, effect: data.effect });
+        moveRows.push({
+            id,
+            name,
+            type_id: typeId,
+            category: data.category,
+            power: data.power,
+            accuracy: data.accuracy,
+            effect: data.effect,
+        });
     }
-    if (failed) throw new Error('Some moves failed to fetch/parse');
+    if (failed) {
+        throw new Error('Some moves failed to fetch/parse');
+    }
     return { moveRows, moveIds };
 }
 
@@ -463,7 +521,9 @@ export function buildBossBattlePokemonMoveRows(
                 const moveName = entry.moves[moveSlot];
                 const moveId = moveIds.get(moveName);
                 if (moveId === undefined) {
-                    throw new Error(`[Boss id=${bossId}, slot ${slot + 1}] Unknown move: "${moveName}"`);
+                    throw new Error(
+                        `[Boss id=${bossId}, slot ${slot + 1}] Unknown move: "${moveName}"`,
+                    );
                 }
                 rows.push({
                     boss_battle_id: bossId,

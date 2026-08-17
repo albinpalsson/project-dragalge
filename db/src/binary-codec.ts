@@ -32,7 +32,9 @@ export function encodeValue(
         case 'uint8': {
             const n = value as number;
             if (!Number.isInteger(n) || n < 0 || n > 255) {
-                throw new RangeError(`uint8 value out of range [0, 255]: ${col.name} -> ${n}`);
+                throw new RangeError(
+                    `uint8 value out of range [0, 255]: ${col.name} -> ${n}`,
+                );
             }
             view.setUint8(byteOffset, n);
             break;

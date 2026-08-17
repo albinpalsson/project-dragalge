@@ -87,6 +87,10 @@ export class SqlQueryLogger {
             .sort((a, b) => a.seq - b.seq)
             .map((entry) => JSON.stringify(entry));
         await mkdir(dirname(this.logPath), { recursive: true });
-        await writeFile(this.logPath, lines.length === 0 ? '' : `${lines.join('\n')}\n`, 'utf-8');
+        await writeFile(
+            this.logPath,
+            lines.length === 0 ? '' : `${lines.join('\n')}\n`,
+            'utf-8',
+        );
     }
 }

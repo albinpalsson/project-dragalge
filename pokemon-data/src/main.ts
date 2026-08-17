@@ -2,23 +2,23 @@ import { mkdir, readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createDb } from '@pokedb2/query-builder';
+import { fetchPokemonIcons } from './fetch/index.ts';
 import { DbClient } from './logging-db-client.ts';
 import type { PokemonDataDb } from './schema.ts';
-import { fetchPokemonIcons } from './fetch/index.ts';
 import {
+    buildAbilityRows,
+    buildBossBattlePokemonMoveRows,
+    buildBossBattlePokemonRows,
+    buildEvolutionRows,
+    buildMoveRows,
+    buildPokemonNameMap,
+    buildSubAreaRows,
+    buildTerrainRows,
+    buildTypeRowsAndPokemonRows,
+    fetchAllBossRosters,
+    fetchAllPokemonRows,
     initializeDb,
     insertLocationEncounters,
-    buildPokemonNameMap,
-    fetchAllPokemonRows,
-    buildSubAreaRows,
-    buildEvolutionRows,
-    buildTypeRowsAndPokemonRows,
-    buildTerrainRows,
-    fetchAllBossRosters,
-    buildAbilityRows,
-    buildBossBattlePokemonRows,
-    buildMoveRows,
-    buildBossBattlePokemonMoveRows,
 } from './schema-init.ts';
 import { fetchBossFightSeeds, fetchLocationSeeds } from './sources/index.ts';
 
@@ -59,21 +59,37 @@ async function main(): Promise<void> {
 
     const pokemonRows = await fetchAllPokemonRows(pokemonIds);
 
-    const { typeRows, mappedPokemonRows } = buildTypeRowsAndPokemonRows(pokemonRows);
+    const { typeRows, mappedPokemonRows } =
+        buildTypeRowsAndPokemonRows(pokemonRows);
     await db.insertInto('pokemon_types').values(typeRows).execute();
     await db.insertInto('pokemon').values(mappedPokemonRows).execute();
 
-    const { evolutionMethodRows, evolutionTransitionRows } = buildEvolutionRows(pokemonRows, pokemonIds);
-    await db.insertInto('evolution_methods').values(evolutionMethodRows).execute();
-    await db.insertInto('evolution_transitions').values(evolutionTransitionRows).execute();
+    const { evolutionMethodRows, evolutionTransitionRows } = buildEvolutionRows(
+        pokemonRows,
+        pokemonIds,
+    );
+    await db
+        .insertInto('evolution_methods')
+        .values(evolutionMethodRows)
+        .execute();
+    await db
+        .insertInto('evolution_transitions')
+        .values(evolutionTransitionRows)
+        .execute();
 
     const { subAreaRows, subAreaIds } = buildSubAreaRows(locations);
     await db.insertInto('sub_areas').values(subAreaRows).execute();
 
     const { terrainRows, terrainIds } = buildTerrainRows(locations);
     await db.insertInto('terrain_types').values(terrainRows).execute();
-    
-    await insertLocationEncounters(db, locations, pokemonIds, subAreaIds, terrainIds);
+
+    await insertLocationEncounters(
+        db,
+        locations,
+        pokemonIds,
+        subAreaIds,
+        terrainIds,
+    );
 
     // Insert boss identity/order seeds.
     const bossRows = bossSeeds.map((boss, index) => ({
@@ -85,24 +101,41 @@ async function main(): Promise<void> {
 
     // Build and insert abilities (de-duped from all boss rosters).
     const allAbilityNames = new Set(
-        rawRosters.flatMap((r) => r.party.map((p) => p.ability)).filter(Boolean),
+        rawRosters
+            .flatMap((r) => r.party.map((p) => p.ability))
+            .filter(Boolean),
     );
     const { abilityRows, abilityIds } = await buildAbilityRows(allAbilityNames);
     await db.insertInto('abilities').values(abilityRows).execute();
 
     // Build and insert boss_battle_pokemon (with slot positions).
-    const bossBattlePokemonRows = buildBossBattlePokemonRows(rawRosters, pokemonIds, abilityIds);
-    await db.insertInto('boss_battle_pokemon').values(bossBattlePokemonRows).execute();
+    const bossBattlePokemonRows = buildBossBattlePokemonRows(
+        rawRosters,
+        pokemonIds,
+        abilityIds,
+    );
+    await db
+        .insertInto('boss_battle_pokemon')
+        .values(bossBattlePokemonRows)
+        .execute();
 
     // Fetch move data for every unique move used in boss battles.
-    const allMoveNames = rawRosters.flatMap((r) => r.party.flatMap((p) => p.moves));
+    const allMoveNames = rawRosters.flatMap((r) =>
+        r.party.flatMap((p) => p.moves),
+    );
     const typeIds = new Map(typeRows.map((row) => [row.name, row.id]));
     const { moveRows, moveIds } = await buildMoveRows(allMoveNames, typeIds);
     await db.insertInto('moves').values(moveRows).execute();
 
     // Build and insert boss_battle_pokemon_moves join rows.
-    const bossMoveLinkRows = buildBossBattlePokemonMoveRows(rawRosters, moveIds);
-    await db.insertInto('boss_battle_pokemon_moves').values(bossMoveLinkRows).execute();
+    const bossMoveLinkRows = buildBossBattlePokemonMoveRows(
+        rawRosters,
+        moveIds,
+    );
+    await db
+        .insertInto('boss_battle_pokemon_moves')
+        .values(bossMoveLinkRows)
+        .execute();
 
     await client.save();
 
@@ -110,7 +143,7 @@ async function main(): Promise<void> {
 
     process.stdout.write(
         `Exported ${iconData.written.length} icons (${(iconData.totalBytes / 1000).toFixed(2)} KB).
-Built db (${(size/1000).toFixed(2)} KB) with:
+Built db (${(size / 1000).toFixed(2)} KB) with:
   ${pokemonRows.length} pokemon,
   ${evolutionMethodRows.length} evolution methods,
   ${locationRows.length} locations,
@@ -124,6 +157,8 @@ Built db (${(size/1000).toFixed(2)} KB) with:
 }
 
 void main().catch((err: unknown) => {
-    process.stderr.write(`${err instanceof Error ? err.message : String(err)}\n`);
+    process.stderr.write(
+        `${err instanceof Error ? err.message : String(err)}\n`,
+    );
     process.exitCode = 1;
 });

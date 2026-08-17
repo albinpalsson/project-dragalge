@@ -2,13 +2,16 @@ import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { assert } from '../assert.ts';
 
 const POLITE_DELAY_MS = 300;
 
 // resolved relative to this module: pokemon-data/src/fetch/ -> ../../.cache
 const CACHE_DIR = resolve(
     dirname(fileURLToPath(import.meta.url)),
-    '..', '..', '.cache',
+    '..',
+    '..',
+    '.cache',
 );
 
 export interface CachedFetcher {
@@ -29,22 +32,28 @@ let consecutiveFailures = 0;
 const MAX_CONSECUTIVE_FAILURES = 3;
 
 function formatError(err: unknown, indent = ''): string {
-    if (!(err instanceof Error)) return `${indent}${String(err)}`;
-    const cause = err.cause != null ? `\n${formatError(err.cause, indent + '  ')}` : '';
+    if (!(err instanceof Error)) {
+        return `${indent}${String(err)}`;
+    }
+    const cause =
+        err.cause != null ? `\n${formatError(err.cause, `${indent}  `)}` : '';
     return `${indent}${err.message}${cause}`;
 }
 
 async function runExecutor(): Promise<void> {
     executorRunning = true;
     while (requestQueue.length > 0 && !executorCancelled) {
-        const item = requestQueue.shift()!;
+        const item = requestQueue.shift();
+        assert(item);
         process.stdout.write(`Fetching ${item.url}\n`);
         try {
             let response: Response;
             try {
                 response = await fetch(item.url);
             } catch (cause) {
-                throw new Error(`Network error fetching ${item.url}`, { cause });
+                throw new Error(`Network error fetching ${item.url}`, {
+                    cause,
+                });
             }
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status} fetching ${item.url}`);
@@ -77,7 +86,10 @@ function enqueue(url: string): Promise<Uint8Array> {
     });
 }
 
-async function getCachedBytes(url: string, extension: 'txt' | 'bin'): Promise<Uint8Array> {
+async function getCachedBytes(
+    url: string,
+    extension: 'txt' | 'bin',
+): Promise<Uint8Array> {
     const hash = createHash('sha256').update(url).digest('hex');
     const cachePath = join(CACHE_DIR, `${hash}.${extension}`);
 

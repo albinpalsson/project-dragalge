@@ -3,7 +3,8 @@ import { join } from 'node:path';
 import { cachedFetcher } from './cached-fetcher.ts';
 import { toIconSlug } from './icon-slug.ts';
 
-const ICON_BASE_URL = 'https://img.pokemondb.net/sprites/scarlet-violet/icon/avif';
+const ICON_BASE_URL =
+    'https://img.pokemondb.net/sprites/scarlet-violet/icon/avif';
 
 // Usage terms for these sprites: pokemon-data/POKEMONDB_SPRITES_NOTICE.md
 const ATTRIBUTION = `Pokémon icon sprites fetched from Pokémon Database (${ICON_BASE_URL}).
@@ -44,7 +45,9 @@ export async function fetchPokemonIcons(
             continue;
         }
         failed = true;
-        process.stderr.write(`${result.reason instanceof Error ? result.reason.message : String(result.reason)}\n`);
+        process.stderr.write(
+            `${result.reason instanceof Error ? result.reason.message : String(result.reason)}\n`,
+        );
     }
 
     if (failed) {

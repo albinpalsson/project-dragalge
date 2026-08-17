@@ -250,7 +250,9 @@ function parseInsertTupleValueCount(p: Parser): number {
         if (p.peek() === ',') {
             p.expect(',');
         } else if (p.peek() !== ')') {
-            throw new Error(`Expected , or ), got ${p.raw() || 'end of input'}`);
+            throw new Error(
+                `Expected , or ), got ${p.raw() || 'end of input'}`,
+            );
         }
     }
     return count;

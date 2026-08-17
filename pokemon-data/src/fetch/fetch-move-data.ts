@@ -1,7 +1,10 @@
-import { cachedFetcher } from './cached-fetcher.ts';
-import { buildMoveWikitextUrl, buildPageWikitextUrl } from './bulbapedia-parser.ts';
-import { parseMoveData } from './bulbapedia-move-parser.ts';
 import type { MoveData } from './bulbapedia-move-parser.ts';
+import { parseMoveData } from './bulbapedia-move-parser.ts';
+import {
+    buildMoveWikitextUrl,
+    buildPageWikitextUrl,
+} from './bulbapedia-parser.ts';
+import { cachedFetcher } from './cached-fetcher.ts';
 
 export type { MoveData };
 
@@ -13,9 +16,13 @@ function parseWikitextResponse(
         parse?: { wikitext: { '*': string } };
         error?: { code: string };
     };
-    if (parsed.error?.code === 'missingtitle') return { wikitext: '', missing: true };
+    if (parsed.error?.code === 'missingtitle') {
+        return { wikitext: '', missing: true };
+    }
     if (!parsed.parse) {
-        throw new Error(`[${pageName}] Bulbapedia API error: ${json.slice(0, 200)}`);
+        throw new Error(
+            `[${pageName}] Bulbapedia API error: ${json.slice(0, 200)}`,
+        );
     }
     return { wikitext: parsed.parse.wikitext['*'], missing: false };
 }
@@ -34,10 +41,8 @@ export async function fetchMoveData(moveName: string): Promise<MoveData> {
 
     // Fallback: plain page name (for moves that don't need disambiguation)
     const plainUrl = buildPageWikitextUrl(moveName);
-    const { wikitext: plainWikitext, missing: plainMissing } = parseWikitextResponse(
-        await cachedFetcher.get(plainUrl),
-        moveName,
-    );
+    const { wikitext: plainWikitext, missing: plainMissing } =
+        parseWikitextResponse(await cachedFetcher.get(plainUrl), moveName);
     if (plainMissing || !plainWikitext) {
         throw new Error(`[${moveName}] Move page not found on Bulbapedia`);
     }

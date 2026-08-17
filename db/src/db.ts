@@ -100,13 +100,14 @@ export class DB {
         try {
             return this.tryRunQuery(sql, parameters);
         } catch (e) {
-            throw new Error(`Query failed: ${getErrorMessage(e)}. Query: ${sql} Par: ${JSON.stringify(parameters)}`, {cause: e});
+            throw new Error(
+                `Query failed: ${getErrorMessage(e)}. Query: ${sql} Par: ${JSON.stringify(parameters)}`,
+                { cause: e },
+            );
         }
     }
 
-    private tryRunQuery(
-        sql: string,
-        parameters: readonly unknown[]) {
+    private tryRunQuery(sql: string, parameters: readonly unknown[]) {
         const stmt = parse(sql);
 
         if (stmt.type === 'select') {
@@ -167,7 +168,6 @@ export class DB {
         }
 
         throw new Error('Unsupported statement');
-
     }
 
     async save(): Promise<void> {

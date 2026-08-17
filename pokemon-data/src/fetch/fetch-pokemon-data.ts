@@ -1,5 +1,11 @@
+import {
+    buildWikitextUrl,
+    type EvolutionEdge,
+    parseBaseStats,
+    parseEvolutionEdges,
+    parseTypes,
+} from './bulbapedia-parser.ts';
 import { cachedFetcher } from './cached-fetcher.ts';
-import { buildWikitextUrl, parseBaseStats, parseEvolutionEdges, parseTypes, type EvolutionEdge } from './bulbapedia-parser.ts';
 import { POKEMON_CACHE } from './pokemon-cache.ts';
 
 export interface PokemonData {
@@ -17,9 +23,13 @@ export interface PokemonData {
 
 export async function fetchPokemonData(name: string): Promise<PokemonData> {
     const json = await cachedFetcher.get(buildWikitextUrl(name));
-    const parsed = JSON.parse(json) as { parse?: { wikitext: { '*': string } } };
+    const parsed = JSON.parse(json) as {
+        parse?: { wikitext: { '*': string } };
+    };
     if (!parsed.parse) {
-        throw new Error(`[${name}] Bulbapedia API error: ${json.slice(0, 200)}`);
+        throw new Error(
+            `[${name}] Bulbapedia API error: ${json.slice(0, 200)}`,
+        );
     }
 
     const wikitext = parsed.parse.wikitext['*'];
@@ -27,13 +37,22 @@ export async function fetchPokemonData(name: string): Promise<PokemonData> {
     const baseStats = cached ?? parseBaseStats(wikitext, name);
 
     if (!baseStats) {
-        throw new Error(`[${name}] Failed to parse base stats from Bulbapedia wikitext`);
+        throw new Error(
+            `[${name}] Failed to parse base stats from Bulbapedia wikitext`,
+        );
     }
 
     const types = cached ?? parseTypes(wikitext);
     if (!types.primary_type) {
-        throw new Error(`[${name}] Failed to parse types from Bulbapedia wikitext`);
+        throw new Error(
+            `[${name}] Failed to parse types from Bulbapedia wikitext`,
+        );
     }
 
-    return { name, ...baseStats, ...types, evolution_edges: parseEvolutionEdges(wikitext) };
+    return {
+        name,
+        ...baseStats,
+        ...types,
+        evolution_edges: parseEvolutionEdges(wikitext),
+    };
 }
