@@ -4,18 +4,23 @@ const buttonBase = css`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 24px;
+  padding: var(--space-2) var(--space-4);
   border: none;
-  border-radius: 6px;
-  font-size: 15px;
-  font-weight: 600;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
   cursor: pointer;
-  transition: opacity 0.15s;
+  box-shadow: var(--shadow-sm);
+  transition: background-color 0.15s, box-shadow 0.15s;
 `;
 
 const buttonPrimary = css`
-  background: var(--primary-color);
-  color: var(--secondary-color);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+
+  &:hover {
+    background: var(--color-primary-hover);
+  }
 `;
 
 interface ButtonProps {
