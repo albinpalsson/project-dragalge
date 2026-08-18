@@ -6,58 +6,33 @@
 This spec defines the overall structure of the Paldea Nuzlocke tracker app, integrating all custom core modules and defining the component hierarchy, data flow, and user interactions.
 
 ### Architecture Principles
-1. **Data-Centric**: All state flows through query builder + store manager
+1. **Data-Centric**: All state flows through query builder + localStorage based DB
 2. **Offline-First**: App works completely offline; localStorage for persistence
-3. **Unidirectional Data Flow**: Views → Actions → Store → DB → Views
+3. **Unidirectional Data Flow**: Views → Query (state management) → DB → Query (state management) → Views
 4. **Composable Components**: Build UI from small, focused components
 5. **CSS Encapsulation**: Each component owns its styles via css-in-js
 
-### Build Pipeline
-
-```
-TypeScript source files (.ts, .tsx)
-          ↓
-CSS-in-JS Transformer (extract css() → .css + replace with classnames)
-          ↓
-tsc transpilation (.ts → .js)
-          ↓
-Bundler (ESM import tracing → concatenate → single app.js)
-          ↓
-CSS file (collected from imports)
-          ↓
-Plugin: Minify (optional, optional → minified app.js)
-          ↓
-Plugin: (future plugins as needed)
-          ↓
-Output:
-  ├─ dist/app.js (bundled, optionally minified)
-  ├─ dist/app.css (concatenated from all CSS imports)
-  └─ dist/index.html (links to both app.js and app.css)
-```
-
-**Build Steps (npm run build):**
-1. Run CSS-in-JS transformer → collect CSS, rewrite imports
-2. Run tsc → transpile to dist/
-3. Run bundler → trace ESM imports, concatenate modules
-4. Run minifier plugin → reduce JS size
-5. Collect CSS files → single dist/app.css
-6. Generate index.html → links to app.js + app.css
-7. Done: Three-file output ready for deployment
-
----
 
 ## Requirements (In-Scope)
 
 ### Core Views
-1. **Home Screen**: Start run, load existing run, settings
-2. **Party View**: Display current team, swap/remove members
-3. **Caught Pokémon List**: Browse all caught Pokémon, filter by location
-4. **Location Explorer**: Browse Paldea locations, see available encounters
-5. **Encounter Tracker**: Mark caught Pokémon from each location
-6. **Boss Battles**: Track story battles (Gym Leaders, Titan Pokémon, Team Star)
-7. **Tera Raids**: Log Tera raid encounters
-8. **Level Cap Selector**: Set/adjust level limit for team
-9. **Settings**: Reset run, export data, etc.
+
+Three top-level pages:
+1. **Home Screen**: List of all started game runs, each shown as a progress card (caught Pokémon icons + completion %); start new run, load/select a run, delete a run
+2. **Main Player Page**: For the active game run — a single combined vertical list of Locations and Boss Battles, ordered by game progression
+3. **About**: Static page explaining why the app exists and what it solves
+
+### Overlay Views
+
+True floating popups, implemented purely with CSS positioning (`position: fixed`/`absolute` + z-index stacking) over the underlying page — no portal/modal library, no separate DOM root:
+- **Settings**: Configure the active game run (level cap, reset run, export/import data)
+- **Pokémon Stat**: Hover/press popup on a Pokémon icon (a boss roster Pokémon or an entry in the caught list) — shows battle stats; the caught-list variant also shows evolution data and allows a level-up interaction
+
+### Expandable Sections
+
+Not overlays — plain inline expand/collapse rows within the Main Player Page's combined list (pushes surrounding content down, no floating/positioning):
+- **Location**: Expanding a location row reveals all possible encounters there with info, and allows manually marking a Pokémon as caught
+- **Boss Battle**: Expanding a boss battle row reveals its full Pokémon roster with moves and abilities
 
 ### Legal Attribution (When Using Bulbapedia-Derived Seed Data)
 - The app must expose a visible legal notice in Settings/About linking to:
@@ -67,151 +42,8 @@ Output:
 - The legal notice must state that Bulbapedia-derived data is used under
   CC BY-NC-SA 2.5 and is non-commercial/share-alike.
 - This requirement applies even when data is bundled inline in app assets.
+- TODO, POKEMONDB sprites also has legal attribution constraints for us
 
-### Data Model
-
-```typescript
-// Core entities (aligned with DB schema)
-interface Pokemon {
-  id: number;
-  name: string;
-  type1: string;
-  type2?: string;
-  baseStats: {
-    hp: number;
-    attack: number;
-    defense: number;
-    spAtk: number;
-    spDef: number;
-    speed: number;
-  };
-  evolution?: string; // Evolved form name
-}
-
-interface Location {
-  id: number;
-  name: string;
-  region: string;
-  encounters: EncounterData[];
-}
-
-interface EncounterData {
-  pokemonId: number;
-  rarity: 'common' | 'uncommon' | 'rare';
-  minLevel: number;
-  maxLevel: number;
-}
-
-// Run state (tracked in stores)
-interface CaughtPokemon extends Pokemon {
-  dateCaught: Date;
-  locationCaught: string;
-  levelCaught: number;
-  isDead: boolean;
-  deathLocation?: string;
-}
-
-interface TeamMember extends CaughtPokemon {
-  currentLevel: number;
-  currentHP: number;
-  status?: 'healthy' | 'poisoned' | 'burned' | 'frozen' | 'paralyzed';
-}
-
-interface BossBattle {
-  id: string;
-  name: string;
-  type: 'gym' | 'titan' | 'team_star';
-  defeated: boolean;
-  defeatDate?: Date;
-  teamUsed?: number[]; // IDs of team members
-}
-
-interface TeraRaid {
-  id: string;
-  pokemonId: number;
-  type: string;
-  completed: boolean;
-  completionDate?: Date;
-}
-
-interface GameRun {
-  id: string;
-  startDate: Date;
-  name: string;
-  version: 'scarlet' | 'violet';
-  starter: Pokemon;
-  levelCap: number;
-  state: 'active' | 'completed' | 'lost';
-}
-```
-
-### Component Hierarchy
-
-```
-<App>
-  ├─ <Router> (in-memory state-based routing)
-  │  ├─ <HomeView>
-  │  ├─ <PartyView>
-  │  │  ├─ <TeamMemberCard>
-  │  │  ├─ <SwapModal>
-  │  │  └─ <HealthTracker>
-  │  ├─ <CaughtListView>
-  │  │  ├─ <PokemonCard>
-  │  │  ├─ <FilterBar>
-  │  │  └─ <SearchBox>
-  │  ├─ <LocationExplorerView>
-  │  │  ├─ <LocationCard>
-  │  │  ├─ <EncounterList>
-  │  │  └─ <EncounterMarker>
-  │  ├─ <EncounterTrackerView>
-  │  │  ├─ <EncounterForm>
-  │  │  └─ <CaughtConfirmation>
-  │  ├─ <BossBattleView>
-  │  │  ├─ <BattleCheckbox>
-  │  │  └─ <BattleList>
-  │  ├─ <TeraRaidView>
-  │  │  ├─ <RaidForm>
-  │  │  └─ <RaidLog>
-  │  ├─ <LevelCapView>
-  │  │  └─ <LevelCapSlider>
-  │  └─ <SettingsView>
-  │     ├─ <ExportButton>
-  │     ├─ <ImportButton>
-  │     └─ <ResetButton>
-  └─ <Notification>
-```
-
-### State Management
-
-Stores (Zustand-like, persisted to localStorage):
-- **PartyStore**: Current team, team size limits, roster management
-- **CaughtStore**: All Pokémon caught this run, death tracking
-- **GameProgressStore**: Visited locations, completed battles, tera raids, level cap
-- **SettingsStore**: App preferences (dark mode, sound, etc.)
-
-### Data Flow
-
-```
-User Action (click button)
-  ↓
-Component Event Handler
-  ↓
-Dispatch Action (e.g., "addToParty")
-  ↓
-Store Handler
-  ↓
-Query Builder (e.g., "INSERT INTO party ...")
-  ↓
-Database
-  ↓
-Auto-Save to localStorage (persistence middleware)
-  ↓
-Store notifies subscribers
-  ↓
-Components re-render with new state
-  ↓
-UI updates
-```
 
 ### Key Features
 
@@ -225,9 +57,6 @@ UI updates
    - Responsive layout (flex-based)
    - Works on 320px (phone) to desktop widths
 
-3. **Error Resilience**
-   - Graceful handling of data corruption
-   - Recovery mechanisms (reset or restore from backup)
 
 ---
 
@@ -246,78 +75,23 @@ UI updates
 ---
 
 ## Design & Architecture
-
-### Component Structure (React-like)
-
-```typescript
-// Base component interface
-interface Component {
-  (props: Record<string, any>): HTMLElement;
-}
-
-// Example component
-function PokemonCard(props: { pokemon: Pokemon; onSelect: () => void }): HTMLElement {
-  const element = document.createElement('div');
-  
-  const cardClass = css({
-    padding: '12px',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    '&:hover': {
-      backgroundColor: '#f5f5f5'
-    }
-  });
-  
-  element.className = cardClass;
-  element.innerHTML = `
-    <h3>${props.pokemon.name}</h3>
-    <p>Type: ${props.pokemon.type1}</p>
-  `;
-  element.addEventListener('click', props.onSelect);
-  
-  return element;
-}
-```
+....
 
 ### Router (In-Memory State-Based)
 
-```typescript
-type Route = 'home' | 'party' | 'caught' | 'locations' | 'encounters' | 'bosses' | 'raids' | 'levelcap' | 'settings';
+No URL or browser history integration. A single `activeView` value is held in React state at the app root and passed down (via props or context). Navigation is just calling the setter — there is no back/forward support.
 
-interface RouterState {
-  currentRoute: Route;
-  params?: Record<string, any>;
-}
+The active view is a discriminated union covering only the three top-level pages:
 
-function navigate(route: Route, params?: Record<string, any>) {
-  useRouterStore.setState({ currentRoute: route, params });
-}
+```ts
+type ActiveView =
+    | { view: 'home' }
+    | { view: 'game'; gameRunId: string }
+    | { view: 'about' };
 ```
 
-### Layout Structure
+Overlays and expandable sections are **not** part of the router — they're local component state (e.g. `isOpen`, or the id of what's expanded/popped-open) held near where they're rendered, since they never replace the underlying page.
 
-```html
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Paldea Nuzlocke Tracker</title>
-  <style>
-    /* Base CSS (global styles) */
-  </style>
-</head>
-<body>
-  <div id="app">
-    <!-- Router renders components here -->
-  </div>
-  <script>
-    // Bundled app code
-  </script>
-</body>
-</html>
-```
 
 ### Styling Strategy
 
@@ -328,80 +102,50 @@ function navigate(route: Route, params?: Record<string, any>) {
 
 ### Database Schema
 
-```sql
-CREATE TABLE pokemon (
-  id INTEGER PRIMARY KEY,
-  name TEXT,
-  type1 TEXT,
-  type2 TEXT,
-  baseStats JSON -- {hp, attack, defense, ...}
-);
+The app uses **two separate `DB` instances** (`@pokedb2/db`), each wrapped in `createDb<T>()` (`@pokedb2/query-builder`) for typed querying:
 
-CREATE TABLE locations (
-  id INTEGER PRIMARY KEY,
-  name TEXT,
-  region TEXT
-);
+1. **Pokémon Data DB (read-only)** — the compiled seed artifact from `pokemon-data` (`pokemon-data/artifacts/paldea-db.js`, a base64-encoded blob) is loaded via `decodeBlob` (`db/src/persistence.ts`) into a `DB` constructed with no writable `StoragePlugin`; the app never writes to it. Typed via `PokemonDataDb` (`pokemon-data/src/schema.ts`): `pokemon`, `pokemon_types`, `locations`, `sub_areas`, `terrain_types`, `evolution_methods`, `evolution_transitions`, `abilities`, `boss_battles`, `boss_battle_pokemon`, `moves`, `boss_battle_pokemon_moves`, plus one encounter table per location.
+2. **App/Game DB (read-write, localStorage-persisted)** — a new `DB` backed by a new `LocalStoragePlugin` implementing `StoragePlugin.read()/write()` (`db/src/types.ts`) against `window.localStorage`, mirroring the `FileStoragePlugin` pattern used by `pokemon-data`'s `logging-db-client.ts`. Owns app-only run-state tables:
+   - `game_runs`: id, name, started_at, level_cap
+   - `caught_pokemon`: id, game_run_id, pokemon_id, location_id, level, caught_at
+   - `party`: id, game_run_id, caught_pokemon_id, slot
+   - `boss_battle_progress`: game_run_id, boss_battle_id, defeated_at
+   - `tera_raid_log`: id, game_run_id, pokemon_id, completed_at
+   - `settings`: game_run_id, key, value
 
-CREATE TABLE encounters (
-  id INTEGER PRIMARY KEY,
-  locationId INTEGER,
-  pokemonId INTEGER,
-  rarity TEXT,
-  minLevel INTEGER,
-  maxLevel INTEGER
-);
+The app DB additionally flows through `@pokedb2/server-query`'s `QueryClient`/`useQuery`/`useMutation` to sync with React state; the Pokémon Data DB is queried directly since it never changes.
 
-CREATE TABLE caught (
-  id INTEGER PRIMARY KEY,
-  pokemonId INTEGER,
-  runId TEXT,
-  dateCaught DATE,
-  locationCaught TEXT,
-  levelCaught INTEGER,
-  isDead BOOLEAN,
-  deathLocation TEXT
-);
+### Data Access Layer
 
-CREATE TABLE party (
-  id INTEGER PRIMARY KEY,
-  runId TEXT,
-  pokemonId INTEGER,
-  currentLevel INTEGER,
-  currentHP INTEGER,
-  status TEXT
-);
+Structured to look like a full-stack app with a real backend, easing a future migration off in-browser DBs:
 
-CREATE TABLE boss_battles (
-  id TEXT PRIMARY KEY,
-  runId TEXT,
-  name TEXT,
-  type TEXT,
-  defeated BOOLEAN,
-  defeatDate DATE
-);
+1. **`db/` calls directory** — one subdirectory per database (e.g. `src/db/pokemon-data/`, `src/db/game-db/`), each exposing plain async functions that wrap `@pokedb2/query-builder` calls, e.g. `listPokemonForLocation(locationId)`, `getCaughtPokemon(gameRunId)`, `addCaughtPokemon(input)`. These functions are the only code that touches `selectFrom`/`insertInto`/etc. directly — everything else calls through them, as if they were server endpoints.
+2. **Co-located `queries.ts` files** — next to the view/component that needs them, containing `useQuery`/`useMutation` wrappers (`@pokedb2/server-query` via `app/src/server-query.tsx`) whose `queryFn`/`mutationFn` just calls into a `db/` function, e.g.:
 
-CREATE TABLE tera_raids (
-  id TEXT PRIMARY KEY,
-  runId TEXT,
-  pokemonId INTEGER,
-  teraType TEXT,
-  completed BOOLEAN,
-  completionDate DATE
-);
-
-CREATE TABLE game_runs (
-  id TEXT PRIMARY KEY,
-  startDate DATE,
-  name TEXT,
-  version TEXT,
-  starterId INTEGER,
-  levelCap INTEGER,
-  state TEXT
-);
+```ts
+// views/Location/queries.ts
+export function useLocationEncounters(locationId: string) {
+    return useQuery({
+        queryKey: ['location-encounters', locationId],
+        queryFn: () => listPokemonForLocation(locationId),
+    });
+}
 ```
 
----
+Components only ever import from their local `queries.ts`, never call `db/` functions or the query builder directly.
+
+### Pokémon Icons
+
+- Icon sprites come from `pokemon-data/artifacts/assets/*.avif` (one file per Pokémon slug, e.g. `pikachu.avif`), fetched/licensed per `pokemon-data/POKEMONDB_SPRITES_NOTICE.md` (an `ATTRIBUTION.txt` ships alongside the images).
+- Rendered everywhere as plain `<img src="..." loading="lazy" />` — no image/sprite component library.
+- The bundler only auto-copies a `public/` directory that sits next to the entry file (`copyPublicAssetsToOutput` in `bundler/src/utils/asset-copy.ts` copies `app/public/**` → `dist/`); it does **not** reach into other packages. So `pokemon-data/artifacts/assets` must be synced into a new `app/public/assets/` directory (a copy step, e.g. run alongside `pokemon-data`'s build or as an app prebuild step) before the icons are available to the bundler. Icons are then referenced as `/assets/{slug}.avif`.
+- A small helper, e.g. `pokemonIconSrc(slug: string) => \`/assets/${slug}.avif\``, should be the single place constructing icon paths.
+
+### Testing Strategy
+
+- Deliberately small: a handful of full integration/user-flow tests in a real browser via Playwright — no component/unit test sprawl for the app package.
+- `playwright.config.ts` uses `webServer` (`command: 'npm run dev --prefix app'`, pointed at the bundler's `DevServer`) so the ~1-2s build happens **once for the whole run**, before any workers start; parallel test files/workers all hit that one already-running server.
+- Covers the User Flows below (first-time user, active run, progress tracking, export) end-to-end rather than isolated units.
 
 ## Verification
 
@@ -427,94 +171,3 @@ CREATE TABLE game_runs (
 ---
 
 ## TODOs
-
-### Data & DB
-- [ ] Design schema for all entities
-- [ ] Create seed data (Pokémon, locations, encounters)
-- [ ] Initialize DB on app startup
-- [ ] Implement data migration/versioning (for future updates)
-
-### Core Components
-- [ ] Create component base (render to DOM)
-- [ ] Build Home view
-- [ ] Build Party view + team management UI
-- [ ] Build Caught Pokémon list + filtering
-- [ ] Build Location explorer + encounter marking
-- [ ] Build Boss battle tracker
-- [ ] Build Tera raid tracker
-- [ ] Build Level cap selector
-- [ ] Build Settings view
-- [ ] Add Settings/About legal notice section for data attribution links
-
-### Router & Navigation
-- [ ] Implement in-memory router (no URL changes)
-- [ ] Create navigation menu
-- [ ] Handle route transitions
-- [ ] Persist route state (optional)
-
-### Styling
-- [ ] Define global CSS (reset, typography, layout)
-- [ ] Create color palette + constants
-- [ ] Style all components with css-in-js
-- [ ] Test responsive layout at breakpoints
-
-### Integration
-- [ ] Wire components to stores
-- [ ] Wire stores to DB queries
-- [ ] Test data persistence (close & reopen app)
-- [ ] Test state synchronization across views
-
-### Testing
-- [ ] Manual testing of all views
-- [ ] Test offline persistence
-- [ ] Test export/import
-- [ ] Mobile device testing
-
-### Documentation
-- [ ] User guide: How to use the app
-- [ ] Data model diagram
-- [ ] Component hierarchy diagram
-- [ ] State flow diagram
-
----
-
-## Module Files
-
-```
-src/app/
-  ├── index.ts              # Entry point, bootstrap app
-  ├── router.ts             # In-memory router
-  ├── views/
-  │   ├── home.ts           # Home screen
-  │   ├── party.ts          # Team management
-  │   ├── caught.ts         # Caught Pokémon list
-  │   ├── locations.ts      # Location explorer
-  │   ├── encounters.ts     # Encounter tracker
-  │   ├── bosses.ts         # Boss battle tracker
-  │   ├── raids.ts          # Tera raid tracker
-  │   ├── level-cap.ts      # Level cap selector
-  │   └── settings.ts       # Settings
-  ├── components/
-  │   ├── pokemon-card.ts
-  │   ├── party-member.ts
-  │   ├── location-card.ts
-  │   ├── modal.ts
-  │   ├── button.ts
-  │   ├── input.ts
-  │   └── notification.ts
-  ├── stores/
-  │   ├── party.ts
-  │   ├── caught.ts
-  │   ├── progress.ts
-  │   └── router.ts
-  ├── schema/
-  │   ├── schema.ts         # DB schema definition
-  │   └── seed-data.ts      # Pokémon & location data
-  ├── styles/
-  │   ├── globals.ts        # Global CSS
-  │   ├── colors.ts         # Color constants
-  │   └── breakpoints.ts    # Media query breakpoints
-  └── types/
-      └── index.ts          # TypeScript interfaces
-```
-
