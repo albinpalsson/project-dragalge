@@ -14,3 +14,26 @@ test('start a new game and see it appear in the games list', async ({
 
     await expect(page.getByRole('listitem')).toContainText('my-test-run');
 });
+
+test('cancel the start-game modal without creating a game', async ({
+    page,
+}) => {
+    await page.goto('/');
+
+    await page.getByRole('button', { name: 'Start New Game' }).click();
+    await expect(page.getByRole('dialog')).toBeVisible();
+
+    await page.getByRole('button', { name: 'Cancel' }).click();
+    await expect(page.getByRole('dialog')).toBeHidden();
+    await expect(page.getByRole('listitem')).toHaveCount(0);
+});
+
+test('escape key closes the start-game modal', async ({ page }) => {
+    await page.goto('/');
+
+    await page.getByRole('button', { name: 'Start New Game' }).click();
+    await expect(page.getByRole('dialog')).toBeVisible();
+
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('dialog')).toBeHidden();
+});

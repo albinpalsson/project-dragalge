@@ -1,10 +1,10 @@
-import { useMutation, useQuery, useClient } from '../server-query';
+import { useMutation, useQuery, useClient } from '../../server-query';
 import { invalidateQueries } from '@pokedb2/server-query';
 import {
     createGame,
     listGames,
     type CreateGameInput,
-} from '../db/game-db/queries';
+} from '../../db/game-db/queries';
 
 const GAMES_QUERY_KEY = ['games'];
 

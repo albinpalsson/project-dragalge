@@ -23,16 +23,35 @@ const buttonPrimary = css`
   }
 `;
 
+const buttonSecondary = css`
+  background: transparent;
+  color: var(--color-text-muted);
+
+  && {
+    border: 0.1rem solid var(--color-border);
+    box-shadow: none;
+  }
+
+  &:hover {
+    background: var(--color-hover-overlay);
+    color: var(--color-text);
+  }
+`;
+
 interface ButtonProps {
     label: string;
     onClick?: () => void;
+    variant?: 'primary' | 'secondary';
 }
 
-export function Button({ label, onClick }: ButtonProps) {
+export function Button({ label, onClick, variant = 'primary' }: ButtonProps) {
     return (
         <button
             type="button"
-            className={cx(buttonBase, buttonPrimary)}
+            className={cx(
+                buttonBase,
+                variant === 'secondary' ? buttonSecondary : buttonPrimary,
+            )}
             onClick={onClick}
         >
             {label}
