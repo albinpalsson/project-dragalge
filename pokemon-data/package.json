@@ -10,10 +10,12 @@
             "types": "./src/schema.ts",
             "default": "./artifacts/paldea-db.js"
         },
+        "./assets-dir": "./src/assets.js",
         "./assets/*": "./artifacts/assets/*"
     },
     "files": [
         "src/schema.ts",
+        "src/assets.js",
         "artifacts"
     ],
     "scripts": {
