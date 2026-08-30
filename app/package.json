@@ -4,6 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "sync-assets": "node scripts/sync-pokemon-assets.mjs",
+    "predev": "npm run sync-assets",
+    "prebuild": "npm run sync-assets",
     "build": "pokedb2-bundle --mode production",
     "dev": "pokedb2-dev-server --port 3000",
     "test": "playwright test",
@@ -12,6 +15,7 @@
   "dependencies": {
     "@pokedb2/css-in-js": "*",
     "@pokedb2/db": "*",
+    "@pokedb2/pokemon-data": "*",
     "@pokedb2/query-builder": "*",
     "@pokedb2/server-query": "*",
     "@types/react-dom": "^19.2.3",

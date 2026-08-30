@@ -4,6 +4,7 @@ import { Button } from '../../components/Button';
 import { Modal } from '../../components/Modal';
 import { Select } from '../../components/Select';
 import { TextField } from '../../components/TextField';
+import { GameCard } from './GameCard';
 import { useCreateGame, useGames } from './queries';
 import {
     generateDefaultGameName,
@@ -75,8 +76,8 @@ export function Home() {
                 {games.isSuccess && (
                     <ul className={gamesList}>
                         {(games.data ?? []).map((game) => (
-                            <li key={game.id} className={gameRow}>
-                                {game.id}
+                            <li key={game.id}>
+                                <GameCard game={game} />
                             </li>
                         ))}
                     </ul>
@@ -99,18 +100,12 @@ const formActions = css`
 
 const gamesList = css`
   display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--space-3);
   list-style: none;
   margin: 0;
   padding: 0;
-`;
-
-const gameRow = css`
-  padding: var(--space-3);
-  background: var(--color-surface);
-  border: 0.1rem solid var(--color-border);
-  border-radius: var(--radius-md);
 `;
 
 const mutedText = css`
