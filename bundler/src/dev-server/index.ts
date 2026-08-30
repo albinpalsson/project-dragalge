@@ -593,6 +593,27 @@ function guessContentType(filePath: string): string {
             return 'application/json; charset=utf-8';
         case '.map':
             return 'application/json; charset=utf-8';
+        case '.avif':
+            return 'image/avif';
+        case '.png':
+            return 'image/png';
+        case '.jpg':
+        case '.jpeg':
+            return 'image/jpeg';
+        case '.gif':
+            return 'image/gif';
+        case '.webp':
+            return 'image/webp';
+        case '.svg':
+            return 'image/svg+xml';
+        case '.woff2':
+            return 'font/woff2';
+        case '.woff':
+            return 'font/woff';
+        case '.ttf':
+            return 'font/ttf';
+        case '.txt':
+            return 'text/plain; charset=utf-8';
         default:
             return 'application/octet-stream';
     }
