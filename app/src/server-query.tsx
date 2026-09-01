@@ -39,21 +39,29 @@ export function useClient(): QueryClient {
     return client;
 }
 
-// ─── useQuery ────────────────────────────────────────────────────────────────
+// mirrors the normalization QueryClient applies internally
+function toError(value: unknown): Error {
+    if (value instanceof Error) {
+        return value;
+    }
+    return Object.assign(new Error(String(value)), { cause: value });
+}
 
-export interface UseQueryResult<TData> {
+// ─── useQuery ───────────────────────────────────────────────────────────
+
+export interface UseQueryResult<TData, TError extends Error = Error> {
     data: TData | undefined;
     status: QueryState['status'];
-    error: unknown;
+    error: TError | null;
     isPending: boolean;
     isSuccess: boolean;
     isError: boolean;
     isFetching: boolean;
 }
 
-export function useQuery<TData>(
+export function useQuery<TData, TError extends Error = Error>(
     options: QueryOptions<TData>,
-): UseQueryResult<TData> {
+): UseQueryResult<TData, TError> {
     const client = useClient();
     const key = JSON.stringify(options.queryKey);
     const staleTime = options.staleTime ?? 0;
@@ -68,7 +76,7 @@ export function useQuery<TData>(
     );
 
     const getSnapshot = useCallback(
-        () => client.getQuerySnapshot<TData>(key),
+        () => client.getQuerySnapshot<TData, TError>(key),
         [client, key],
     );
 
@@ -100,12 +108,16 @@ export function useQuery<TData>(
 
 // ─── useMutation ─────────────────────────────────────────────────────────────
 
-export interface UseMutationResult<TData, TVariables> {
+export interface UseMutationResult<
+    TData,
+    TVariables,
+    TError extends Error = Error,
+> {
     mutate: (variables: TVariables) => void;
     mutateAsync: (variables: TVariables) => Promise<TData>;
     status: MutationStatus;
     data: TData | undefined;
-    error: unknown;
+    error: TError | null;
     isPending: boolean;
     isSuccess: boolean;
     isError: boolean;
@@ -113,18 +125,22 @@ export interface UseMutationResult<TData, TVariables> {
     reset: () => void;
 }
 
-interface MutationState<TData> {
+interface MutationState<TData, TError extends Error> {
     status: MutationStatus;
     data: TData | undefined;
-    error: unknown;
+    error: TError | null;
 }
 
 const IDLE_STATE = { status: 'idle' as const, data: undefined, error: null };
 
-export function useMutation<TData, TVariables = void>(
+export function useMutation<
+    TData,
+    TVariables = void,
+    TError extends Error = Error,
+>(
     options: MutationOptions<TData, TVariables>,
-): UseMutationResult<TData, TVariables> {
-    const [state, setState] = useState<MutationState<TData>>(IDLE_STATE);
+): UseMutationResult<TData, TVariables, TError> {
+    const [state, setState] = useState<MutationState<TData, TError>>(IDLE_STATE);
 
     // keep stable ref so mutate callbacks always use the latest mutationFn
     const mutationFnRef = useRef(options.mutationFn);
@@ -138,7 +154,11 @@ export function useMutation<TData, TVariables = void>(
                 setState({ status: 'success', data, error: null });
                 return data;
             } catch (error) {
-                setState({ status: 'error', data: undefined, error });
+                setState({
+                    status: 'error',
+                    data: undefined,
+                    error: toError(error) as TError,
+                });
                 throw error;
             }
         },

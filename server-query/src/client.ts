@@ -1,3 +1,4 @@
+import { toError } from './to-error.ts';
 import type { MutationState, QueryState } from './types.ts';
 
 const INITIAL_QUERY_STATE: QueryState = {
@@ -42,14 +43,18 @@ export class QueryClient {
         return () => set?.delete(listener);
     }
 
-    getQuerySnapshot<TData>(key: string): QueryState<TData> {
+    getQuerySnapshot<TData, TError extends Error = Error>(
+        key: string,
+    ): QueryState<TData, TError> {
         return (this.queryStates.get(key) ??
-            INITIAL_QUERY_STATE) as QueryState<TData>;
+            INITIAL_QUERY_STATE) as QueryState<TData, TError>;
     }
 
-    getMutationSnapshot<TData>(key: string): MutationState<TData> {
+    getMutationSnapshot<TData, TError extends Error = Error>(
+        key: string,
+    ): MutationState<TData, TError> {
         return (this.mutationStates.get(key) ??
-            INITIAL_MUTATION_STATE) as MutationState<TData>;
+            INITIAL_MUTATION_STATE) as MutationState<TData, TError>;
     }
 
     fetch<TData>(
@@ -95,7 +100,7 @@ export class QueryClient {
                 this.setQueryState(key, {
                     status: 'error',
                     data: undefined,
-                    error,
+                    error: toError(error),
                     dataUpdatedAt: 0,
                     isFetching: false,
                 });
@@ -130,7 +135,7 @@ export class QueryClient {
             this.setMutationState(key, {
                 status: 'error',
                 data: undefined,
-                error,
+                error: toError(error),
             });
             throw error;
         }

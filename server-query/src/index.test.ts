@@ -64,6 +64,22 @@ test('query: error sets status to error and populates error field', async () => 
     assert.equal(state.data, undefined);
 });
 
+test('query: non-Error rejection is normalized into an Error with cause', async () => {
+    const client = createQueryClient();
+    const key = JSON.stringify(['badString']);
+
+    await assert.rejects(
+        () => client.fetch(key, () => Promise.reject('boom')),
+        // the original value is rethrown untouched
+        (thrown) => thrown === 'boom',
+    );
+
+    const state = client.getQuerySnapshot(key);
+    assert.ok(state.error instanceof Error);
+    assert.equal(state.error.message, 'boom');
+    assert.equal(state.error.cause, 'boom');
+});
+
 test('mutation: state transitions idle → pending → success', async () => {
     const client = createQueryClient();
     const key = JSON.stringify(['savePokemon']);
@@ -99,6 +115,25 @@ test('mutation: error sets status to error and populates error field', async () 
     assert.equal(state.status, 'error');
     assert.equal(state.error, boom);
     assert.equal(state.data, undefined);
+});
+
+test('mutation: non-Error rejection is normalized into an Error with cause', async () => {
+    const client = createQueryClient();
+    const key = JSON.stringify(['failMutationString']);
+
+    await assert.rejects(
+        () =>
+            client.executeMutation(
+                key,
+                () => Promise.reject({ code: 500 }),
+                undefined,
+            ),
+        (thrown) => (thrown as { code: number }).code === 500,
+    );
+
+    const state = client.getMutationSnapshot(key);
+    assert.ok(state.error instanceof Error);
+    assert.deepEqual(state.error.cause, { code: 500 });
 });
 
 test('invalidateQueries: triggers refetch for active key ignoring staleTime', async () => {

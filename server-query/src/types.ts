@@ -1,18 +1,18 @@
 export type QueryStatus = 'pending' | 'success' | 'error';
 export type MutationStatus = 'idle' | 'pending' | 'success' | 'error';
 
-export interface QueryState<TData = unknown> {
+export interface QueryState<TData = unknown, TError extends Error = Error> {
     status: QueryStatus;
     data: TData | undefined;
-    error: unknown;
+    error: TError | null;
     dataUpdatedAt: number;
     isFetching: boolean;
 }
 
-export interface MutationState<TData = unknown> {
+export interface MutationState<TData = unknown, TError extends Error = Error> {
     status: MutationStatus;
     data: TData | undefined;
-    error: unknown;
+    error: TError | null;
 }
 
 export interface QueryOptions<TData = unknown> {
