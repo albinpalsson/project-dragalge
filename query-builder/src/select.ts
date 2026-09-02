@@ -1,7 +1,7 @@
 import { QueryBuilderBase } from './base.ts';
 import type { CompiledQuery, DbClient, Selectable } from './types.ts';
-import type { JoinClause, WhereClause } from './utils.ts';
-import { buildWhereClause, q } from './utils.ts';
+import type { JoinClause, WhereClause, WhereOperator } from './utils.ts';
+import { buildWhereClause, createWhereClause, q } from './utils.ts';
 
 export class SelectQueryBuilder<
     DB,
@@ -25,11 +25,25 @@ export class SelectQueryBuilder<
         return this;
     }
 
-    where(column: string, _op: '=', value: unknown): SelectQueryBuilder<DB, T> {
+    where(
+        column: string,
+        operator: '=',
+        value: unknown,
+    ): SelectQueryBuilder<DB, T>;
+    where(
+        column: string,
+        operator: 'in',
+        values: readonly unknown[],
+    ): SelectQueryBuilder<DB, T>;
+    where(
+        column: string,
+        operator: WhereOperator,
+        value: unknown,
+    ): SelectQueryBuilder<DB, T> {
         return new SelectQueryBuilder(
             this._client,
             this._table,
-            [...this._wheres, { column, value }],
+            [...this._wheres, createWhereClause(column, operator, value)],
             this._join,
         );
     }

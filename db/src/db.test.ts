@@ -120,6 +120,122 @@ describe('unit: SQL operations', () => {
         ]);
     });
 
+    it('selects scalar values with IN and composes it with equality', () => {
+        const engine = makePokemonDb();
+        engine.execute(
+            'INSERT INTO pokemon (id, name, caught, level) VALUES (?, ?, ?, ?), (?, ?, ?, ?), (?, ?, ?, ?)',
+            [
+                1,
+                'Sprigatito',
+                false,
+                5,
+                2,
+                'Fuecoco',
+                true,
+                5,
+                3,
+                'Quaxly',
+                false,
+                5,
+            ],
+        );
+
+        const rows = engine.execute(
+            'SELECT * FROM pokemon WHERE name IN (?, ?, ?) AND caught = ?',
+            ['Sprigatito', 'Fuecoco', 'missing', false],
+        );
+
+        assert.deepEqual(rows, [
+            { id: 1, name: 'Sprigatito', caught: false, level: 5 },
+        ]);
+    });
+
+    it('filters joined rows with IN', () => {
+        const engine = makePokemonDb();
+        engine.execute(
+            'INSERT INTO pokemon (id, name, caught, level) VALUES (?, ?, ?, ?), (?, ?, ?, ?)',
+            [1, 'Pikachu', false, 5, 2, 'Raichu', false, 20],
+        );
+        engine.execute(
+            'INSERT INTO encounters (pokemon_id, location) VALUES (?, ?), (?, ?)',
+            [1, 'Forest', 2, 'Power Plant'],
+        );
+
+        const rows = engine.execute(
+            'SELECT * FROM encounters INNER JOIN pokemon ON encounters.pokemon_id = pokemon.id WHERE name IN (?)',
+            ['Raichu'],
+        );
+
+        assert.deepEqual(rows, [
+            {
+                pokemon_id: 2,
+                location: 'Power Plant',
+                id: 2,
+                name: 'Raichu',
+                caught: false,
+                level: 20,
+            },
+        ]);
+    });
+
+    it('updates and deletes rows with IN', () => {
+        const engine = makePokemonDb();
+        engine.execute(
+            'INSERT INTO pokemon (id, name, caught, level) VALUES (?, ?, ?, ?), (?, ?, ?, ?), (?, ?, ?, ?)',
+            [
+                1,
+                'Sprigatito',
+                false,
+                5,
+                2,
+                'Fuecoco',
+                false,
+                5,
+                3,
+                'Quaxly',
+                false,
+                5,
+            ],
+        );
+
+        engine.execute('UPDATE pokemon SET caught = ? WHERE id IN (?, ?)', [
+            true,
+            1,
+            3,
+        ]);
+        assert.deepEqual(
+            engine
+                .execute('SELECT * FROM pokemon WHERE caught = ?', [true])
+                .map((row) => row.id),
+            [1, 3],
+        );
+
+        engine.execute('DELETE FROM pokemon WHERE id IN (?, ?)', [1, 2]);
+        assert.deepEqual(engine.execute('SELECT * FROM pokemon', []), [
+            { id: 3, name: 'Quaxly', caught: true, level: 5 },
+        ]);
+    });
+
+    it('rejects malformed IN lists and incorrect parameter counts', () => {
+        const engine = makePokemonDb();
+
+        assert.throws(() =>
+            engine.execute('SELECT * FROM pokemon WHERE id IN ()', []),
+        );
+        assert.throws(() =>
+            engine.execute('SELECT * FROM pokemon WHERE id IN (?, 2)', [1]),
+        );
+        assert.throws(() =>
+            engine.execute('SELECT * FROM pokemon WHERE id IN (?,)', [1]),
+        );
+        assert.throws(() =>
+            engine.execute('SELECT * FROM pokemon WHERE id IN (?, ?)', [1]),
+        );
+        assert.throws(() =>
+            engine.execute('SELECT * FROM pokemon WHERE id IN (?)', [1, 2]),
+        );
+    });
+
     it('supports multi-row INSERT tuples in one statement', () => {
         const engine = new DB();
         engine.execute('CREATE TABLE pokemon (id INT, level INT)', []);

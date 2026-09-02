@@ -50,6 +50,12 @@ const rows = await db
   .execute()
 // Promise<MyDB['pokemon'][]>
 
+const starters = await db
+  .selectFrom('pokemon')
+  .where('name', 'in', ['Sprigatito', 'Fuecoco', 'Quaxly'] as const)
+  .selectAll()
+  .execute()
+
 const row = await db.selectFrom('pokemon').where('id', '=', 1).selectAll().executeTakeFirst()
 // Promise<MyDB['pokemon'] | undefined>
 
@@ -95,6 +101,8 @@ await db.deleteFrom('pokemon').where('id', '=', 1).execute()
 
 - Identifiers are double-quoted: `"pokemon"`, `"caught"`
 - Positional `?` placeholders (SQLite-compatible)
+- Scalar `IN` values expand to one positional placeholder per value
+- Empty `IN` arrays throw an error instead of producing invalid SQL
 - `execute()` is async; adapters for sync drivers wrap in `Promise.resolve`
 
 ---
@@ -108,7 +116,7 @@ In scope:
 
 Out of scope:
 - Compile-time validation of column names in `where`, `innerJoin`
-- Operator validation beyond the `'='` string literal type
+- Column names and value types in WHERE predicates
 - Join correctness checks
 
 ---
@@ -117,7 +125,8 @@ Out of scope:
 
 - Multiple JOINs per query
 - LEFT / RIGHT / FULL joins
-- OR conditions, IN, LIKE, range operators
+- OR conditions, NOT IN, LIKE, range operators
+- Tuple IN and IN subqueries
 - ORDER BY / LIMIT / OFFSET / DISTINCT
 - GROUP BY / HAVING
 - Subqueries
@@ -134,7 +143,8 @@ interface KyselyLite<DBSchema> {
 
 interface SelectQueryBuilder<TResultRow> {
   selectAll(): this;
-  where(column: string, operator: string, value: unknown): this;
+  where(column: string, operator: '=', value: unknown): this;
+  where(column: string, operator: 'in', values: readonly unknown[]): this;
   innerJoin(table: string, leftColumn: string, rightColumn: string): this;
   compile(): CompiledQuery;
   execute<TOverride = TResultRow>(): Promise<Array<TOverride>>;
@@ -161,7 +171,7 @@ Execution rule:
 - [ ] Compilation contract: compile() returns SQL + positional params
 - [ ] Type safety scope: result type inference from table selection works
 - [ ] Type safety scope: invalid column names are runtime errors (not compile-time)
-- [ ] WHERE clause building: Single condition, multiple AND (equality only)
+- [ ] WHERE clause building: equality and scalar IN conditions joined by AND
 - [ ] JOIN support: one INNER JOIN equality condition
 - [ ] Execution: get(), first()
 - [ ] INSERT: Single row, multiple rows
@@ -186,7 +196,7 @@ Execution rule:
 
 ### Core Implementation
 - [ ] Create `Query` class with fluent API
-- [ ] Implement WHERE builder: `where()` (equality only)
+- [ ] Implement WHERE builder: `where()` (equality and scalar IN)
 - [ ] Implement JOIN builder: `innerJoin()` (single join only)
 - [ ] Implement SELECT modifier: `selectAll()`
 - [ ] Implement fetch methods: `get()`, `first()`

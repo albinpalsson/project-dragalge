@@ -22,6 +22,10 @@ interface DBOptions {
     growthFactor?: number;
 }
 
+type BoundWhereClause =
+    | { type: 'equals'; column: string; value: unknown }
+    | { type: 'in'; column: string; values: ReadonlySet<unknown> };
+
 function makeSchema(columns: ColumnInput[]): TableSchema {
     let offset = 1; // byte 0 is the status byte
     const resolved: ColumnDefinition[] = columns.map((col) => {
@@ -112,15 +116,15 @@ export class DB {
 
         if (stmt.type === 'select') {
             const table = this.getTable(stmt.table);
+            const wheres = this.bindWhere(stmt.wheres, parameters);
             if (stmt.join) {
                 return this.executeJoinSelect(
                     table,
                     stmt.join,
-                    stmt.wheres,
-                    parameters,
+                    wheres,
                 );
             }
-            return this.executeSelect(table, stmt.wheres, parameters);
+            return this.executeSelect(table, wheres);
         }
 
         if (stmt.type === 'insert') {
@@ -156,7 +160,10 @@ export class DB {
 
         if (stmt.type === 'delete') {
             const table = this.getTable(stmt.table);
-            this.executeDelete(table, stmt.wheres, parameters);
+            this.executeDelete(
+                table,
+                this.bindWhere(stmt.wheres, parameters),
+            );
             this.scheduleWrite();
             return [];
         }
@@ -216,13 +223,12 @@ export class DB {
 
     private executeSelect(
         table: TableStorage,
-        wheres: WhereClause[],
-        params: readonly unknown[],
+        wheres: BoundWhereClause[],
     ): Record<string, unknown>[] {
         const rowCount = table.view.getUint32(0, true);
         const result: Record<string, unknown>[] = [];
         for (let i = 0; i < rowCount; i++) {
-            if (this.matchesWhere(table, i, wheres, params)) {
+            if (this.matchesWhere(table, i, wheres)) {
                 result.push(decodeRow(table, i));
             }
         }
@@ -232,8 +238,7 @@ export class DB {
     private executeJoinSelect(
         leftTable: TableStorage,
         join: JoinClause,
-        wheres: WhereClause[],
-        params: readonly unknown[],
+        wheres: BoundWhereClause[],
     ): Record<string, unknown>[] {
         const rightTable = this.getTable(join.table);
         const leftCount = leftTable.view.getUint32(0, true);
@@ -284,7 +289,7 @@ export class DB {
                     rightRowCache.set(j, rightRow);
                 }
                 const merged = { ...leftRow, ...rightRow };
-                if (this.matchesWhereObject(merged, wheres, params)) {
+                if (this.matchesWhereObject(merged, wheres)) {
                     result.push(merged);
                 }
             }
@@ -298,13 +303,19 @@ export class DB {
         params: readonly unknown[],
         wheres: WhereClause[],
     ): void {
+        if (params.length < setCols.length) {
+            throw new Error(
+                `UPDATE expected at least ${setCols.length} parameters, got ${params.length}`,
+            );
+        }
         const whereParams = params.slice(setCols.length);
+        const boundWheres = this.bindWhere(wheres, whereParams);
         const setColumns = setCols.map((colName) =>
             this.getColumn(table, colName),
         );
         const rowCount = table.view.getUint32(0, true);
         for (let i = 0; i < rowCount; i++) {
-            if (this.matchesWhere(table, i, wheres, whereParams)) {
+            if (this.matchesWhere(table, i, boundWheres)) {
                 const slotOffset = HEADER_BYTES + i * table.schema.rowSize;
                 for (let ci = 0; ci < setColumns.length; ci++) {
                     const col = setColumns[ci];
@@ -322,13 +333,12 @@ export class DB {
 
     private executeDelete(
         table: TableStorage,
-        wheres: WhereClause[],
-        params: readonly unknown[],
+        wheres: BoundWhereClause[],
     ): void {
         let rowCount = table.view.getUint32(0, true);
         let i = 0;
         while (i < rowCount) {
-            if (this.matchesWhere(table, i, wheres, params)) {
+            if (this.matchesWhere(table, i, wheres)) {
                 rowCount--;
                 if (i < rowCount) {
                     copySlot(table, rowCount, i); // swap last into deleted slot
@@ -345,16 +355,20 @@ export class DB {
     private matchesWhere(
         table: TableStorage,
         slotIndex: number,
-        wheres: WhereClause[],
-        params: readonly unknown[],
+        wheres: BoundWhereClause[],
     ): boolean {
         const slotOffset = HEADER_BYTES + slotIndex * table.schema.rowSize;
-        for (let i = 0; i < wheres.length; i++) {
-            const col = this.getColumn(table, wheres[i].column);
-            if (
-                decodeValue(table.view, slotOffset + col.offset, col) !==
-                params[i]
-            ) {
+        for (const where of wheres) {
+            const col = this.getColumn(table, where.column);
+            const value = decodeValue(
+                table.view,
+                slotOffset + col.offset,
+                col,
+            );
+            if (where.type === 'equals' && value !== where.value) {
+                return false;
+            }
+            if (where.type === 'in' && !where.values.has(value)) {
                 return false;
             }
         }
@@ -374,15 +388,44 @@ export class DB {
 
     private matchesWhereObject(
         row: Record<string, unknown>,
-        wheres: WhereClause[],
-        params: readonly unknown[],
+        wheres: BoundWhereClause[],
     ): boolean {
-        for (let i = 0; i < wheres.length; i++) {
-            if (row[wheres[i].column] !== params[i]) {
+        for (const where of wheres) {
+            const value = row[where.column];
+            if (where.type === 'equals' && value !== where.value) {
+                return false;
+            }
+            if (where.type === 'in' && !where.values.has(value)) {
                 return false;
             }
         }
         return true;
+    }
+
+    private bindWhere(
+        wheres: WhereClause[],
+        params: readonly unknown[],
+    ): BoundWhereClause[] {
+        let parameterIndex = 0;
+        const bound = wheres.map((where): BoundWhereClause => {
+            if (where.type === 'equals') {
+                const value = params[parameterIndex];
+                parameterIndex++;
+                return { ...where, value };
+            }
+            const values = params.slice(
+                parameterIndex,
+                parameterIndex + where.parameterCount,
+            );
+            parameterIndex += where.parameterCount;
+            return { type: 'in', column: where.column, values: new Set(values) };
+        });
+        if (parameterIndex !== params.length) {
+            throw new Error(
+                `WHERE expected ${parameterIndex} parameters, got ${params.length}`,
+            );
+        }
+        return bound;
     }
 
     private invalidateTableIndexes(name: string): void {

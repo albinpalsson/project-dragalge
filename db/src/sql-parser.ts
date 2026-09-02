@@ -1,8 +1,8 @@
 import type { ColumnInput } from './types.ts';
 
-export interface WhereClause {
-    column: string;
-}
+export type WhereClause =
+    | { type: 'equals'; column: string }
+    | { type: 'in'; column: string; parameterCount: number };
 export interface JoinClause {
     table: string;
     leftCol: string;
@@ -303,10 +303,33 @@ function parseWhere(p: Parser): WhereClause[] {
     const wheres: WhereClause[] = [];
     while (!p.done()) {
         const column = p.consume();
-        p.expect('=');
-        p.expect('?');
-        wheres.push({ column });
-        if (p.peek() !== 'AND') {
+        if (p.peek() === '=') {
+            p.expect('=');
+            p.expect('?');
+            wheres.push({ type: 'equals', column });
+        } else if (p.peek() === 'IN') {
+            p.expect('IN');
+            p.expect('(');
+            let parameterCount = 0;
+            if (p.peek() === ')') {
+                throw new Error('IN requires at least one placeholder');
+            }
+            while (true) {
+                p.expect('?');
+                parameterCount++;
+                if (p.peek() === ')') {
+                    break;
+                }
+                p.expect(',');
+            }
+            p.expect(')');
+            wheres.push({ type: 'in', column, parameterCount });
+        } else {
+            throw new Error(
+                `Expected = or IN, got ${p.raw() || 'end of input'}`,
+            );
+        }
+        if (p.done()) {
             break;
         }
         p.expect('AND');

@@ -45,6 +45,37 @@ describe('select', () => {
         assert.deepEqual(parameters, [false, 'Pikachu']);
     });
 
+    it('where in expands readonly values into positional parameters', () => {
+        const names = ['Sprigatito', 'Fuecoco', 'Quaxly'] as const;
+        const { sql, parameters } = db
+            .selectFrom('pokemon')
+            .selectAll()
+            .where('name', 'in', names)
+            .where('caught', '=', false)
+            .compile();
+        assert.equal(
+            sql,
+            'select * from "pokemon" where "name" in (?, ?, ?) and "caught" = ?',
+        );
+        assert.deepEqual(parameters, [
+            'Sprigatito',
+            'Fuecoco',
+            'Quaxly',
+            false,
+        ]);
+    });
+
+    it('where in rejects an empty value list', () => {
+        assert.throws(
+            () =>
+                db
+                    .selectFrom('pokemon')
+                    .selectAll()
+                    .where('name', 'in', []),
+            /IN requires at least one value/,
+        );
+    });
+
     it('innerJoin produces correct join clause', () => {
         const { sql, parameters } = db
             .selectFrom('pokemon')
@@ -105,6 +136,19 @@ describe('update', () => {
         assert.equal(sql, 'update "pokemon" set "caught" = ? where "id" = ?');
         assert.deepEqual(parameters, [true, 1]);
     });
+
+    it('supports where in', () => {
+        const { sql, parameters } = db
+            .updateTable('pokemon')
+            .set({ caught: true })
+            .where('id', 'in', [1, 2])
+            .compile();
+        assert.equal(
+            sql,
+            'update "pokemon" set "caught" = ? where "id" in (?, ?)',
+        );
+        assert.deepEqual(parameters, [true, 1, 2]);
+    });
 });
 
 describe('delete', () => {
@@ -115,5 +159,14 @@ describe('delete', () => {
             .compile();
         assert.equal(sql, 'delete from "pokemon" where "id" = ?');
         assert.deepEqual(parameters, [1]);
+    });
+
+    it('supports where in', () => {
+        const { sql, parameters } = db
+            .deleteFrom('pokemon')
+            .where('id', 'in', [1, 2])
+            .compile();
+        assert.equal(sql, 'delete from "pokemon" where "id" in (?, ?)');
+        assert.deepEqual(parameters, [1, 2]);
     });
 });
