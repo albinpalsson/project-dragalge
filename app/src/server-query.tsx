@@ -39,7 +39,6 @@ export function useClient(): QueryClient {
     return client;
 }
 
-// mirrors the normalization QueryClient applies internally
 function toError(value: unknown): Error {
     if (value instanceof Error) {
         return value;
