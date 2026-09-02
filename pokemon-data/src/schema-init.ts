@@ -61,7 +61,7 @@ export async function initializeDb(
 }
 
 function createEncounterTableSql(tableName: string): string {
-    return `CREATE TABLE ${tableName} (id INT, sub_area_id TINYINT, pokemon_id INT, games CHAR(2), terrain_id TINYINT, min_level TINYINT, max_level TINYINT, morning_rate TINYINT, day_rate TINYINT, evening_rate TINYINT, night_rate TINYINT)`;
+    return `CREATE TABLE ${tableName} (sub_area_id TINYINT, pokemon_id INT, games CHAR(2), terrain_id TINYINT, min_level TINYINT, max_level TINYINT, morning_rate TINYINT, day_rate TINYINT, evening_rate TINYINT, night_rate TINYINT)`;
 }
 
 function canonicalTerrainKey(values: readonly string[]): string {
@@ -310,7 +310,7 @@ export async function insertLocationEncounters(
     terrainIds: Map<string, number>,
 ): Promise<void> {
     for (const location of locations) {
-        const rows = location.encounters.map((encounter, index) => {
+    const rows = location.encounters.map((encounter) => {
             const sub_area_id = subAreaIds.get(encounter.subArea.trim());
             assert(sub_area_id);
             const pokemon_id = pokemonIds.get(encounter.pokemonName);
@@ -319,7 +319,6 @@ export async function insertLocationEncounters(
             assert(terrain_id);
 
             return ({
-            id: index + 1,
             sub_area_id,
             pokemon_id,
             games: canonicalGameValue(encounter.games),

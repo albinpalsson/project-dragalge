@@ -99,7 +99,6 @@ interface StaticPokemonDataDb {
 }
 
 export interface LocationEncounterRow {
-    id: number;
     sub_area_id: number;
     pokemon_id: number;
     games: string;
