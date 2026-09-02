@@ -41,7 +41,8 @@ class FileStoragePlugin {
     async write(blob: Uint8Array) {
         const base64 = Buffer.from(blob).toString('base64');
         const moduleSource = `const data = ${JSON.stringify(base64)};
-export default data;`;
+module.exports = data;
+module.exports.default = data;`;
         await writeFile(this.modulePath, moduleSource);
     }
 }

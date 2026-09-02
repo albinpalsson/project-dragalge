@@ -4,10 +4,10 @@
     "private": true,
     "type": "module",
     "main": "./artifacts/paldea-db.js",
-    "types": "./src/schema.ts",
+    "types": "./src/index.d.ts",
     "exports": {
         ".": {
-            "types": "./src/schema.ts",
+            "types": "./src/index.d.ts",
             "default": "./artifacts/paldea-db.js"
         },
         "./assets-dir": "./src/assets.js",
@@ -15,6 +15,7 @@
     },
     "files": [
         "src/schema.ts",
+        "src/index.d.ts",
         "src/assets.js",
         "artifacts"
     ],
