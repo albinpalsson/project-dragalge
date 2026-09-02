@@ -1,5 +1,5 @@
 import { getGameDb } from './client';
-import type { GameRunRow } from './schema';
+import type { CaughtPokemonRow, GameRunRow } from './schema';
 
 export type GameVariant = 's' | 'v';
 
@@ -42,5 +42,37 @@ export async function createGame(
 
     const row= { id: newName, variant: input.variant };
     await db.insertInto('game_runs').values(row).execute();
+    return row;
+}
+
+export const STARTER_LOCATION_ID = 'starter-choice';
+
+export async function listCaughtPokemon(
+    gameRunId: string,
+): Promise<CaughtPokemonRow[]> {
+    const db = await getGameDb();
+    return db
+        .selectFrom('caught_pokemon')
+        .selectAll()
+        .where('game_run_id', '=', gameRunId)
+        .execute();
+}
+
+export interface AddCaughtPokemonInput {
+    gameRunId: string;
+    pokemonId: number;
+    locationId: string;
+}
+
+export async function addCaughtPokemon(
+    input: AddCaughtPokemonInput,
+) {
+    const db = await getGameDb();
+    const row = {
+        game_run_id: input.gameRunId,
+        pokemon_id: input.pokemonId,
+        location_id: input.locationId,
+    };
+    await db.insertInto('caught_pokemon').values(row).execute();
     return row;
 }

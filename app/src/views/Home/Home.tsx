@@ -5,18 +5,22 @@ import { Modal } from '../../components/Modal';
 import { Select } from '../../components/Select';
 import { TextField } from '../../components/TextField';
 import { GameCard } from './GameCard';
-import { useCreateGame, useGames } from './queries';
+import { useCreateGame, useGameCards } from './queries';
 import {
     generateDefaultGameName,
     type GameVariant,
 } from '../../db/game-db/queries';
 
-export function Home() {
+interface HomeProps {
+    onOpenGame: (gameRunId: string) => void;
+}
+
+export function Home({ onOpenGame }: HomeProps) {
     const [isStartModalOpen, setStartModalOpen] = useState(false);
     const [variant, setVariant] = useState<GameVariant>('s');
     const [name, setName] = useState('');
 
-    const games = useGames();
+    const gameCards = useGameCards();
     const createGame = useCreateGame();
 
     const defaultName = useMemo(
@@ -72,12 +76,23 @@ export function Home() {
 
             <section>
                 <h2>Games</h2>
-                {games.isPending && <p className={mutedText}>Loading...</p>}
-                {games.isSuccess && (
+                {gameCards.isPending && <p className={mutedText}>Loading...</p>}
+                {gameCards.isSuccess && (
                     <ul className={gamesList}>
-                        {(games.data ?? []).map((game) => (
-                            <li key={game.id}>
-                                <GameCard game={game} />
+                        {(gameCards.data ?? []).map((card) => (
+                            <li key={card.game.id}>
+                                <button
+                                    type="button"
+                                    className={gameCardButton}
+                                    onClick={() => onOpenGame(card.game.id)}
+                                >
+                                    <GameCard
+                                        game={card.game}
+                                        caughtPokemon={card.caught.map(
+                                            (row) => row.pokemon,
+                                        )}
+                                    />
+                                </button>
                             </li>
                         ))}
                     </ul>
@@ -110,4 +125,12 @@ const gamesList = css`
 
 const mutedText = css`
   color: var(--color-text-muted);
+`;
+
+const gameCardButton = css`
+  display: block;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
 `;

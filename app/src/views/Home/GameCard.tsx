@@ -1,16 +1,15 @@
 import { css } from '@pokedb2/css-in-js';
 import type { GameRunRow } from '../../db/game-db/schema';
+import type { PokemonRow } from '@pokedb2/pokemon-data';
 import { pokemonIconSrc } from '../../pokemon-icon';
-
-const STARTERS = ['sprigatito', 'fuecoco', 'quaxly'];
 
 interface GameCardProps {
     game: GameRunRow;
+  caughtPokemon: PokemonRow[];
 }
 
-export function GameCard({ game }: GameCardProps) {
-    const starter = STARTERS[Math.floor(Math.random() * STARTERS.length)];
-    const progress = Math.floor(Math.random() * 100);
+export function GameCard({ game, caughtPokemon }: GameCardProps) {
+  const progress = Math.min(caughtPokemon.length * 8, 100);
     const variantColor =
         game.variant === 'v' ? 'var(--color-accent)' : 'var(--color-primary)';
 
@@ -24,16 +23,29 @@ export function GameCard({ game }: GameCardProps) {
                 }}
             />
             <span className={name}>{game.id}</span>
-            <span className={progressLabel}>{progress}%</span>
-            <img
-                className={icon}
-                src={pokemonIconSrc(starter)}
-                alt={starter}
-                loading="lazy"
-            />
+            <span className={progressLabel}>{caughtPokemon.length} caught</span>
+            {caughtPokemon.length > 0 ? (
+              <span className={icons}>
+                {caughtPokemon.slice(0, 6).map((pokemon) => (
+                  <img
+                    key={pokemon.id}
+                    className={icon}
+                    src={pokemonIconSrc(toSlug(pokemon.name))}
+                    alt={pokemon.name}
+                    loading="lazy"
+                  />
+                ))}
+              </span>
+            ) : (
+              <span className={emptyText}>No caught Pokémon</span>
+            )}
         </div>
     );
 }
+
+      function toSlug(name: string): string {
+        return name.toLowerCase();
+      }
 
 const card = css`
   position: relative;
@@ -66,10 +78,25 @@ const progressLabel = css`
   color: var(--color-text-muted);
 `;
 
-const icon = css`
+const icons = css`
   position: absolute;
   right: var(--space-2);
   bottom: var(--space-2);
-  width: 8rem;
-  height: 8rem;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: var(--space-1);
+`;
+
+const icon = css`
+  width: 5.6rem;
+  height: 5.6rem;
+`;
+
+const emptyText = css`
+  position: absolute;
+  right: var(--space-2);
+  bottom: var(--space-2);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
 `;

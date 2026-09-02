@@ -56,6 +56,17 @@ test('randomized starter is persisted for the game run', async ({ page }) => {
     await expect(
         page.getByRole('button', { name: 'Randomize' }),
     ).toBeHidden();
+
+    await page.getByRole('button', { name: 'Open menu' }).click();
+    await page.getByRole('button', { name: 'Home', exact: true }).click();
+    await expect(
+        page.getByRole('button', { name: /starter-run/ }),
+    ).toContainText('1 caught');
+    await expect(
+        page
+            .getByRole('button', { name: /starter-run/ })
+            .getByRole('img', { name: chosenName }),
+    ).toBeVisible();
 });
 
 test('header stays visible across views and the menu navigates', async ({

@@ -1,22 +1,80 @@
+import { useState } from 'react';
 import { css } from '@pokedb2/css-in-js';
+import { Drawer } from '../components/Drawer';
+import type { ActiveView } from '../router';
+import { About } from './About';
+import { AppHeader } from './AppHeader';
+import { Game } from './Game/Game';
 import { Home } from './Home/Home';
-import { ThemeToggle } from './ThemeToggle';
 
 export function App() {
-    return (
-        <main>
-            <div className={header}>
-                <h1>PokeDB</h1>
-                <ThemeToggle />
-            </div>
+    const [activeView, setActiveView] = useState<ActiveView>({ view: 'home' });
+    const [isMenuOpen, setMenuOpen] = useState(false);
 
-            <Home />
-        </main>
+    const navigate = (next: ActiveView) => {
+        setActiveView(next);
+        setMenuOpen(false);
+    };
+
+    return (
+        <>
+            <AppHeader onOpenMenu={() => setMenuOpen(true)} />
+
+            {isMenuOpen && (
+                <Drawer title="Menu" onClose={() => setMenuOpen(false)}>
+                    <nav className={menuNav}>
+                        <button
+                            type="button"
+                            className={menuLink}
+                            onClick={() => navigate({ view: 'home' })}
+                        >
+                            Home
+                        </button>
+                        <button
+                            type="button"
+                            className={menuLink}
+                            onClick={() => navigate({ view: 'about' })}
+                        >
+                            About
+                        </button>
+                    </nav>
+                </Drawer>
+            )}
+
+            <main>
+                {activeView.view === 'home' && (
+                    <Home
+                        onOpenGame={(gameRunId) =>
+                            navigate({ view: 'game', gameRunId })
+                        }
+                    />
+                )}
+                {activeView.view === 'game' && (
+                    <Game gameRunId={activeView.gameRunId} />
+                )}
+                {activeView.view === 'about' && <About />}
+            </main>
+        </>
     );
 }
 
-const header = css`
+const menuNav = css`
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: var(--space-2);
+`;
+
+const menuLink = css`
+  padding: var(--space-2) var(--space-3);
+  border: 0.1rem solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--color-text);
+  font-size: var(--font-size-base);
+  text-align: left;
+  cursor: pointer;
+
+  &:hover {
+    background: var(--color-hover-overlay);
+  }
 `;
