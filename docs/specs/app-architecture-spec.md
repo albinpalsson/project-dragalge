@@ -117,7 +117,7 @@ The app uses **two separate `DB` instances** (`@pokedb2/db`), each wrapped in `c
    - `tera_raid_log`: id, game_run_id, pokemon_id, completed_at
    - `settings`: game_run_id, key, value
 
-The app DB additionally flows through `@pokedb2/server-query`'s `QueryClient`/`useQuery`/`useMutation` to sync with React state; the Pokémon Data DB is queried directly since it never changes.
+Both DBs flow through the data access boundary below. The App/Game DB additionally uses `@pokedb2/server-query`'s `QueryClient`/`useQuery`/`useMutation` for React cache sync and mutation invalidation. The Pokémon Data DB is read-only, but components still access it through backend-shaped query functions and frontend hooks rather than direct query-builder calls.
 
 **Schema versioning**: the app DB's `LocalStoragePlugin` stores its blob under a version-suffixed key (`pokedb2:game-db:v{N}`, `N` from `GAME_DB_SCHEMA_VERSION` in `app/src/db/game-db/schema.ts`). Bump `GAME_DB_SCHEMA_VERSION` whenever the DDL changes. A mismatched/missing version key is treated as no existing data and the schema is (re)initialized fresh — old versioned keys are left in place rather than deleted, so a future migration step can read them explicitly by name instead of trying to decode incompatible data under the current schema.
 
@@ -127,7 +127,7 @@ The ordered Game view timeline is application-specific, not general Pokémon dat
 
 ### Data Access Layer
 
-Structured to look like a full-stack app with a real backend, easing a future migration off in-browser DBs:
+Structured to look like a full-stack app with a real backend, easing a future migration off in-browser DBs. Even while both databases run in the browser, code should assume a backend query may later become `network request + DB lookup`, and that the two databases may live in different places.
 
 1. **`db/` calls directory** — one subdirectory per database (e.g. `src/db/pokemon-data/`, `src/db/game-db/`), each exposing plain async functions that wrap `@pokedb2/query-builder` calls, e.g. `listPokemonForLocation(locationId)`, `getCaughtPokemon(gameRunId)`, `addCaughtPokemon(input)`. These functions are the only code that touches `selectFrom`/`insertInto`/etc. directly — everything else calls through them, as if they were server endpoints.
 2. **Co-located `queries.ts` files** — next to the view/component that needs them, containing `useQuery`/`useMutation` wrappers (`@pokedb2/server-query` via `app/src/server-query.tsx`) whose `queryFn`/`mutationFn` just calls into a `db/` function, e.g.:
@@ -143,6 +143,116 @@ export function useLocationEncounters(locationId: string) {
 ```
 
 Components only ever import from their local `queries.ts`, never call `db/` functions or the query builder directly.
+
+#### Backend Query Contract
+
+Backend query functions in `app/src/db/**` are endpoint-shaped functions, not view-model builders:
+
+- A backend query function is a **single database** operation: it reads or writes one database only. `app/src/db/pokemon-data/**` may only touch the Pokémon Data DB; `app/src/db/game-db/**` may only touch the App/Game DB.
+- A backend query function returns data that is trivial to serialize across an API boundary: primitives, arrays, and plain records. Do not return `Map`, `Set`, class instances, functions, DB handles, query-builder objects, React state, or React cache objects.
+- A backend query function should expose a reusable data resource even if there is currently one caller. Avoid hiding several reusable reads inside one broad backend function just because a single screen needs the combined result today.
+- Mutation functions should return the affected serializable row or DTO and leave cache invalidation to frontend hooks.
+
+Good backend-shaped examples:
+
+```ts
+export async function listCaughtPokemon(gameRunId: string): Promise<CaughtPokemonRow[]> {
+  return (await getGameDb())
+    .selectFrom('caught_pokemon')
+    .selectAll()
+    .where('game_run_id', '=', gameRunId)
+    .execute();
+}
+
+export async function listPokemonByIds(ids: readonly number[]): Promise<PokemonRow[]> {
+  if (ids.length === 0) {
+    return [];
+  }
+
+  return (await getPokemonDb())
+    .selectFrom('pokemon')
+    .selectAll()
+    .where('id', 'in', ids)
+    .execute();
+}
+```
+
+#### Frontend Query Granularity and Cacheability
+
+Frontend `queries.ts` files should prefer fine-grained cacheable reads with precise `queryKey`s. This better matches a future server-backed app because the cache can reuse stable resources and mutations can invalidate only the data they changed.
+
+Examples of cacheable query resources:
+
+- `['games']` for game-run rows.
+- `['caught-pokemon', gameRunId]` for caught rows in one run.
+- `['pokemon-by-ids', sortedIds]` for Pokémon rows referenced by id. Sort and dedupe id arrays before using them as a query key so equivalent sets share a cache entry.
+- `['location-encounter-rows', locationId]` for raw encounter rows in one location.
+
+Do not split every query mechanically. A backend query may still return a purpose-built serializable DTO when the underlying data is naturally one resource, one database owns all the data, and callers benefit from a stable API shape. The important constraint is that broad backend functions should not erase independently reusable cache keys or cross database boundaries.
+
+#### Two-Database Composition
+
+The Pokémon Data DB and App/Game DB should never be joined inside the same backend query function. They may later live in separate places, such as Pokémon data on a backend service and game-run data in local app storage, or vice versa.
+
+When a UI needs data from both databases, compose it in frontend hooks by combining separate cacheable queries:
+
+```ts
+export function useGameCards() {
+  const gamesQuery = useGames();
+  const caughtQueries = useCaughtPokemonForGames(gamesQuery.data ?? []);
+  const pokemonByIdQuery = usePokemonByIdMap(
+    collectPokemonIds(caughtQueries.data ?? []),
+  );
+
+  return buildGameCards(
+    gamesQuery.data ?? [],
+    caughtQueries.data ?? [],
+    pokemonByIdQuery.data ?? new Map(),
+  );
+}
+```
+
+The exact hook shape may vary with the capabilities of `@pokedb2/server-query`, but the boundary is fixed: frontend hooks may compose multiple queries; backend query functions may not combine the two DBs.
+
+#### Serializable Backend Results, Rich Frontend Hooks
+
+Frontend hooks and component-local helpers are the right place for non-serializable ergonomics and view-specific enrichment.
+
+For example, keep the backend result plain:
+
+```ts
+export async function listPokemonByIds(ids: readonly number[]) {
+  return pokemonRows;
+}
+```
+
+Then build richer lookup structures in a frontend hook:
+
+```ts
+export function usePokemonByIdMap(ids: readonly number[]) {
+  const query = useQuery({
+    queryKey: ['pokemon-by-ids', normalizeIds(ids)],
+    queryFn: () => listPokemonByIds(normalizeIds(ids)),
+  });
+
+  return {
+    ...query,
+    data: query.data
+      ? new Map(query.data.map((pokemon) => [pokemon.id, pokemon]))
+      : undefined,
+  };
+}
+```
+
+Likewise, a location encounter backend query should return serializable pieces such as `location`, `encounterRows`, `pokemonRows`, `subAreas`, and `terrainTypes`. A frontend hook can then build `LocationEncounterView[]`, lookup maps, level summaries, or other view models.
+
+#### Current Refactor Targets
+
+The current codebase has a few places that predate this stricter boundary and should be refactored before a backend split:
+
+- `app/src/views/Home/queries.ts` `useGameCards()` currently combines game-db reads with Pokémon Data DB reads inside one broad query. It should be split into cacheable constituent hooks and a frontend composition helper.
+- `app/src/db/pokemon-data/queries.ts` `getLocationEncounterDetails()` currently enriches raw encounter data in the DB layer. It should return serializable raw data, with `LocationEncounterView` construction moved to a frontend hook.
+- Mutation hooks such as `useCreateGame()` and `useCatchPokemonMutation()` should invalidate the raw datasets they change, such as `['games']` or `['caught-pokemon', gameRunId]`. If a composed query key remains necessary, document why that cache entry cannot be derived from constituent query state.
 
 ### Pokémon Icons
 
