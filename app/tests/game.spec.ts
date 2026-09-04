@@ -69,6 +69,51 @@ test('randomized starter is persisted for the game run', async ({ page }) => {
     ).toBeVisible();
 });
 
+test('poco path encounter can be caught and persists in the timeline', async ({
+    page,
+}) => {
+    await page.goto('/');
+    await createGame(page, 'poco-run');
+
+    await page.getByRole('button', { name: /poco-run/ }).click();
+
+    await expect(
+        page.getByRole('heading', { name: 'Starter - Cabo poco' }),
+    ).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Poco Path' })).toBeVisible();
+
+    const pocoPath = page.locator('article', { hasText: 'Poco Path' });
+    await expect(pocoPath).toContainText('Lv 2-5');
+    await expect(pocoPath).toContainText('8 encounters');
+
+    await pocoPath.getByRole('button', { name: 'Show encounters' }).click();
+    await expect(
+        pocoPath.getByRole('cell', { name: 'Hoppip', exact: true }),
+    ).toBeVisible();
+    const storedGameDb = await page.evaluate(() => {
+        const key = Object.keys(localStorage).find((candidate) =>
+            candidate.startsWith('pokedb2:game-db:'),
+        );
+        if (!key) {
+            throw new Error('Game DB was not persisted');
+        }
+        return { key, value: localStorage.getItem(key) };
+    });
+
+    await pocoPath.getByRole('button', { name: 'Catch Hoppip' }).click();
+    await expect(pocoPath).toContainText('Caught Hoppip');
+    await page.waitForFunction(
+        ({ key, value }) => localStorage.getItem(key) !== value,
+        storedGameDb,
+    );
+
+    await page.reload();
+    await page.getByRole('button', { name: /poco-run/ }).click();
+    await expect(
+        page.locator('article', { hasText: 'Poco Path' }),
+    ).toContainText('Caught Hoppip');
+});
+
 test('header stays visible across views and the menu navigates', async ({
     page,
 }) => {

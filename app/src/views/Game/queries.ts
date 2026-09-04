@@ -5,7 +5,11 @@ import {
     type AddCaughtPokemonInput,
     listCaughtPokemon,
 } from '../../db/game-db/queries';
-import { listStarters } from '../../db/pokemon-data/queries';
+import {
+    getLocationEncounterDetails,
+    listStarters,
+    type LocationEncounterView,
+} from '../../db/pokemon-data/queries';
 
 const caughtQueryKey = (gameRunId: string) => ['caught-pokemon', gameRunId];
 
@@ -23,6 +27,13 @@ export function useCaughtPokemonQuery(gameRunId: string) {
     });
 }
 
+export function useLocationEncountersQuery(locationId: string) {
+    return useQuery({
+        queryKey: ['location-encounters', locationId],
+        queryFn: () => getLocationEncounterDetails(locationId),
+    });
+}
+
 export function useCatchPokemonMutation() {
     const client = useClient();
     return useMutation({
@@ -33,3 +44,5 @@ export function useCatchPokemonMutation() {
         },
     });
 }
+
+export type { LocationEncounterView };

@@ -121,6 +121,10 @@ The app DB additionally flows through `@pokedb2/server-query`'s `QueryClient`/`u
 
 **Schema versioning**: the app DB's `LocalStoragePlugin` stores its blob under a version-suffixed key (`pokedb2:game-db:v{N}`, `N` from `GAME_DB_SCHEMA_VERSION` in `app/src/db/game-db/schema.ts`). Bump `GAME_DB_SCHEMA_VERSION` whenever the DDL changes. A mismatched/missing version key is treated as no existing data and the schema is (re)initialized fresh — old versioned keys are left in place rather than deleted, so a future migration step can read them explicitly by name instead of trying to decode incompatible data under the current schema.
 
+### Progression Timeline
+
+The ordered Game view timeline is application-specific, not general Pokémon data. It lives in `app/src/views/Game/progression.ts` as a typed hardcoded manifest of starter, encounter-location, and boss-fight entries. The manifest decides when the tracker presents each location or boss; the Pokémon Data DB only supplies the detailed facts for a rendered entry, such as encounter rows, Pokémon names, terrain, sub-areas, boss rosters, moves, and abilities.
+
 ### Data Access Layer
 
 Structured to look like a full-stack app with a real backend, easing a future migration off in-browser DBs:
