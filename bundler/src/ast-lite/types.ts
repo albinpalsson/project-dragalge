@@ -1,4 +1,4 @@
-﻿export const AST_LITE_VERSION = 'ast-lite-v1';
+﻿export const AST_LITE_VERSION = 'ast-lite-v2';
 
 export interface ProgramNode {
     type: 'program';

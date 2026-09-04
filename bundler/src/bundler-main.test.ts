@@ -46,6 +46,12 @@ test('bundles a two-file TS app with a CSS import and produces correct js, css, 
                 "if (label === 'ok') console.log(multiply(3, 7));",
                 "if (label !== 'ok') console.log('unexpected');",
                 'console.log(values.join(","), label);',
+                'function buildQuery(whereClause: string): string {',
+                // biome-ignore lint/suspicious/noTemplateCurlyInString: this is bundled TS source, not an interpolation
+                "  return `select * from t${whereClause ? ` where ${whereClause}` : ''}`;",
+                '}',
+                "console.log(buildQuery('id = 1'));",
+                "console.log(buildQuery(''));",
             ].join('\n'),
             'utf8',
         );
@@ -137,5 +143,7 @@ test('bundles a two-file TS app with a CSS import and produces correct js, css, 
         assert.equal(logs[0], 21);
         assert.equal(logs[1], '0,1,2');
         assert.equal(logs[2], 'ok');
+        assert.equal(logs[3], 'select * from t where id = 1');
+        assert.equal(logs[4], 'select * from t');
     });
 });

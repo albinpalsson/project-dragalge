@@ -332,12 +332,15 @@ type CodeMode =
 interface CodeState {
     mode: CodeMode;
     inRegexCharClass: boolean;
+    // Brace depth per open `${`, so a nested template cannot close the outer one.
+    templateBraces: number[];
 }
 
 class CodeStateMachine {
     private readonly state: CodeState = {
         mode: 'code',
         inRegexCharClass: false,
+        templateBraces: [],
     };
     private lastSignificant = '';
     private readonly code: string;
@@ -455,6 +458,24 @@ class CodeStateMachine {
         const next = index + 1 < this.code.length ? this.code[index + 1] : '';
 
         if (this.state.mode === 'code') {
+            const interpolationDepth = this.state.templateBraces.at(-1);
+            if (interpolationDepth !== undefined) {
+                const top = this.state.templateBraces.length - 1;
+                if (ch === '{') {
+                    this.state.templateBraces[top] = interpolationDepth + 1;
+                    return {};
+                }
+                if (ch === '}') {
+                    if (interpolationDepth === 0) {
+                        this.state.templateBraces.pop();
+                        this.state.mode = 'template';
+                        return {};
+                    }
+                    this.state.templateBraces[top] = interpolationDepth - 1;
+                    return {};
+                }
+            }
+
             if (ch === '/' && next === '/') {
                 this.state.mode = 'line-comment';
                 return { consumeTo: index + 1 };
@@ -524,6 +545,11 @@ class CodeStateMachine {
         if (this.state.mode === 'template') {
             if (ch === '\\') {
                 return { consumeTo: index + 1 };
+            }
+            if (ch === '$' && next === '{') {
+                this.state.templateBraces.push(0);
+                this.state.mode = 'code';
+                return { consumeTo: index + 1, significant: '{' };
             }
             if (ch === '`') {
                 this.state.mode = 'code';

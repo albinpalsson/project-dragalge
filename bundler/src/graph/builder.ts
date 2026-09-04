@@ -1,5 +1,6 @@
 ﻿import { stat } from 'node:fs/promises';
 import path from 'node:path';
+import { AST_LITE_VERSION } from '../ast-lite/index.ts';
 import type { Transform } from '../main.ts';
 import { ModuleTransformCache } from '../module-transform-cache.ts';
 import { NodeModulesResolver } from '../node-modules-resolver.ts';
@@ -23,6 +24,7 @@ const buildTransformCacheKey = (
     const transformVersions = transforms.map((transform) => transform.version);
     const parts = [
         BUNDLER_VERSION,
+        `ast:${AST_LITE_VERSION}`,
         `scanner:${SCANNER_VERSION}`,
         ...transformVersions,
     ];
