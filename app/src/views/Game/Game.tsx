@@ -1,5 +1,7 @@
 import { css, cx } from '@pokedb2/css-in-js';
-import { useCaughtPokemonQuery } from './queries';
+import type { EncounterRollRow } from '../../db/game-db/schema';
+import { type RandomizerMode, toRandomizerMode } from '../../randomizer';
+import { useEncounterRollsQuery, useGameRunQuery } from './queries';
 import { EncounterCard } from './EncounterCard';
 import { PROGRESSION, type BossType, type ProgressionEntry } from './progression';
 import { StarterCard } from './StarterCard';
@@ -9,21 +11,30 @@ interface GameProps {
 }
 
 export function Game({ gameRunId }: GameProps) {
-    const caught = useCaughtPokemonQuery(gameRunId);
+    const gameRun = useGameRunQuery(gameRunId);
+    const rolls = useEncounterRollsQuery(gameRunId);
+    const randomizerMode = toRandomizerMode(
+        gameRun.data?.randomizer_mode ?? '',
+    );
 
     return (
         <section>
             <h2>{gameRunId}</h2>
-            {caught.isPending && <p className={mutedText}>Loading...</p>}
-            {caught.isError && <p className={mutedText}>Error loading caught Pokémon. {caught.error?.message}</p>}
-            {caught.isSuccess && (
+            {rolls.isPending && <p className={mutedText}>Loading...</p>}
+            {rolls.isError && (
+                <p className={mutedText}>
+                    Error loading encounters. {String(rolls.error)}
+                </p>
+            )}
+            {rolls.isSuccess && (
                 <ol className={cardList}>
                     {PROGRESSION.map((entry) => (
                         <li key={entry.id}>
                             {renderProgressionEntry(
                                 entry,
                                 gameRunId,
-                                caught.data ?? [],
+                                rolls.data ?? [],
+                                randomizerMode,
                             )}
                         </li>
                     ))}
@@ -36,17 +47,19 @@ export function Game({ gameRunId }: GameProps) {
 function renderProgressionEntry(
     entry: ProgressionEntry,
     gameRunId: string,
-    caught: NonNullable<ReturnType<typeof useCaughtPokemonQuery>['data']>,
+    rolls: EncounterRollRow[],
+    randomizerMode: RandomizerMode,
 ) {
     if (entry.type === 'starter') {
-        return <StarterCard gameRunId={gameRunId} caught={caught} />;
+        return <StarterCard gameRunId={gameRunId} rolls={rolls} />;
     }
     if (entry.type === 'encounter' && entry.isImplemented) {
         return (
             <EncounterCard
                 gameRunId={gameRunId}
                 locationId={entry.id}
-                caught={caught}
+                rolls={rolls}
+                randomizerMode={randomizerMode}
             />
         );
     }

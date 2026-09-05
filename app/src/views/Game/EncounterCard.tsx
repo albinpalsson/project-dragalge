@@ -1,30 +1,61 @@
 import { useState } from 'react';
-import { css } from '@pokedb2/css-in-js';
+import { css, cx } from '@pokedb2/css-in-js';
 import { Button } from '../../components/Button';
-import type { CaughtPokemonRow } from '../../db/game-db/schema';
+import type {
+    EncounterRollRow,
+    EncounterStatus,
+} from '../../db/game-db/schema';
 import { pokemonIconSrc } from '../../pokemon-icon';
 import {
+    getEffectiveWeight,
+    randomizeEncounter,
+    type RandomizerMode,
+} from '../../randomizer';
+import {
     type LocationEncounterView,
-    useCatchPokemonMutation,
+    useAddEncounterRollMutation,
+    useClearEncounterRollMutation,
     useLocationEncountersQuery,
+    useSetEncounterRollStatusMutation,
 } from './queries';
 
 interface EncounterCardProps {
     gameRunId: string;
     locationId: string;
-    caught: CaughtPokemonRow[];
+    rolls: EncounterRollRow[];
+    randomizerMode: RandomizerMode;
 }
+
+const STATUS_LABELS: Record<EncounterStatus, string> = {
+    pending: 'Rolled',
+    caught: 'Caught',
+    missed: 'Missed',
+    eliminated: 'Eliminated',
+};
+
+const RESOLVED_STATUSES: readonly EncounterStatus[] = [
+    'caught',
+    'missed',
+    'eliminated',
+];
 
 export function EncounterCard({
     gameRunId,
     locationId,
-    caught,
+    rolls,
+    randomizerMode,
 }: EncounterCardProps) {
     const [isExpanded, setExpanded] = useState(false);
     const [includeOcean, setIncludeOcean] = useState(false);
     const encountersQuery = useLocationEncountersQuery(locationId);
-    const catchPokemonMutation = useCatchPokemonMutation();
-    const caughtRow = caught.find((row) => row.location_id === locationId);
+    const addRollMutation = useAddEncounterRollMutation();
+    const setStatusMutation = useSetEncounterRollStatusMutation();
+    const clearRollMutation = useClearEncounterRollMutation();
+
+    const roll = rolls.find((row) => row.location_id === locationId);
+    const [pendingGroup, setPendingGroup] = useState<
+        LocationEncounterView[] | null
+    >(null);
     const details = encountersQuery.data;
     const landEncounters = (details?.encounters ?? []).filter(
         (encounter) => encounter.subArea !== 'Ocean',
@@ -36,20 +67,41 @@ export function EncounterCard({
         ? [...landEncounters, ...oceanEncounters]
         : landEncounters;
     const levelRange = getLevelRange(activeEncounters);
-    const caughtEncounter = details?.encounters.find(
-        (encounter) => encounter.pokemonId === caughtRow?.pokemon_id,
+    const rolledEncounter = details?.encounters.find(
+        (encounter) => encounter.pokemonId === roll?.pokemon_id,
     );
 
-    const catchEncounter = (encounter: LocationEncounterView) => {
-        catchPokemonMutation.mutate({
+    const isBusy =
+        addRollMutation.isPending ||
+        setStatusMutation.isPending ||
+        clearRollMutation.isPending;
+
+    const pickEncounter = (encounter: LocationEncounterView) => {
+        setPendingGroup(null);
+        addRollMutation.mutate({
             gameRunId,
-            pokemonId: encounter.pokemonId,
             locationId,
+            pokemonId: encounter.pokemonId,
         });
     };
 
+    const randomize = () => {
+        const group = randomizeEncounter(activeEncounters, randomizerMode);
+        if (!group) {
+            return;
+        }
+        if (group.members.length === 1) {
+            pickEncounter(group.members[0]);
+        } else {
+            setPendingGroup(group.members);
+        }
+    };
+
     return (
-        <article className={card} aria-labelledby={`${locationId}-heading`}>
+        <article
+            className={cx(card, roll && statusStyle(roll.status))}
+            aria-labelledby={`${locationId}-heading`}
+        >
             <div className={header}>
                 <div>
                     <h3 id={`${locationId}-heading`} className={heading}>
@@ -95,28 +147,110 @@ export function EncounterCard({
                         </label>
                     )}
 
-                    {caughtEncounter ? (
-                        <div className={caughtBox}>
+                    {roll && rolledEncounter ? (
+                        <div className={rollBox}>
                             <img
-                                className={caughtIcon}
-                                src={pokemonIconSrc(toSlug(caughtEncounter.name))}
-                                alt={caughtEncounter.name}
+                                className={rollIcon}
+                                src={pokemonIconSrc(toSlug(rolledEncounter.name))}
+                                alt={rolledEncounter.name}
                                 loading="lazy"
                             />
-                            <span>Caught {caughtEncounter.name}</span>
+                            <div>
+                                <p className={rollTitle}>
+                                    {STATUS_LABELS[roll.status]}{' '}
+                                    {rolledEncounter.name}
+                                </p>
+                                <p className={rollMeta}>
+                                    Lv {formatLevelRange(rolledEncounter)} ·{' '}
+                                    {rolledEncounter.subArea} ·{' '}
+                                    {formatWeight(rolledEncounter)}% ·{' '}
+                                    {formatTime(rolledEncounter)}
+                                </p>
+                            </div>
                         </div>
                     ) : (
                         <p className={mutedText}>
-                            Pick a listed Pokemon to mark this encounter as caught.
+                            Randomize or pick an encounter from the list.
                         </p>
                     )}
 
-                    <Button
-                        variant="secondary"
-                        onClick={() => setExpanded((value) => !value)}
-                    >
-                        {isExpanded ? 'Hide encounters' : 'Show encounters'}
-                    </Button>
+                    {pendingGroup && (
+                        <div className={pendingGroupBox}>
+                            <p className={mutedText}>
+                                Rolled a group with multiple forms — pick one:
+                            </p>
+                            <ul className={options}>
+                                {pendingGroup.map((encounter) => (
+                                    <li key={encounter.pokemonId}>
+                                        <button
+                                            type="button"
+                                            className={pickButton}
+                                            onClick={() =>
+                                                pickEncounter(encounter)
+                                            }
+                                            disabled={isBusy}
+                                        >
+                                            {encounter.name} ({encounter.subArea})
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+
+                    <div className={actions}>
+                        <Button
+                            onClick={randomize}
+                            disabled={
+                                isBusy ||
+                                roll !== undefined ||
+                                pendingGroup !== null ||
+                                activeEncounters.length === 0
+                            }
+                        >
+                            Randomize
+                        </Button>
+
+                        {roll &&
+                            RESOLVED_STATUSES.map((status) => (
+                                <Button
+                                    key={status}
+                                    variant="secondary"
+                                    onClick={() =>
+                                        setStatusMutation.mutate({
+                                            gameRunId,
+                                            locationId,
+                                            status,
+                                        })
+                                    }
+                                    disabled={isBusy || roll.status === status}
+                                >
+                                    {STATUS_LABELS[status]}
+                                </Button>
+                            ))}
+
+                        {roll && (
+                            <Button
+                                variant="secondary"
+                                onClick={() =>
+                                    clearRollMutation.mutate({
+                                        gameRunId,
+                                        locationId,
+                                    })
+                                }
+                                disabled={isBusy}
+                            >
+                                Clear
+                            </Button>
+                        )}
+
+                        <Button
+                            variant="secondary"
+                            onClick={() => setExpanded((value) => !value)}
+                        >
+                            {isExpanded ? 'Hide encounters' : 'Show encounters'}
+                        </Button>
+                    </div>
 
                     {isExpanded && (
                         <div className={tableWrap}>
@@ -152,14 +286,15 @@ export function EncounterCard({
                                                     type="button"
                                                     className={pickButton}
                                                     onClick={() =>
-                                                        catchEncounter(encounter)
+                                                        pickEncounter(encounter)
                                                     }
                                                     disabled={
-                                                        catchPokemonMutation.isPending ||
-                                                        caughtRow !== undefined
+                                                        isBusy ||
+                                                        roll !== undefined ||
+                                                        pendingGroup !== null
                                                     }
                                                 >
-                                                    Catch {encounter.name}
+                                                    Pick {encounter.name}
                                                 </button>
                                             </td>
                                         </tr>
@@ -192,12 +327,7 @@ function formatLevelRange(encounter: LocationEncounterView): string {
 }
 
 function formatWeight(encounter: LocationEncounterView): string {
-    const weight =
-        (encounter.morningRate +
-            encounter.dayRate +
-            encounter.eveningRate +
-            encounter.nightRate) /
-        4;
+    const weight = getEffectiveWeight(encounter);
     return Number.isInteger(weight) ? String(weight) : weight.toFixed(1);
 }
 
@@ -220,6 +350,13 @@ function formatGames(games: string): string {
         .join('/');
 }
 
+function statusStyle(status: EncounterStatus): string | undefined {
+    return status === 'missed' || status === 'eliminated'
+        ? resolvedCard
+        : undefined;
+}
+
+// Icon/display resolution is naive until a dedicated utility exists.
 function toSlug(name: string): string {
     return name.toLowerCase();
 }
@@ -280,15 +417,53 @@ const oceanToggle = css`
   font-size: var(--font-size-sm);
 `;
 
-const caughtBox = css`
+const resolvedCard = css`
+  && {
+    opacity: 0.6;
+  }
+`;
+
+const actions = css`
   display: flex;
-  align-items: center;
+  flex-wrap: wrap;
   gap: var(--space-2);
 `;
 
-const caughtIcon = css`
+const rollBox = css`
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+`;
+
+const rollIcon = css`
   width: 5.6rem;
   height: 5.6rem;
+`;
+
+const rollTitle = css`
+  margin: 0;
+  font-weight: var(--font-weight-bold);
+`;
+
+const rollMeta = css`
+  margin: var(--space-1) 0 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+`;
+
+const pendingGroupBox = css`
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+`;
+
+const options = css`
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  list-style: none;
+  margin: 0;
+  padding: 0;
 `;
 
 const tableWrap = css`

@@ -2,20 +2,22 @@ import { useMutation, useQuery, useClient } from '../../server-query';
 import { invalidateQueries } from '@pokedb2/server-query';
 import {
     createGame,
-    listCaughtPokemon,
+    listEncounterRolls,
     listGames,
     type CreateGameInput,
 } from '../../db/game-db/queries';
 import { listPokemonByIds } from '../../db/pokemon-data/queries';
-import type { CaughtPokemonRow, GameRunRow } from '../../db/game-db/schema';
-import type { PokemonRow } from '@pokedb2/pokemon-data';
+import type { EncounterRollRow, GameRunRow } from '../../db/game-db/schema';
+import { GAMES_QUERY_KEY, GAME_CARDS_QUERY_KEY } from '../../query-keys';
 
-const GAMES_QUERY_KEY = ['games'];
-const GAME_CARDS_QUERY_KEY = ['game-cards'];
+export interface GameCardPokemon {
+    pokemonId: number;
+    name: string;
+}
 
 export interface GameCardViewModel {
     game: GameRunRow;
-    caught: Array<CaughtPokemonRow & { pokemon: PokemonRow }>;
+    caught: GameCardPokemon[];
 }
 
 export function useGames() {
@@ -30,14 +32,19 @@ export function useGameCards() {
         queryKey: GAME_CARDS_QUERY_KEY,
         queryFn: async (): Promise<GameCardViewModel[]> => {
             const games = await listGames();
-            const caughtByGame = new Map<string, CaughtPokemonRow[]>();
+            const obtainedByGame = new Map<string, EncounterRollRow[]>();
             const pokemonIds = new Set<number>();
 
             await Promise.all(
                 games.map(async (game) => {
-                    const caught = await listCaughtPokemon(game.id);
-                    caughtByGame.set(game.id, caught);
-                    for (const row of caught) {
+                    const rolls = await listEncounterRolls(game.id);
+                    const obtained = rolls.filter(
+                        (row) =>
+                            row.status === 'caught' ||
+                            row.status === 'eliminated',
+                    );
+                    obtainedByGame.set(game.id, obtained);
+                    for (const row of obtained) {
                         pokemonIds.add(row.pokemon_id);
                     }
                 }),
@@ -50,9 +57,17 @@ export function useGameCards() {
 
             return games.map((game) => ({
                 game,
-                caught: (caughtByGame.get(game.id) ?? []).flatMap((row) => {
+                caught: (obtainedByGame.get(game.id) ?? []).flatMap((row) => {
                     const pokemon = pokemonById.get(row.pokemon_id);
-                    return pokemon ? [{ ...row, pokemon }] : [];
+                    if (!pokemon) {
+                        return [];
+                    }
+                    return [
+                        {
+                            pokemonId: row.pokemon_id,
+                            name: pokemon.name,
+                        },
+                    ];
                 }),
             }));
         },

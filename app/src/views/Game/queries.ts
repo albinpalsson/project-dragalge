@@ -1,48 +1,79 @@
 import { invalidateQueries } from '@pokedb2/server-query';
 import { useClient, useMutation, useQuery } from '../../server-query';
 import {
-    addCaughtPokemon,
-    type AddCaughtPokemonInput,
-    listCaughtPokemon,
+    addEncounterRoll,
+    clearEncounterRoll,
+    getGameRun,
+    listEncounterRolls,
+    setEncounterRollStatus,
 } from '../../db/game-db/queries';
 import {
     getLocationEncounterDetails,
     listStarters,
     type LocationEncounterView,
 } from '../../db/pokemon-data/queries';
-
-const caughtQueryKey = (gameRunId: string) => ['caught-pokemon', gameRunId];
+import {
+    encounterRollsQueryKey,
+    GAME_CARDS_QUERY_KEY,
+    gameRunQueryKey,
+    locationEncountersQueryKey,
+    STARTERS_QUERY_KEY,
+} from '../../query-keys';
 
 export function useStartersQuery() {
     return useQuery({
-        queryKey: ['starters'],
+        queryKey: STARTERS_QUERY_KEY,
         queryFn: listStarters,
     });
 }
 
-export function useCaughtPokemonQuery(gameRunId: string) {
+export function useGameRunQuery(gameRunId: string) {
     return useQuery({
-        queryKey: caughtQueryKey(gameRunId),
-        queryFn: () => listCaughtPokemon(gameRunId),
+        queryKey: gameRunQueryKey(gameRunId),
+        queryFn: () => getGameRun(gameRunId),
+    });
+}
+
+export function useEncounterRollsQuery(gameRunId: string) {
+    return useQuery({
+        queryKey: encounterRollsQueryKey(gameRunId),
+        queryFn: () => listEncounterRolls(gameRunId),
     });
 }
 
 export function useLocationEncountersQuery(locationId: string) {
     return useQuery({
-        queryKey: ['location-encounters', locationId],
+        queryKey: locationEncountersQueryKey(locationId),
         queryFn: () => getLocationEncounterDetails(locationId),
     });
 }
 
-export function useCatchPokemonMutation() {
+function useRollMutation<TInput extends { gameRunId: string }, TResult>(
+    mutationFn: (input: TInput) => Promise<TResult>,
+) {
     const client = useClient();
     return useMutation({
-        mutationFn: async (input: AddCaughtPokemonInput) => {
-            const caught = await addCaughtPokemon(input);
-            invalidateQueries(client, { queryKey: caughtQueryKey(input.gameRunId) });
-            return caught;
+        mutationFn: async (input: TInput) => {
+            const result = await mutationFn(input);
+            invalidateQueries(client, {
+                queryKey: encounterRollsQueryKey(input.gameRunId),
+            });
+            invalidateQueries(client, { queryKey: GAME_CARDS_QUERY_KEY });
+            return result;
         },
     });
+}
+
+export function useAddEncounterRollMutation() {
+    return useRollMutation(addEncounterRoll);
+}
+
+export function useSetEncounterRollStatusMutation() {
+    return useRollMutation(setEncounterRollStatus);
+}
+
+export function useClearEncounterRollMutation() {
+    return useRollMutation(clearEncounterRoll);
 }
 
 export type { LocationEncounterView };

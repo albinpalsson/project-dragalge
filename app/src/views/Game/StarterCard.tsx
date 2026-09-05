@@ -1,31 +1,32 @@
 import { css } from '@pokedb2/css-in-js';
 import type { PokemonRow } from '@pokedb2/pokemon-data';
 import { Button } from '../../components/Button';
-import type { CaughtPokemonRow } from '../../db/game-db/schema';
+import type { EncounterRollRow } from '../../db/game-db/schema';
 import { STARTER_LOCATION_ID } from '../../db/game-db/queries';
 import { pokemonIconSrc } from '../../pokemon-icon';
-import { useCatchPokemonMutation, useStartersQuery } from './queries';
+import { useAddEncounterRollMutation, useStartersQuery } from './queries';
 
 interface StarterCardProps {
     gameRunId: string;
-    caught: CaughtPokemonRow[];
+    rolls: EncounterRollRow[];
 }
 
-export function StarterCard({ gameRunId, caught }: StarterCardProps) {
+export function StarterCard({ gameRunId, rolls }: StarterCardProps) {
     const startersQuery = useStartersQuery();
-    const catchPokemonMutation = useCatchPokemonMutation();
+    const addRollMutation = useAddEncounterRollMutation();
 
-    const starterId = caught.find(
+    const starterId = rolls.find(
         (row) => row.location_id === STARTER_LOCATION_ID,
     )?.pokemon_id;
     const starterRows = startersQuery.data ?? [];
     const starter = starterRows.find((row) => row.id === starterId);
 
     const choose = (pokemon: PokemonRow) => {
-        catchPokemonMutation.mutate({
+        addRollMutation.mutate({
             gameRunId,
             pokemonId: pokemon.id,
             locationId: STARTER_LOCATION_ID,
+            status: 'caught',
         });
     };
 
@@ -61,13 +62,11 @@ export function StarterCard({ gameRunId, caught }: StarterCardProps) {
                                     type="button"
                                     className={option}
                                     onClick={() => choose(pokemon)}
-                                    disabled={catchPokemonMutation.isPending}
+                                    disabled={addRollMutation.isPending}
                                 >
                                     <img
                                         className={optionIcon}
-                                        src={pokemonIconSrc(
-                                            toSlug(pokemon.name),
-                                        )}
+                                        src={pokemonIconSrc(toSlug(pokemon.name))}
                                         alt={pokemon.name}
                                         loading="lazy"
                                     />
@@ -80,7 +79,7 @@ export function StarterCard({ gameRunId, caught }: StarterCardProps) {
                         variant="secondary"
                         onClick={randomize}
                         disabled={
-                            catchPokemonMutation.isPending ||
+                            addRollMutation.isPending ||
                             starterRows.length === 0
                         }
                     >

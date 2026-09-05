@@ -1,11 +1,11 @@
-import { css } from '@pokedb2/css-in-js';
+import { css, cx } from '@pokedb2/css-in-js';
 import type { GameRunRow } from '../../db/game-db/schema';
-import type { PokemonRow } from '@pokedb2/pokemon-data';
 import { pokemonIconSrc } from '../../pokemon-icon';
+import type { GameCardPokemon } from './queries';
 
 interface GameCardProps {
     game: GameRunRow;
-  caughtPokemon: PokemonRow[];
+    caughtPokemon: GameCardPokemon[];
 }
 
 export function GameCard({ game, caughtPokemon }: GameCardProps) {
@@ -28,7 +28,7 @@ export function GameCard({ game, caughtPokemon }: GameCardProps) {
               <span className={icons}>
                 {caughtPokemon.slice(0, 6).map((pokemon) => (
                   <img
-                    key={pokemon.id}
+                    key={pokemon.pokemonId}
                     className={icon}
                     src={pokemonIconSrc(toSlug(pokemon.name))}
                     alt={pokemon.name}
@@ -43,9 +43,10 @@ export function GameCard({ game, caughtPokemon }: GameCardProps) {
     );
 }
 
-      function toSlug(name: string): string {
-        return name.toLowerCase();
-      }
+// Icon/display resolution is naive until a dedicated utility exists.
+function toSlug(name: string): string {
+    return name.toLowerCase();
+}
 
 const card = css`
   position: relative;
@@ -92,6 +93,7 @@ const icon = css`
   width: 5.6rem;
   height: 5.6rem;
 `;
+
 
 const emptyText = css`
   position: absolute;

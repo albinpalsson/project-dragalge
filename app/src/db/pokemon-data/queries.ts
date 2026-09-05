@@ -1,4 +1,5 @@
 import { getPokemonDb } from './client';
+import { getRandomizerGroupKey } from '../../randomizer-groups';
 import type {
     LocationEncounterRow,
     LocationRow,
@@ -16,6 +17,7 @@ export interface LocationEncounterDetails {
 export interface LocationEncounterView {
     pokemonId: number;
     name: string;
+    groupKey: string;
     subArea: string;
     games: string;
     terrain: string;
@@ -101,6 +103,7 @@ export async function getLocationEncounterDetails(
                 {
                     pokemonId: row.pokemon_id,
                     name: pokemon.name,
+                    groupKey: getRandomizerGroupKey(pokemon.name),
                     subArea: subAreaById.get(row.sub_area_id) ?? 'Unknown',
                     games: row.games,
                     terrain: terrainById.get(row.terrain_id) ?? 'unknown',

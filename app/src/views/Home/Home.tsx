@@ -10,6 +10,11 @@ import {
     generateDefaultGameName,
     type GameVariant,
 } from '../../db/game-db/queries';
+import {
+    DEFAULT_RANDOMIZER_MODE,
+    RANDOMIZER_MODE_OPTIONS,
+    type RandomizerMode,
+} from '../../randomizer';
 
 interface HomeProps {
     onOpenGame: (gameRunId: string) => void;
@@ -18,6 +23,9 @@ interface HomeProps {
 export function Home({ onOpenGame }: HomeProps) {
     const [isStartModalOpen, setStartModalOpen] = useState(false);
     const [variant, setVariant] = useState<GameVariant>('s');
+    const [randomizerMode, setRandomizerMode] = useState<RandomizerMode>(
+        DEFAULT_RANDOMIZER_MODE,
+    );
     const [name, setName] = useState('');
 
     const gameCards = useGameCards();
@@ -29,7 +37,11 @@ export function Home({ onOpenGame }: HomeProps) {
     );
 
     const handleStart = async () => {
-        await createGame.mutateAsync({ name: name || defaultName, variant });
+        await createGame.mutateAsync({
+            name: name || defaultName,
+            variant,
+            randomizerMode,
+        });
         setName('');
         setStartModalOpen(false);
     };
@@ -61,6 +73,14 @@ export function Home({ onOpenGame }: HomeProps) {
                             placeholder={defaultName}
                             onChange={setName}
                         />
+                        <Select
+                            label="Randomizer"
+                            value={randomizerMode}
+                            onChange={(value) =>
+                                setRandomizerMode(value as RandomizerMode)
+                            }
+                            options={[...RANDOMIZER_MODE_OPTIONS]}
+                        />
                         <div className={formActions}>
                             <Button onClick={handleStart}>Start</Button>
                             <Button
@@ -88,9 +108,7 @@ export function Home({ onOpenGame }: HomeProps) {
                                 >
                                     <GameCard
                                         game={card.game}
-                                        caughtPokemon={card.caught.map(
-                                            (row) => row.pokemon,
-                                        )}
+                                        caughtPokemon={card.caught}
                                     />
                                 </button>
                             </li>
