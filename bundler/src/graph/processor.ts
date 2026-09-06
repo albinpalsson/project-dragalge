@@ -18,10 +18,11 @@ export async function processFile(
     if (isCssFilePath(filePath)) {
         perfCollect?.add(
             'moduleTransform',
-            path.basename(filePath),
+            filePath,
             0,
             code.length,
             code.length,
+            false,
         );
         return { type: 'css', code, dependencies: [] };
     }
@@ -51,10 +52,11 @@ export async function processFile(
     const elapsedMs = performance.now() - t0;
     perfCollect?.add(
         'moduleTransform',
-        path.basename(filePath),
+        filePath,
         elapsedMs,
         code.length,
         processedCode.length,
+        false,
     );
 
     return {

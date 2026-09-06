@@ -86,11 +86,11 @@ export async function buildDependencyTree(
             const elapsedMs = performance.now() - visitStartTime;
             perfCollect?.add(
                 'moduleTransform',
-                path.basename(normalizedPath),
+                normalizedPath,
                 elapsedMs,
                 sourceStats.size,
                 cacheLookup.code.length,
-                'cache hit',
+                true,
             );
             result = cacheLookup;
         } else {

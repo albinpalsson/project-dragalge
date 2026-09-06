@@ -1,14 +1,15 @@
 ﻿import { assert } from './assert.ts';
+import { getPackageGroup } from './utils/package-group.ts';
 
 export type PerformanceEntryType = 'moduleTransform' | 'transpile';
 
 export interface PerformanceModuleEntry {
     type: 'moduleTransform';
-    moduleName: string;
+    filePath: string;
     durationMs: number;
     sizeFrom: number;
     sizeTo: number;
-    additionalInfo?: string;
+    cacheHit: boolean;
 }
 
 export interface PerformanceTranspileEntry {
@@ -27,6 +28,16 @@ export interface PerformanceBundleSummary {
     moduleCount: number;
     assetSizes: Record<'js' | 'css', PerformanceAssetSizeSummary>;
     outputFiles: PerformanceOutputFile[];
+    packages: PerformancePackageSummary[];
+}
+
+export interface PerformancePackageSummary {
+    packageName: string;
+    moduleCount: number;
+    cacheHitCount: number;
+    totalDurationMs: number;
+    sizeFrom: number;
+    sizeTo: number;
 }
 
 export interface PerformanceAssetSizeSummary {
@@ -67,11 +78,11 @@ export class BundlerPerformanceCollector {
 
     add(
         type: 'moduleTransform',
-        moduleName: string,
+        filePath: string,
         durationMs: number,
         sizeFrom: number,
         sizeTo: number,
-        additionalInfo?: string,
+        cacheHit: boolean,
     ): void;
     add(
         type: 'transpile',
@@ -85,7 +96,7 @@ export class BundlerPerformanceCollector {
         durationMs: number,
         arg4?: number | string,
         arg5?: number,
-        arg6?: string,
+        arg6?: boolean,
     ): void {
         if (type === 'moduleTransform') {
             assert(typeof arg4 === 'number');
@@ -93,11 +104,11 @@ export class BundlerPerformanceCollector {
 
             this.entries.push({
                 type,
-                moduleName,
+                filePath: moduleName,
                 durationMs,
                 sizeFrom: arg4,
                 sizeTo: arg5,
-                additionalInfo: arg6,
+                cacheHit: arg6 === true,
             });
         } else {
             this.entries.push({
@@ -134,15 +145,36 @@ export class BundlerPerformanceCollector {
             },
         };
 
+        const packages = new Map<string, PerformancePackageSummary>();
+
         for (const entry of this.entries) {
             if (entry.type !== 'moduleTransform') {
                 continue;
             }
 
-            const kind: 'js' | 'css' = entry.moduleName.endsWith('.css')
+            const kind: 'js' | 'css' = entry.filePath.endsWith('.css')
                 ? 'css'
                 : 'js';
             assetSizes[kind].sourceSizeBytes += entry.sizeFrom;
+
+            const packageName = getPackageGroup(entry.filePath);
+            let group = packages.get(packageName);
+            if (!group) {
+                group = {
+                    packageName,
+                    moduleCount: 0,
+                    cacheHitCount: 0,
+                    totalDurationMs: 0,
+                    sizeFrom: 0,
+                    sizeTo: 0,
+                };
+                packages.set(packageName, group);
+            }
+            group.moduleCount += 1;
+            group.cacheHitCount += entry.cacheHit ? 1 : 0;
+            group.totalDurationMs += entry.durationMs;
+            group.sizeFrom += entry.sizeFrom;
+            group.sizeTo += entry.sizeTo;
         }
 
         for (const file of outputFiles) {
@@ -161,6 +193,9 @@ export class BundlerPerformanceCollector {
             moduleCount: this.entries.length,
             assetSizes,
             outputFiles,
+            packages: [...packages.values()].sort(
+                (a, b) => b.totalDurationMs - a.totalDurationMs,
+            ),
         };
     }
 
@@ -183,20 +218,20 @@ export class BundlerPerformanceCollector {
         }
 
         this.output.write(`Modules processed: ${this.summary.moduleCount}\n`);
-        this.output.write('Module                Time     Size\n');
-
-        const moduleEntries = this.entries.filter(
-            (entry): entry is PerformanceModuleEntry =>
-                entry.type === 'moduleTransform',
+        this.output.write(
+            `${padRight('Package', 32)} ${padLeft('Modules', 7)} ${padLeft('Time', 9)} ${padLeft('Cached', 7)}  Size\n`,
         );
-        for (const entry of moduleEntries) {
-            const module = padRight(entry.moduleName, 20);
-            const time = padLeft(`${entry.durationMs.toFixed(1)}ms`, 8);
-            const size = `${formatKb(entry.sizeFrom)} -> ${formatKb(entry.sizeTo)}`;
-            const info = entry.additionalInfo
-                ? ` (${entry.additionalInfo})`
-                : '';
-            this.output.write(`${module} ${time}  ${size}${info}\n`);
+
+        for (const group of this.summary.packages) {
+            const name = padRight(group.packageName, 32);
+            const modules = padLeft(String(group.moduleCount), 7);
+            const time = padLeft(formatMs(group.totalDurationMs), 9);
+            const cached = padLeft(
+                formatPercent(group.cacheHitCount / group.moduleCount),
+                7,
+            );
+            const size = `${formatKb(group.sizeFrom)} -> ${formatKb(group.sizeTo)}`;
+            this.output.write(`${name} ${modules} ${time} ${cached}  ${size}\n`);
         }
 
         this.output.write('Asset sizes: (compressed)\n');
@@ -230,6 +265,10 @@ function formatMs(value: number): string {
 
 function formatKb(sizeInBytes: number): string {
     return `${(sizeInBytes / 1024).toFixed(1)}kb`;
+}
+
+function formatPercent(ratio: number): string {
+    return `${Math.round(ratio * 100)}%`;
 }
 
 function padRight(value: string, length: number): string {

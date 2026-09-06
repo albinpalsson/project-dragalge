@@ -369,6 +369,36 @@ __require__('src/app/index.js');
 Safe behavior:
 - If cache read fails or manifest is invalid JSON, bundler proceeds without cache and rewrites it.
 
+### Diagnostics & Performance Output
+
+`BundlerPerformanceCollector` records one entry per transformed module (absolute file
+path, duration, source/processed size, cache-hit flag) plus a `transpile` entry for the
+TypeScript pre-pass. It writes a progress dot per entry while the build runs.
+
+`printSummary()` reports **per package**, not per module. A module's package is derived
+purely from its path: the segment following the last `node_modules` segment (including
+the `@scope/` prefix when present). Modules outside `node_modules` belong to a single
+`application` group. Rows are sorted by total transform time, descending.
+
+```
+Modules processed: 19
+Package                          Modules      Time  Cached  Size
+application                           12   842.3ms      8%  184.0kb -> 96.2kb
+react-dom                              4    12.1ms    100%  1204.0kb -> 610.5kb
+@pokedb2/db                            3     4.7ms    100%  62.0kb -> 31.0kb
+Asset sizes: (compressed)
+- js: 1450.0kb (312.4kb)
+- css: 12.0kb (3.1kb)
+TSC transpile time: 125.3ms
+Total bundle time: 1182.6ms
+```
+
+Cache hits still count toward a package's time, but that time only covers the `stat` and
+cache read, so a fully cached package reports near-zero time. Raw per-module entries stay
+available through `getEntries()`, and the aggregated package rows through
+`getSummary().packages`. The dev server uses a silent collector and logs only module count
+and build duration.
+
 ---
 
 ## Verification
