@@ -13,3 +13,4 @@ export const locationEncountersQueryKey = (locationId: string) => [
     'location-encounters',
     locationId,
 ];
+

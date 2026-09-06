@@ -26,15 +26,38 @@ export async function listGames(): Promise<GameRunRow[]> {
     return db.selectFrom('game_runs').selectAll().execute();
 }
 
+export interface GameRunSettings {
+    pocoPathOcean: boolean;
+}
+
+export interface GameRun {
+    id: string;
+    variant: string;
+    randomizer_mode: string;
+    settings: GameRunSettings;
+}
+
+function gameRunFromRow(row: GameRunRow): GameRun {
+    return {
+        id: row.id,
+        variant: row.variant,
+        randomizer_mode: row.randomizer_mode,
+        settings: {
+            pocoPathOcean: row.poco_path_ocean === 1,
+        },
+    };
+}
+
 export async function getGameRun(
     gameRunId: string,
-): Promise<GameRunRow | undefined> {
+): Promise<GameRun | undefined> {
     const db = await getGameDb();
-    return db
+    const row = await db
         .selectFrom('game_runs')
         .selectAll()
         .where('id', '=', gameRunId)
         .executeTakeFirst();
+    return row ? gameRunFromRow(row) : undefined;
 }
 
 export interface CreateGameInput {
@@ -57,10 +80,11 @@ export async function createGame(
         newName = `${baseName}-${count++}`;
     }
 
-    const row = {
+    const row: GameRunRow = {
         id: newName,
         variant: input.variant,
         randomizer_mode: input.randomizerMode,
+        poco_path_ocean: 0,
     };
     await db.insertInto('game_runs').values(row).execute();
     return row;
@@ -131,5 +155,23 @@ export async function clearEncounterRoll(
         .deleteFrom('encounter_rolls')
         .where('game_run_id', '=', input.gameRunId)
         .where('location_id', '=', input.locationId)
+        .execute();
+}
+
+export interface SetPocoPathOceanSettingInput {
+    gameRunId: string;
+    includeOcean: boolean;
+}
+
+export async function setPocoPathOceanSetting(
+    input: SetPocoPathOceanSettingInput,
+): Promise<void> {
+    const db = await getGameDb();
+    await db
+        .updateTable('game_runs')
+        .set({
+            poco_path_ocean: input.includeOcean ? 1 : 0,
+        })
+        .where('id', '=', input.gameRunId)
         .execute();
 }

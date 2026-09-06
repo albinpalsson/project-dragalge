@@ -15,7 +15,9 @@ import {
     type LocationEncounterView,
     useAddEncounterRollMutation,
     useClearEncounterRollMutation,
+    useGameRunQuery,
     useLocationEncountersQuery,
+    useSetPocoPathOceanSettingMutation,
     useSetEncounterRollStatusMutation,
 } from './queries';
 
@@ -39,6 +41,8 @@ const RESOLVED_STATUSES: readonly EncounterStatus[] = [
     'eliminated',
 ];
 
+const POCO_PATH_LOCATION_ID = 'poco-path';
+
 export function EncounterCard({
     gameRunId,
     locationId,
@@ -46,8 +50,10 @@ export function EncounterCard({
     randomizerMode,
 }: EncounterCardProps) {
     const [isExpanded, setExpanded] = useState(false);
-    const [includeOcean, setIncludeOcean] = useState(false);
     const encountersQuery = useLocationEncountersQuery(locationId);
+    const gameRunQuery = useGameRunQuery(gameRunId);
+    const setIncludeOceanSettingMutation =
+        useSetPocoPathOceanSettingMutation();
     const addRollMutation = useAddEncounterRollMutation();
     const setStatusMutation = useSetEncounterRollStatusMutation();
     const clearRollMutation = useClearEncounterRollMutation();
@@ -63,6 +69,10 @@ export function EncounterCard({
     const oceanEncounters = (details?.encounters ?? []).filter(
         (encounter) => encounter.subArea === 'Ocean',
     );
+    const canIncludeOcean =
+        locationId === POCO_PATH_LOCATION_ID && oceanEncounters.length > 0;
+    const includeOcean =
+        canIncludeOcean && (gameRunQuery.data?.settings.pocoPathOcean ?? false);
     const activeEncounters = includeOcean
         ? [...landEncounters, ...oceanEncounters]
         : landEncounters;
@@ -134,13 +144,20 @@ export function EncounterCard({
             )}
             {details && (
                 <>
-                    {oceanEncounters.length > 0 && (
+                    {canIncludeOcean && (
                         <label className={oceanToggle}>
                             <input
                                 type="checkbox"
                                 checked={includeOcean}
+                                disabled={
+                                    gameRunQuery.isPending ||
+                                    setIncludeOceanSettingMutation.isPending
+                                }
                                 onChange={(event) =>
-                                    setIncludeOcean(event.target.checked)
+                                    setIncludeOceanSettingMutation.mutate({
+                                        gameRunId,
+                                        includeOcean: event.target.checked,
+                                    })
                                 }
                             />
                             Include ocean encounters

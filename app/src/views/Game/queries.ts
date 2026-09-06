@@ -6,6 +6,7 @@ import {
     getGameRun,
     listEncounterRolls,
     setEncounterRollStatus,
+    setPocoPathOceanSetting,
 } from '../../db/game-db/queries';
 import {
     getLocationEncounterDetails,
@@ -74,6 +75,21 @@ export function useSetEncounterRollStatusMutation() {
 
 export function useClearEncounterRollMutation() {
     return useRollMutation(clearEncounterRoll);
+}
+
+export function useSetPocoPathOceanSettingMutation() {
+    const client = useClient();
+    return useMutation({
+        mutationFn: async (input: {
+            gameRunId: string;
+            includeOcean: boolean;
+        }) => {
+            await setPocoPathOceanSetting(input);
+            invalidateQueries(client, {
+                queryKey: gameRunQueryKey(input.gameRunId),
+            });
+        },
+    });
 }
 
 export type { LocationEncounterView };

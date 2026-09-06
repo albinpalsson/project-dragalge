@@ -1,4 +1,4 @@
-import { css, cx } from '@pokedb2/css-in-js';
+import { css } from '@pokedb2/css-in-js';
 import type { GameRunRow } from '../../db/game-db/schema';
 import { pokemonIconSrc } from '../../pokemon-icon';
 import type { GameCardPokemon } from './queries';
