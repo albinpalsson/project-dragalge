@@ -25,13 +25,9 @@ export function InletGrotto() {
         return (
             <p>
                 Error loading Inlet Grotto encounters:{' '}
-                {String(encountersQuery.error)}
+                {encountersQuery.error.message}
             </p>
         );
-    }
-
-    if (!encountersQuery.data) {
-        return <p>Inlet Grotto encounter data is unavailable.</p>;
     }
 
     const showHoundourWarning = encounterRoll?.name === 'Houndour';

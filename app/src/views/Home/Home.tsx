@@ -99,7 +99,7 @@ export function Home({ onOpenGame }: HomeProps) {
                 {gameCards.isPending && <p className={mutedText}>Loading...</p>}
                 {gameCards.isSuccess && (
                     <ul className={gamesList}>
-                        {(gameCards.data ?? []).map((card) => (
+                        {gameCards.data.map((card) => (
                             <li key={card.game.id}>
                                 <button
                                     type="button"

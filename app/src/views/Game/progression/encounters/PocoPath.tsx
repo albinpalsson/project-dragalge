@@ -32,13 +32,9 @@ export function PocoPath() {
         return (
             <p>
                 Error loading {LOCATION_NAME} encounters:{' '}
-                {encountersQuery.error?.message}
+                {encountersQuery.error.message}
             </p>
         );
-    }
-
-    if (!encountersQuery.data) {
-        return <p>{LOCATION_NAME} encounter data is unavailable.</p>;
     }
 
     const allEncounters = encountersQuery.data.encounters;

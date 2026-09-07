@@ -14,11 +14,11 @@ export function Game({ gameRunId }: GameProps) {
     const gameRunQuery = useGameRunQuery(gameRunId);
     const encounterRollsQuery = useEncounterRollsQuery(gameRunId);
 
-    if (gameRunQuery.error) {
+    if (gameRunQuery.isError) {
         return <p>Error loading game: {String(gameRunQuery.error)}</p>;
     }
 
-    if (encounterRollsQuery.error) {
+    if (encounterRollsQuery.isError) {
         return (
             <p>
                 Error loading encounter rolls:{' '}
@@ -33,10 +33,6 @@ export function Game({ gameRunId }: GameProps) {
 
     if (!gameRunQuery.data) {
         return <p>Game not found: {gameRunId}</p>;
-    }
-
-    if (!encounterRollsQuery.data) {
-        return <p>Encounter rolls are unavailable for game: {gameRunId}</p>;
     }
 
     const game = gameRunQuery.data;
