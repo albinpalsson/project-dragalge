@@ -1,38 +1,19 @@
 import { css } from '@pokedb2/css-in-js';
 import { Button } from '../../components/Button';
-import type { EncounterRollRow } from '../../db/game-db/schema';
+import { pokemonIconSrc, toIconSlug } from '../../pokemon-icon';
+
 import { STARTER_LOCATION_NAME } from '../../db/game-db/queries';
-import { pokemonIconSrc } from '../../pokemon-icon';
+import { useGame } from './GameContext';
 import { useAddEncounterRollMutation } from './queries';
 
-const STARTER_NAMES = ['Sprigatito', 'Fuecoco', 'Quaxly'] as const;
+export function StarterCard() {
+    const game = useGame();
+    const { starterNames, isBusy, chooseStarter, randomizeStarter } =
+        useStarterActions();
 
-interface StarterCardProps {
-    gameRunId: string;
-    rolls: EncounterRollRow[];
-}
-
-export function StarterCard({ gameRunId, rolls }: StarterCardProps) {
-    const addRollMutation = useAddEncounterRollMutation();
-
-    const starter = rolls.find(
+    const starter = game.encounters.find(
         (row) => row.location_name === STARTER_LOCATION_NAME,
     )?.pokemon_name;
-
-    const choose = (pokemonName: string) => {
-        addRollMutation.mutate({
-            gameRunId,
-            pokemonName,
-            locationName: STARTER_LOCATION_NAME,
-            status: 'caught',
-        });
-    };
-
-    const randomize = () => {
-        const pick =
-            STARTER_NAMES[Math.floor(Math.random() * STARTER_NAMES.length)];
-        choose(pick);
-    };
 
     return (
         <article className={card}>
@@ -42,7 +23,7 @@ export function StarterCard({ gameRunId, rolls }: StarterCardProps) {
                 <div className={chosenBox}>
                     <img
                         className={chosenIcon}
-                        src={pokemonIconSrc(toSlug(starter))}
+                        src={pokemonIconSrc(toIconSlug(starter))}
                         alt={starter}
                         loading="lazy"
                     />
@@ -52,17 +33,19 @@ export function StarterCard({ gameRunId, rolls }: StarterCardProps) {
                 <>
                     <p className={hint}>Choose your starter Pokémon.</p>
                     <ul className={options}>
-                        {STARTER_NAMES.map((pokemon) => (
+                        {starterNames.map((pokemon) => (
                             <li key={pokemon}>
                                 <button
                                     type="button"
                                     className={option}
-                                    onClick={() => choose(pokemon)}
-                                    disabled={addRollMutation.isPending}
+                                    onClick={() => chooseStarter(pokemon)}
+                                    disabled={isBusy}
                                 >
                                     <img
                                         className={optionIcon}
-                                        src={pokemonIconSrc(toSlug(pokemon))}
+                                        src={pokemonIconSrc(
+                                            toIconSlug(pokemon),
+                                        )}
                                         alt={pokemon}
                                         loading="lazy"
                                     />
@@ -73,8 +56,8 @@ export function StarterCard({ gameRunId, rolls }: StarterCardProps) {
                     </ul>
                     <Button
                         variant="secondary"
-                        onClick={randomize}
-                        disabled={addRollMutation.isPending}
+                        onClick={randomizeStarter}
+                        disabled={isBusy}
                     >
                         Randomize
                     </Button>
@@ -84,9 +67,33 @@ export function StarterCard({ gameRunId, rolls }: StarterCardProps) {
     );
 }
 
-// Starter names have no form suffixes, so a plain lowercase is a valid sprite slug.
-function toSlug(name: string): string {
-    return name.toLowerCase();
+const STARTER_NAMES = ['Sprigatito', 'Fuecoco', 'Quaxly'] as const;
+
+export function useStarterActions() {
+    const game = useGame();
+    const addRollMutation = useAddEncounterRollMutation();
+
+    const chooseStarter = (pokemonName: string) => {
+        addRollMutation.mutate({
+            gameRunId: game.id,
+            pokemonName,
+            locationName: STARTER_LOCATION_NAME,
+            status: 'caught',
+        });
+    };
+
+    const randomizeStarter = () => {
+        const pick =
+            STARTER_NAMES[Math.floor(Math.random() * STARTER_NAMES.length)];
+        chooseStarter(pick);
+    };
+
+    return {
+        starterNames: STARTER_NAMES,
+        isBusy: addRollMutation.isPending,
+        chooseStarter,
+        randomizeStarter,
+    };
 }
 
 const card = css`

@@ -1,6 +1,6 @@
 import { css } from '@pokedb2/css-in-js';
 import type { GameRunRow } from '../../db/game-db/schema';
-import { pokemonIconSrc } from '../../pokemon-icon';
+import { pokemonIconSrc, toIconSlug } from '../../pokemon-icon';
 import type { GameCardPokemon } from './queries';
 
 interface GameCardProps {
@@ -30,7 +30,7 @@ export function GameCard({ game, caughtPokemon }: GameCardProps) {
                         <img
                             key={pokemon.name}
                             className={icon}
-                            src={pokemonIconSrc(toSlug(pokemon.name))}
+                            src={pokemonIconSrc(toIconSlug(pokemon.name))}
                             alt={pokemon.name}
                             loading="lazy"
                         />
@@ -41,11 +41,6 @@ export function GameCard({ game, caughtPokemon }: GameCardProps) {
             )}
         </div>
     );
-}
-
-// Icon/display resolution is naive until a dedicated utility exists.
-function toSlug(name: string): string {
-    return name.toLowerCase();
 }
 
 const card = css`

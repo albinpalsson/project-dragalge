@@ -1,5 +1,6 @@
+// CommonJS because the app bundler consumes node_modules packages as CJS (see artifacts/paldea-db.js).
 // Seed data uses both "X (Form)" and "X Form" spellings for the same Pokémon, so both are listed.
-const ICON_SLUG_OVERRIDES: Record<string, string> = {
+const ICON_SLUG_OVERRIDES = {
     'Tauros (Combat Breed)': 'tauros-paldean-combat',
     'Tauros (Blaze Breed)': 'tauros-paldean-blaze',
     'Tauros (Aqua Breed)': 'tauros-paldean-aqua',
@@ -32,7 +33,7 @@ const ICON_SLUG_OVERRIDES: Record<string, string> = {
     'Flab\u00e9b\u00e9': 'flabebe',
 };
 
-export function toIconSlug(name: string): string {
+function toIconSlug(name) {
     const override = ICON_SLUG_OVERRIDES[name];
     if (override) {
         return override;
@@ -58,3 +59,5 @@ export function toIconSlug(name: string): string {
 
     return slug;
 }
+
+exports.toIconSlug = toIconSlug;

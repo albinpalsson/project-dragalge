@@ -11,9 +11,7 @@ import {
 } from './helpers';
 
 // The single intended-path run; extend this as each progression card lands.
-test('plays a run from the starter through the first encounter', async ({
-    page,
-}) => {
+test('plays a run from the starter through Inlet Grotto', async ({ page }) => {
     await page.goto('/');
     await createGame(page, 'playthrough-run');
     await openGame(page, 'playthrough-run');
@@ -27,10 +25,19 @@ test('plays a run from the starter through the first encounter', async ({
     await resolveEncounter(page, 'Poco Path', 'Caught');
     await expect(cardFor(page, 'Poco Path')).toContainText(`Caught ${rolled}`);
 
+    const inletGrottoRoll = await rollEncounter(page, 'Inlet Grotto');
+    await resolveEncounter(page, 'Inlet Grotto', 'Caught');
+    await expect(cardFor(page, 'Inlet Grotto')).toContainText(
+        `Caught ${inletGrottoRoll}`,
+    );
+
     await waitForPersistence(page);
     await page.reload();
     await openGame(page, 'playthrough-run');
 
     await expect(cardFor(page, 'Starter')).toContainText(starter);
     await expect(cardFor(page, 'Poco Path')).toContainText(`Caught ${rolled}`);
+    await expect(cardFor(page, 'Inlet Grotto')).toContainText(
+        `Caught ${inletGrottoRoll}`,
+    );
 });

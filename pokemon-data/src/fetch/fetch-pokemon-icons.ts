@@ -1,7 +1,7 @@
 import { writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { toIconSlug } from '../icon-slug.cjs';
 import { cachedFetcher } from './cached-fetcher.ts';
-import { toIconSlug } from './icon-slug.ts';
 
 const ICON_BASE_URL =
     'https://img.pokemondb.net/sprites/scarlet-violet/icon/avif';

@@ -11,12 +11,18 @@
             "default": "./artifacts/paldea-db.js"
         },
         "./assets-dir": "./src/assets.js",
-        "./assets/*": "./artifacts/assets/*"
+        "./assets/*": "./artifacts/assets/*",
+        "./icon-slug": {
+            "types": "./src/icon-slug.d.cts",
+            "default": "./src/icon-slug.cjs"
+        }
     },
     "files": [
         "src/schema.ts",
         "src/index.d.ts",
         "src/assets.js",
+        "src/icon-slug.cjs",
+        "src/icon-slug.d.cts",
         "artifacts"
     ],
     "scripts": {
