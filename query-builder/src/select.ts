@@ -6,6 +6,7 @@ import { buildWhereClause, createWhereClause, q } from './utils.ts';
 export class SelectQueryBuilder<
     DB,
     T extends keyof DB,
+    TResult = Selectable<DB[T]>,
 > extends QueryBuilderBase<DB, T> {
     private readonly _wheres: WhereClause[];
     private readonly _join: JoinClause | undefined;
@@ -21,7 +22,7 @@ export class SelectQueryBuilder<
         this._join = join;
     }
 
-    selectAll(): SelectQueryBuilder<DB, T> {
+    selectAll(): SelectQueryBuilder<DB, T, TResult> {
         return this;
     }
 
@@ -29,18 +30,18 @@ export class SelectQueryBuilder<
         column: string,
         operator: '=',
         value: unknown,
-    ): SelectQueryBuilder<DB, T>;
+    ): SelectQueryBuilder<DB, T, TResult>;
     where(
         column: string,
         operator: 'in',
         values: readonly unknown[],
-    ): SelectQueryBuilder<DB, T>;
+    ): SelectQueryBuilder<DB, T, TResult>;
     where(
         column: string,
         operator: WhereOperator,
         value: unknown,
-    ): SelectQueryBuilder<DB, T> {
-        return new SelectQueryBuilder(
+    ): SelectQueryBuilder<DB, T, TResult> {
+        return new SelectQueryBuilder<DB, T, TResult>(
             this._client,
             this._table,
             [...this._wheres, createWhereClause(column, operator, value)],
@@ -48,12 +49,16 @@ export class SelectQueryBuilder<
         );
     }
 
-    innerJoin(
-        table: string,
+    innerJoin<TJoined extends keyof DB & string>(
+        table: TJoined,
         lhs: string,
         rhs: string,
-    ): SelectQueryBuilder<DB, T> {
-        return new SelectQueryBuilder(this._client, this._table, this._wheres, {
+    ): SelectQueryBuilder<DB, T, TResult & Selectable<DB[TJoined]>> {
+        return new SelectQueryBuilder<
+            DB,
+            T,
+            TResult & Selectable<DB[TJoined]>
+        >(this._client, this._table, this._wheres, {
             table,
             lhs,
             rhs,
@@ -74,14 +79,12 @@ export class SelectQueryBuilder<
         return { sql: parts.join(' '), parameters: params };
     }
 
-    async execute(): Promise<Selectable<DB[T]>[]> {
+    async execute(): Promise<TResult[]> {
         const { sql, parameters } = this.compile();
-        return this._client.execute(sql, parameters) as Promise<
-            Selectable<DB[T]>[]
-        >;
+        return this._client.execute(sql, parameters) as Promise<TResult[]>;
     }
 
-    async executeTakeFirst(): Promise<Selectable<DB[T]> | undefined> {
+    async executeTakeFirst(): Promise<TResult | undefined> {
         return (await this.execute())[0];
     }
 }
