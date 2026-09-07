@@ -26,7 +26,7 @@ function makePokemonDb(plugin?: StoragePlugin) {
     return engine;
 }
 
-describe('high-level: pokémon game scenarios', () => {
+describe('high-level: scenarios', () => {
     it('catch a pokémon: insert, mark caught, query by caught status', () => {
         const engine = makePokemonDb();
         engine.execute(
@@ -70,6 +70,27 @@ describe('high-level: pokémon game scenarios', () => {
         );
         assert.equal(rows.length, 1);
         assert.equal(rows[0].location, 'Viridian Forest');
+        assert.equal(rows[0].name, 'Pikachu');
+    });
+
+    it('supports quoted qualified joins for hyphenated table names', () => {
+        const engine = makePokemonDb();
+        engine.execute(
+            'INSERT INTO "pokemon" (id, name, caught, level) VALUES (?, ?, ?, ?)',
+            [1, 'Pikachu', false, 5],
+        );
+        engine.execute(
+            'INSERT INTO "encounters" (pokemon_id, location) VALUES (?, ?)',
+            [1, 'South Province'],
+        );
+
+        const rows = engine.execute(
+            'SELECT * FROM "encounters" INNER JOIN "pokemon" ON "encounters"."pokemon_id" = "pokemon"."id"',
+            [],
+        );
+
+        assert.equal(rows.length, 1);
+        assert.equal(rows[0].location, 'South Province');
         assert.equal(rows[0].name, 'Pikachu');
     });
 

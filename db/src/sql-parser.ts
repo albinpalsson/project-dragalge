@@ -72,6 +72,7 @@ function tokenize(sql: string): string[] {
             ch === '(' ||
             ch === ')' ||
             ch === ',' ||
+            ch === '.' ||
             ch === '=' ||
             ch === '*'
         ) {
@@ -81,7 +82,7 @@ function tokenize(sql: string): string[] {
         }
         // plain token: read until whitespace or punctuation
         let j = i;
-        while (j < sql.length && !/[\s"(),=*]/.test(sql[j])) {
+        while (j < sql.length && !/[\s"(),.=*]/.test(sql[j])) {
             j++;
         }
         tokens.push(sql.slice(i, j));
@@ -150,14 +151,28 @@ export function parse(sql: string): ParsedStatement {
             p.expect('JOIN');
             const joinTable = p.consume();
             p.expect('ON');
-            const lhs = p.consume();
+            const lhs = consumeQualifiedIdentifierParts(p);
             p.expect('=');
-            const rhs = p.consume();
-            const [lhsTable, lhsCol] = lhs.split('.');
-            const [, rhsCol] = rhs.split('.');
+            const rhs = consumeQualifiedIdentifierParts(p);
+            if (lhs.length !== 2 || rhs.length !== 2) {
+                throw new Error(
+                    'JOIN ON columns must be qualified as table.column',
+                );
+            }
+            const [lhsTable, lhsCol] = lhs;
+            const [rhsTable, rhsCol] = rhs;
             // determine which side belongs to the FROM table
-            const leftCol = lhsTable === table ? lhsCol : rhsCol;
-            const rightCol = lhsTable === table ? rhsCol : lhsCol;
+            let leftCol: string;
+            let rightCol: string;
+            if (lhsTable === table) {
+                leftCol = lhsCol;
+                rightCol = rhsCol;
+            } else if (rhsTable === table) {
+                leftCol = rhsCol;
+                rightCol = lhsCol;
+            } else {
+                throw new Error('JOIN ON must reference the selected table');
+            }
             join = { table: joinTable, leftCol, rightCol };
         }
         const wheres = parseWhere(p);
@@ -240,6 +255,15 @@ export function parse(sql: string): ParsedStatement {
     }
 
     throw new Error(`Unsupported SQL: ${sql}`);
+}
+
+function consumeQualifiedIdentifierParts(p: Parser): string[] {
+    const parts = [p.consume()];
+    while (p.raw() === '.') {
+        p.consume();
+        parts.push(p.consume());
+    }
+    return parts;
 }
 
 function parseInsertTupleValueCount(p: Parser): number {
