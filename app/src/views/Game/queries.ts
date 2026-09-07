@@ -37,6 +37,7 @@ export function useLocationEncountersQuery(locationName: string) {
     return useQuery({
         queryKey: locationEncountersQueryKey(locationName),
         queryFn: () => getLocationEncounterDetails(locationName),
+        staleTime: Infinity,
     });
 }
 
