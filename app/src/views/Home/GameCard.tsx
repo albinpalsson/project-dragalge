@@ -9,7 +9,7 @@ interface GameCardProps {
 }
 
 export function GameCard({ game, caughtPokemon }: GameCardProps) {
-  const progress = Math.min(caughtPokemon.length * 8, 100);
+    const progress = Math.min(caughtPokemon.length * 8, 100);
     const variantColor =
         game.variant === 'v' ? 'var(--color-accent)' : 'var(--color-primary)';
 
@@ -25,19 +25,19 @@ export function GameCard({ game, caughtPokemon }: GameCardProps) {
             <span className={name}>{game.id}</span>
             <span className={progressLabel}>{caughtPokemon.length} caught</span>
             {caughtPokemon.length > 0 ? (
-              <span className={icons}>
-                {caughtPokemon.slice(0, 6).map((pokemon) => (
-                  <img
-                    key={pokemon.pokemonId}
-                    className={icon}
-                    src={pokemonIconSrc(toSlug(pokemon.name))}
-                    alt={pokemon.name}
-                    loading="lazy"
-                  />
-                ))}
-              </span>
+                <span className={icons}>
+                    {caughtPokemon.slice(0, 6).map((pokemon) => (
+                        <img
+                            key={pokemon.name}
+                            className={icon}
+                            src={pokemonIconSrc(toSlug(pokemon.name))}
+                            alt={pokemon.name}
+                            loading="lazy"
+                        />
+                    ))}
+                </span>
             ) : (
-              <span className={emptyText}>No caught Pokémon</span>
+                <span className={emptyText}>No caught Pokémon</span>
             )}
         </div>
     );
@@ -93,7 +93,6 @@ const icon = css`
   width: 5.6rem;
   height: 5.6rem;
 `;
-
 
 const emptyText = css`
   position: absolute;

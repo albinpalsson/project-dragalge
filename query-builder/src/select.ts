@@ -54,15 +54,16 @@ export class SelectQueryBuilder<
         lhs: string,
         rhs: string,
     ): SelectQueryBuilder<DB, T, TResult & Selectable<DB[TJoined]>> {
-        return new SelectQueryBuilder<
-            DB,
-            T,
-            TResult & Selectable<DB[TJoined]>
-        >(this._client, this._table, this._wheres, {
-            table,
-            lhs,
-            rhs,
-        });
+        return new SelectQueryBuilder<DB, T, TResult & Selectable<DB[TJoined]>>(
+            this._client,
+            this._table,
+            this._wheres,
+            {
+                table,
+                lhs,
+                rhs,
+            },
+        );
     }
 
     compile(): CompiledQuery {

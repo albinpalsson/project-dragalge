@@ -1,10 +1,11 @@
 import { css } from '@pokedb2/css-in-js';
-import type { PokemonRow } from '@pokedb2/pokemon-data';
 import { Button } from '../../components/Button';
 import type { EncounterRollRow } from '../../db/game-db/schema';
-import { STARTER_LOCATION_ID } from '../../db/game-db/queries';
+import { STARTER_LOCATION_NAME } from '../../db/game-db/queries';
 import { pokemonIconSrc } from '../../pokemon-icon';
-import { useAddEncounterRollMutation, useStartersQuery } from './queries';
+import { useAddEncounterRollMutation } from './queries';
+
+const STARTER_NAMES = ['Sprigatito', 'Fuecoco', 'Quaxly'] as const;
 
 interface StarterCardProps {
     gameRunId: string;
@@ -12,30 +13,25 @@ interface StarterCardProps {
 }
 
 export function StarterCard({ gameRunId, rolls }: StarterCardProps) {
-    const startersQuery = useStartersQuery();
     const addRollMutation = useAddEncounterRollMutation();
 
-    const starterId = rolls.find(
-        (row) => row.location_id === STARTER_LOCATION_ID,
-    )?.pokemon_id;
-    const starterRows = startersQuery.data ?? [];
-    const starter = starterRows.find((row) => row.id === starterId);
+    const starter = rolls.find(
+        (row) => row.location_name === STARTER_LOCATION_NAME,
+    )?.pokemon_name;
 
-    const choose = (pokemon: PokemonRow) => {
+    const choose = (pokemonName: string) => {
         addRollMutation.mutate({
             gameRunId,
-            pokemonId: pokemon.id,
-            locationId: STARTER_LOCATION_ID,
+            pokemonName,
+            locationName: STARTER_LOCATION_NAME,
             status: 'caught',
         });
     };
 
     const randomize = () => {
         const pick =
-            starterRows[Math.floor(Math.random() * starterRows.length)];
-        if (pick) {
-            choose(pick);
-        }
+            STARTER_NAMES[Math.floor(Math.random() * STARTER_NAMES.length)];
+        choose(pick);
     };
 
     return (
@@ -46,18 +42,18 @@ export function StarterCard({ gameRunId, rolls }: StarterCardProps) {
                 <div className={chosenBox}>
                     <img
                         className={chosenIcon}
-                        src={pokemonIconSrc(toSlug(starter.name))}
-                        alt={starter.name}
+                        src={pokemonIconSrc(toSlug(starter))}
+                        alt={starter}
                         loading="lazy"
                     />
-                    <span>{starter.name}</span>
+                    <span>{starter}</span>
                 </div>
             ) : (
                 <>
                     <p className={hint}>Choose your starter Pokémon.</p>
                     <ul className={options}>
-                        {starterRows.map((pokemon) => (
-                            <li key={pokemon.id}>
+                        {STARTER_NAMES.map((pokemon) => (
+                            <li key={pokemon}>
                                 <button
                                     type="button"
                                     className={option}
@@ -66,11 +62,11 @@ export function StarterCard({ gameRunId, rolls }: StarterCardProps) {
                                 >
                                     <img
                                         className={optionIcon}
-                                        src={pokemonIconSrc(toSlug(pokemon.name))}
-                                        alt={pokemon.name}
+                                        src={pokemonIconSrc(toSlug(pokemon))}
+                                        alt={pokemon}
                                         loading="lazy"
                                     />
-                                    <span>{pokemon.name}</span>
+                                    <span>{pokemon}</span>
                                 </button>
                             </li>
                         ))}
@@ -78,10 +74,7 @@ export function StarterCard({ gameRunId, rolls }: StarterCardProps) {
                     <Button
                         variant="secondary"
                         onClick={randomize}
-                        disabled={
-                            addRollMutation.isPending ||
-                            starterRows.length === 0
-                        }
+                        disabled={addRollMutation.isPending}
                     >
                         Randomize
                     </Button>

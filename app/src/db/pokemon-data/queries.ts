@@ -1,13 +1,9 @@
 import { getPokemonDb } from './client';
-import { getRandomizerGroupKey } from '../../randomizer-groups';
-import type {
-    LocationEncounterRow,
-    LocationRow,
-    PokemonDataDb,
-    PokemonRow,
-} from '@pokedb2/pokemon-data';
+import type { LocationRow, PokemonDataDb } from '@pokedb2/pokemon-data';
 
-export const STARTER_NAMES = ['Sprigatito', 'Fuecoco', 'Quaxly'] as const;
+export interface PokemonNameDto {
+    name: string;
+}
 
 export interface LocationEncounterDetails {
     location: LocationRow;
@@ -15,9 +11,7 @@ export interface LocationEncounterDetails {
 }
 
 export interface LocationEncounterView {
-    pokemonId: number;
     name: string;
-    groupKey: string;
     subArea: string;
     games: string;
     terrain: string;
@@ -29,62 +23,30 @@ export interface LocationEncounterView {
     nightRate: number;
 }
 
-export async function listStarters() {
-    return (await getPokemonDb())
-        .selectFrom('pokemon')
-        .selectAll()
-        .where('name', 'in', STARTER_NAMES)
-        .execute();
-}
-
-export async function getPokemonById(
-    id: number,
-) {
-    return (await getPokemonDb())
-        .selectFrom('pokemon')
-        .selectAll()
-        .where('id', '=', id)
-        .executeTakeFirst();
-}
-
-export async function listPokemonByIds(ids: readonly number[]) {
-    if (ids.length === 0) {
-        return [];
-    }
-
-    return (await getPokemonDb())
-        .selectFrom('pokemon')
-        .selectAll()
-        .where('id', 'in', ids)
-        .execute();
-}
-
 export async function getLocationEncounterDetails(
-    locationId: string,
+    locationName: string,
 ): Promise<LocationEncounterDetails> {
     const db = await getPokemonDb();
     const location = await db
         .selectFrom('locations')
         .selectAll()
-        .where('id', '=', locationId)
+        .where('name', '=', locationName)
         .executeTakeFirst();
 
     if (!location) {
-        throw new Error(`Unknown location: ${locationId}`);
+        throw new Error(`Unknown location: ${locationName}`);
     }
+    const encounterTable = location.id as keyof PokemonDataDb & string;
 
-    const rows = (await db
-        .selectFrom(locationId as keyof PokemonDataDb & string)
-        .selectAll()
-        .execute()) as LocationEncounterRow[];
-    const [pokemonRows, subAreas, terrains] = await Promise.all([
-        listPokemonByIds(unique(rows.map((row) => row.pokemon_id))),
+    const [rows, subAreas, terrains] = await Promise.all([
+        db
+            .selectFrom(encounterTable)
+            .innerJoin('pokemon', `${encounterTable}.pokemon_id`, 'pokemon.id')
+            .selectAll()
+            .execute(),
         db.selectFrom('sub_areas').selectAll().execute(),
         db.selectFrom('terrain_types').selectAll().execute(),
     ]);
-    const pokemonById = new Map(
-        (pokemonRows as PokemonRow[]).map((pokemon) => [pokemon.id, pokemon]),
-    );
     const subAreaById = new Map(
         subAreas.map((subArea) => [subArea.id, subArea.name]),
     );
@@ -95,15 +57,9 @@ export async function getLocationEncounterDetails(
     return {
         location,
         encounters: rows.flatMap((row) => {
-            const pokemon = pokemonById.get(row.pokemon_id);
-            if (!pokemon) {
-                return [];
-            }
             return [
                 {
-                    pokemonId: row.pokemon_id,
-                    name: pokemon.name,
-                    groupKey: getRandomizerGroupKey(pokemon.name),
+                    name: row.name,
                     subArea: subAreaById.get(row.sub_area_id) ?? 'Unknown',
                     games: row.games,
                     terrain: terrainById.get(row.terrain_id) ?? 'unknown',
@@ -117,8 +73,4 @@ export async function getLocationEncounterDetails(
             ];
         }),
     };
-}
-
-function unique<T>(values: readonly T[]): T[] {
-    return [...new Set(values)];
 }

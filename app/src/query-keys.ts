@@ -9,8 +9,7 @@ export const encounterRollsQueryKey = (gameRunId: string) => [
     gameRunId,
 ];
 
-export const locationEncountersQueryKey = (locationId: string) => [
+export const locationEncountersQueryKey = (locationName: string) => [
     'location-encounters',
-    locationId,
+    locationName,
 ];
-

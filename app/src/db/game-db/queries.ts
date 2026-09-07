@@ -1,10 +1,6 @@
 import type { RandomizerMode } from '../../randomizer';
 import { getGameDb } from './client';
-import type {
-    EncounterRollRow,
-    EncounterStatus,
-    GameRunRow,
-} from './schema';
+import type { EncounterRollRow, EncounterStatus, GameRunRow } from './schema';
 
 export type GameVariant = 's' | 'v';
 
@@ -66,9 +62,7 @@ export interface CreateGameInput {
     randomizerMode: RandomizerMode;
 }
 
-export async function createGame(
-    input: CreateGameInput,
-): Promise<GameRunRow> {
+export async function createGame(input: CreateGameInput): Promise<GameRunRow> {
     const db = await getGameDb();
     const existing = await listGames();
     const existingIds = new Set(existing.map((row) => row.id));
@@ -90,7 +84,7 @@ export async function createGame(
     return row;
 }
 
-export const STARTER_LOCATION_ID = 'starter-choice';
+export const STARTER_LOCATION_NAME = 'Starter';
 
 export async function listEncounterRolls(
     gameRunId: string,
@@ -105,8 +99,8 @@ export async function listEncounterRolls(
 
 export interface AddEncounterRollInput {
     gameRunId: string;
-    locationId: string;
-    pokemonId: number;
+    locationName: string;
+    pokemonName: string;
     status?: EncounterStatus;
 }
 
@@ -116,8 +110,8 @@ export async function addEncounterRoll(
     const db = await getGameDb();
     const row: EncounterRollRow = {
         game_run_id: input.gameRunId,
-        location_id: input.locationId,
-        pokemon_id: input.pokemonId,
+        location_name: input.locationName,
+        pokemon_name: input.pokemonName,
         status: input.status ?? 'pending',
     };
     await db.insertInto('encounter_rolls').values(row).execute();
@@ -126,7 +120,7 @@ export async function addEncounterRoll(
 
 export interface SetEncounterRollStatusInput {
     gameRunId: string;
-    locationId: string;
+    locationName: string;
     status: EncounterStatus;
 }
 
@@ -138,13 +132,13 @@ export async function setEncounterRollStatus(
         .updateTable('encounter_rolls')
         .set({ status: input.status })
         .where('game_run_id', '=', input.gameRunId)
-        .where('location_id', '=', input.locationId)
+        .where('location_name', '=', input.locationName)
         .execute();
 }
 
 export interface ClearEncounterRollInput {
     gameRunId: string;
-    locationId: string;
+    locationName: string;
 }
 
 export async function clearEncounterRoll(
@@ -154,7 +148,7 @@ export async function clearEncounterRoll(
     await db
         .deleteFrom('encounter_rolls')
         .where('game_run_id', '=', input.gameRunId)
-        .where('location_id', '=', input.locationId)
+        .where('location_name', '=', input.locationName)
         .execute();
 }
 

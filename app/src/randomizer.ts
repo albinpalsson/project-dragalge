@@ -1,7 +1,9 @@
+import { getRandomizerGroupKey } from './randomizer-groups';
+
 export type RandomizerMode = 'weighted' | 'normalized' | 'equal';
 
 export interface RandomizableEncounter {
-    groupKey: string;
+    name: string;
     morningRate: number;
     dayRate: number;
     eveningRate: number;
@@ -62,11 +64,12 @@ function groupEncountersByKey<T extends RandomizableEncounter>(
 ): EncounterGroup<T>[] {
     const groups = new Map<string, T[]>();
     for (const encounter of encounters) {
-        const members = groups.get(encounter.groupKey);
+        const groupKey = getRandomizerGroupKey(encounter.name);
+        const members = groups.get(groupKey);
         if (members) {
             members.push(encounter);
         } else {
-            groups.set(encounter.groupKey, [encounter]);
+            groups.set(groupKey, [encounter]);
         }
     }
     return [...groups.entries()].map(([groupKey, members]) => ({
@@ -87,9 +90,7 @@ function groupEncountersByKey<T extends RandomizableEncounter>(
 function getGroupWeight<T extends RandomizableEncounter>(
     group: EncounterGroup<T>,
 ): number {
-    const weights = group.members
-        .map(getEffectiveWeight)
-        .sort((a, b) => b - a);
+    const weights = group.members.map(getEffectiveWeight).sort((a, b) => b - a);
     return weights.reduce(
         (sum, weight, index) => sum + weight * 0.5 ** index,
         0,

@@ -23,7 +23,7 @@ import {
 
 interface EncounterCardProps {
     gameRunId: string;
-    locationId: string;
+    locationName: string;
     rolls: EncounterRollRow[];
     randomizerMode: RandomizerMode;
 }
@@ -41,24 +41,23 @@ const RESOLVED_STATUSES: readonly EncounterStatus[] = [
     'eliminated',
 ];
 
-const POCO_PATH_LOCATION_ID = 'poco-path';
+const POCO_PATH_LOCATION_NAME = 'Poco Path';
 
 export function EncounterCard({
     gameRunId,
-    locationId,
+    locationName,
     rolls,
     randomizerMode,
 }: EncounterCardProps) {
     const [isExpanded, setExpanded] = useState(false);
-    const encountersQuery = useLocationEncountersQuery(locationId);
+    const encountersQuery = useLocationEncountersQuery(locationName);
     const gameRunQuery = useGameRunQuery(gameRunId);
-    const setIncludeOceanSettingMutation =
-        useSetPocoPathOceanSettingMutation();
+    const setIncludeOceanSettingMutation = useSetPocoPathOceanSettingMutation();
     const addRollMutation = useAddEncounterRollMutation();
     const setStatusMutation = useSetEncounterRollStatusMutation();
     const clearRollMutation = useClearEncounterRollMutation();
 
-    const roll = rolls.find((row) => row.location_id === locationId);
+    const roll = rolls.find((row) => row.location_name === locationName);
     const [pendingGroup, setPendingGroup] = useState<
         LocationEncounterView[] | null
     >(null);
@@ -70,7 +69,7 @@ export function EncounterCard({
         (encounter) => encounter.subArea === 'Ocean',
     );
     const canIncludeOcean =
-        locationId === POCO_PATH_LOCATION_ID && oceanEncounters.length > 0;
+        locationName === POCO_PATH_LOCATION_NAME && oceanEncounters.length > 0;
     const includeOcean =
         canIncludeOcean && (gameRunQuery.data?.settings.pocoPathOcean ?? false);
     const activeEncounters = includeOcean
@@ -78,7 +77,7 @@ export function EncounterCard({
         : landEncounters;
     const levelRange = getLevelRange(activeEncounters);
     const rolledEncounter = details?.encounters.find(
-        (encounter) => encounter.pokemonId === roll?.pokemon_id,
+        (encounter) => encounter.name === roll?.pokemon_name,
     );
 
     const isBusy =
@@ -90,8 +89,8 @@ export function EncounterCard({
         setPendingGroup(null);
         addRollMutation.mutate({
             gameRunId,
-            locationId,
-            pokemonId: encounter.pokemonId,
+            locationName,
+            pokemonName: encounter.name,
         });
     };
 
@@ -110,12 +109,12 @@ export function EncounterCard({
     return (
         <article
             className={cx(card, roll && statusStyle(roll.status))}
-            aria-labelledby={`${locationId}-heading`}
+            aria-labelledby={`${locationName}-heading`}
         >
             <div className={header}>
                 <div>
-                    <h3 id={`${locationId}-heading`} className={heading}>
-                        {details?.location.name ?? locationId}
+                    <h3 id={`${locationName}-heading`} className={heading}>
+                        {details?.location.name ?? locationName}
                     </h3>
                     {details && (
                         <p className={subheading}>{details.location.region}</p>
@@ -123,7 +122,9 @@ export function EncounterCard({
                 </div>
                 {details && (
                     <div className={badges}>
-                        <span className={badge}>{details.location.province}</span>
+                        <span className={badge}>
+                            {details.location.province}
+                        </span>
                         {levelRange && (
                             <span className={badge}>
                                 Lv {levelRange.min}-{levelRange.max}
@@ -140,7 +141,9 @@ export function EncounterCard({
                 <p className={mutedText}>Loading encounters...</p>
             )}
             {encountersQuery.isError && (
-                <p className={mutedText}>Error loading encounters.</p>
+                <p className={mutedText}>
+                    Error loading encounters. {String(encountersQuery.error)}
+                </p>
             )}
             {details && (
                 <>
@@ -168,7 +171,9 @@ export function EncounterCard({
                         <div className={rollBox}>
                             <img
                                 className={rollIcon}
-                                src={pokemonIconSrc(toSlug(rolledEncounter.name))}
+                                src={pokemonIconSrc(
+                                    toSlug(rolledEncounter.name),
+                                )}
                                 alt={rolledEncounter.name}
                                 loading="lazy"
                             />
@@ -198,7 +203,9 @@ export function EncounterCard({
                             </p>
                             <ul className={options}>
                                 {pendingGroup.map((encounter) => (
-                                    <li key={encounter.pokemonId}>
+                                    <li
+                                        key={`${encounter.name}-${encounter.subArea}`}
+                                    >
                                         <button
                                             type="button"
                                             className={pickButton}
@@ -207,7 +214,8 @@ export function EncounterCard({
                                             }
                                             disabled={isBusy}
                                         >
-                                            {encounter.name} ({encounter.subArea})
+                                            {encounter.name} (
+                                            {encounter.subArea})
                                         </button>
                                     </li>
                                 ))}
@@ -236,7 +244,7 @@ export function EncounterCard({
                                     onClick={() =>
                                         setStatusMutation.mutate({
                                             gameRunId,
-                                            locationId,
+                                            locationName,
                                             status,
                                         })
                                     }
@@ -252,7 +260,7 @@ export function EncounterCard({
                                 onClick={() =>
                                     clearRollMutation.mutate({
                                         gameRunId,
-                                        locationId,
+                                        locationName,
                                     })
                                 }
                                 disabled={isBusy}
@@ -287,7 +295,7 @@ export function EncounterCard({
                                 <tbody>
                                     {activeEncounters.map((encounter) => (
                                         <tr
-                                            key={`${encounter.pokemonId}-${encounter.subArea}-${encounter.terrain}`}
+                                            key={`${encounter.name}-${encounter.subArea}-${encounter.terrain}`}
                                         >
                                             <td>{encounter.name}</td>
                                             <td>{encounter.subArea}</td>
@@ -297,7 +305,9 @@ export function EncounterCard({
                                             <td>{formatWeight(encounter)}%</td>
                                             <td>{formatTime(encounter)}</td>
                                             <td>{encounter.terrain}</td>
-                                            <td>{formatGames(encounter.games)}</td>
+                                            <td>
+                                                {formatGames(encounter.games)}
+                                            </td>
                                             <td>
                                                 <button
                                                     type="button"
@@ -361,10 +371,7 @@ function formatTime(encounter: LocationEncounterView): string {
 }
 
 function formatGames(games: string): string {
-    return games
-        .toUpperCase()
-        .split('')
-        .join('/');
+    return games.toUpperCase().split('').join('/');
 }
 
 function statusStyle(status: EncounterStatus): string | undefined {

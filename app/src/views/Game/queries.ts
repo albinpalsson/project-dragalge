@@ -10,7 +10,6 @@ import {
 } from '../../db/game-db/queries';
 import {
     getLocationEncounterDetails,
-    listStarters,
     type LocationEncounterView,
 } from '../../db/pokemon-data/queries';
 import {
@@ -18,15 +17,7 @@ import {
     GAME_CARDS_QUERY_KEY,
     gameRunQueryKey,
     locationEncountersQueryKey,
-    STARTERS_QUERY_KEY,
 } from '../../query-keys';
-
-export function useStartersQuery() {
-    return useQuery({
-        queryKey: STARTERS_QUERY_KEY,
-        queryFn: listStarters,
-    });
-}
 
 export function useGameRunQuery(gameRunId: string) {
     return useQuery({
@@ -42,10 +33,10 @@ export function useEncounterRollsQuery(gameRunId: string) {
     });
 }
 
-export function useLocationEncountersQuery(locationId: string) {
+export function useLocationEncountersQuery(locationName: string) {
     return useQuery({
-        queryKey: locationEncountersQueryKey(locationId),
-        queryFn: () => getLocationEncounterDetails(locationId),
+        queryKey: locationEncountersQueryKey(locationName),
+        queryFn: () => getLocationEncounterDetails(locationName),
     });
 }
 

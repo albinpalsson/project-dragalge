@@ -3,7 +3,11 @@ import type { EncounterRollRow } from '../../db/game-db/schema';
 import { type RandomizerMode, toRandomizerMode } from '../../randomizer';
 import { useEncounterRollsQuery, useGameRunQuery } from './queries';
 import { EncounterCard } from './EncounterCard';
-import { PROGRESSION, type BossType, type ProgressionEntry } from './progression';
+import {
+    PROGRESSION,
+    type BossType,
+    type ProgressionEntry,
+} from './progression';
 import { StarterCard } from './StarterCard';
 
 interface GameProps {
@@ -57,7 +61,7 @@ function renderProgressionEntry(
         return (
             <EncounterCard
                 gameRunId={gameRunId}
-                locationId={entry.id}
+                locationName={entry.name}
                 rolls={rolls}
                 randomizerMode={randomizerMode}
             />
