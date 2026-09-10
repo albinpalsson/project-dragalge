@@ -14,7 +14,12 @@ export interface EncounterRollRow {
     location_name: string;
     pokemon_name: string;
     status: EncounterStatus;
+    // 0 means not in the party; 1..MAX_PARTY_SIZE is the party slot.
+    party_slot: number;
 }
+
+export const MAX_PARTY_SIZE = 6;
+export const NO_PARTY_SLOT = 0;
 
 export interface GameRunsDb {
     game_runs: GameRunRow;
@@ -22,9 +27,9 @@ export interface GameRunsDb {
 }
 
 // Bump whenever GAME_DB_SCHEMA_SQL changes; old versioned storage keys are left in place.
-export const GAME_DB_SCHEMA_VERSION = 11;
+export const GAME_DB_SCHEMA_VERSION = 12;
 
 export const GAME_DB_SCHEMA_SQL: readonly string[] = [
     'CREATE TABLE game_runs (id CHAR(64), variant CHAR(1), randomizer_mode CHAR(10), poco_path_ocean TINYINT)',
-    'CREATE TABLE encounter_rolls (game_run_id CHAR(64), location_name CHAR(64), pokemon_name CHAR(64), status CHAR(10))',
+    'CREATE TABLE encounter_rolls (game_run_id CHAR(64), location_name CHAR(64), pokemon_name CHAR(64), status CHAR(10), party_slot TINYINT)',
 ];

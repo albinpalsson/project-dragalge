@@ -108,7 +108,7 @@ export function Home({ onOpenGame }: HomeProps) {
                                 >
                                     <GameCard
                                         game={card.game}
-                                        caughtPokemon={card.caught}
+                                        obtained={card.obtained}
                                     />
                                 </button>
                             </li>

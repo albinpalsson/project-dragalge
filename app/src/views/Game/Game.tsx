@@ -1,4 +1,5 @@
 import { css } from '@pokedb2/css-in-js';
+import { Box } from './Box/Box';
 import { GameProvider } from './GameContext';
 import { InletGrotto } from './progression/encounters/InletGrotto';
 import { PocoPath } from './progression/encounters/PocoPath';
@@ -47,8 +48,11 @@ export function Game({ gameRunId }: GameProps) {
                 encounters: encounterRollsQuery.data,
             }}
         >
-            <section>
-                <h2>{game.id}</h2>
+            <section className={layout}>
+                <div className={topRow}>
+                    <h2 className={heading}>{game.id}</h2>
+                    <Box />
+                </div>
                 <ol className={cardList}>
                     <li>
                         <StarterCard />
@@ -64,6 +68,30 @@ export function Game({ gameRunId }: GameProps) {
         </GameProvider>
     );
 }
+
+const layout = css`
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+`;
+
+const topRow = css`
+    position: sticky;
+    top: var(--header-height);
+    z-index: 800;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+  padding: var(--space-3) 0;
+  border-bottom: 0.1rem solid var(--color-border);
+`;
+
+const heading = css`
+  margin: 0;
+  font-size: var(--font-size-lg);
+`;
 
 const cardList = css`
   display: flex;

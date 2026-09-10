@@ -1,15 +1,19 @@
 import { css } from '@pokedb2/css-in-js';
-import type { GameRunRow } from '../../db/game-db/schema';
+import {
+    NO_PARTY_SLOT,
+    type EncounterRollRow,
+    type GameRunRow,
+} from '../../db/game-db/schema';
 import { pokemonIconSrc, toIconSlug } from '../../pokemon-icon';
-import type { GameCardPokemon } from './queries';
 
 interface GameCardProps {
     game: GameRunRow;
-    caughtPokemon: GameCardPokemon[];
+    obtained: EncounterRollRow[];
 }
 
-export function GameCard({ game, caughtPokemon }: GameCardProps) {
-    const progress = Math.min(caughtPokemon.length * 8, 100);
+export function GameCard({ game, obtained }: GameCardProps) {
+    const sorted = partyFirst(obtained);
+    const progress = Math.min(sorted.length * 8, 100);
     const variantColor =
         game.variant === 'v' ? 'var(--color-accent)' : 'var(--color-primary)';
 
@@ -23,17 +27,25 @@ export function GameCard({ game, caughtPokemon }: GameCardProps) {
                 }}
             />
             <span className={name}>{game.id}</span>
-            <span className={progressLabel}>{caughtPokemon.length} caught</span>
-            {caughtPokemon.length > 0 ? (
+            <span className={progressLabel}>{sorted.length} caught</span>
+            {sorted.length > 0 ? (
                 <span className={icons}>
-                    {caughtPokemon.slice(0, 6).map((pokemon) => (
-                        <img
-                            key={pokemon.name}
-                            className={icon}
-                            src={pokemonIconSrc(toIconSlug(pokemon.name))}
-                            alt={pokemon.name}
-                            loading="lazy"
-                        />
+                    {sorted.slice(0, 6).map((row, index, shown) => (
+                        <span className={iconSlot} key={row.location_name}>
+                            {index > 0 &&
+                                shown[index - 1].party_slot !== NO_PARTY_SLOT &&
+                                row.party_slot === NO_PARTY_SLOT && (
+                                    <span className={divider} />
+                                )}
+                            <img
+                                className={icon}
+                                src={pokemonIconSrc(
+                                    toIconSlug(row.pokemon_name),
+                                )}
+                                alt={row.pokemon_name}
+                                loading="lazy"
+                            />
+                        </span>
                     ))}
                 </span>
             ) : (
@@ -43,6 +55,13 @@ export function GameCard({ game, caughtPokemon }: GameCardProps) {
     );
 }
 
+function partyFirst(rows: EncounterRollRow[]) {
+    const party = rows
+        .filter((row) => row.party_slot !== NO_PARTY_SLOT)
+        .sort((a, b) => a.party_slot - b.party_slot);
+    const rest = rows.filter((row) => row.party_slot === NO_PARTY_SLOT);
+    return [...party, ...rest];
+}
 const card = css`
   position: relative;
   overflow: hidden;
@@ -79,9 +98,21 @@ const icons = css`
   right: var(--space-2);
   bottom: var(--space-2);
   display: flex;
-  flex-direction: row-reverse;
+  flex-direction: row;
   align-items: center;
   gap: var(--space-1);
+`;
+
+const iconSlot = css`
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+`;
+
+const divider = css`
+  width: 0.1rem;
+  height: 4rem;
+  background: var(--color-border);
 `;
 
 const icon = css`

@@ -1,6 +1,7 @@
 import type { RandomizerMode } from '../../randomizer';
 import { getGameDb } from './client';
 import type { EncounterRollRow, EncounterStatus, GameRunRow } from './schema';
+import { NO_PARTY_SLOT } from './schema';
 
 export type GameVariant = 's' | 'v';
 
@@ -113,6 +114,7 @@ export async function addEncounterRoll(
         location_name: input.locationName,
         pokemon_name: input.pokemonName,
         status: input.status ?? 'pending',
+        party_slot: NO_PARTY_SLOT,
     };
     await db.insertInto('encounter_rolls').values(row).execute();
     return row;
@@ -131,6 +133,22 @@ export async function setEncounterRollStatus(
     await db
         .updateTable('encounter_rolls')
         .set({ status: input.status })
+        .where('game_run_id', '=', input.gameRunId)
+        .where('location_name', '=', input.locationName)
+        .execute();
+}
+
+export interface SetPartySlotInput {
+    gameRunId: string;
+    locationName: string;
+    slot: number;
+}
+
+export async function setPartySlot(input: SetPartySlotInput): Promise<void> {
+    const db = await getGameDb();
+    await db
+        .updateTable('encounter_rolls')
+        .set({ party_slot: input.slot })
         .where('game_run_id', '=', input.gameRunId)
         .where('location_name', '=', input.locationName)
         .execute();

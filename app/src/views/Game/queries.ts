@@ -6,6 +6,7 @@ import {
     getGameRun,
     listEncounterRolls,
     setEncounterRollStatus,
+    setPartySlot,
     setPocoPathOceanSetting,
 } from '../../db/game-db/queries';
 import {
@@ -67,6 +68,10 @@ export function useSetEncounterRollStatusMutation() {
 
 export function useClearEncounterRollMutation() {
     return useRollMutation(clearEncounterRoll);
+}
+
+export function useSetPartySlotMutation() {
+    return useRollMutation(setPartySlot);
 }
 
 export function useSetPocoPathOceanSettingMutation() {

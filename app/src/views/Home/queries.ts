@@ -9,22 +9,17 @@ import {
 import type { EncounterRollRow, GameRunRow } from '../../db/game-db/schema';
 import { GAMES_QUERY_KEY, GAME_CARDS_QUERY_KEY } from '../../query-keys';
 
-export interface GameCardPokemon {
-    name: string;
-}
-
-export interface GameCardViewModel {
+export interface GameCardState {
     game: GameRunRow;
-    caught: GameCardPokemon[];
+    obtained: EncounterRollRow[];
 }
 
 export function useGameCards() {
     return useQuery({
         queryKey: GAME_CARDS_QUERY_KEY,
-        queryFn: async (): Promise<GameCardViewModel[]> => {
+        queryFn: async (): Promise<GameCardState[]> => {
             const games = await listGames();
             const obtainedByGame = new Map<string, EncounterRollRow[]>();
-            const pokemonNames = new Set<string>();
 
             await Promise.all(
                 games.map(async (game) => {
@@ -35,19 +30,12 @@ export function useGameCards() {
                             row.status === 'eliminated',
                     );
                     obtainedByGame.set(game.id, obtained);
-                    for (const row of obtained) {
-                        pokemonNames.add(row.pokemon_name);
-                    }
                 }),
             );
 
             return games.map((game) => ({
                 game,
-                caught: (obtainedByGame.get(game.id) ?? []).flatMap((row) => [
-                    {
-                        name: row.pokemon_name,
-                    },
-                ]),
+                obtained: obtainedByGame.get(game.id) ?? [],
             }));
         },
     });

@@ -13,3 +13,8 @@ export const locationEncountersQueryKey = (locationName: string) => [
     'location-encounters',
     locationName,
 ];
+
+export const pokemonQueryKey = (pokemonName: string) => [
+    'pokemon',
+    pokemonName,
+];

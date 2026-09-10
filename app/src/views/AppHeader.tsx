@@ -31,7 +31,7 @@ const header = css`
   align-items: center;
   justify-content: space-between;
   gap: var(--space-3);
-  height: 5.6rem;
+  height: var(--header-height);
   padding: 0 var(--space-4);
   background: var(--color-surface);
   border-bottom: 0.1rem solid var(--color-border);

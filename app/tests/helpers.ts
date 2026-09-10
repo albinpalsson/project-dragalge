@@ -52,7 +52,9 @@ export async function rollEncounter(
     const card = cardFor(page, cardName);
 
     await card.getByRole('button', { name: 'Randomize' }).click();
-    await expect(card.getByRole('button', { name: 'Randomize' })).toBeDisabled();
+    await expect(
+        card.getByRole('button', { name: 'Randomize' }),
+    ).toBeDisabled();
 
     const icon = card.getByRole('img').first();
     await expect(icon).toBeVisible();
@@ -71,7 +73,10 @@ export async function resolveEncounter(
 ): Promise<void> {
     const card = cardFor(page, cardName);
 
-    const statusButton = card.getByRole('button', { name: status, exact: true });
+    const statusButton = card.getByRole('button', {
+        name: status,
+        exact: true,
+    });
     await statusButton.click();
     await expect(statusButton).toBeDisabled();
 }
@@ -79,4 +84,59 @@ export async function resolveEncounter(
 export async function navigateTo(page: Page, destination: 'Home' | 'About') {
     await page.getByRole('button', { name: 'Open menu' }).click();
     await page.getByRole('button', { name: destination, exact: true }).click();
+}
+
+export async function openBox(page: Page) {
+    await page.getByRole('button', { name: 'Open box' }).click();
+    await expect(page.getByRole('dialog')).toBeVisible();
+}
+
+export function boxSection(page: Page, title: 'Party' | 'Box' | 'Death Box') {
+    return page
+        .getByRole('dialog')
+        .getByRole('region', { name: title, exact: true });
+}
+
+export async function selectBoxPokemon(
+    page: Page,
+    title: 'Party' | 'Box' | 'Death Box',
+    pokemonName: string,
+) {
+    await boxSection(page, title)
+        .getByRole('button', { name: pokemonName })
+        .click();
+    await expect(
+        page
+            .getByRole('dialog')
+            .getByRole('region', { name: `${pokemonName} details` }),
+    ).toBeVisible();
+}
+
+export async function dragBoxPokemon(
+    page: Page,
+    from: 'Party' | 'Box' | 'Death Box',
+    pokemonName: string,
+    to: 'Party' | 'Box' | 'Death Box',
+) {
+    const iconButton = boxSection(page, from).getByRole('button', {
+        name: pokemonName,
+    });
+    const targetSection = boxSection(page, to);
+    const iconBox = await iconButton.boundingBox();
+    const targetBox = await targetSection.boundingBox();
+    if (!iconBox || !targetBox) {
+        throw new Error('Unable to determine drag positions for Box sections');
+    }
+
+    await page.mouse.move(
+        iconBox.x + iconBox.width / 2,
+        iconBox.y + iconBox.height / 2,
+    );
+    await page.mouse.down();
+    await page.mouse.move(
+        targetBox.x + targetBox.width / 2,
+        targetBox.y + targetBox.height / 2,
+        { steps: 8 },
+    );
+    await page.mouse.up();
 }

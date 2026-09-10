@@ -3,7 +3,7 @@ import { Button } from './Button';
 import { EncounterRandomizer } from './EncounterRandomizer';
 import type { LocationEncounterView } from '../db/pokemon-data/queries';
 import { useEncounterRoll } from '../hooks/useEncounterRoll';
-import { useEncounterRollActions } from '../hooks/useEncounterRollActions';
+import { useEncounterActions } from '../hooks/useEncounterActions';
 import { useGame } from '../views/Game/GameContext';
 
 interface RollActionsProps {
@@ -21,24 +21,39 @@ const STATUS_LABELS = {
 export function RollActions({ locationName, encounters }: RollActionsProps) {
     const game = useGame();
     const encounterRoll = useEncounterRoll(locationName);
-    const actions = useEncounterRollActions(locationName);
+    const encounterActions = useEncounterActions();
+
+    const setStatus = (status: (typeof STATUSES)[number]) => {
+        if (status === 'caught') {
+            return encounterActions.catchEncounter(locationName);
+        }
+        if (status === 'missed') {
+            return encounterActions.missEncounter(locationName);
+        }
+        return encounterActions.eliminateEncounter(locationName);
+    };
 
     return (
         <div className={actionRow}>
             <EncounterRandomizer
                 encounters={encounters}
                 randomizerMode={game.randomizerMode}
-                disabled={actions.isBusy || encounterRoll !== undefined}
-                onPick={actions.pickEncounter}
+                disabled={
+                    encounterActions.isBusy || encounterRoll !== undefined
+                }
+                onPick={(encounter) =>
+                    encounterActions.rollEncounter(encounter.name, locationName)
+                }
             />
             {encounterRoll &&
                 STATUSES.map((status) => (
                     <Button
                         key={status}
                         variant="secondary"
-                        onClick={() => actions.setStatus(status)}
+                        onClick={() => void setStatus(status)}
                         disabled={
-                            actions.isBusy || encounterRoll.status === status
+                            encounterActions.isBusy ||
+                            encounterRoll.status === status
                         }
                     >
                         {STATUS_LABELS[status]}
@@ -47,8 +62,8 @@ export function RollActions({ locationName, encounters }: RollActionsProps) {
             {encounterRoll && (
                 <Button
                     variant="secondary"
-                    onClick={actions.clearRoll}
-                    disabled={actions.isBusy}
+                    onClick={() => encounterActions.clearRoll(locationName)}
+                    disabled={encounterActions.isBusy}
                 >
                     Clear
                 </Button>

@@ -6,7 +6,7 @@ import { EncounterTableToggle } from '../../../../components/EncounterTableToggl
 import { RollActions } from '../../../../components/RollActions';
 import { RollResult } from '../../../../components/RollResult';
 import { useEncounterRoll } from '../../../../hooks/useEncounterRoll';
-import { useEncounterRollActions } from '../../../../hooks/useEncounterRollActions';
+import { useEncounterActions } from '../../../../hooks/useEncounterActions';
 import { useLocationEncountersQuery } from '../../queries';
 
 const LOCATION_NAME = 'Inlet Grotto';
@@ -15,7 +15,7 @@ export function InletGrotto() {
     const encountersQuery = useLocationEncountersQuery(LOCATION_NAME);
     const encounterRoll = useEncounterRoll(LOCATION_NAME);
     const [isExpanded, setExpanded] = useState(false);
-    const rollActions = useEncounterRollActions(LOCATION_NAME);
+    const encounterActions = useEncounterActions();
 
     if (encountersQuery.isPending) {
         return <p>Loading Inlet Grotto encounters...</p>;
@@ -66,8 +66,15 @@ export function InletGrotto() {
             {isExpanded && (
                 <EncounterTable
                     encounters={encountersQuery.data.encounters}
-                    disabled={rollActions.isBusy || encounterRoll !== undefined}
-                    onPick={rollActions.pickEncounter}
+                    disabled={
+                        encounterActions.isBusy || encounterRoll !== undefined
+                    }
+                    onPick={(encounter) =>
+                        encounterActions.rollEncounter(
+                            encounter.name,
+                            LOCATION_NAME,
+                        )
+                    }
                 />
             )}
         </article>

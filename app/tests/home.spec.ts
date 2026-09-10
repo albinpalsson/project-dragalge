@@ -1,11 +1,14 @@
 import { test, expect } from '@playwright/test';
 import {
+    boxSection,
     cardFor,
     createGame,
     navigateTo,
+    openBox,
     openGame,
     resolveEncounter,
     rollEncounter,
+    selectBoxPokemon,
 } from './helpers';
 
 test('home game cards show the Pokemon obtained in a run', async ({ page }) => {
@@ -21,6 +24,35 @@ test('home game cards show the Pokemon obtained in a run', async ({ page }) => {
     const gameCard = page.getByRole('button', { name: /card-run/ });
     await expect(gameCard).toContainText('1 caught');
     await expect(gameCard.getByRole('img', { name: rolled })).toBeVisible();
+});
+
+test('home game cards list party members before the rest', async ({ page }) => {
+    await page.goto('/');
+    await createGame(page, 'party-order-run');
+    await openGame(page, 'party-order-run');
+
+    const pocoPath = await rollEncounter(page, 'Poco Path');
+    await resolveEncounter(page, 'Poco Path', 'Caught');
+    const inletGrotto = await rollEncounter(page, 'Inlet Grotto');
+    await resolveEncounter(page, 'Inlet Grotto', 'Caught');
+
+    await openBox(page);
+    await selectBoxPokemon(page, 'Party', pocoPath);
+    await page
+        .getByRole('region', { name: `${pocoPath} details` })
+        .getByRole('button', { name: 'Remove from party' })
+        .click();
+    await expect(
+        boxSection(page, 'Box').getByRole('img', { name: pocoPath }),
+    ).toBeVisible();
+
+    await navigateTo(page, 'Home');
+
+    const gameCard = page.getByRole('button', { name: /party-order-run/ });
+    await expect(gameCard.getByRole('img').first()).toHaveAttribute(
+        'alt',
+        inletGrotto,
+    );
 });
 
 test('clearing a roll allows rolling again', async ({ page }) => {

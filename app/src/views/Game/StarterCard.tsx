@@ -3,13 +3,17 @@ import { Button } from '../../components/Button';
 import { pokemonIconSrc, toIconSlug } from '../../pokemon-icon';
 
 import { STARTER_LOCATION_NAME } from '../../db/game-db/queries';
+import { useEncounterActions } from '../../hooks/useEncounterActions';
 import { useGame } from './GameContext';
-import { useAddEncounterRollMutation } from './queries';
 
 export function StarterCard() {
     const game = useGame();
-    const { starterNames, isBusy, chooseStarter, randomizeStarter } =
-        useStarterActions();
+    const encounterActions = useEncounterActions();
+
+    const randomizeStarter = () => {
+        const pick = randomStarter();
+        void encounterActions.chooseStarter(pick, STARTER_LOCATION_NAME);
+    };
 
     const starter = game.encounters.find(
         (row) => row.location_name === STARTER_LOCATION_NAME,
@@ -33,13 +37,18 @@ export function StarterCard() {
                 <>
                     <p className={hint}>Choose your starter Pokémon.</p>
                     <ul className={options}>
-                        {starterNames.map((pokemon) => (
+                        {STARTER_NAMES.map((pokemon) => (
                             <li key={pokemon}>
                                 <button
                                     type="button"
                                     className={option}
-                                    onClick={() => chooseStarter(pokemon)}
-                                    disabled={isBusy}
+                                    onClick={() =>
+                                        void encounterActions.chooseStarter(
+                                            pokemon,
+                                            STARTER_LOCATION_NAME,
+                                        )
+                                    }
+                                    disabled={encounterActions.isBusy}
                                 >
                                     <img
                                         className={optionIcon}
@@ -57,7 +66,7 @@ export function StarterCard() {
                     <Button
                         variant="secondary"
                         onClick={randomizeStarter}
-                        disabled={isBusy}
+                        disabled={encounterActions.isBusy}
                     >
                         Randomize
                     </Button>
@@ -69,31 +78,8 @@ export function StarterCard() {
 
 const STARTER_NAMES = ['Sprigatito', 'Fuecoco', 'Quaxly'] as const;
 
-export function useStarterActions() {
-    const game = useGame();
-    const addRollMutation = useAddEncounterRollMutation();
-
-    const chooseStarter = (pokemonName: string) => {
-        addRollMutation.mutate({
-            gameRunId: game.id,
-            pokemonName,
-            locationName: STARTER_LOCATION_NAME,
-            status: 'caught',
-        });
-    };
-
-    const randomizeStarter = () => {
-        const pick =
-            STARTER_NAMES[Math.floor(Math.random() * STARTER_NAMES.length)];
-        chooseStarter(pick);
-    };
-
-    return {
-        starterNames: STARTER_NAMES,
-        isBusy: addRollMutation.isPending,
-        chooseStarter,
-        randomizeStarter,
-    };
+function randomStarter() {
+    return STARTER_NAMES[Math.floor(Math.random() * STARTER_NAMES.length)];
 }
 
 const card = css`

@@ -23,6 +23,55 @@ export interface LocationEncounterView {
     nightRate: number;
 }
 
+export interface PokemonBaseStats {
+    hp: number;
+    attack: number;
+    defense: number;
+    specialAttack: number;
+    specialDefense: number;
+    speed: number;
+}
+
+export interface PokemonView {
+    name: string;
+    primaryType: string;
+    // Empty when the Pokémon is single-typed; the seed data stores type id 0 for "none".
+    secondaryType: string;
+    baseStats: PokemonBaseStats;
+}
+
+export async function getPokemon(
+    name: string,
+): Promise<PokemonView | undefined> {
+    const db = await getPokemonDb();
+    const row = await db
+        .selectFrom('pokemon')
+        .selectAll()
+        .where('name', '=', name)
+        .executeTakeFirst();
+
+    if (!row) {
+        return undefined;
+    }
+
+    const types = await db.selectFrom('pokemon_types').selectAll().execute();
+    const typeById = new Map(types.map((type) => [type.id, type.name]));
+
+    return {
+        name: row.name,
+        primaryType: typeById.get(row.primary_type_id) ?? '',
+        secondaryType: typeById.get(row.secondary_type_id) ?? '',
+        baseStats: {
+            hp: row.base_hp,
+            attack: row.base_attack,
+            defense: row.base_defense,
+            specialAttack: row.base_sp_attack,
+            specialDefense: row.base_sp_defense,
+            speed: row.base_speed,
+        },
+    };
+}
+
 export async function getLocationEncounterDetails(
     locationName: string,
 ): Promise<LocationEncounterDetails> {

@@ -7,7 +7,7 @@ import { EncounterTableToggle } from '../../../../components/EncounterTableToggl
 import { RollActions } from '../../../../components/RollActions';
 import { RollResult } from '../../../../components/RollResult';
 import { useEncounterRoll } from '../../../../hooks/useEncounterRoll';
-import { useEncounterRollActions } from '../../../../hooks/useEncounterRollActions';
+import { useEncounterActions } from '../../../../hooks/useEncounterActions';
 import { useGame } from '../../GameContext';
 import {
     useLocationEncountersQuery,
@@ -22,7 +22,7 @@ export function PocoPath() {
     const encounterRoll = useEncounterRoll(LOCATION_NAME);
     const setOceanMutation = useSetPocoPathOceanSettingMutation();
     const [isExpanded, setExpanded] = useState(false);
-    const rollActions = useEncounterRollActions(LOCATION_NAME);
+    const encounterActions = useEncounterActions();
 
     if (encountersQuery.isPending) {
         return <p>Loading Poco Path encounters...</p>;
@@ -84,8 +84,15 @@ export function PocoPath() {
             {isExpanded && (
                 <EncounterTable
                     encounters={activeEncounters}
-                    disabled={rollActions.isBusy || encounterRoll !== undefined}
-                    onPick={rollActions.pickEncounter}
+                    disabled={
+                        encounterActions.isBusy || encounterRoll !== undefined
+                    }
+                    onPick={(encounter) =>
+                        encounterActions.rollEncounter(
+                            encounter.name,
+                            LOCATION_NAME,
+                        )
+                    }
                 />
             )}
         </article>
