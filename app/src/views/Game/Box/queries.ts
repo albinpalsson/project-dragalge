@@ -1,6 +1,11 @@
+import { useMemo } from 'react';
 import { useQuery } from '../../../server-query';
-import { getPokemon } from '../../../db/pokemon-data/queries';
-import { pokemonQueryKey } from '../../../query-keys';
+import { getPokemon, getTypeChart } from '../../../db/pokemon-data/queries';
+import { pokemonQueryKey, TYPE_CHART_QUERY_KEY } from '../../../query-keys';
+import {
+    defensiveEffectiveness,
+    type DefensiveEffectivenessEntry,
+} from '../../../utils/type-effectiveness';
 
 export function usePokemonQuery(pokemonName: string) {
     return useQuery({
@@ -8,4 +13,39 @@ export function usePokemonQuery(pokemonName: string) {
         queryFn: () => getPokemon(pokemonName),
         staleTime: Infinity,
     });
+}
+
+export function useTypeChartQuery() {
+    return useQuery({
+        queryKey: TYPE_CHART_QUERY_KEY,
+        queryFn: () => getTypeChart(),
+        staleTime: Infinity,
+    });
+}
+
+export function useTypeDefenses(
+    pokemonName: string,
+): DefensiveEffectivenessEntry[] {
+    const pokemonQuery = usePokemonQuery(pokemonName);
+    const chartQuery = useTypeChartQuery();
+
+    return useMemo(() => {
+        // If either query hasn't resolved, return empty array
+        if (!pokemonQuery.data || !chartQuery.data) {
+            return [];
+        }
+
+        const entries = defensiveEffectiveness(
+            chartQuery.data,
+            pokemonQuery.data.primaryType,
+            pokemonQuery.data.secondaryType,
+        );
+        // Filter out neutral (1.0x) effectiveness
+        return entries.filter((e) => e.multiplier !== 1);
+    }, [
+        chartQuery.data,
+        pokemonQuery.data,
+        pokemonQuery.data?.primaryType,
+        pokemonQuery.data?.secondaryType,
+    ]);
 }

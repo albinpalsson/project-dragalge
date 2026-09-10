@@ -83,9 +83,16 @@ export interface BossBattlePokemonMoveRow {
     move_id: number;
 }
 
+export interface TypeEffectivenessRow {
+    attacking_type_id: number;
+    defending_type_id: number;
+    multiplier_pct: number;
+}
+
 interface StaticPokemonDataDb {
     pokemon: PokemonRow;
     pokemon_types: PokemonTypeRow;
+    type_effectiveness: TypeEffectivenessRow;
     sub_areas: SubAreaRow;
     terrain_types: TerrainTypeRow;
     evolution_methods: EvolutionMethodRow;

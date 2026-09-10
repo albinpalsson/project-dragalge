@@ -7,7 +7,8 @@ import {
 } from '../../../db/game-db/schema';
 import type { PokemonBaseStats } from '../../../db/pokemon-data/queries';
 import { usePartyManager } from '../../../hooks/usePartyManager';
-import { usePokemonQuery } from './queries';
+import { usePokemonQuery, useTypeDefenses } from './queries';
+import { TypeDefenses } from './TypeDefenses';
 
 interface PokemonDetailPaneProps {
     row: EncounterRollRow;
@@ -17,6 +18,7 @@ interface PokemonDetailPaneProps {
 export function PokemonDetailPane({ row, party }: PokemonDetailPaneProps) {
     const [isReplacing, setIsReplacing] = useState(false);
     const pokemonQuery = usePokemonQuery(row.pokemon_name);
+    const defensiveEntries = useTypeDefenses(row.pokemon_name);
     const actions = usePartyManager();
 
     const isEliminated = row.status === 'eliminated';
@@ -52,6 +54,9 @@ export function PokemonDetailPane({ row, party }: PokemonDetailPaneProps) {
                             )}
                         </dl>
                     </>
+                )}
+                {defensiveEntries.length > 0 && (
+                    <TypeDefenses entries={defensiveEntries} />
                 )}
             </div>
 

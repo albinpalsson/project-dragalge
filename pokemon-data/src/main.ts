@@ -15,6 +15,7 @@ import {
     buildSubAreaRows,
     buildTerrainRows,
     buildTypeRowsAndPokemonRows,
+    buildTypeEffectivenessRows,
     fetchAllBossRosters,
     fetchAllPokemonRows,
     initializeDb,
@@ -59,9 +60,13 @@ async function main(): Promise<void> {
 
     const pokemonRows = await fetchAllPokemonRows(pokemonIds);
 
-    const { typeRows, mappedPokemonRows } =
+    const { typeRows, mappedPokemonRows, typeIds } =
         buildTypeRowsAndPokemonRows(pokemonRows);
     await db.insertInto('pokemon_types').values(typeRows).execute();
+
+    const typeEffects = buildTypeEffectivenessRows(typeIds);
+    await db.insertInto('type_effectiveness').values(typeEffects).execute();
+
     await db.insertInto('pokemon').values(mappedPokemonRows).execute();
 
     const { evolutionMethodRows, evolutionTransitionRows } = buildEvolutionRows(
@@ -123,7 +128,6 @@ async function main(): Promise<void> {
     const allMoveNames = rawRosters.flatMap((r) =>
         r.party.flatMap((p) => p.moves),
     );
-    const typeIds = new Map(typeRows.map((row) => [row.name, row.id]));
     const { moveRows, moveIds } = await buildMoveRows(allMoveNames, typeIds);
     await db.insertInto('moves').values(moveRows).execute();
 

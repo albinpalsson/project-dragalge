@@ -32,6 +32,12 @@ export interface PokemonBaseStats {
     speed: number;
 }
 
+export interface TypeChartEntry {
+    attackingType: string;
+    defendingType: string;
+    multiplier: number;
+}
+
 export interface PokemonView {
     name: string;
     primaryType: string;
@@ -70,6 +76,22 @@ export async function getPokemon(
             speed: row.base_speed,
         },
     };
+}
+
+export async function getTypeChart(): Promise<TypeChartEntry[]> {
+    const db = await getPokemonDb();
+    const [types, effectiveness] = await Promise.all([
+        db.selectFrom('pokemon_types').selectAll().execute(),
+        db.selectFrom('type_effectiveness').selectAll().execute(),
+    ]);
+
+    const typeById = new Map(types.map((type) => [type.id, type.name]));
+
+    return effectiveness.map((entry) => ({
+        attackingType: typeById.get(entry.attacking_type_id) ?? 'unknown',
+        defendingType: typeById.get(entry.defending_type_id) ?? 'unknown',
+        multiplier: entry.multiplier_pct / 100,
+    }));
 }
 
 export async function getLocationEncounterDetails(

@@ -45,6 +45,8 @@ test('plays a run from the starter through Inlet Grotto', async ({ page }) => {
     const details = page.getByRole('region', { name: `${rolled} details` });
     await expect(details).toContainText('HP');
     await expect(details).toContainText('Speed');
+    // Verify type effectiveness/defenses data is available
+    await expect(details).toContainText('Type Defenses');
 
     await details.getByRole('button', { name: 'Remove from party' }).click();
     await expect(party.getByRole('img', { name: rolled })).toBeHidden();

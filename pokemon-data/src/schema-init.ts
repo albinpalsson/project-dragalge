@@ -17,7 +17,9 @@ import type {
     BossBattlePokemonRow,
     MoveRow,
     PokemonDataDb,
+    TypeEffectivenessRow,
 } from './schema.ts';
+import { TYPE_EFFECTIVENESS_MATRIX } from './type-effectiveness.ts';
 import type { BossFightSeed } from './sources/fetch-boss-fight-seeds.ts';
 import type { LocationSeed } from './sources/fetch-location-seeds.ts';
 import { assert } from './assert.ts';
@@ -27,6 +29,7 @@ const ABILITY_DESCRIPTION_MAX_LENGTH = 131;
 export const PROVISIONAL_SCHEMA_SQL: readonly string[] = [
     'CREATE TABLE pokemon (id INT, name CHAR(32), primary_type_id TINYINT, secondary_type_id TINYINT, base_hp TINYINT, base_attack TINYINT, base_defense TINYINT, base_sp_attack TINYINT, base_sp_defense TINYINT, base_speed TINYINT)',
     'CREATE TABLE pokemon_types (id TINYINT, name CHAR(12))',
+    'CREATE TABLE type_effectiveness (attacking_type_id TINYINT, defending_type_id TINYINT, multiplier_pct TINYINT)',
     'CREATE TABLE sub_areas (id TINYINT, name CHAR(16))',
     'CREATE TABLE terrain_types (id TINYINT, key CHAR(29))',
     'CREATE TABLE evolution_methods (id TINYINT, description CHAR(95))',
@@ -131,7 +134,49 @@ export function buildTypeRowsAndPokemonRows(
         }),
     );
 
-    return { typeRows, mappedPokemonRows };
+    return { typeRows, mappedPokemonRows, typeIds };
+}
+
+export function buildTypeEffectivenessRows(
+    typeIds: Map<string, number>,
+): TypeEffectivenessRow[] {
+    const rows: TypeEffectivenessRow[] = [];
+
+    for (const [
+        attackingTypeName,
+        defendingTypeName,
+        multiplier,
+    ] of TYPE_EFFECTIVENESS_MATRIX) {
+        const attacking_type_id = typeIds.get(attackingTypeName.toLowerCase());
+        const defending_type_id = typeIds.get(defendingTypeName.toLowerCase());
+
+        if (
+            attacking_type_id === undefined ||
+            defending_type_id === undefined
+        ) {
+            throw new Error(
+                `Type not found in typeIds map: attacking=${attackingTypeName} (${attacking_type_id}), defending=${defendingTypeName} (${defending_type_id})`,
+            );
+        }
+
+        // Encode multiplier as TINYINT: multiply by 100
+        // 0 -> 0, 0.25 -> 25, 0.5 -> 50, 1 -> 100, 2 -> 200, 4 -> 400
+        const multiplier_pct = multiplier * 100;
+
+        rows.push({
+            attacking_type_id,
+            defending_type_id,
+            multiplier_pct,
+        });
+    }
+
+    if (rows.length !== 324) {
+        throw new Error(
+            `Expected 324 type effectiveness rows (18×18), got ${rows.length}`,
+        );
+    }
+
+    return rows;
 }
 
 export function buildTerrainRows(locations: readonly LocationSeed[]): {
@@ -310,26 +355,29 @@ export async function insertLocationEncounters(
     terrainIds: Map<string, number>,
 ): Promise<void> {
     for (const location of locations) {
-    const rows = location.encounters.map((encounter) => {
+        const rows = location.encounters.map((encounter) => {
             const sub_area_id = subAreaIds.get(encounter.subArea.trim());
             assert(sub_area_id);
             const pokemon_id = pokemonIds.get(encounter.pokemonName);
             assert(pokemon_id);
-            const terrain_id = terrainIds.get(canonicalTerrainKey(encounter.terrain));
+            const terrain_id = terrainIds.get(
+                canonicalTerrainKey(encounter.terrain),
+            );
             assert(terrain_id);
 
-            return ({
-            sub_area_id,
-            pokemon_id,
-            games: canonicalGameValue(encounter.games),
-            terrain_id,
-            min_level: encounter.minLevel,
-            max_level: encounter.maxLevel,
-            morning_rate: encounter.morningRate,
-            day_rate: encounter.dayRate,
-            evening_rate: encounter.eveningRate,
-            night_rate: encounter.nightRate,
-        })});
+            return {
+                sub_area_id,
+                pokemon_id,
+                games: canonicalGameValue(encounter.games),
+                terrain_id,
+                min_level: encounter.minLevel,
+                max_level: encounter.maxLevel,
+                morning_rate: encounter.morningRate,
+                day_rate: encounter.dayRate,
+                evening_rate: encounter.eveningRate,
+                night_rate: encounter.nightRate,
+            };
+        });
 
         if (rows.length === 0) {
             continue;
