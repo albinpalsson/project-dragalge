@@ -15,6 +15,7 @@ import type {
     StoragePlugin,
     TableSchema,
     TableStorage,
+    TableInfo,
 } from './types.ts';
 import { HEADER_BYTES } from './types.ts';
 
@@ -118,11 +119,7 @@ export class DB {
             const table = this.getTable(stmt.table);
             const wheres = this.bindWhere(stmt.wheres, parameters);
             if (stmt.join) {
-                return this.executeJoinSelect(
-                    table,
-                    stmt.join,
-                    wheres,
-                );
+                return this.executeJoinSelect(table, stmt.join, wheres);
             }
             return this.executeSelect(table, wheres);
         }
@@ -160,10 +157,7 @@ export class DB {
 
         if (stmt.type === 'delete') {
             const table = this.getTable(stmt.table);
-            this.executeDelete(
-                table,
-                this.bindWhere(stmt.wheres, parameters),
-            );
+            this.executeDelete(table, this.bindWhere(stmt.wheres, parameters));
             this.scheduleWrite();
             return [];
         }
@@ -198,6 +192,19 @@ export class DB {
         }
         this.tables = decodeBlob(blob);
         return true;
+    }
+
+    describeTables(): TableInfo[] {
+        const result: TableInfo[] = [];
+        for (const [, table] of this.tables) {
+            const rowCount = table.view.getUint32(0, true);
+            result.push({
+                name: table.name,
+                columns: table.schema.columns,
+                rowCount,
+            });
+        }
+        return result;
     }
 
     private scheduleWrite(): void {
@@ -360,11 +367,7 @@ export class DB {
         const slotOffset = HEADER_BYTES + slotIndex * table.schema.rowSize;
         for (const where of wheres) {
             const col = this.getColumn(table, where.column);
-            const value = decodeValue(
-                table.view,
-                slotOffset + col.offset,
-                col,
-            );
+            const value = decodeValue(table.view, slotOffset + col.offset, col);
             if (where.type === 'equals' && value !== where.value) {
                 return false;
             }
@@ -418,7 +421,11 @@ export class DB {
                 parameterIndex + where.parameterCount,
             );
             parameterIndex += where.parameterCount;
-            return { type: 'in', column: where.column, values: new Set(values) };
+            return {
+                type: 'in',
+                column: where.column,
+                values: new Set(values),
+            };
         });
         if (parameterIndex !== params.length) {
             throw new Error(

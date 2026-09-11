@@ -35,3 +35,21 @@ export interface StoragePlugin {
     read(): Promise<Uint8Array | null> | Uint8Array | null;
     write(blob: Uint8Array): Promise<void> | void;
 }
+
+export interface TableInfo {
+    name: string;
+    columns: ColumnDefinition[];
+    rowCount: number;
+}
+
+export interface DumpOptions {
+    format?: 'csv' | 'jsonl';
+    tables?: string[];
+    limit?: number;
+}
+
+export interface DumpSection {
+    table: string;
+    rowCount: number;
+    text: string;
+}

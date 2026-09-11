@@ -30,7 +30,8 @@
         "lint": "tsc --noEmit",
         "test": "node -e \"process.exit(0)\"",
         "run-sql": "npm --prefix ../db run build && npm --prefix ../db exec -- pokedb2-db-sql",
-        "build-pokemon-db": "npm run build"
+        "build-pokemon-db": "npm run build",
+        "dump": "node --strip-types scripts/dump-db.ts"
     },
     "dependencies": {
         "@pokedb2/db": "*",
