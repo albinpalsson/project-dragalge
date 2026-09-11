@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { css, cx } from '@pokedb2/css-in-js';
+import { css } from '@pokedb2/css-in-js';
 import { EncounterHeader } from '../../../../components/EncounterHeader';
 import { EncounterTable } from '../../../../components/EncounterTable';
 import { EncounterTableToggle } from '../../../../components/EncounterTableToggle';
+import { ProgressionCard } from '../../../../components/ProgressionCard';
 import { RollActions } from '../../../../components/RollActions';
 import { RollResult } from '../../../../components/RollResult';
 import { useEncounterRoll } from '../../../../hooks/useEncounterRoll';
@@ -33,9 +34,9 @@ export function InletGrotto() {
     const showHoundourWarning = encounterRoll?.name === 'Houndour';
 
     return (
-        <article
-            className={cx(card, encounterRoll && resolvedCard)}
-            aria-labelledby="inlet-grotto-heading"
+        <ProgressionCard
+            dimmed={Boolean(encounterRoll)}
+            ariaLabelledBy="inlet-grotto-heading"
         >
             <EncounterHeader
                 location={encountersQuery.data.location}
@@ -77,25 +78,9 @@ export function InletGrotto() {
                     }
                 />
             )}
-        </article>
+        </ProgressionCard>
     );
 }
-
-const card = css`
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-4);
-  background: var(--color-surface);
-  border: 0.1rem solid var(--color-border);
-  border-radius: var(--radius-md);
-`;
-
-const resolvedCard = css`
-  && {
-    opacity: 0.6;
-  }
-`;
 
 const warning = css`
   margin: 0;

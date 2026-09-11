@@ -8,9 +8,13 @@ import {
     setEncounterRollStatus,
     setPartySlot,
     setPocoPathOceanSetting,
+    listBossBattleProgress,
+    setBossBattleResult,
+    clearBossBattleResult,
 } from '../../db/game-db/queries';
 import {
     getLocationEncounterDetails,
+    getBossBattleRoster,
     type LocationEncounterView,
 } from '../../db/pokemon-data/queries';
 import {
@@ -18,6 +22,8 @@ import {
     GAME_CARDS_QUERY_KEY,
     gameRunQueryKey,
     locationEncountersQueryKey,
+    bossBattleRosterQueryKey,
+    bossBattleProgressQueryKey,
 } from '../../query-keys';
 
 export function useGameRunQuery(gameRunId: string) {
@@ -39,6 +45,21 @@ export function useLocationEncountersQuery(locationName: string) {
         queryKey: locationEncountersQueryKey(locationName),
         queryFn: () => getLocationEncounterDetails(locationName),
         staleTime: Infinity,
+    });
+}
+
+export function useBossBattleRosterQuery(battleName: string) {
+    return useQuery({
+        queryKey: bossBattleRosterQueryKey(battleName),
+        queryFn: () => getBossBattleRoster(battleName),
+        staleTime: Infinity,
+    });
+}
+
+export function useBossBattleProgressQuery(gameRunId: string) {
+    return useQuery({
+        queryKey: bossBattleProgressQueryKey(gameRunId),
+        queryFn: () => listBossBattleProgress(gameRunId),
     });
 }
 
@@ -87,6 +108,31 @@ export function useSetPocoPathOceanSettingMutation() {
             });
         },
     });
+}
+
+function useBossBattleResultMutation<
+    TInput extends { gameRunId: string },
+    TResult,
+>(mutationFn: (input: TInput) => Promise<TResult>) {
+    const client = useClient();
+    return useMutation({
+        mutationFn: async (input: TInput) => {
+            const result = await mutationFn(input);
+            invalidateQueries(client, {
+                queryKey: bossBattleProgressQueryKey(input.gameRunId),
+            });
+            invalidateQueries(client, { queryKey: GAME_CARDS_QUERY_KEY });
+            return result;
+        },
+    });
+}
+
+export function useSetBossBattleResultMutation() {
+    return useBossBattleResultMutation(setBossBattleResult);
+}
+
+export function useClearBossBattleResultMutation() {
+    return useBossBattleResultMutation(clearBossBattleResult);
 }
 
 export type { LocationEncounterView };

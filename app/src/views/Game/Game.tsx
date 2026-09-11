@@ -3,6 +3,8 @@ import { Box } from './Box/Box';
 import { GameProvider } from './GameContext';
 import { InletGrotto } from './progression/encounters/InletGrotto';
 import { PocoPath } from './progression/encounters/PocoPath';
+import { SouthProvinceAreaOne } from './progression/encounters/SouthProvinceAreaOne';
+import { NemonaSouthProvince } from './progression/bosses/NemonaSouthProvince';
 import { StarterCard } from './StarterCard';
 import { toRandomizerMode } from '../../randomizer';
 import { useEncounterRollsQuery, useGameRunQuery } from './queries';
@@ -62,6 +64,12 @@ export function Game({ gameRunId }: GameProps) {
                     </li>
                     <li>
                         <InletGrotto />
+                    </li>
+                    <li>
+                        <SouthProvinceAreaOne />
+                    </li>
+                    <li>
+                        <NemonaSouthProvince />
                     </li>
                 </ol>
             </section>

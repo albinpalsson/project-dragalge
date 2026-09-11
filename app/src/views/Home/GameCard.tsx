@@ -1,4 +1,4 @@
-import { css } from '@pokedb2/css-in-js';
+import { css, cx } from '@pokedb2/css-in-js';
 import {
     NO_PARTY_SLOT,
     type EncounterRollRow,
@@ -9,16 +9,17 @@ import { pokemonIconSrc, toIconSlug } from '../../pokemon-icon';
 interface GameCardProps {
     game: GameRunRow;
     obtained: EncounterRollRow[];
+    isLost: boolean;
 }
 
-export function GameCard({ game, obtained }: GameCardProps) {
+export function GameCard({ game, obtained, isLost }: GameCardProps) {
     const sorted = partyFirst(obtained);
     const progress = Math.min(sorted.length * 8, 100);
     const variantColor =
         game.variant === 'v' ? 'var(--color-accent)' : 'var(--color-primary)';
 
     return (
-        <div className={card}>
+        <div className={cx(card, isLost && lostCard)}>
             <div
                 className={fill}
                 style={{
@@ -27,6 +28,7 @@ export function GameCard({ game, obtained }: GameCardProps) {
                 }}
             />
             <span className={name}>{game.id}</span>
+            {isLost && <span className={lostBadge}>Run Lost</span>}
             <span className={progressLabel}>{sorted.length} caught</span>
             {sorted.length > 0 ? (
                 <span className={icons}>
@@ -72,6 +74,11 @@ const card = css`
   border-radius: var(--radius-md);
 `;
 
+const lostCard = css`
+  opacity: 0.6;
+  border-color: #ef4444;
+`;
+
 const fill = css`
   position: absolute;
   inset: 0 auto 0 0;
@@ -83,6 +90,19 @@ const name = css`
   left: var(--space-2);
   font-size: var(--font-size-sm);
   color: var(--color-text-muted);
+`;
+
+const lostBadge = css`
+  position: absolute;
+  top: var(--space-2);
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.25rem;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: white;
+  background-color: #ef4444;
 `;
 
 const progressLabel = css`

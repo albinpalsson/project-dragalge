@@ -1,26 +1,23 @@
 import { css } from '@pokedb2/css-in-js';
 import { Button } from '../../components/Button';
+import { ProgressionCard } from '../../components/ProgressionCard';
 import { pokemonIconSrc, toIconSlug } from '../../pokemon-icon';
 
 import { STARTER_LOCATION_NAME } from '../../db/game-db/queries';
 import { useEncounterActions } from '../../hooks/useEncounterActions';
-import { useGame } from './GameContext';
+import { useStarter } from '../../hooks/useStarter';
 
 export function StarterCard() {
-    const game = useGame();
     const encounterActions = useEncounterActions();
+    const starter = useStarter();
 
     const randomizeStarter = () => {
         const pick = randomStarter();
         void encounterActions.chooseStarter(pick, STARTER_LOCATION_NAME);
     };
 
-    const starter = game.encounters.find(
-        (row) => row.location_name === STARTER_LOCATION_NAME,
-    )?.pokemon_name;
-
     return (
-        <article className={card}>
+        <ProgressionCard>
             <h3 className={heading}>Starter - Cabo poco</h3>
 
             {starter ? (
@@ -72,7 +69,7 @@ export function StarterCard() {
                     </Button>
                 </>
             )}
-        </article>
+        </ProgressionCard>
     );
 }
 
@@ -81,16 +78,6 @@ const STARTER_NAMES = ['Sprigatito', 'Fuecoco', 'Quaxly'] as const;
 function randomStarter() {
     return STARTER_NAMES[Math.floor(Math.random() * STARTER_NAMES.length)];
 }
-
-const card = css`
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  padding: var(--space-4);
-  background: var(--color-surface);
-  border: 0.1rem solid var(--color-border);
-  border-radius: var(--radius-md);
-`;
 
 const heading = css`
   margin: 0;

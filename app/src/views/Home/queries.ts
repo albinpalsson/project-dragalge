@@ -4,14 +4,21 @@ import {
     createGame,
     listEncounterRolls,
     listGames,
+    listBossBattleProgress,
     type CreateGameInput,
 } from '../../db/game-db/queries';
-import type { EncounterRollRow, GameRunRow } from '../../db/game-db/schema';
+import type {
+    EncounterRollRow,
+    GameRunRow,
+    BossBattleProgressRow,
+} from '../../db/game-db/schema';
 import { GAMES_QUERY_KEY, GAME_CARDS_QUERY_KEY } from '../../query-keys';
 
 export interface GameCardState {
     game: GameRunRow;
     obtained: EncounterRollRow[];
+    bossProgress: BossBattleProgressRow[];
+    isLost: boolean;
 }
 
 export function useGameCards() {
@@ -20,23 +27,34 @@ export function useGameCards() {
         queryFn: async (): Promise<GameCardState[]> => {
             const games = await listGames();
             const obtainedByGame = new Map<string, EncounterRollRow[]>();
+            const progressByGame = new Map<string, BossBattleProgressRow[]>();
 
             await Promise.all(
                 games.map(async (game) => {
-                    const rolls = await listEncounterRolls(game.id);
+                    const [rolls, progress] = await Promise.all([
+                        listEncounterRolls(game.id),
+                        listBossBattleProgress(game.id),
+                    ]);
                     const obtained = rolls.filter(
                         (row) =>
                             row.status === 'caught' ||
                             row.status === 'eliminated',
                     );
                     obtainedByGame.set(game.id, obtained);
+                    progressByGame.set(game.id, progress);
                 }),
             );
 
-            return games.map((game) => ({
-                game,
-                obtained: obtainedByGame.get(game.id) ?? [],
-            }));
+            return games.map((game) => {
+                const progress = progressByGame.get(game.id) ?? [];
+                const isLost = progress.some((p) => p.result === 'lost');
+                return {
+                    game,
+                    obtained: obtainedByGame.get(game.id) ?? [],
+                    bossProgress: progress,
+                    isLost,
+                };
+            });
         },
     });
 }

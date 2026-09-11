@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { css } from '@pokedb2/css-in-js';
 import { Button } from '../../../components/Button';
+import { PokemonStatsPanel } from '../../../components/PokemonStatsPanel';
 import {
     NO_PARTY_SLOT,
     type EncounterRollRow,
 } from '../../../db/game-db/schema';
-import type { PokemonBaseStats } from '../../../db/pokemon-data/queries';
 import { usePartyManager } from '../../../hooks/usePartyManager';
 import { usePokemonQuery, useTypeDefenses } from './queries';
 import { TypeDefenses } from './TypeDefenses';
@@ -43,16 +43,9 @@ export function PokemonDetailPane({ row, party }: PokemonDetailPaneProps) {
                                 ? ` / ${pokemonQuery.data.secondaryType}`
                                 : ''}
                         </p>
-                        <dl className={stats}>
-                            {statEntries(pokemonQuery.data.baseStats).map(
-                                ([label, value]) => (
-                                    <div className={stat} key={label}>
-                                        <dt className={muted}>{label}</dt>
-                                        <dd className={statValue}>{value}</dd>
-                                    </div>
-                                ),
-                            )}
-                        </dl>
+                        <PokemonStatsPanel
+                            baseStats={pokemonQuery.data.baseStats}
+                        />
                     </>
                 )}
                 {defensiveEntries.length > 0 && (
@@ -139,17 +132,6 @@ export function PokemonDetailPane({ row, party }: PokemonDetailPaneProps) {
     );
 }
 
-function statEntries(baseStats: PokemonBaseStats): [string, number][] {
-    return [
-        ['HP', baseStats.hp],
-        ['Attack', baseStats.attack],
-        ['Defense', baseStats.defense],
-        ['Sp. Atk', baseStats.specialAttack],
-        ['Sp. Def', baseStats.specialDefense],
-        ['Speed', baseStats.speed],
-    ];
-}
-
 const pane = css`
   display: flex;
   flex-wrap: wrap;
@@ -175,23 +157,6 @@ const muted = css`
   margin: 0;
   font-size: var(--font-size-sm);
   color: var(--color-text-muted);
-`;
-
-const stats = css`
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-3);
-  margin: 0;
-`;
-
-const stat = css`
-  display: flex;
-  flex-direction: column;
-`;
-
-const statValue = css`
-  margin: 0;
-  font-weight: var(--font-weight-bold);
 `;
 
 const buttons = css`

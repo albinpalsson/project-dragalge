@@ -46,6 +46,153 @@ export interface PokemonView {
     baseStats: PokemonBaseStats;
 }
 
+export interface BossMoveView {
+    name: string;
+    type: string;
+    category: string;
+    power: number;
+    accuracy: number;
+    effect: string;
+}
+
+export interface BossAbilityView {
+    name: string;
+    description: string;
+}
+
+export interface BossPokemonView {
+    pokemonName: string;
+    level: number;
+    primaryType: string;
+    secondaryType: string;
+    baseStats: PokemonBaseStats;
+    ability: BossAbilityView;
+    moves: BossMoveView[];
+}
+
+export interface BossBattleRoster {
+    battleName: string;
+    battleType: string;
+    pokemon: BossPokemonView[];
+}
+
+export async function getBossBattleRoster(
+    battleName: string,
+): Promise<BossBattleRoster | undefined> {
+    const db = await getPokemonDb();
+
+    // Fetch battle info
+    const battle = await db
+        .selectFrom('boss_battles')
+        .selectAll()
+        .where('name', '=', battleName)
+        .executeTakeFirst();
+
+    if (!battle) {
+        return undefined;
+    }
+
+    const [rosterRows, moveRows] = await Promise.all([
+        db
+            .selectFrom('boss_battle_pokemon')
+            .innerJoin(
+                'pokemon',
+                'boss_battle_pokemon.pokemon_id',
+                'pokemon.id',
+            )
+            .selectAll()
+            .where('boss_battle_id', '=', battle.id)
+            .execute(),
+        db
+            .selectFrom('boss_battle_pokemon_moves')
+            .innerJoin('moves', 'boss_battle_pokemon_moves.move_id', 'moves.id')
+            .selectAll()
+            .where('boss_battle_id', '=', battle.id)
+            .execute(),
+    ]);
+
+    const abilityIds = Array.from(
+        new Set(rosterRows.map((row) => row.ability_id)),
+    );
+    const typeIds = Array.from(
+        new Set([
+            ...rosterRows.map((row) => row.primary_type_id),
+            ...rosterRows.map((row) => row.secondary_type_id),
+            ...moveRows.map((row) => row.type_id),
+        ]),
+    );
+
+    const [abilities, types] = await Promise.all([
+        db
+            .selectFrom('abilities')
+            .selectAll()
+            .where('id', 'in', abilityIds)
+            .execute(),
+        db
+            .selectFrom('pokemon_types')
+            .selectAll()
+            .where('id', 'in', typeIds)
+            .execute(),
+    ]);
+
+    const typeById = new Map(types.map((type) => [type.id, type.name]));
+    const abilityById = new Map(
+        abilities.map((ability) => [ability.id, ability]),
+    );
+
+    const roster: BossPokemonView[] = rosterRows.flatMap((rosterRow) => {
+        const ability = abilityById.get(rosterRow.ability_id);
+        if (!ability) {
+            return [];
+        }
+
+        const pokemonMoves: BossMoveView[] = moveRows.flatMap((moveRow) => {
+            if (moveRow.pokemon_slot !== rosterRow.slot) {
+                return [];
+            }
+
+            return [
+                {
+                    name: moveRow.name,
+                    type: typeById.get(moveRow.type_id) ?? 'unknown',
+                    category: moveRow.category,
+                    power: moveRow.power,
+                    accuracy: moveRow.accuracy,
+                    effect: moveRow.effect,
+                },
+            ];
+        });
+
+        return [
+            {
+                pokemonName: rosterRow.name,
+                level: rosterRow.level,
+                primaryType: typeById.get(rosterRow.primary_type_id) ?? '',
+                secondaryType: typeById.get(rosterRow.secondary_type_id) ?? '',
+                baseStats: {
+                    hp: rosterRow.base_hp,
+                    attack: rosterRow.base_attack,
+                    defense: rosterRow.base_defense,
+                    specialAttack: rosterRow.base_sp_attack,
+                    specialDefense: rosterRow.base_sp_defense,
+                    speed: rosterRow.base_speed,
+                },
+                ability: {
+                    name: ability.name,
+                    description: ability.description,
+                },
+                moves: pokemonMoves,
+            },
+        ];
+    });
+
+    return {
+        battleName: battle.name,
+        battleType: battle.battle_type,
+        pokemon: roster,
+    };
+}
+
 export async function getPokemon(
     name: string,
 ): Promise<PokemonView | undefined> {

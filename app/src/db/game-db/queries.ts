@@ -1,6 +1,12 @@
 import type { RandomizerMode } from '../../randomizer';
 import { getGameDb } from './client';
-import type { EncounterRollRow, EncounterStatus, GameRunRow } from './schema';
+import type {
+    EncounterRollRow,
+    EncounterStatus,
+    GameRunRow,
+    BossBattleProgressRow,
+    BossBattleResult,
+} from './schema';
 import { NO_PARTY_SLOT } from './schema';
 
 export type GameVariant = 's' | 'v';
@@ -185,5 +191,62 @@ export async function setPocoPathOceanSetting(
             poco_path_ocean: input.includeOcean ? 1 : 0,
         })
         .where('id', '=', input.gameRunId)
+        .execute();
+}
+
+export async function listBossBattleProgress(
+    gameRunId: string,
+): Promise<BossBattleProgressRow[]> {
+    const db = await getGameDb();
+    return db
+        .selectFrom('boss_battle_progress')
+        .selectAll()
+        .where('game_run_id', '=', gameRunId)
+        .execute();
+}
+
+export interface SetBossBattleResultInput {
+    gameRunId: string;
+    battleName: string;
+    result: BossBattleResult;
+}
+
+export async function setBossBattleResult(
+    input: SetBossBattleResultInput,
+): Promise<BossBattleProgressRow> {
+    const db = await getGameDb();
+    const row: BossBattleProgressRow = {
+        game_run_id: input.gameRunId,
+        battle_name: input.battleName,
+        result: input.result,
+    };
+
+    const affectedRows = await db
+        .updateTable('boss_battle_progress')
+        .set({ result: input.result })
+        .where('game_run_id', '=', input.gameRunId)
+        .where('battle_name', '=', input.battleName)
+        .execute();
+
+    if (affectedRows.length === 0) {
+        await db.insertInto('boss_battle_progress').values(row).execute();
+    }
+
+    return row;
+}
+
+export interface ClearBossBattleResultInput {
+    gameRunId: string;
+    battleName: string;
+}
+
+export async function clearBossBattleResult(
+    input: ClearBossBattleResultInput,
+): Promise<void> {
+    const db = await getGameDb();
+    await db
+        .deleteFrom('boss_battle_progress')
+        .where('game_run_id', '=', input.gameRunId)
+        .where('battle_name', '=', input.battleName)
         .execute();
 }

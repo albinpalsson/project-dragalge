@@ -19,3 +19,13 @@ export const pokemonQueryKey = (pokemonName: string) => [
     'pokemon',
     pokemonName,
 ];
+
+export const bossBattleRosterQueryKey = (battleName: string) => [
+    'boss-battle-roster',
+    battleName,
+];
+
+export const bossBattleProgressQueryKey = (gameRunId: string) => [
+    'boss-battle-progress',
+    gameRunId,
+];

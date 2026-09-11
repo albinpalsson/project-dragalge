@@ -109,6 +109,7 @@ export function Home({ onOpenGame }: HomeProps) {
                                     <GameCard
                                         game={card.game}
                                         obtained={card.obtained}
+                                        isLost={card.isLost}
                                     />
                                 </button>
                             </li>
