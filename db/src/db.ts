@@ -150,9 +150,14 @@ export class DB {
 
         if (stmt.type === 'update') {
             const table = this.getTable(stmt.table);
-            this.executeUpdate(table, stmt.setCols, parameters, stmt.wheres);
+            const affectedRows = this.executeUpdate(
+                table,
+                stmt.setCols,
+                parameters,
+                stmt.wheres,
+            );
             this.scheduleWrite();
-            return [];
+            return affectedRows;
         }
 
         if (stmt.type === 'delete') {
@@ -309,7 +314,7 @@ export class DB {
         setCols: string[],
         params: readonly unknown[],
         wheres: WhereClause[],
-    ): void {
+    ) {
         if (params.length < setCols.length) {
             throw new Error(
                 `UPDATE expected at least ${setCols.length} parameters, got ${params.length}`,
@@ -321,8 +326,10 @@ export class DB {
             this.getColumn(table, colName),
         );
         const rowCount = table.view.getUint32(0, true);
+        const affectedRows = [];
         for (let i = 0; i < rowCount; i++) {
             if (this.matchesWhere(table, i, boundWheres)) {
+                affectedRows.push({});
                 const slotOffset = HEADER_BYTES + i * table.schema.rowSize;
                 for (let ci = 0; ci < setColumns.length; ci++) {
                     const col = setColumns[ci];
@@ -336,6 +343,7 @@ export class DB {
             }
         }
         this.invalidateTableIndexes(table.name);
+        return affectedRows;
     }
 
     private executeDelete(

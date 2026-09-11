@@ -65,8 +65,8 @@ export class UpdateQueryBuilder<
         };
     }
 
-    async execute(): Promise<void> {
+    async execute(): Promise<unknown[]> {
         const { sql, parameters } = this.compile();
-        await this._client.execute(sql, parameters);
+        return await this._client.execute(sql, parameters);
     }
 }
