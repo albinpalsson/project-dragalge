@@ -19,9 +19,6 @@ export function EncounterRandomizer({
     disabled,
     onPick,
 }: EncounterRandomizerProps) {
-    const [pendingGroup, setPendingGroup] = useState<
-        LocationEncounterView[] | null
-    >(null);
     const [isRolling, setRolling] = useState(false);
     const rollTimerRef = useRef<number | undefined>(undefined);
 
@@ -40,82 +37,25 @@ export function EncounterRandomizer({
         setRolling(true);
         rollTimerRef.current = window.setTimeout(() => {
             setRolling(false);
-            const group = randomizeEncounter(encounters, randomizerMode);
-            if (!group) {
+            const encounter = randomizeEncounter(encounters, randomizerMode);
+            if (!encounter) {
                 return;
             }
-            if (group.members.length === 1) {
-                onPick(group.members[0]);
-            } else {
-                setPendingGroup(group.members);
-            }
+            onPick(encounter);
         }, ROLL_DELAY_MS);
     };
 
-    const pickEncounter = (encounter: LocationEncounterView) => {
-        setPendingGroup(null);
-        onPick(encounter);
-    };
-
     return (
-        <>
-            <Button
-                variant="warm"
-                onClick={randomize}
-                disabled={disabled || isRolling}
-            >
-                <span className={isRolling ? spinningDie : undefined}>🎲</span>{' '}
-                Randomize
-            </Button>
-            {pendingGroup && (
-                <div className={pendingGroupBox}>
-                    <p>Rolled a group with multiple forms - pick one:</p>
-                    <ul className={options}>
-                        {pendingGroup.map((encounter) => (
-                            <li key={`${encounter.name}-${encounter.subArea}`}>
-                                <button
-                                    type="button"
-                                    className={pickButton}
-                                    onClick={() => pickEncounter(encounter)}
-                                    disabled={disabled}
-                                >
-                                    {encounter.name} ({encounter.subArea})
-                                </button>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            )}
-        </>
+        <Button
+            variant="warm"
+            onClick={randomize}
+            disabled={disabled || isRolling}
+        >
+            <span className={isRolling ? spinningDie : undefined}>🎲</span>{' '}
+            Randomize
+        </Button>
     );
 }
-
-const pendingGroupBox = css`
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-
-  p {
-    margin: 0;
-    color: var(--color-text-muted);
-  }
-`;
-
-const options = css`
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  list-style: none;
-  margin: 0;
-  padding: 0;
-`;
-
-const pickButton = css`
-  padding: var(--space-1) var(--space-2);
-  border: 0.1rem solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: transparent;
-`;
 
 const spinningDie = css`
     display: inline-block;

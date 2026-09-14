@@ -26,15 +26,14 @@ export function getEffectiveWeight(encounter: RandomizableEncounter): number {
  * with no chance to appear (see `getEffectiveWeight`) are dropped first,
  * so every mode only ever has to weigh eligible rows.
  *
- * This only picks the group (species) — if it has multiple forms or
- * sub-areas (merged via `groupKey`, see `randomizer-groups.ts`), the
- * caller lets the player choose which exact one to catch.
+ * If the rolled group has multiple rows (forms or sub-areas), the first
+ * concrete row is used as the resolved encounter.
  */
 export function randomizeEncounter<T extends RandomizableEncounter>(
     encounters: readonly T[],
     mode: RandomizerMode,
     random: () => number = Math.random,
-): EncounterGroup<T> | undefined {
+): T | undefined {
     const eligible = encounters.filter(
         (encounter) => getEffectiveWeight(encounter) > 0,
     );
@@ -42,10 +41,10 @@ export function randomizeEncounter<T extends RandomizableEncounter>(
     const shapedWeights = RANDOMIZER_MODES[mode].shapeGroupWeights(
         groups.map(getGroupWeight),
     );
-    return pickWeighted(groups, shapedWeights, random);
+    return pickWeighted(groups, shapedWeights, random)?.members[0];
 }
 
-export interface EncounterGroup<T> {
+interface EncounterGroup<T> {
     groupKey: string;
     members: T[];
 }

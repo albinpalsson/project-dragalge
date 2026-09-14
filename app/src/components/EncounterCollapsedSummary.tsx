@@ -32,7 +32,7 @@ export function EncounterCollapsedSummary({
                     <img
                         className={icon}
                         src={pokemonIconSrc(toIconSlug(encounterRoll.name))}
-                        alt={encounterRoll.name}
+                        alt={encounterRoll.displayName}
                         loading="lazy"
                     />
                 ) : (
@@ -40,7 +40,7 @@ export function EncounterCollapsedSummary({
                 )
             }
             label={locationName}
-            title={encounterRoll ? encounterRoll.name : ''}
+            title={encounterRoll ? encounterRoll.displayName : ''}
             leftBadges={
                 encounterRoll ? (
                     <StatusChip status={encounterRoll.status} />

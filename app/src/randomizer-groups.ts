@@ -1,13 +1,14 @@
 export interface RandomizerMergeGroup {
     key: string;
+    displayName: string;
     members: readonly string[];
 }
 
 // The seed data spells several variants two ways, so every spelling is listed as a member.
-// These groups are scoped to randomizer rolls only; display/icon resolution is a separate concern.
 export const RANDOMIZER_MERGE_GROUPS: readonly RandomizerMergeGroup[] = [
     {
         key: 'basculin',
+        displayName: 'Basculin',
         members: [
             'Basculin',
             'Basculin (Blue-Striped)',
@@ -18,6 +19,7 @@ export const RANDOMIZER_MERGE_GROUPS: readonly RandomizerMergeGroup[] = [
     },
     {
         key: 'deerling',
+        displayName: 'Deerling',
         members: [
             'Deerling',
             'Deerling (Autumn Form)',
@@ -27,6 +29,7 @@ export const RANDOMIZER_MERGE_GROUPS: readonly RandomizerMergeGroup[] = [
     },
     {
         key: 'flabebe',
+        displayName: 'Flabébé',
         members: [
             'Flabébé',
             'Flabébé (Blue Flower)',
@@ -38,6 +41,7 @@ export const RANDOMIZER_MERGE_GROUPS: readonly RandomizerMergeGroup[] = [
     },
     {
         key: 'floette',
+        displayName: 'Floette',
         members: [
             'Floette',
             'Floette (Blue Flower)',
@@ -49,6 +53,7 @@ export const RANDOMIZER_MERGE_GROUPS: readonly RandomizerMergeGroup[] = [
     },
     {
         key: 'florges',
+        displayName: 'Florges',
         members: [
             'Florges (Blue Flower)',
             'Florges (Orange Flower)',
@@ -59,14 +64,17 @@ export const RANDOMIZER_MERGE_GROUPS: readonly RandomizerMergeGroup[] = [
     },
     {
         key: 'gastrodon',
+        displayName: 'Gastrodon',
         members: ['Gastrodon', 'Gastrodon (East Sea)', 'Gastrodon (West Sea)'],
     },
     {
         key: 'indeedee',
+        displayName: 'Indeedee',
         members: ['Indeedee', 'Indeedee (Female)', 'Indeedee (Male)'],
     },
     {
         key: 'lycanroc',
+        displayName: 'Lycanroc',
         members: [
             'Lycanroc',
             'Lycanroc (Dusk Form)',
@@ -76,6 +84,7 @@ export const RANDOMIZER_MERGE_GROUPS: readonly RandomizerMergeGroup[] = [
     },
     {
         key: 'oinkologne',
+        displayName: 'Oinkologne',
         members: [
             'Oinkologne',
             'Oinkologne (Female)',
@@ -86,14 +95,17 @@ export const RANDOMIZER_MERGE_GROUPS: readonly RandomizerMergeGroup[] = [
     },
     {
         key: 'pyroar',
+        displayName: 'Pyroar',
         members: ['Pyroar', 'Pyroar (Female)', 'Pyroar (Male)'],
     },
     {
         key: 'rockruff',
+        displayName: 'Rockruff',
         members: ['Rockruff', 'Rockruff (Own Tempo)'],
     },
     {
         key: 'sawsbuck',
+        displayName: 'Sawsbuck',
         members: [
             'Sawsbuck',
             'Sawsbuck (Autumn Form)',
@@ -103,10 +115,12 @@ export const RANDOMIZER_MERGE_GROUPS: readonly RandomizerMergeGroup[] = [
     },
     {
         key: 'shellos',
+        displayName: 'Shellos',
         members: ['Shellos', 'Shellos (East Sea)', 'Shellos (West Sea)'],
     },
     {
         key: 'sinistea',
+        displayName: 'Sinistea',
         members: [
             'Sinistea',
             'Sinistea (Antique Form)',
@@ -115,6 +129,7 @@ export const RANDOMIZER_MERGE_GROUPS: readonly RandomizerMergeGroup[] = [
     },
     {
         key: 'squawkabilly',
+        displayName: 'Squawkabilly',
         members: [
             'Squawkabilly',
             'Squawkabilly (Blue Plumage)',
@@ -125,6 +140,7 @@ export const RANDOMIZER_MERGE_GROUPS: readonly RandomizerMergeGroup[] = [
     },
     {
         key: 'tatsugiri',
+        displayName: 'Tatsugiri',
         members: [
             'Tatsugiri',
             'Tatsugiri (Curly Form)',
@@ -134,6 +150,7 @@ export const RANDOMIZER_MERGE_GROUPS: readonly RandomizerMergeGroup[] = [
     },
     {
         key: 'tauros',
+        displayName: 'Tauros',
         members: [
             'Tauros',
             'Tauros (Aqua Breed)',
@@ -143,6 +160,7 @@ export const RANDOMIZER_MERGE_GROUPS: readonly RandomizerMergeGroup[] = [
     },
     {
         key: 'toxtricity',
+        displayName: 'Toxtricity',
         members: [
             'Toxtricity',
             'Toxtricity (Amped Form)',
@@ -151,10 +169,12 @@ export const RANDOMIZER_MERGE_GROUPS: readonly RandomizerMergeGroup[] = [
     },
     {
         key: 'vivillon',
+        displayName: 'Vivillon',
         members: ['Vivillon', 'Vivillon (Fancy Pattern)'],
     },
     {
         key: 'wooper',
+        displayName: 'Wooper',
         members: ['Wooper', 'Wooper (Paldean Form)'],
     },
 ];
@@ -165,7 +185,20 @@ const GROUP_KEY_BY_MEMBER = new Map<string, string>(
     ),
 );
 
+const GROUP_BY_KEY = new Map<string, RandomizerMergeGroup>(
+    RANDOMIZER_MERGE_GROUPS.map((group) => [group.key, group] as const),
+);
+
 /** Names outside any merge group are their own group, keyed by the name itself. */
 export function getRandomizerGroupKey(name: string): string {
     return GROUP_KEY_BY_MEMBER.get(name) ?? name;
+}
+
+/** Names outside any merge group keep their original display name. */
+export function getRandomizerDisplayName(name: string): string {
+    const groupKey = GROUP_KEY_BY_MEMBER.get(name);
+    if (!groupKey) {
+        return name;
+    }
+    return GROUP_BY_KEY.get(groupKey)?.displayName ?? name;
 }

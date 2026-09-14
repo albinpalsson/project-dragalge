@@ -5,6 +5,7 @@ import {
     type GameRunRow,
 } from '../../db/game-db/schema';
 import { pokemonIconSrc, toIconSlug } from '../../pokemon-icon';
+import { getRandomizerDisplayName } from '../../randomizer-groups';
 
 interface GameCardProps {
     game: GameRunRow;
@@ -44,7 +45,7 @@ export function GameCard({ game, obtained, isLost }: GameCardProps) {
                                 src={pokemonIconSrc(
                                     toIconSlug(row.pokemon_name),
                                 )}
-                                alt={row.pokemon_name}
+                                alt={getRandomizerDisplayName(row.pokemon_name)}
                                 loading="lazy"
                             />
                         </span>

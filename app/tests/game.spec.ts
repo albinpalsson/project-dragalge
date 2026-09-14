@@ -24,7 +24,11 @@ test('plays a run from the starter through Inlet Grotto', async ({ page }) => {
 
     const listed = await listEncounterNames(page, 'Poco Path');
     const rolled = await rollEncounter(page, 'Poco Path');
-    expect(listed).toContain(rolled);
+    expect(
+        listed.some(
+            (name) => name === rolled || name.startsWith(`${rolled} (`),
+        ),
+    ).toBeTruthy();
 
     await resolveEncounter(page, 'Poco Path', 'Caught');
     await expect(cardFor(page, 'Poco Path')).toContainText(rolled);

@@ -22,18 +22,18 @@ export function RollResult({ encounterRoll }: RollResultProps) {
             <img
                 className={rollIcon}
                 src={pokemonIconSrc(toIconSlug(encounterRoll.name))}
-                alt={encounterRoll.name}
+                alt={encounterRoll.displayName}
                 loading="lazy"
             />
             <div>
                 <p className={rollTitle}>
-                    {encounterRoll.name}{' '}
+                    {encounterRoll.displayName}{' '}
                     <StatusChip status={encounterRoll.status} />
                 </p>
                 <p className={rollMeta}>
                     Lv {formatLevelRange(encounterRoll)} ·{' '}
-                    {encounterRoll.subArea} · {formatWeight(encounterRoll)}% ·{' '}
-                    {formatTime(encounterRoll)}
+                    {encounterRoll.subAreas.join(' or ')} ·{' '}
+                    {formatWeight(encounterRoll)}% · {formatTime(encounterRoll)}
                 </p>
             </div>
         </div>

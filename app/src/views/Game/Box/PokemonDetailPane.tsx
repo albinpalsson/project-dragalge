@@ -8,6 +8,7 @@ import {
     type EncounterRollRow,
 } from '../../../db/game-db/schema';
 import { usePartyManager } from '../../../hooks/usePartyManager';
+import { getRandomizerDisplayName } from '../../../randomizer-groups';
 import { usePokemonQuery, useTypeDefenses } from './queries';
 import { TypeDefenses } from './TypeDefenses';
 
@@ -18,6 +19,7 @@ interface PokemonDetailPaneProps {
 
 export function PokemonDetailPane({ row, party }: PokemonDetailPaneProps) {
     const [isReplacing, setIsReplacing] = useState(false);
+    const displayName = getRandomizerDisplayName(row.pokemon_name);
     const pokemonQuery = usePokemonQuery(row.pokemon_name);
     const defensiveEntries = useTypeDefenses(row.pokemon_name);
     const actions = usePartyManager();
@@ -27,9 +29,9 @@ export function PokemonDetailPane({ row, party }: PokemonDetailPaneProps) {
     const isPartyFull = actions.freeSlot === NO_PARTY_SLOT;
 
     return (
-        <section className={pane} aria-label={`${row.pokemon_name} details`}>
+        <section className={pane} aria-label={`${displayName} details`}>
             <div className={info}>
-                <h4 className={heading}>{row.pokemon_name}</h4>
+                <h4 className={heading}>{displayName}</h4>
                 {pokemonQuery.isPending && <p className={muted}>Loading...</p>}
                 {pokemonQuery.isError && (
                     <p className={muted}>
@@ -126,7 +128,7 @@ export function PokemonDetailPane({ row, party }: PokemonDetailPaneProps) {
                                 );
                             }}
                         >
-                            {member.pokemon_name}
+                            {getRandomizerDisplayName(member.pokemon_name)}
                         </Button>
                     ))}
                 </div>
