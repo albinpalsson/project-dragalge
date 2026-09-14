@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { css } from '@pokedb2/css-in-js';
+import { css, cx } from '@pokedb2/css-in-js';
 import { Button } from './Button';
 import type { LocationEncounterView } from '../db/pokemon-data/queries';
 import { randomizeEncounter, type RandomizerMode } from '../randomizer';
@@ -9,6 +9,7 @@ export const ROLL_DELAY_MS = 700;
 interface EncounterRandomizerProps {
     encounters: LocationEncounterView[];
     randomizerMode: RandomizerMode;
+    hasExistingRoll: boolean;
     disabled: boolean;
     onPick: (encounter: LocationEncounterView) => void;
 }
@@ -16,6 +17,7 @@ interface EncounterRandomizerProps {
 export function EncounterRandomizer({
     encounters,
     randomizerMode,
+    hasExistingRoll,
     disabled,
     onPick,
 }: EncounterRandomizerProps) {
@@ -47,12 +49,16 @@ export function EncounterRandomizer({
 
     return (
         <Button
-            variant="warm"
+            variant={hasExistingRoll ? 'secondary' : 'warm'}
             onClick={randomize}
             disabled={disabled || isRolling}
+            ariaLabel={hasExistingRoll ? 'Re-roll' : 'Randomize'}
+            title={hasExistingRoll ? 'Re-roll' : 'Randomize'}
         >
-            <span className={isRolling ? spinningDie : undefined}>🎲</span>{' '}
-            Randomize
+            <span className={cx(padding, isRolling ? spinningDie : undefined)}>
+                🎲
+            </span>{' '}
+            {hasExistingRoll ? 'Re-roll' : 'Randomize'}
         </Button>
     );
 }
@@ -63,4 +69,9 @@ const spinningDie = css`
     animation-duration: 0.8s;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
+`;
+
+const padding = css`
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
 `;

@@ -33,6 +33,7 @@ export function RollActions({ locationName, encounters }: RollActionsProps) {
             <EncounterRandomizer
                 encounters={encounters}
                 randomizerMode={game.randomizerMode}
+                hasExistingRoll={Boolean(encounterRoll)}
                 disabled={encounterActions.isBusy}
                 onPick={(encounter) =>
                     encounterActions.rollEncounter(encounter.name, locationName)

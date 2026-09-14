@@ -1,5 +1,7 @@
 import { expect, type Page } from '@playwright/test';
 
+const RANDOMIZE_BUTTON_NAME = /Randomize|Re-roll/;
+
 export function cardFor(page: Page, cardName: string) {
     // Resolved encounters collapse from an <article> into a summary <button>.
     return page.locator('article, button', { hasText: cardName });
@@ -12,7 +14,7 @@ export async function expandCollapsedSummary(page: Page, cardName: string) {
 async function ensureCardExpanded(page: Page, cardName: string) {
     const card = cardFor(page, cardName);
     const randomizeCount = await card
-        .getByRole('button', { name: 'Randomize' })
+        .getByRole('button', { name: RANDOMIZE_BUTTON_NAME })
         .count();
     if (randomizeCount === 0) {
         await expandCollapsedSummary(page, cardName);
@@ -68,9 +70,9 @@ export async function rollEncounter(
     await ensureCardExpanded(page, cardName);
     const card = cardFor(page, cardName);
 
-    await card.getByRole('button', { name: 'Randomize' }).click();
+    await card.getByRole('button', { name: RANDOMIZE_BUTTON_NAME }).click();
     await expect(
-        card.getByRole('button', { name: 'Randomize' }),
+        card.getByRole('button', { name: RANDOMIZE_BUTTON_NAME }),
     ).toBeDisabled();
 
     const icon = card.getByRole('img').first();

@@ -66,7 +66,7 @@ test('resolved encounter stays expanded until reload', async ({ page }) => {
 
     await rollEncounter(page, 'Poco Path');
     await resolveEncounter(page, 'Poco Path', 'Missed');
-    await expect(card.getByRole('button', { name: 'Randomize' })).toBeVisible();
+    await expect(card.getByRole('button', { name: 'Re-roll' })).toBeVisible();
 
     await waitForPersistence(page);
     await page.reload();
@@ -79,7 +79,7 @@ test('resolved encounter stays expanded until reload', async ({ page }) => {
     ).toBeHidden();
     await expandCollapsedSummary(page, 'Poco Path');
     await expect(
-        cardFor(page, 'Poco Path').getByRole('button', { name: 'Randomize' }),
+        cardFor(page, 'Poco Path').getByRole('button', { name: 'Re-roll' }),
     ).toBeVisible();
 });
 
