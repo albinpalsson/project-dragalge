@@ -12,6 +12,7 @@ export interface UseBossActionsResult {
     ) => Promise<void>;
     clearBattle: (battleName: string) => Promise<void>;
     isBusy: boolean;
+    isProgressPending: boolean;
     getBattleResult: (battleName: string) => 'won' | 'lost' | undefined;
 }
 
@@ -43,6 +44,7 @@ export function useBossActions(): UseBossActionsResult {
             });
         },
         isBusy: setResultMutation.isPending || clearMutation.isPending,
+        isProgressPending: bossProgressQuery.isPending,
         getBattleResult,
     };
 }

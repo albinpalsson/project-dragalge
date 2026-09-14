@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { BossCollapsedSummary } from './BossCollapsedSummary';
 import { BossRoster } from './BossRoster';
 import { BossResultControls } from './BossResultControls';
 import { ProgressionCard } from '../../../../components/ProgressionCard';
@@ -8,12 +10,17 @@ import { useBossBattleRosterQuery } from '../../queries';
 
 const LOCATION_NAME = 'South Province (Area One)';
 
-export function NemonaSouthProvince() {
+interface NemonaSouthProvinceProps {
+    isNext?: boolean;
+}
+
+export function NemonaSouthProvince({ isNext }: NemonaSouthProvinceProps) {
     const bossActions = useBossActions();
     const starter = useStarter();
     const starterBattleName = starter
         ? getStarterBattleName(starter)
         : undefined;
+    const [showTeam, setShowTeam] = useState(true);
 
     const rosterQuery = useBossBattleRosterQuery(
         starterBattleName || 'unknown',
@@ -47,18 +54,58 @@ export function NemonaSouthProvince() {
         return <p>Unable to load {LOCATION_NAME} roster</p>;
     }
 
-    return (
-        <ProgressionCard compact dimmed={currentResult === 'won'}>
-            <BossRoster title={LOCATION_NAME} roster={rosterQuery.data} />
+    const rosterData = rosterQuery.data;
 
-            <BossResultControls
-                currentResult={currentResult}
-                onResolve={(result) =>
-                    bossActions.resolveBattle(starterBattleName, result)
-                }
-                onClear={() => bossActions.clearBattle(starterBattleName)}
-                isBusy={bossActions.isBusy}
-            />
+    const levelCap = Math.max(
+        ...rosterData.pokemon.map((pokemon) => pokemon.level),
+    );
+    const acePokemon = [...rosterData.pokemon].sort(
+        (a, b) => b.level - a.level,
+    )[0];
+
+    return (
+        <ProgressionCard
+            compact
+            isNext={isNext}
+            defaultExpanded={false}
+            collapsedContent={
+                acePokemon
+                    ? ({ expand }) => (
+                          <BossCollapsedSummary
+                              battleName={rosterData.battleName}
+                              result={currentResult}
+                              acePokemonName={acePokemon.pokemonName}
+                              levelCap={levelCap}
+                              isNext={isNext}
+                              onExpand={expand}
+                          />
+                      )
+                    : undefined
+            }
+        >
+            {({ collapse }) => (
+                <>
+                    <BossRoster
+                        locationName={LOCATION_NAME}
+                        roster={rosterData}
+                        onCollapse={collapse}
+                        showTeam={showTeam}
+                    />
+
+                    <BossResultControls
+                        currentResult={currentResult}
+                        showTeam={showTeam}
+                        onToggleTeam={() => setShowTeam((value) => !value)}
+                        onResolve={(result) =>
+                            bossActions.resolveBattle(starterBattleName, result)
+                        }
+                        onClear={() =>
+                            bossActions.clearBattle(starterBattleName)
+                        }
+                        isBusy={bossActions.isBusy}
+                    />
+                </>
+            )}
         </ProgressionCard>
     );
 }

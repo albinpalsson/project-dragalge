@@ -1,89 +1,90 @@
-import { useState } from 'react';
 import { css } from '@pokedb2/css-in-js';
+import { Badge } from '../../../../components/Badge';
 import { PokemonStatsPanel } from '../../../../components/PokemonStatsPanel';
+import { Tooltip } from '../../../../components/Tooltip';
 import type {
     BossPokemonView,
     BossMoveView,
 } from '../../../../db/pokemon-data/queries';
+import { pokemonIconSrc, toIconSlug } from '../../../../pokemon-icon';
 
 interface BossPokemonCardProps {
     pokemon: BossPokemonView;
 }
 
-function MoveCard({ move }: { move: BossMoveView }) {
-    const [isExpanded, setIsExpanded] = useState(false);
-
-    return (
-        <div className={moveCard}>
-            <button
-                type="button"
-                className={moveName}
-                onClick={() => setIsExpanded(!isExpanded)}
-            >
-                <span className={moveLabel}>{move.name}</span>
-                <span className={moveType}>{move.type}</span>
-                <span className={moveCategory}>{move.category}</span>
-                {move.power > 0 && (
-                    <span className={movePower}>Pow: {move.power}</span>
-                )}
-                {move.accuracy > 0 && (
-                    <span className={moveAccuracy}>Acc: {move.accuracy}%</span>
-                )}
-            </button>
-            {isExpanded && (
-                <p className={moveEffect}>
-                    <em>{move.effect}</em>
-                </p>
-            )}
-        </div>
-    );
-}
-
 export function BossPokemonCard({ pokemon }: BossPokemonCardProps) {
-    const [isExpanded, setIsExpanded] = useState(false);
-
     return (
         <article className={card}>
-            <button
-                type="button"
-                className={header}
-                onClick={() => setIsExpanded(!isExpanded)}
-            >
+            <div className={header}>
+                <img
+                    className={icon}
+                    src={pokemonIconSrc(toIconSlug(pokemon.pokemonName))}
+                    alt={pokemon.pokemonName}
+                    loading="lazy"
+                />
                 <h4 className={pokemonName}>{pokemon.pokemonName}</h4>
-                <span className={level}>Lv {pokemon.level}</span>
+                <Badge>Lv {pokemon.level}</Badge>
                 <span className={types}>
                     {pokemon.primaryType}
                     {pokemon.secondaryType ? ` / ${pokemon.secondaryType}` : ''}
                 </span>
-                <span className={ability}>{pokemon.ability.name}</span>
-            </button>
+            </div>
+            <div className={content}>
+                <p className={line}>
+                    <span className={label}>Ability:</span>{' '}
+                    <Tooltip content={pokemon.ability.description}>
+                        <button
+                            type="button"
+                            className={detailButton}
+                            title={pokemon.ability.name}
+                        >
+                            {pokemon.ability.name}
+                        </button>
+                    </Tooltip>
+                </p>
 
-            {isExpanded && (
-                <div className={content}>
-                    <div className={statsSection}>
-                        <h5 className={sectionTitle}>Base Stats</h5>
-                        <PokemonStatsPanel baseStats={pokemon.baseStats} />
-                    </div>
-
-                    <div className={abilitySection}>
-                        <h5 className={sectionTitle}>{pokemon.ability.name}</h5>
-                        <p className={abilityDescription}>
-                            {pokemon.ability.description}
-                        </p>
-                    </div>
-
-                    {pokemon.moves.length > 0 && (
-                        <div className={movesSection}>
-                            <h5 className={sectionTitle}>Moves</h5>
-                            <div className={movesGrid}>
-                                {pokemon.moves.map((move: BossMoveView) => (
-                                    <MoveCard key={move.name} move={move} />
-                                ))}
-                            </div>
+                {pokemon.moves.length > 0 && (
+                    <div className={movesSection}>
+                        <span className={label}>Moves:</span>
+                        <div className={movesGrid}>
+                            {pokemon.moves.map((move: BossMoveView) => (
+                                <Tooltip key={move.name} content={move.effect}>
+                                    <button
+                                        type="button"
+                                        className={moveName}
+                                        title={move.name}
+                                    >
+                                        <span className={moveLabel}>
+                                            {move.name}
+                                        </span>
+                                        <span className={moveType}>
+                                            {move.type}
+                                        </span>
+                                        <span className={moveCategory}>
+                                            {move.category}
+                                        </span>
+                                        {move.power > 0 && (
+                                            <span className={movePower}>
+                                                Pow {move.power}
+                                            </span>
+                                        )}
+                                        {move.accuracy > 0 && (
+                                            <span className={moveAccuracy}>
+                                                Acc {move.accuracy}%
+                                            </span>
+                                        )}
+                                    </button>
+                                </Tooltip>
+                            ))}
                         </div>
-                    )}
+                    </div>
+                )}
+
+                <div className={statsSection}>
+                    <h5 className={sectionTitle}>Base Stats</h5>
+                    <PokemonStatsPanel baseStats={pokemon.baseStats} />
                 </div>
-            )}
+            </div>
         </article>
     );
 }
@@ -97,30 +98,22 @@ const card = css`
 
 const header = css`
     display: flex;
-    flex-direction: column;
-    gap: var(--space-1);
-    width: 100%;
+    align-items: center;
+    gap: var(--space-2);
     padding: var(--space-3);
-    text-align: left;
-    background: none;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.2s;
+    border-bottom: 0.1rem solid var(--color-border);
+`;
 
-    &:hover {
-        background-color: var(--color-hover-overlay);
-    }
+const icon = css`
+    width: 3.2rem;
+    height: 3.2rem;
 `;
 
 const pokemonName = css`
+    flex: 1;
     font-size: var(--font-size-lg);
     font-weight: 600;
     margin: 0;
-`;
-
-const level = css`
-    font-size: var(--font-size-sm);
-    color: var(--color-text-muted);
 `;
 
 const types = css`
@@ -128,18 +121,30 @@ const types = css`
     color: var(--color-text-muted);
 `;
 
-const ability = css`
-    font-size: var(--font-size-sm);
-    color: var(--color-text-muted);
-    font-style: italic;
-`;
-
 const content = css`
     padding: var(--space-3);
-    border-top: 0.1rem solid var(--color-border);
     display: flex;
     flex-direction: column;
     gap: var(--space-3);
+`;
+
+const line = css`
+    margin: 0;
+`;
+
+const label = css`
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+`;
+
+const detailButton = css`
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--color-text);
+    font-size: var(--font-size-base);
+    text-decoration: underline;
+    cursor: pointer;
 `;
 
 const statsSection = css`
@@ -148,38 +153,16 @@ const statsSection = css`
     gap: var(--space-2);
 `;
 
-const abilitySection = css`
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-`;
-
-const abilityDescription = css`
-    margin: 0;
-    font-size: var(--font-size-sm);
-    line-height: 1.5;
-    color: var(--color-text);
-`;
-
 const movesSection = css`
     display: flex;
     flex-direction: column;
-    gap: var(--space-2);
+    gap: var(--space-1);
 `;
 
 const movesGrid = css`
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: var(--space-2);
-`;
-
-const moveCard = css`
-    display: flex;
-    flex-direction: column;
-    border: 0.1rem solid var(--color-border);
-    border-radius: var(--radius-md);
-    overflow: hidden;
-    background: var(--color-bg);
 `;
 
 const moveName = css`
@@ -187,11 +170,11 @@ const moveName = css`
     gap: var(--space-2);
     align-items: center;
     padding: var(--space-2);
-    background: none;
-    border: none;
+    border: 0.1rem solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: var(--color-bg);
     cursor: pointer;
     text-align: left;
-    transition: background-color 0.2s;
     flex-wrap: wrap;
 
     &:hover {
@@ -201,8 +184,6 @@ const moveName = css`
 
 const moveLabel = css`
     font-weight: 600;
-    flex: 1;
-    min-width: 100px;
 `;
 
 const moveType = css`
@@ -233,15 +214,6 @@ const moveAccuracy = css`
     font-size: var(--font-size-sm);
     color: var(--color-text-muted);
     white-space: nowrap;
-`;
-
-const moveEffect = css`
-    margin: 0;
-    padding: var(--space-2);
-    font-size: var(--font-size-sm);
-    line-height: 1.5;
-    color: var(--color-text);
-    border-top: 0.1rem solid var(--color-border);
 `;
 
 const sectionTitle = css`

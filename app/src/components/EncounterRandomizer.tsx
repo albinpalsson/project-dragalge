@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { css } from '@pokedb2/css-in-js';
 import { Button } from './Button';
 import type { LocationEncounterView } from '../db/pokemon-data/queries';
 import { randomizeEncounter, type RandomizerMode } from '../randomizer';
+
+export const ROLL_DELAY_MS = 700;
 
 interface EncounterRandomizerProps {
     encounters: LocationEncounterView[];
@@ -20,17 +22,34 @@ export function EncounterRandomizer({
     const [pendingGroup, setPendingGroup] = useState<
         LocationEncounterView[] | null
     >(null);
+    const [isRolling, setRolling] = useState(false);
+    const rollTimerRef = useRef<number | undefined>(undefined);
+
+    useEffect(() => {
+        return () => {
+            if (rollTimerRef.current !== undefined) {
+                window.clearTimeout(rollTimerRef.current);
+            }
+        };
+    }, []);
 
     const randomize = () => {
-        const group = randomizeEncounter(encounters, randomizerMode);
-        if (!group) {
+        if (isRolling) {
             return;
         }
-        if (group.members.length === 1) {
-            onPick(group.members[0]);
-        } else {
-            setPendingGroup(group.members);
-        }
+        setRolling(true);
+        rollTimerRef.current = window.setTimeout(() => {
+            setRolling(false);
+            const group = randomizeEncounter(encounters, randomizerMode);
+            if (!group) {
+                return;
+            }
+            if (group.members.length === 1) {
+                onPick(group.members[0]);
+            } else {
+                setPendingGroup(group.members);
+            }
+        }, ROLL_DELAY_MS);
     };
 
     const pickEncounter = (encounter: LocationEncounterView) => {
@@ -41,9 +60,11 @@ export function EncounterRandomizer({
     return (
         <>
             <Button
+                variant="warm"
                 onClick={randomize}
-                disabled={disabled || encounters.length === 0}
+                disabled={disabled || isRolling}
             >
+                <span className={isRolling ? spinningDie : undefined}>🎲</span>{' '}
                 Randomize
             </Button>
             {pendingGroup && (
@@ -94,4 +115,12 @@ const pickButton = css`
   border: 0.1rem solid var(--color-border);
   border-radius: var(--radius-sm);
   background: transparent;
+`;
+
+const spinningDie = css`
+    display: inline-block;
+    animation-name: pokedb-spin;
+    animation-duration: 0.8s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
 `;

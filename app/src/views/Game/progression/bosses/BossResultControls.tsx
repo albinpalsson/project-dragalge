@@ -1,8 +1,10 @@
-import { css, cx } from '@pokedb2/css-in-js';
-import { Button } from '../../../../components/Button';
+import { css } from '@pokedb2/css-in-js';
+import { StatusChip } from '../../../../components/StatusChip';
 
 interface BossResultControlsProps {
     currentResult?: 'won' | 'lost';
+    showTeam: boolean;
+    onToggleTeam: () => void;
     onResolve: (result: 'won' | 'lost') => Promise<void>;
     onClear: () => Promise<void>;
     isBusy: boolean;
@@ -10,102 +12,104 @@ interface BossResultControlsProps {
 
 export function BossResultControls({
     currentResult,
+    showTeam,
+    onToggleTeam,
     onResolve,
     onClear,
     isBusy,
 }: BossResultControlsProps) {
-    const hasResult = currentResult !== undefined;
-
     return (
         <div className={container}>
-            {!hasResult ? (
-                <div className={buttonGroup}>
-                    <Button
-                        disabled={isBusy}
-                        onClick={() => void onResolve('won')}
-                    >
-                        Mark Won
-                    </Button>
-                    <Button
-                        variant="secondary"
-                        disabled={isBusy}
-                        onClick={() => void onResolve('lost')}
-                    >
-                        Mark Lost
-                    </Button>
-                </div>
-            ) : (
-                <div className={resultSection}>
-                    <div className={result}>
-                        <span className={label}>Battle Result:</span>
-                        <span
-                            className={cx(
-                                resultBadge,
-                                currentResult === 'won'
-                                    ? resultBadgeWon
-                                    : resultBadgeLost,
-                            )}
-                        >
-                            {currentResult === 'won' ? '✓ Won' : '✗ Lost'}
-                        </span>
-                    </div>
-                    <Button
-                        variant="secondary"
-                        disabled={isBusy}
-                        onClick={() => void onClear()}
-                    >
-                        Clear Result
-                    </Button>
-                </div>
-            )}
+            <div className={buttonGroup}>
+                <button
+                    type="button"
+                    className={iconButton}
+                    disabled={isBusy}
+                    onClick={onToggleTeam}
+                    aria-label={showTeam ? 'Hide team' : 'Show team'}
+                    title={showTeam ? 'Hide team' : 'Show team'}
+                >
+                    👥
+                </button>
+                <button
+                    type="button"
+                    className={iconButton}
+                    disabled={isBusy || currentResult === 'won'}
+                    onClick={() => void onResolve('won')}
+                    aria-label="Mark won"
+                    title="Mark won"
+                >
+                    🏆
+                </button>
+                <button
+                    type="button"
+                    className={iconButton}
+                    disabled={isBusy || currentResult === 'lost'}
+                    onClick={() => void onResolve('lost')}
+                    aria-label="Mark lost"
+                    title="Mark lost"
+                >
+                    💀
+                </button>
+                <button
+                    type="button"
+                    className={iconButton}
+                    disabled={isBusy || currentResult === undefined}
+                    onClick={() => void onClear()}
+                    aria-label="Clear result"
+                    title="Clear result"
+                >
+                    ↺
+                </button>
+            </div>
+            <div className={resultSection}>
+                <span className={label}>Result</span>
+                <StatusChip status={currentResult ?? 'pending-result'} />
+            </div>
         </div>
     );
 }
 
 const container = css`
-    padding: var(--space-3);
-    background: var(--color-surface);
-    border: 0.1rem solid var(--color-border);
-    border-radius: var(--radius-md);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-2);
 `;
 
 const buttonGroup = css`
     display: flex;
     gap: var(--space-2);
-    flex-wrap: wrap;
+`;
+
+const iconButton = css`
+    width: 3.2rem;
+    height: 3.2rem;
+    border: 0.1rem solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background: transparent;
+    color: var(--color-text);
+    font-size: var(--font-size-base);
+    cursor: pointer;
+
+    &:hover {
+        background: var(--color-hover-overlay);
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
 `;
 
 const resultSection = css`
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-`;
-
-const result = css`
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: var(--space-2);
-    padding: var(--space-2);
-    background: var(--color-bg);
-    border-radius: var(--radius-md);
+    gap: var(--space-1);
 `;
 
 const label = css`
-    font-weight: 600;
+    font-size: var(--font-size-sm);
     color: var(--color-text-muted);
-`;
-
-const resultBadge = css`
-    padding: 0.25rem 0.75rem;
-    border-radius: 0.25rem;
-    font-weight: 600;
-    color: white;
-`;
-
-const resultBadgeWon = css`
-    background-color: #22c55e;
-`;
-
-const resultBadgeLost = css`
-    background-color: #ef4444;
 `;

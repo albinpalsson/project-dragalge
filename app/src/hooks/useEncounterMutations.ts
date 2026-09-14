@@ -1,7 +1,6 @@
 import type { EncounterStatus } from '../db/game-db/schema';
 import {
     useAddEncounterRollMutation,
-    useClearEncounterRollMutation,
     useSetEncounterRollStatusMutation,
     useSetPartySlotMutation,
 } from '../views/Game/queries';
@@ -9,14 +8,12 @@ import {
 export function useEncounterMutations() {
     const addRollMutation = useAddEncounterRollMutation();
     const setStatusMutation = useSetEncounterRollStatusMutation();
-    const clearRollMutation = useClearEncounterRollMutation();
     const setPartySlotMutation = useSetPartySlotMutation();
 
     return {
         isBusy:
             addRollMutation.isPending ||
             setStatusMutation.isPending ||
-            clearRollMutation.isPending ||
             setPartySlotMutation.isPending,
         addRoll(
             gameRunId: string,
@@ -47,12 +44,6 @@ export function useEncounterMutations() {
                 gameRunId,
                 locationName,
                 slot,
-            });
-        },
-        clearRoll(gameRunId: string, locationName: string) {
-            return clearRollMutation.mutateAsync({
-                gameRunId,
-                locationName,
             });
         },
     };

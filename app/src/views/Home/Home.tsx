@@ -47,8 +47,11 @@ export function Home({ onOpenGame }: HomeProps) {
     };
 
     return (
-        <>
-            <Button onClick={() => setStartModalOpen(true)}>
+        <div className={content}>
+            <Button
+                className={startButton}
+                onClick={() => setStartModalOpen(true)}
+            >
                 Start New Game
             </Button>
 
@@ -117,9 +120,22 @@ export function Home({ onOpenGame }: HomeProps) {
                     </ul>
                 )}
             </section>
-        </>
+        </div>
     );
 }
+
+const content = css`
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+  max-width: 120rem;
+  margin: 0 auto;
+`;
+
+const startButton = css`
+  align-self: flex-start;
+`;
 
 const form = css`
   display: flex;

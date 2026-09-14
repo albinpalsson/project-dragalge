@@ -101,6 +101,8 @@ Overlays and expandable sections are **not** part of the router — they're loca
 3. **Colors/Theme**: CSS variables or constants (define once, use everywhere)
 4. **Responsive**: Mobile-first approach, media queries for breakpoints
 
+See [styling-spec.md](./styling-spec.md) for the full design-token palette (semantic status colors, tertiary text tone, warm accent) and UI patterns (status chips, collapsed encounter-card state, overflow menus for action-heavy cards, table zebra striping, emoji usage).
+
 ### File Layout Convention
 
 In every view/component `.tsx` file, the exported component function comes first (after imports and any prop-type declarations it needs), with `css()` style constants and other non-component helper functions defined below it. This keeps the JSX/behavior the first thing a reader sees, since `function` declarations are hoisted, module-level `const`s below the component are still fully initialized by the time React renders it.

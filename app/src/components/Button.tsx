@@ -4,10 +4,12 @@ import { css, cx } from '@pokedb2/css-in-js';
 interface ButtonProps {
     children: ReactNode;
     onClick?: () => void;
-    variant?: 'primary' | 'secondary';
+    variant?: 'primary' | 'secondary' | 'warm';
     type?: 'button' | 'submit';
     disabled?: boolean;
     className?: string;
+    ariaLabel?: string;
+    title?: string;
 }
 
 export function Button({
@@ -17,13 +19,19 @@ export function Button({
     type = 'button',
     disabled = false,
     className,
+    ariaLabel,
+    title,
 }: ButtonProps) {
     return (
         <button
             type={type}
+            aria-label={ariaLabel}
+            title={title}
             className={cx(
                 buttonBase,
-                variant === 'secondary' ? buttonSecondary : buttonPrimary,
+                variant === 'secondary' && buttonSecondary,
+                variant === 'warm' && buttonWarm,
+                variant === 'primary' && buttonPrimary,
                 disabled && buttonDisabled,
                 className,
             )}
@@ -55,6 +63,15 @@ const buttonPrimary = css`
 
   &:hover {
     background: var(--color-primary-hover);
+  }
+`;
+
+const buttonWarm = css`
+  background: var(--color-accent-warm);
+  color: var(--color-on-primary);
+
+  &:hover {
+    background: var(--color-accent-warm-hover);
   }
 `;
 

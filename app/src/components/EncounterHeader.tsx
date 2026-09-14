@@ -1,17 +1,23 @@
 import { css } from '@pokedb2/css-in-js';
+import { Badge, BadgeButton } from './Badge';
 import type { LocationEncounterDetails } from '../db/pokemon-data/queries';
 import type { LocationEncounterView } from '../db/pokemon-data/queries';
+import { formatEncounterGroupLevelRange } from '../utils/encounter-formatters';
 
 interface EncounterHeaderProps {
     location: LocationEncounterDetails['location'];
     encounters: LocationEncounterView[];
+    canCollapse?: boolean;
+    onCollapse?: () => void;
 }
 
 export function EncounterHeader({
     location,
     encounters,
+    canCollapse,
+    onCollapse,
 }: EncounterHeaderProps) {
-    const levelRange = getLevelRange(encounters);
+    const levelRange = formatEncounterGroupLevelRange(encounters);
 
     return (
         <header className={header}>
@@ -20,26 +26,20 @@ export function EncounterHeader({
                 <p className={subheading}>{location.region}</p>
             </div>
             <div className={badges}>
-                <span className={badge}>{location.province}</span>
-                {levelRange && (
-                    <span className={badge}>
-                        Lv {levelRange.min}-{levelRange.max}
-                    </span>
+                <Badge>{location.province}</Badge>
+                {levelRange && <Badge>Lv {levelRange}</Badge>}
+                {canCollapse && onCollapse && (
+                    <BadgeButton
+                        ariaLabel="Collapse encounter"
+                        title="Collapse encounter"
+                        onClick={onCollapse}
+                    >
+                        ▾ Fold
+                    </BadgeButton>
                 )}
-                <span className={badge}>{encounters.length} encounters</span>
             </div>
         </header>
     );
-}
-
-function getLevelRange(encounters: LocationEncounterView[]) {
-    if (encounters.length === 0) {
-        return undefined;
-    }
-    return {
-        min: Math.min(...encounters.map((encounter) => encounter.minLevel)),
-        max: Math.max(...encounters.map((encounter) => encounter.maxLevel)),
-    };
 }
 
 const header = css`
@@ -65,12 +65,4 @@ const badges = css`
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: var(--space-1);
-`;
-
-const badge = css`
-  padding: var(--space-1) var(--space-2);
-  border: 0.1rem solid var(--color-border);
-  border-radius: var(--radius-sm);
-  color: var(--color-text-muted);
-  font-size: var(--font-size-sm);
 `;

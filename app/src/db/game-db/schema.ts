@@ -35,7 +35,7 @@ export interface GameRunsDb {
 }
 
 // Bump whenever GAME_DB_SCHEMA_SQL changes; old versioned storage keys are left in place.
-export const GAME_DB_SCHEMA_VERSION = 13;
+export const GAME_DB_SCHEMA_VERSION = 14;
 
 export const GAME_DB_SCHEMA_SQL: readonly string[] = [
     'CREATE TABLE game_runs (id CHAR(64), variant CHAR(1), randomizer_mode CHAR(10), poco_path_ocean TINYINT)',

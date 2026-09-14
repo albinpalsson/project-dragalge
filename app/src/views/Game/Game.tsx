@@ -1,12 +1,9 @@
 import { css } from '@pokedb2/css-in-js';
 import { Box } from './Box/Box';
-import { GameProvider } from './GameContext';
-import { InletGrotto } from './progression/encounters/InletGrotto';
-import { PocoPath } from './progression/encounters/PocoPath';
-import { SouthProvinceAreaOne } from './progression/encounters/SouthProvinceAreaOne';
-import { NemonaSouthProvince } from './progression/bosses/NemonaSouthProvince';
-import { StarterCard } from './StarterCard';
+import { GameProvider, useGame } from './GameContext';
+import { useProgressionTracker } from '../../hooks/useProgressionTracker';
 import { toRandomizerMode } from '../../randomizer';
+import { PROGRESSION_ITEMS } from './progression/progression-items';
 import { useEncounterRollsQuery, useGameRunQuery } from './queries';
 
 interface GameProps {
@@ -50,30 +47,39 @@ export function Game({ gameRunId }: GameProps) {
                 encounters: encounterRollsQuery.data,
             }}
         >
-            <section className={layout}>
-                <div className={topRow}>
-                    <h2 className={heading}>{game.id}</h2>
-                    <Box />
-                </div>
-                <ol className={cardList}>
-                    <li>
-                        <StarterCard />
-                    </li>
-                    <li>
-                        <PocoPath />
-                    </li>
-                    <li>
-                        <InletGrotto />
-                    </li>
-                    <li>
-                        <SouthProvinceAreaOne />
-                    </li>
-                    <li>
-                        <NemonaSouthProvince />
-                    </li>
-                </ol>
-            </section>
+            <GameContent />
         </GameProvider>
+    );
+}
+
+function GameContent() {
+    const game = useGame();
+    const progression = useProgressionTracker();
+
+    return (
+        <section className={layout}>
+            <div className={topRow}>
+                <h2 className={heading}>
+                    <span>{game.id}</span>
+                    <span className={mutedText}>
+                        {progression.percent}% complete
+                    </span>
+                </h2>
+                <Box />
+            </div>
+            <ol className={cardList}>
+                {PROGRESSION_ITEMS.map((item) => (
+                    <li key={item.key} className={cardItem}>
+                        {progression.nextKey === item.key && (
+                            <p className={nextStepLabel}>→ Next step</p>
+                        )}
+                        <item.Component
+                            isNext={progression.nextKey === item.key}
+                        />
+                    </li>
+                ))}
+            </ol>
+        </section>
     );
 }
 
@@ -81,6 +87,10 @@ const layout = css`
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
+    width: 100%;
+    max-width: 90rem;
+    margin: 0 auto;
+    min-width: 0;
 `;
 
 const topRow = css`
@@ -92,20 +102,54 @@ const topRow = css`
     align-items: center;
     justify-content: space-between;
     gap: var(--space-3);
-  padding: var(--space-3) 0;
-  border-bottom: 0.1rem solid var(--color-border);
+    padding: var(--space-3) 0;
+    width: 100%;
+    min-width: 0;
+    border-bottom: 0.1rem solid var(--color-border);
+    background: var(--color-bg);
+    box-shadow: 0 0.8rem 1.2rem -1.2rem rgba(0, 0, 0, 0.7);
 `;
 
 const heading = css`
-  margin: 0;
-  font-size: var(--font-size-lg);
+    margin: 0;
+    font-size: var(--font-size-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+`;
+
+const mutedText = css`
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
 `;
 
 const cardList = css`
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  list-style: none;
-  margin: 0;
-  padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    list-style: none;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+`;
+
+const cardItem = css`
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    width: 100%;
+    min-width: 0;
+
+    > * {
+        width: 100%;
+        min-width: 0;
+    }
+`;
+
+const nextStepLabel = css`
+    margin: 0;
+    color: var(--color-accent);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
 `;

@@ -12,11 +12,6 @@ interface RollActionsProps {
 }
 
 const STATUSES = ['caught', 'missed', 'eliminated'] as const;
-const STATUS_LABELS = {
-    caught: 'Caught',
-    missed: 'Missed',
-    eliminated: 'Eliminated',
-} as const;
 
 export function RollActions({ locationName, encounters }: RollActionsProps) {
     const game = useGame();
@@ -38,35 +33,50 @@ export function RollActions({ locationName, encounters }: RollActionsProps) {
             <EncounterRandomizer
                 encounters={encounters}
                 randomizerMode={game.randomizerMode}
-                disabled={
-                    encounterActions.isBusy || encounterRoll !== undefined
-                }
+                disabled={encounterActions.isBusy}
                 onPick={(encounter) =>
                     encounterActions.rollEncounter(encounter.name, locationName)
                 }
             />
-            {encounterRoll &&
-                STATUSES.map((status) => (
+            {encounterRoll && (
+                <>
                     <Button
-                        key={status}
                         variant="secondary"
-                        onClick={() => void setStatus(status)}
+                        ariaLabel="Caught"
+                        title="Caught"
+                        onClick={() => void setStatus('caught')}
                         disabled={
                             encounterActions.isBusy ||
-                            encounterRoll.status === status
+                            encounterRoll.status === 'caught'
                         }
                     >
-                        {STATUS_LABELS[status]}
+                        🎯
                     </Button>
-                ))}
-            {encounterRoll && (
-                <Button
-                    variant="secondary"
-                    onClick={() => encounterActions.clearRoll(locationName)}
-                    disabled={encounterActions.isBusy}
-                >
-                    Clear
-                </Button>
+                    <Button
+                        variant="secondary"
+                        ariaLabel="Missed"
+                        title="Missed"
+                        onClick={() => void setStatus('missed')}
+                        disabled={
+                            encounterActions.isBusy ||
+                            encounterRoll.status === 'missed'
+                        }
+                    >
+                        🏃
+                    </Button>
+                    <Button
+                        variant="secondary"
+                        ariaLabel="Eliminated"
+                        title="Eliminated"
+                        onClick={() => void setStatus('eliminated')}
+                        disabled={
+                            encounterActions.isBusy ||
+                            encounterRoll.status === 'eliminated'
+                        }
+                    >
+                        💀
+                    </Button>
+                </>
             )}
         </div>
     );

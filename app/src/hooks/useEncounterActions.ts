@@ -56,8 +56,5 @@ export function useEncounterActions() {
                 await mutations.setPartySlot(game.id, locationName, slot);
             }
         },
-        clearRoll(locationName: string) {
-            return mutations.clearRoll(game.id, locationName);
-        },
     };
 }

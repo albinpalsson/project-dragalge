@@ -1,7 +1,22 @@
 import { expect, type Page } from '@playwright/test';
 
 export function cardFor(page: Page, cardName: string) {
-    return page.locator('article', { hasText: cardName });
+    // Resolved encounters collapse from an <article> into a summary <button>.
+    return page.locator('article, button', { hasText: cardName });
+}
+
+export async function expandCollapsedSummary(page: Page, cardName: string) {
+    await cardFor(page, cardName).click();
+}
+
+async function ensureCardExpanded(page: Page, cardName: string) {
+    const card = cardFor(page, cardName);
+    const randomizeCount = await card
+        .getByRole('button', { name: 'Randomize' })
+        .count();
+    if (randomizeCount === 0) {
+        await expandCollapsedSummary(page, cardName);
+    }
 }
 
 export async function createGame(page: Page, name: string) {
@@ -40,6 +55,7 @@ export async function listEncounterNames(
     page: Page,
     cardName: string,
 ): Promise<string[]> {
+    await ensureCardExpanded(page, cardName);
     const card = cardFor(page, cardName);
     await card.getByRole('button', { name: 'Show encounters' }).click();
     return card.locator('tbody tr td:first-child').allTextContents();
@@ -49,6 +65,7 @@ export async function rollEncounter(
     page: Page,
     cardName: string,
 ): Promise<string> {
+    await ensureCardExpanded(page, cardName);
     const card = cardFor(page, cardName);
 
     await card.getByRole('button', { name: 'Randomize' }).click();
@@ -71,14 +88,15 @@ export async function resolveEncounter(
     cardName: string,
     status: 'Caught' | 'Missed' | 'Eliminated',
 ): Promise<void> {
+    await ensureCardExpanded(page, cardName);
     const card = cardFor(page, cardName);
-
     const statusButton = card.getByRole('button', {
         name: status,
         exact: true,
     });
     await statusButton.click();
-    await expect(statusButton).toBeDisabled();
+
+    await expect(card).toContainText(status);
 }
 
 export async function navigateTo(page: Page, destination: 'Home' | 'About') {

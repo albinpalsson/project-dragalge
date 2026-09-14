@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { css } from '@pokedb2/css-in-js';
 import { Button } from '../../../components/Button';
+import { OverflowMenu } from '../../../components/OverflowMenu';
 import { PokemonStatsPanel } from '../../../components/PokemonStatsPanel';
 import {
     NO_PARTY_SLOT,
@@ -85,24 +86,26 @@ export function PokemonDetailPane({ row, party }: PokemonDetailPaneProps) {
                                 Add to party
                             </Button>
                         )}
-                        {!isInParty && isPartyFull && (
+                        <OverflowMenu label="More Pokémon actions">
+                            {!isInParty && isPartyFull && (
+                                <Button
+                                    variant="secondary"
+                                    disabled={actions.isBusy}
+                                    onClick={() => setIsReplacing(!isReplacing)}
+                                >
+                                    Replace...
+                                </Button>
+                            )}
                             <Button
                                 variant="secondary"
                                 disabled={actions.isBusy}
-                                onClick={() => setIsReplacing(!isReplacing)}
+                                onClick={() =>
+                                    void actions.eliminate(row.location_name)
+                                }
                             >
-                                Replace...
+                                Mark eliminated
                             </Button>
-                        )}
-                        <Button
-                            variant="secondary"
-                            disabled={actions.isBusy}
-                            onClick={() =>
-                                void actions.eliminate(row.location_name)
-                            }
-                        >
-                            Mark eliminated
-                        </Button>
+                        </OverflowMenu>
                     </>
                 )}
             </div>

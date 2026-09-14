@@ -76,7 +76,7 @@ const card = css`
 
 const lostCard = css`
   opacity: 0.6;
-  border-color: #ef4444;
+  border-color: var(--color-danger);
 `;
 
 const fill = css`
@@ -101,8 +101,8 @@ const lostBadge = css`
   border-radius: 0.25rem;
   font-size: var(--font-size-sm);
   font-weight: 600;
-  color: white;
-  background-color: #ef4444;
+  color: var(--color-danger);
+  background-color: var(--color-danger-bg);
 `;
 
 const progressLabel = css`

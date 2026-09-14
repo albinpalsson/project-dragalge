@@ -27,13 +27,13 @@ test('plays a run from the starter through Inlet Grotto', async ({ page }) => {
     expect(listed).toContain(rolled);
 
     await resolveEncounter(page, 'Poco Path', 'Caught');
-    await expect(cardFor(page, 'Poco Path')).toContainText(`Caught ${rolled}`);
+    await expect(cardFor(page, 'Poco Path')).toContainText(rolled);
+    await expect(cardFor(page, 'Poco Path')).toContainText('Caught');
 
     const inletGrottoRoll = await rollEncounter(page, 'Inlet Grotto');
     await resolveEncounter(page, 'Inlet Grotto', 'Caught');
-    await expect(cardFor(page, 'Inlet Grotto')).toContainText(
-        `Caught ${inletGrottoRoll}`,
-    );
+    await expect(cardFor(page, 'Inlet Grotto')).toContainText(inletGrottoRoll);
+    await expect(cardFor(page, 'Inlet Grotto')).toContainText('Caught');
 
     // Catching fills free party slots, so all three are in the party already.
     await openBox(page);
@@ -70,8 +70,13 @@ test('plays a run from the starter through Inlet Grotto', async ({ page }) => {
     ).toBeVisible();
 
     await selectBoxPokemon(page, 'Party', starter);
-    await page
-        .getByRole('region', { name: `${starter} details` })
+    const starterDetails = page.getByRole('region', {
+        name: `${starter} details`,
+    });
+    await starterDetails
+        .getByRole('button', { name: 'More Pokémon actions' })
+        .click();
+    await starterDetails
         .getByRole('button', { name: 'Mark eliminated' })
         .click();
     await expect(party.getByRole('img', { name: starter })).toBeHidden();
@@ -84,10 +89,10 @@ test('plays a run from the starter through Inlet Grotto', async ({ page }) => {
     await openGame(page, 'playthrough-run');
 
     await expect(cardFor(page, 'Starter')).toContainText(starter);
-    await expect(cardFor(page, 'Poco Path')).toContainText(`Caught ${rolled}`);
-    await expect(cardFor(page, 'Inlet Grotto')).toContainText(
-        `Eliminated ${inletGrottoRoll}`,
-    );
+    await expect(cardFor(page, 'Poco Path')).toContainText(rolled);
+    await expect(cardFor(page, 'Poco Path')).toContainText('Caught');
+    await expect(cardFor(page, 'Inlet Grotto')).toContainText(inletGrottoRoll);
+    await expect(cardFor(page, 'Inlet Grotto')).toContainText('Eliminated');
 
     await openBox(page);
     await expect(

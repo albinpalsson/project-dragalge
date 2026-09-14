@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { css } from '@pokedb2/css-in-js';
+import { EncounterCollapsedSummary } from '../../../../components/EncounterCollapsedSummary';
 import { EncounterHeader } from '../../../../components/EncounterHeader';
 import { EncounterTable } from '../../../../components/EncounterTable';
 import { EncounterTableToggle } from '../../../../components/EncounterTableToggle';
@@ -8,14 +9,21 @@ import { RollActions } from '../../../../components/RollActions';
 import { RollResult } from '../../../../components/RollResult';
 import { useEncounterRoll } from '../../../../hooks/useEncounterRoll';
 import { useEncounterActions } from '../../../../hooks/useEncounterActions';
+import { filterEncountersForVariant } from '../../../../utils/game-variant';
+import { useGame } from '../../GameContext';
 import { useLocationEncountersQuery } from '../../queries';
 
 const LOCATION_NAME = 'Inlet Grotto';
 
-export function InletGrotto() {
+interface InletGrottoProps {
+    isNext?: boolean;
+}
+
+export function InletGrotto({ isNext }: InletGrottoProps) {
+    const game = useGame();
     const encountersQuery = useLocationEncountersQuery(LOCATION_NAME);
     const encounterRoll = useEncounterRoll(LOCATION_NAME);
-    const [isExpanded, setExpanded] = useState(false);
+    const [isTableExpanded, setTableExpanded] = useState(false);
     const encounterActions = useEncounterActions();
 
     if (encountersQuery.isPending) {
@@ -32,51 +40,72 @@ export function InletGrotto() {
     }
 
     const showHoundourWarning = encounterRoll?.name === 'Houndour';
+    const rollableEncounters = filterEncountersForVariant(
+        encountersQuery.data.encounters,
+        game.run.variant,
+    );
 
     return (
         <ProgressionCard
-            dimmed={Boolean(encounterRoll)}
             ariaLabelledBy="inlet-grotto-heading"
-        >
-            <EncounterHeader
-                location={encountersQuery.data.location}
-                encounters={encountersQuery.data.encounters}
-            />
-
-            <RollResult encounterRoll={encounterRoll} />
-
-            {showHoundourWarning && (
-                <p className={warning}>
-                    Houndour is first available in Inlet Grotto after finishing
-                    the Naranja Academy introduction, which is after the first
-                    rival battle, when the level cap is increased above 9.
-                    Re-rolling for the early encounter pickup is valid.
-                </p>
-            )}
-
-            <RollActions
-                locationName={LOCATION_NAME}
-                encounters={encountersQuery.data.encounters}
-            />
-
-            <EncounterTableToggle
-                expanded={isExpanded}
-                onToggle={() => setExpanded((value) => !value)}
-            />
-
-            {isExpanded && (
-                <EncounterTable
+            isNext={isNext}
+            defaultExpanded={false}
+            collapsedContent={({ expand }) => (
+                <EncounterCollapsedSummary
+                    locationName={LOCATION_NAME}
+                    encounterRoll={encounterRoll}
                     encounters={encountersQuery.data.encounters}
-                    disabled={
-                        encounterActions.isBusy || encounterRoll !== undefined
-                    }
-                    onPick={(encounter) =>
-                        encounterActions.rollEncounter(
-                            encounter.name,
-                            LOCATION_NAME,
-                        )
-                    }
+                    isNext={isNext}
+                    onExpand={expand}
                 />
+            )}
+        >
+            {({ collapse }) => (
+                <>
+                    <EncounterHeader
+                        location={encountersQuery.data.location}
+                        encounters={encountersQuery.data.encounters}
+                        canCollapse
+                        onCollapse={collapse}
+                    />
+
+                    <RollResult encounterRoll={encounterRoll} />
+
+                    {showHoundourWarning && (
+                        <p className={warning}>
+                            Houndour is first available in Inlet Grotto after
+                            finishing the Naranja Academy introduction, which is
+                            after the first rival battle, when the level cap is
+                            increased above 9. Re-rolling for the early
+                            encounter pickup is valid.
+                        </p>
+                    )}
+
+                    <RollActions
+                        locationName={LOCATION_NAME}
+                        encounters={rollableEncounters}
+                    />
+
+                    <EncounterTableToggle
+                        expanded={isTableExpanded}
+                        count={encountersQuery.data.encounters.length}
+                        onToggle={() => setTableExpanded((value) => !value)}
+                    />
+
+                    {isTableExpanded && (
+                        <EncounterTable
+                            encounters={encountersQuery.data.encounters}
+                            variant={game.run.variant}
+                            disabled={encounterActions.isBusy}
+                            onPick={(encounter) =>
+                                encounterActions.rollEncounter(
+                                    encounter.name,
+                                    LOCATION_NAME,
+                                )
+                            }
+                        />
+                    )}
+                </>
             )}
         </ProgressionCard>
     );
@@ -86,5 +115,5 @@ const warning = css`
   margin: 0;
   padding: var(--space-2) var(--space-3);
   border-left: 0.3rem solid var(--color-primary);
-  color: var(--color-text-muted);
+  color: var(--color-text-secondary);
 `;

@@ -3,12 +3,14 @@ import {
     boxSection,
     cardFor,
     createGame,
+    expandCollapsedSummary,
     navigateTo,
     openBox,
     openGame,
     resolveEncounter,
     rollEncounter,
     selectBoxPokemon,
+    waitForPersistence,
 } from './helpers';
 
 test('home game cards show the Pokemon obtained in a run', async ({ page }) => {
@@ -55,22 +57,30 @@ test('home game cards list party members before the rest', async ({ page }) => {
     );
 });
 
-test('clearing a roll allows rolling again', async ({ page }) => {
+test('resolved encounter stays expanded until reload', async ({ page }) => {
     await page.goto('/');
     await createGame(page, 'reroll-run');
     await openGame(page, 'reroll-run');
 
     const card = cardFor(page, 'Poco Path');
-    const randomize = card.getByRole('button', { name: 'Randomize' });
 
     await rollEncounter(page, 'Poco Path');
-    await expect(randomize).toBeDisabled();
-
     await resolveEncounter(page, 'Poco Path', 'Missed');
-    await expect(randomize).toBeDisabled();
+    await expect(card.getByRole('button', { name: 'Randomize' })).toBeVisible();
 
-    await card.getByRole('button', { name: 'Clear' }).click();
-    await expect(randomize).toBeEnabled();
+    await waitForPersistence(page);
+    await page.reload();
+    await openGame(page, 'reroll-run');
+
+    const reloadedCard = cardFor(page, 'Poco Path');
+    await expect(reloadedCard).toContainText('Missed');
+    await expect(
+        reloadedCard.getByRole('button', { name: 'Randomize' }),
+    ).toBeHidden();
+    await expandCollapsedSummary(page, 'Poco Path');
+    await expect(
+        cardFor(page, 'Poco Path').getByRole('button', { name: 'Randomize' }),
+    ).toBeVisible();
 });
 
 test('the start-game modal can be dismissed', async ({ page }) => {

@@ -28,3 +28,14 @@ export function formatTime(encounter: LocationEncounterView): string {
 export function formatGames(games: string): string {
     return games.toUpperCase().split('').join('/');
 }
+
+export function formatEncounterGroupLevelRange(
+    encounters: LocationEncounterView[],
+): string | undefined {
+    if (encounters.length === 0) {
+        return undefined;
+    }
+    const min = Math.min(...encounters.map((encounter) => encounter.minLevel));
+    const max = Math.max(...encounters.map((encounter) => encounter.maxLevel));
+    return `${min}-${max}`;
+}

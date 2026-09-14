@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { EncounterCollapsedSummary } from '../../../../components/EncounterCollapsedSummary';
 import { EncounterHeader } from '../../../../components/EncounterHeader';
 import { EncounterTable } from '../../../../components/EncounterTable';
 import { EncounterTableToggle } from '../../../../components/EncounterTableToggle';
@@ -7,14 +8,21 @@ import { RollActions } from '../../../../components/RollActions';
 import { RollResult } from '../../../../components/RollResult';
 import { useEncounterRoll } from '../../../../hooks/useEncounterRoll';
 import { useEncounterActions } from '../../../../hooks/useEncounterActions';
+import { filterEncountersForVariant } from '../../../../utils/game-variant';
+import { useGame } from '../../GameContext';
 import { useLocationEncountersQuery } from '../../queries';
 
 const LOCATION_NAME = 'South Province (Area One)';
 
-export function SouthProvinceAreaOne() {
+interface SouthProvinceAreaOneProps {
+    isNext?: boolean;
+}
+
+export function SouthProvinceAreaOne({ isNext }: SouthProvinceAreaOneProps) {
+    const game = useGame();
     const encountersQuery = useLocationEncountersQuery(LOCATION_NAME);
     const encounterRoll = useEncounterRoll(LOCATION_NAME);
-    const [isExpanded, setExpanded] = useState(false);
+    const [isTableExpanded, setTableExpanded] = useState(false);
     const encounterActions = useEncounterActions();
 
     if (encountersQuery.isPending) {
@@ -31,43 +39,63 @@ export function SouthProvinceAreaOne() {
     }
 
     const allEncounters = encountersQuery.data.encounters;
+    const rollableEncounters = filterEncountersForVariant(
+        allEncounters,
+        game.run.variant,
+    );
 
     return (
         <ProgressionCard
             compact
-            dimmed={Boolean(encounterRoll)}
+            isNext={isNext}
             ariaLabelledBy="south-province-area-one-heading"
-        >
-            <EncounterHeader
-                location={encountersQuery.data.location}
-                encounters={allEncounters}
-            />
-
-            <RollResult encounterRoll={encounterRoll} />
-
-            <RollActions
-                locationName={LOCATION_NAME}
-                encounters={allEncounters}
-            />
-
-            <EncounterTableToggle
-                expanded={isExpanded}
-                onToggle={() => setExpanded((value) => !value)}
-            />
-
-            {isExpanded && (
-                <EncounterTable
+            defaultExpanded={false}
+            collapsedContent={({ expand }) => (
+                <EncounterCollapsedSummary
+                    locationName={LOCATION_NAME}
+                    encounterRoll={encounterRoll}
                     encounters={allEncounters}
-                    disabled={
-                        encounterActions.isBusy || encounterRoll !== undefined
-                    }
-                    onPick={(encounter) =>
-                        encounterActions.rollEncounter(
-                            encounter.name,
-                            LOCATION_NAME,
-                        )
-                    }
+                    isNext={isNext}
+                    onExpand={expand}
                 />
+            )}
+        >
+            {({ collapse }) => (
+                <>
+                    <EncounterHeader
+                        location={encountersQuery.data.location}
+                        encounters={allEncounters}
+                        canCollapse
+                        onCollapse={collapse}
+                    />
+
+                    <RollResult encounterRoll={encounterRoll} />
+
+                    <RollActions
+                        locationName={LOCATION_NAME}
+                        encounters={rollableEncounters}
+                    />
+
+                    <EncounterTableToggle
+                        expanded={isTableExpanded}
+                        count={allEncounters.length}
+                        onToggle={() => setTableExpanded((value) => !value)}
+                    />
+
+                    {isTableExpanded && (
+                        <EncounterTable
+                            encounters={allEncounters}
+                            variant={game.run.variant}
+                            disabled={encounterActions.isBusy}
+                            onPick={(encounter) =>
+                                encounterActions.rollEncounter(
+                                    encounter.name,
+                                    LOCATION_NAME,
+                                )
+                            }
+                        />
+                    )}
+                </>
             )}
         </ProgressionCard>
     );

@@ -1,18 +1,12 @@
 import { css } from '@pokedb2/css-in-js';
 import type { EncounterRollDetails } from '../hooks/useEncounterRoll';
 import { pokemonIconSrc, toIconSlug } from '../pokemon-icon';
+import { StatusChip } from './StatusChip';
 import {
     formatLevelRange,
     formatTime,
     formatWeight,
 } from '../utils/encounter-formatters';
-
-const STATUS_LABELS: Record<EncounterRollDetails['status'], string> = {
-    pending: 'Rolled',
-    caught: 'Caught',
-    missed: 'Missed',
-    eliminated: 'Eliminated',
-};
 
 interface RollResultProps {
     encounterRoll: EncounterRollDetails | undefined;
@@ -20,11 +14,7 @@ interface RollResultProps {
 
 export function RollResult({ encounterRoll }: RollResultProps) {
     if (!encounterRoll) {
-        return (
-            <p className={mutedText}>
-                Randomize or pick an encounter from the list.
-            </p>
-        );
+        return null;
     }
 
     return (
@@ -37,7 +27,8 @@ export function RollResult({ encounterRoll }: RollResultProps) {
             />
             <div>
                 <p className={rollTitle}>
-                    {STATUS_LABELS[encounterRoll.status]} {encounterRoll.name}
+                    {encounterRoll.name}{' '}
+                    <StatusChip status={encounterRoll.status} />
                 </p>
                 <p className={rollMeta}>
                     Lv {formatLevelRange(encounterRoll)} ·{' '}
@@ -48,11 +39,6 @@ export function RollResult({ encounterRoll }: RollResultProps) {
         </div>
     );
 }
-
-const mutedText = css`
-  margin: 0;
-  color: var(--color-text-muted);
-`;
 
 const rollBox = css`
   display: flex;

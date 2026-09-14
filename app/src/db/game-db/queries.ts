@@ -122,6 +122,16 @@ export async function addEncounterRoll(
         status: input.status ?? 'pending',
         party_slot: NO_PARTY_SLOT,
     };
+    const updateRes = await db
+        .updateTable('encounter_rolls')
+        .set(row)
+        .where('game_run_id', '=', input.gameRunId)
+        .where('location_name', '=', input.locationName)
+        .execute();
+
+    if (updateRes.length > 0) {
+        return row;
+    }
     await db.insertInto('encounter_rolls').values(row).execute();
     return row;
 }
@@ -163,17 +173,6 @@ export async function setPartySlot(input: SetPartySlotInput): Promise<void> {
 export interface ClearEncounterRollInput {
     gameRunId: string;
     locationName: string;
-}
-
-export async function clearEncounterRoll(
-    input: ClearEncounterRollInput,
-): Promise<void> {
-    const db = await getGameDb();
-    await db
-        .deleteFrom('encounter_rolls')
-        .where('game_run_id', '=', input.gameRunId)
-        .where('location_name', '=', input.locationName)
-        .execute();
 }
 
 export interface SetPocoPathOceanSettingInput {

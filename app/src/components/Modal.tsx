@@ -87,14 +87,20 @@ const panel = css`
 `;
 
 const header = css`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: var(--space-3);
-  margin: -0.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-3);
+    margin: -0.5rem;
+    padding: 0.5rem;
+    background: var(--color-surface);
+    box-shadow: 0 0.8rem 1.2rem -1.2rem rgba(0, 0, 0, 0.7);
 
   h2 {
-    margin: 0.5rem 0;
+        margin: 0;
   }
 `;
 
