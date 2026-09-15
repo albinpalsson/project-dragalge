@@ -44,12 +44,11 @@ export function PocoPath({ isNext }: PocoPathProps) {
     }
 
     const allEncounters = encountersQuery.data.encounters;
-    const oceanEncounters = allEncounters.filter(
-        (encounter) => encounter.subArea === 'Ocean',
-    );
     const activeEncounters = game.settings.pocoPathOcean
         ? allEncounters
-        : allEncounters.filter((encounter) => encounter.subArea !== 'Ocean');
+        : allEncounters.filter(
+              (encounter) => !['Ocean', 'Beach'].includes(encounter.subArea),
+          );
     const rollableEncounters = filterEncountersForVariant(
         activeEncounters,
         game.run.variant,
@@ -79,19 +78,18 @@ export function PocoPath({ isNext }: PocoPathProps) {
                         onCollapse={collapse}
                     />
 
-                    {oceanEncounters.length > 0 && (
-                        <Checkbox
-                            label="Include ocean encounters"
-                            checked={game.settings.pocoPathOcean}
-                            disabled={setOceanMutation.isPending}
-                            onChange={(includeOcean) =>
-                                setOceanMutation.mutate({
-                                    gameRunId: game.id,
-                                    includeOcean,
-                                })
-                            }
-                        />
-                    )}
+                    <Checkbox
+                        label="Include ocean/beach encounters"
+                        checked={game.settings.pocoPathOcean}
+                        disabled={setOceanMutation.isPending}
+                        title="Beach area encounters are first accessible after finishing the Naranja Academy introduction, after the first rival battle, you may save this encounter for later."
+                        onChange={(includeOcean) =>
+                            setOceanMutation.mutate({
+                                gameRunId: game.id,
+                                includeOcean,
+                            })
+                        }
+                    />
 
                     <RollResult encounterRoll={encounterRoll} />
 
