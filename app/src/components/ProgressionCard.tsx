@@ -10,6 +10,7 @@ interface ProgressionCardRenderProps {
 }
 
 interface ProgressionCardProps {
+    className?: string;
     children: ReactNode | ((props: ProgressionCardRenderProps) => ReactNode);
     collapsedContent?:
         | ReactNode
@@ -22,6 +23,7 @@ interface ProgressionCardProps {
 }
 
 export function ProgressionCard({
+    className,
     children,
     collapsedContent,
     defaultExpanded = true,
@@ -58,6 +60,7 @@ export function ProgressionCard({
         <article
             className={cx(
                 card,
+                className,
                 compact && compactCard,
                 isNext && nextHighlight,
             )}

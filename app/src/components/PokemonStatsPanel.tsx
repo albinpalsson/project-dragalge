@@ -1,5 +1,6 @@
 import { css } from '@pokedb2/css-in-js';
 import type { PokemonBaseStats } from '../db/pokemon-data/queries';
+import { StatBar } from './StatBar';
 
 interface PokemonStatsPanelProps {
     baseStats: PokemonBaseStats;
@@ -8,8 +9,8 @@ interface PokemonStatsPanelProps {
 function statEntries(baseStats: PokemonBaseStats): [string, number][] {
     return [
         ['HP', baseStats.hp],
-        ['Attack', baseStats.attack],
-        ['Defense', baseStats.defense],
+        ['Atk', baseStats.attack],
+        ['Def', baseStats.defense],
         ['Sp. Atk', baseStats.specialAttack],
         ['Sp. Def', baseStats.specialDefense],
         ['Speed', baseStats.speed],
@@ -18,38 +19,20 @@ function statEntries(baseStats: PokemonBaseStats): [string, number][] {
 
 export function PokemonStatsPanel({ baseStats }: PokemonStatsPanelProps) {
     return (
-        <dl className={stats}>
+        <div className={stats}>
             {statEntries(baseStats).map(([label, value]) => (
-                <div className={stat} key={label}>
-                    <dt className={muted}>{label}</dt>
-                    <dd className={statValue}>{value}</dd>
-                </div>
+                <StatBar key={label} label={label} value={value} />
             ))}
-        </dl>
+        </div>
     );
 }
 
 const stats = css`
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: var(--space-2);
-    margin: var(--space-2) 0;
-`;
-
-const stat = css`
-    display: flex;
-    flex-direction: column;
-`;
-
-const muted = css`
-    color: var(--color-text-muted);
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-    text-transform: uppercase;
-    margin-bottom: var(--space-1);
-`;
-
-const statValue = css`
-    font-size: var(--font-size-lg);
-    font-weight: 600;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(3, auto);
+    grid-auto-flow: column;
+    column-gap: var(--space-3);
+    row-gap: var(--space-2);
+    margin: 0;
 `;

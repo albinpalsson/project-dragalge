@@ -77,12 +77,7 @@ test('plays a run from the starter through Inlet Grotto', async ({ page }) => {
     const starterDetails = page.getByRole('region', {
         name: `${starter} details`,
     });
-    await starterDetails
-        .getByRole('button', { name: 'More Pokémon actions' })
-        .click();
-    await starterDetails
-        .getByRole('button', { name: 'Mark eliminated' })
-        .click();
+    await starterDetails.getByRole('button', { name: 'Eliminated' }).click();
     await expect(party.getByRole('img', { name: starter })).toBeHidden();
     await expect(
         boxSection(page, 'Death Box').getByRole('img', { name: starter }),

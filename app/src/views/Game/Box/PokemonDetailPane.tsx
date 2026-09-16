@@ -3,6 +3,7 @@ import { css } from '@pokedb2/css-in-js';
 import { Button } from '../../../components/Button';
 import { OverflowMenu } from '../../../components/OverflowMenu';
 import { PokemonStatsPanel } from '../../../components/PokemonStatsPanel';
+import { TypeBadge } from '../../../components/TypeBadge';
 import {
     NO_PARTY_SLOT,
     type EncounterRollRow,
@@ -30,8 +31,86 @@ export function PokemonDetailPane({ row, party }: PokemonDetailPaneProps) {
 
     return (
         <section className={pane} aria-label={`${displayName} details`}>
+            <div className={headerRow}>
+                <div className={identity}>
+                    <h4 className={heading}>{displayName}</h4>
+                    {pokemonQuery.data && (
+                        <span className={types}>
+                            <TypeBadge type={pokemonQuery.data.primaryType} />
+                            {pokemonQuery.data.secondaryType && (
+                                <TypeBadge
+                                    type={pokemonQuery.data.secondaryType}
+                                />
+                            )}
+                        </span>
+                    )}
+                </div>
+                <div className={buttons}>
+                    {isEliminated ? (
+                        <Button
+                            variant="secondary"
+                            disabled={actions.isBusy}
+                            onClick={() =>
+                                void actions.revive(row.location_name)
+                            }
+                        >
+                            Revive
+                        </Button>
+                    ) : (
+                        <>
+                            {isInParty ? (
+                                <Button
+                                    variant="secondary"
+                                    disabled={actions.isBusy}
+                                    onClick={() =>
+                                        actions.removeFromParty(
+                                            row.location_name,
+                                        )
+                                    }
+                                >
+                                    Remove from party
+                                </Button>
+                            ) : (
+                                <Button
+                                    variant="secondary"
+                                    disabled={actions.isBusy || isPartyFull}
+                                    onClick={() =>
+                                        actions.addToParty(row.location_name)
+                                    }
+                                >
+                                    Add to party
+                                </Button>
+                            )}
+                            <Button
+                                variant="secondary"
+                                ariaLabel="Eliminated"
+                                title="Eliminated"
+                                disabled={actions.isBusy}
+                                onClick={() =>
+                                    void actions.eliminate(row.location_name)
+                                }
+                            >
+                                💀
+                            </Button>
+                            {!isInParty && isPartyFull && (
+                                <OverflowMenu label="More Pokémon actions">
+                                    <Button
+                                        variant="secondary"
+                                        disabled={actions.isBusy}
+                                        onClick={() =>
+                                            setIsReplacing(!isReplacing)
+                                        }
+                                    >
+                                        Replace...
+                                    </Button>
+                                </OverflowMenu>
+                            )}
+                        </>
+                    )}
+                </div>
+            </div>
+
             <div className={info}>
-                <h4 className={heading}>{displayName}</h4>
                 {pokemonQuery.isPending && <p className={muted}>Loading...</p>}
                 {pokemonQuery.isError && (
                     <p className={muted}>
@@ -39,76 +118,17 @@ export function PokemonDetailPane({ row, party }: PokemonDetailPaneProps) {
                     </p>
                 )}
                 {pokemonQuery.data && (
-                    <>
-                        <p className={muted}>
-                            {pokemonQuery.data.primaryType}
-                            {pokemonQuery.data.secondaryType
-                                ? ` / ${pokemonQuery.data.secondaryType}`
-                                : ''}
-                        </p>
-                        <PokemonStatsPanel
-                            baseStats={pokemonQuery.data.baseStats}
-                        />
-                    </>
-                )}
-                {defensiveEntries.length > 0 && (
-                    <TypeDefenses entries={defensiveEntries} />
-                )}
-            </div>
-
-            <div className={buttons}>
-                {isEliminated ? (
-                    <Button
-                        variant="secondary"
-                        disabled={actions.isBusy}
-                        onClick={() => void actions.revive(row.location_name)}
-                    >
-                        Revive
-                    </Button>
-                ) : (
-                    <>
-                        {isInParty ? (
-                            <Button
-                                variant="secondary"
-                                disabled={actions.isBusy}
-                                onClick={() =>
-                                    actions.removeFromParty(row.location_name)
-                                }
-                            >
-                                Remove from party
-                            </Button>
-                        ) : (
-                            <Button
-                                variant="secondary"
-                                disabled={actions.isBusy || isPartyFull}
-                                onClick={() =>
-                                    actions.addToParty(row.location_name)
-                                }
-                            >
-                                Add to party
-                            </Button>
+                    <div className={detailsGrid}>
+                        <section className={statsSection}>
+                            <h5 className={sectionTitle}>Base Stats</h5>
+                            <PokemonStatsPanel
+                                baseStats={pokemonQuery.data.baseStats}
+                            />
+                        </section>
+                        {defensiveEntries.length > 0 && (
+                            <TypeDefenses entries={defensiveEntries} />
                         )}
-                        <OverflowMenu label="More Pokémon actions">
-                            {!isInParty && isPartyFull && (
-                                <Button
-                                    variant="secondary"
-                                    disabled={actions.isBusy}
-                                    onClick={() => setIsReplacing(!isReplacing)}
-                                >
-                                    Replace...
-                                </Button>
-                            )}
-                            <Button
-                                variant="secondary"
-                                disabled={actions.isBusy}
-                                onClick={() =>
-                                    void actions.eliminate(row.location_name)
-                                }
-                            >
-                                Mark eliminated
-                            </Button>
-                        </OverflowMenu>
-                    </>
+                    </div>
                 )}
             </div>
 
@@ -146,16 +166,58 @@ const pane = css`
   border-radius: var(--radius-md);
 `;
 
+const headerRow = css`
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3);
+    flex-basis: 100%;
+`;
+
+const identity = css`
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+`;
+
 const info = css`
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
-  flex: 1 1 24rem;
+    flex: 1 1 100%;
+`;
+
+const detailsGrid = css`
+    display: flex;
+    flex-wrap: wrap;
+        gap: var(--space-6);
+`;
+
+const statsSection = css`
+    display: flex;
+    flex: 1 1 28rem;
+    flex-direction: column;
+    gap: var(--space-2);
+    max-width: 34rem;
 `;
 
 const heading = css`
   margin: 0;
-  font-size: var(--font-size-base);
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+`;
+
+const types = css`
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+`;
+
+const sectionTitle = css`
+    margin: 0;
+    font-size: var(--font-size-base);
 `;
 
 const muted = css`
@@ -169,6 +231,7 @@ const buttons = css`
   flex-wrap: wrap;
   align-items: flex-start;
   gap: var(--space-2);
+    margin-left: auto;
 `;
 
 const replaceRow = css`

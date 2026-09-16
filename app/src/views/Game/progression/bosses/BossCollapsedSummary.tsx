@@ -1,13 +1,13 @@
-import { css } from '@pokedb2/css-in-js';
+import { css, cx } from '@pokedb2/css-in-js';
 import { Badge } from '../../../../components/Badge';
 import { CollapsedSummaryRow } from '../../../../components/CollapsedSummaryRow';
 import { StatusChip } from '../../../../components/StatusChip';
-import { pokemonIconSrc, toIconSlug } from '../../../../pokemon-icon';
 
 interface BossCollapsedSummaryProps {
     battleName: string;
+    className?: string;
+    locationName: string;
     result: 'won' | 'lost' | undefined;
-    acePokemonName: string;
     levelCap: number;
     isNext?: boolean;
     onExpand: () => void;
@@ -15,26 +15,25 @@ interface BossCollapsedSummaryProps {
 
 export function BossCollapsedSummary({
     battleName,
+    className,
+    locationName,
     result,
-    acePokemonName,
     levelCap,
     isNext,
     onExpand,
 }: BossCollapsedSummaryProps) {
     return (
         <CollapsedSummaryRow
+            className={cx(bossAccent, className)}
             icon={
-                <img
-                    className={icon}
-                    src={pokemonIconSrc(toIconSlug(acePokemonName))}
-                    alt={acePokemonName}
-                    loading="lazy"
-                />
+                <span className={icon} aria-hidden="true">
+                    ⚔
+                </span>
             }
-            label="Boss Fight"
+            label={locationName}
             title={battleName}
-            leftBadges={<StatusChip status={result ?? 'pending-result'} />}
-            rightBadges={<Badge>Lv {levelCap}</Badge>}
+            leftBadges={result && <StatusChip status={result} />}
+            rightBadges={<Badge>Lv cap {levelCap}</Badge>}
             isNext={isNext}
             onExpand={onExpand}
         />
@@ -42,6 +41,21 @@ export function BossCollapsedSummary({
 }
 
 const icon = css`
-  width: 3.2rem;
-  height: 3.2rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.2rem;
+    height: 3.2rem;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-alt);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-lg);
+`;
+
+const bossAccent = css`
+    && {
+        border-color: var(--color-border);
+        border-left: 0.4rem solid var(--color-accent-warm);
+        box-shadow: none;
+    }
 `;

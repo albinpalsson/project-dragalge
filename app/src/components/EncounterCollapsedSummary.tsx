@@ -8,6 +8,7 @@ import { CollapsedSummaryRow } from './CollapsedSummaryRow';
 import { StatusChip } from './StatusChip';
 
 interface EncounterCollapsedSummaryProps {
+    areaName: string;
     locationName: string;
     encounterRoll: EncounterRollDetails | undefined;
     encounters: LocationEncounterView[];
@@ -17,6 +18,7 @@ interface EncounterCollapsedSummaryProps {
 
 // Compact row shown once an encounter resolves, standing in for the full card.
 export function EncounterCollapsedSummary({
+    areaName,
     locationName,
     encounterRoll,
     encounters,
@@ -36,18 +38,23 @@ export function EncounterCollapsedSummary({
                         loading="lazy"
                     />
                 ) : (
-                    <span className={placeholderIcon} aria-hidden="true" />
+                    <span className={placeholderIcon} aria-hidden="true">
+                        ?
+                    </span>
                 )
             }
-            label={locationName}
-            title={encounterRoll ? encounterRoll.displayName : ''}
+            title={locationName}
+            detail={encounterRoll ? encounterRoll.displayName : undefined}
             leftBadges={
                 encounterRoll ? (
                     <StatusChip status={encounterRoll.status} />
                 ) : undefined
             }
             rightBadges={
-                levelRange ? <Badge>Lv {levelRange}</Badge> : undefined
+                <>
+                    <Badge>{areaName}</Badge>
+                    {levelRange && <Badge>Lv {levelRange}</Badge>}
+                </>
             }
             isNext={isNext}
             onExpand={onExpand}
@@ -61,8 +68,14 @@ const icon = css`
 `;
 
 const placeholderIcon = css`
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   width: 3.2rem;
   height: 3.2rem;
   border-radius: var(--radius-sm);
   background: var(--color-surface-alt);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-lg);
+    font-weight: 600;
 `;

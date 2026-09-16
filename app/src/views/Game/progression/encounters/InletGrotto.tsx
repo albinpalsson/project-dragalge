@@ -52,6 +52,7 @@ export function InletGrotto({ isNext }: InletGrottoProps) {
             defaultExpanded={false}
             collapsedContent={({ expand }) => (
                 <EncounterCollapsedSummary
+                    areaName={encountersQuery.data.location.province}
                     locationName={LOCATION_NAME}
                     encounterRoll={encounterRoll}
                     encounters={encountersQuery.data.encounters}

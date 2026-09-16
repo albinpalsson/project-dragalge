@@ -1,18 +1,38 @@
 import { css } from '@pokedb2/css-in-js';
+import { useMemo } from 'react';
 import { Badge } from '../../../../components/Badge';
+import { MoveCard } from '../../../../components/MoveCard';
 import { PokemonStatsPanel } from '../../../../components/PokemonStatsPanel';
+import { TypeBadge } from '../../../../components/TypeBadge';
 import { Tooltip } from '../../../../components/Tooltip';
-import type {
-    BossPokemonView,
-    BossMoveView,
-} from '../../../../db/pokemon-data/queries';
+import type { BossPokemonView } from '../../../../db/pokemon-data/queries';
 import { pokemonIconSrc, toIconSlug } from '../../../../pokemon-icon';
+import { defensiveEffectiveness } from '../../../../utils/type-effectiveness';
+import { TypeDefenses } from '../../Box/TypeDefenses';
+import { useTypeChartQuery } from '../../queries';
 
 interface BossPokemonCardProps {
     pokemon: BossPokemonView;
 }
 
 export function BossPokemonCard({ pokemon }: BossPokemonCardProps) {
+    const typeChartQuery = useTypeChartQuery();
+    const baseStatTotal = Object.values(pokemon.baseStats).reduce(
+        (total, value) => total + value,
+        0,
+    );
+    const defensiveEntries = useMemo(() => {
+        if (!typeChartQuery.data) {
+            return [];
+        }
+
+        return defensiveEffectiveness(
+            typeChartQuery.data,
+            pokemon.primaryType,
+            pokemon.secondaryType,
+        ).filter((entry) => entry.multiplier !== 1);
+    }, [pokemon.primaryType, pokemon.secondaryType, typeChartQuery.data]);
+
     return (
         <article className={card}>
             <div className={header}>
@@ -22,67 +42,72 @@ export function BossPokemonCard({ pokemon }: BossPokemonCardProps) {
                     alt={pokemon.pokemonName}
                     loading="lazy"
                 />
-                <h4 className={pokemonName}>{pokemon.pokemonName}</h4>
-                <Badge>Lv {pokemon.level}</Badge>
-                <span className={types}>
-                    {pokemon.primaryType}
-                    {pokemon.secondaryType ? ` / ${pokemon.secondaryType}` : ''}
-                </span>
+                <div className={identity}>
+                    <div className={identityLine}>
+                        <Tooltip
+                            bubbleClassName={typeDefensesBubble}
+                            content={
+                                <TypeDefenses
+                                    entries={defensiveEntries}
+                                    variant="tooltip"
+                                />
+                            }
+                        >
+                            <button
+                                type="button"
+                                className={typeDefenseTrigger}
+                                aria-label={`${pokemon.pokemonName} type defenses`}
+                            >
+                                <span className={pokemonName}>
+                                    {pokemon.pokemonName}
+                                </span>
+                                <span className={types}>
+                                    <TypeBadge type={pokemon.primaryType} />
+                                    {pokemon.secondaryType && (
+                                        <TypeBadge
+                                            type={pokemon.secondaryType}
+                                        />
+                                    )}
+                                </span>
+                            </button>
+                        </Tooltip>
+                        <Badge>Lv {pokemon.level}</Badge>
+                    </div>
+                    <p className={abilityLine}>
+                        <span className={label}>Ability:</span>{' '}
+                        <Tooltip content={pokemon.ability.description}>
+                            <button
+                                type="button"
+                                className={detailButton}
+                                title={pokemon.ability.name}
+                            >
+                                {pokemon.ability.name}
+                            </button>
+                        </Tooltip>
+                    </p>
+                </div>
             </div>
             <div className={content}>
-                <p className={line}>
-                    <span className={label}>Ability:</span>{' '}
-                    <Tooltip content={pokemon.ability.description}>
-                        <button
-                            type="button"
-                            className={detailButton}
-                            title={pokemon.ability.name}
-                        >
-                            {pokemon.ability.name}
-                        </button>
-                    </Tooltip>
-                </p>
-
-                {pokemon.moves.length > 0 && (
-                    <div className={movesSection}>
-                        <span className={label}>Moves:</span>
-                        <div className={movesGrid}>
-                            {pokemon.moves.map((move: BossMoveView) => (
-                                <Tooltip key={move.name} content={move.effect}>
-                                    <button
-                                        type="button"
-                                        className={moveName}
-                                        title={move.name}
-                                    >
-                                        <span className={moveLabel}>
-                                            {move.name}
-                                        </span>
-                                        <span className={moveType}>
-                                            {move.type}
-                                        </span>
-                                        <span className={moveCategory}>
-                                            {move.category}
-                                        </span>
-                                        {move.power > 0 && (
-                                            <span className={movePower}>
-                                                Pow {move.power}
-                                            </span>
-                                        )}
-                                        {move.accuracy > 0 && (
-                                            <span className={moveAccuracy}>
-                                                Acc {move.accuracy}%
-                                            </span>
-                                        )}
-                                    </button>
-                                </Tooltip>
-                            ))}
-                        </div>
-                    </div>
-                )}
-
-                <div className={statsSection}>
-                    <h5 className={sectionTitle}>Base Stats</h5>
-                    <PokemonStatsPanel baseStats={pokemon.baseStats} />
+                <div className={detailsGrid}>
+                    <section className={detailsSection}>
+                        <h5 className={sectionTitle}>
+                            <span>Base Stats</span>
+                            <span className={statTotal}>
+                                Total: {baseStatTotal}
+                            </span>
+                        </h5>
+                        <PokemonStatsPanel baseStats={pokemon.baseStats} />
+                    </section>
+                    {pokemon.moves.length > 0 && (
+                        <section className={detailsSection}>
+                            <h5 className={sectionTitle}>Moves</h5>
+                            <div className={movesGrid}>
+                                {pokemon.moves.map((move) => (
+                                    <MoveCard key={move.name} move={move} />
+                                ))}
+                            </div>
+                        </section>
+                    )}
                 </div>
             </div>
         </article>
@@ -90,45 +115,94 @@ export function BossPokemonCard({ pokemon }: BossPokemonCardProps) {
 }
 
 const card = css`
+    position: relative;
+    width: 100%;
+    max-width: 34rem;
     border: 0.1rem solid var(--color-border);
     border-radius: var(--radius-md);
-    overflow: hidden;
+    overflow: visible;
     background: var(--color-surface);
+
+    &:hover {
+        z-index: 1;
+    }
+
+    &:focus-within {
+        z-index: 1;
+    }
 `;
 
 const header = css`
     display: flex;
     align-items: center;
     gap: var(--space-2);
-    padding: var(--space-3);
-    border-bottom: 0.1rem solid var(--color-border);
+    padding: var(--space-2);
 `;
 
 const icon = css`
-    width: 3.2rem;
-    height: 3.2rem;
+    width: 4.4rem;
+    height: 4.4rem;
+`;
+
+const identity = css`
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-width: 0;
+    gap: var(--space-1);
+`;
+
+const identityLine = css`
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1);
 `;
 
 const pokemonName = css`
-    flex: 1;
     font-size: var(--font-size-lg);
     font-weight: 600;
-    margin: 0;
+    margin: 0 var(--space-1) 0 0;
+`;
+
+const typeDefenseTrigger = css`
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1);
+    max-width: 100%;
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--color-text);
+    cursor: pointer;
+    font: inherit;
+    text-align: left;
+
+    &:hover {
+        color: var(--color-primary-hover);
+    }
+`;
+
+const typeDefensesBubble = css`
+    width: 34rem;
+    max-width: calc(100vw - var(--space-4));
 `;
 
 const types = css`
-    font-size: var(--font-size-sm);
-    color: var(--color-text-muted);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
 `;
 
 const content = css`
-    padding: var(--space-3);
+    padding: 0 var(--space-2) var(--space-2);
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
+    gap: var(--space-2);
 `;
 
-const line = css`
+const abilityLine = css`
     margin: 0;
 `;
 
@@ -147,79 +221,45 @@ const detailButton = css`
     cursor: pointer;
 `;
 
-const statsSection = css`
+const detailsGrid = css`
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: var(--space-2);
 `;
 
-const movesSection = css`
+const detailsSection = css`
     display: flex;
     flex-direction: column;
-    gap: var(--space-1);
+    flex: 1 1 28rem;
+    min-width: 0;
+    gap: var(--space-2);
+    padding-top: var(--space-1);
 `;
 
 const movesGrid = css`
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-`;
-
-const moveName = css`
-    display: flex;
-    gap: var(--space-2);
-    align-items: center;
-    padding: var(--space-2);
-    border: 0.1rem solid var(--color-border);
-    border-radius: var(--radius-sm);
-    background: var(--color-bg);
-    cursor: pointer;
-    text-align: left;
-    flex-wrap: wrap;
-
-    &:hover {
-        background-color: var(--color-hover-overlay);
-    }
-`;
-
-const moveLabel = css`
-    font-weight: 600;
-`;
-
-const moveType = css`
-    font-size: var(--font-size-sm);
-    color: var(--color-text-muted);
-    padding: 0.25rem 0.5rem;
-    border: 0.1rem solid var(--color-border);
-    border-radius: var(--radius-sm);
-    text-transform: capitalize;
-`;
-
-const moveCategory = css`
-    font-size: var(--font-size-sm);
-    color: var(--color-text-muted);
-    padding: 0.25rem 0.5rem;
-    border: 0.1rem solid var(--color-border);
-    border-radius: var(--radius-sm);
-    text-transform: capitalize;
-`;
-
-const movePower = css`
-    font-size: var(--font-size-sm);
-    color: var(--color-text-muted);
-    white-space: nowrap;
-`;
-
-const moveAccuracy = css`
-    font-size: var(--font-size-sm);
-    color: var(--color-text-muted);
-    white-space: nowrap;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: var(--space-4);
+    column-gap: var(--space-2);
 `;
 
 const sectionTitle = css`
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-2);
     margin: 0;
+    padding-bottom: var(--space-1);
+    border-bottom: 0.1rem solid var(--color-border);
     font-size: var(--font-size-sm);
     font-weight: 600;
     text-transform: uppercase;
     color: var(--color-text-muted);
+`;
+
+const statTotal = css`
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    text-transform: none;
 `;

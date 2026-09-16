@@ -12,18 +12,27 @@ import {
 } from 'react';
 
 interface TooltipProps {
-    content: string;
+    content: ReactNode;
     children: ReactNode;
     className?: string;
+    bubbleClassName?: string;
 }
 
-export function Tooltip({ content, children, className }: TooltipProps) {
+export function Tooltip({
+    content,
+    children,
+    className,
+    bubbleClassName,
+}: TooltipProps) {
     const rootRef = useRef<HTMLSpanElement>(null);
     const [isHovered, setHovered] = useState(false);
     const [isFocused, setFocused] = useState(false);
     const [isPinned, setPinned] = useState(false);
 
-    const hasContent = content.trim().length > 0;
+    const hasContent =
+        typeof content === 'string'
+            ? content.trim().length > 0
+            : Boolean(content);
     const isOpen = hasContent && (isHovered || isFocused || isPinned);
 
     useEffect(() => {
@@ -80,7 +89,7 @@ export function Tooltip({ content, children, className }: TooltipProps) {
         <span ref={rootRef} className={cx(root, className)}>
             {trigger}
             {isOpen && (
-                <span className={bubble} role="tooltip">
+                <span className={cx(bubble, bubbleClassName)} role="tooltip">
                     {content}
                 </span>
             )}

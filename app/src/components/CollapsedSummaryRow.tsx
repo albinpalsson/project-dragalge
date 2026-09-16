@@ -3,9 +3,11 @@ import type { ReactNode } from 'react';
 import { nextHighlight } from './progression-highlight';
 
 interface CollapsedSummaryRowProps {
+    className?: string;
     icon: ReactNode;
-    label: ReactNode;
+    label?: ReactNode;
     title: ReactNode;
+    detail?: ReactNode;
     leftBadges?: ReactNode;
     rightBadges?: ReactNode;
     onExpand: () => void;
@@ -13,9 +15,11 @@ interface CollapsedSummaryRowProps {
 }
 
 export function CollapsedSummaryRow({
+    className,
     icon,
     label,
     title,
+    detail,
     leftBadges,
     rightBadges,
     onExpand,
@@ -24,12 +28,15 @@ export function CollapsedSummaryRow({
     return (
         <button
             type="button"
-            className={cx(row, isNext && nextHighlight)}
+            className={cx(row, className, isNext && nextHighlight)}
             onClick={onExpand}
         >
             {icon}
-            <span className={labelText}>{label}</span>
-            <span className={titleText}>{title}</span>
+            <span className={summaryText}>
+                {label && <span className={labelText}>{label}</span>}
+                <span className={titleText}>{title}</span>
+                {detail && <span className={detailText}>{detail}</span>}
+            </span>
             {leftBadges}
             <span className={rightCluster}>
                 {rightBadges}
@@ -65,8 +72,26 @@ const labelText = css`
   font-size: var(--font-size-sm);
 `;
 
+const summaryText = css`
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+`;
+
 const titleText = css`
+  overflow: hidden;
   font-weight: var(--font-weight-bold);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+const detailText = css`
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 const rightCluster = css`

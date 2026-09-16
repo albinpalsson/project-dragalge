@@ -1,10 +1,7 @@
-import { css } from '@pokedb2/css-in-js';
-import { StatusChip } from '../../../../components/StatusChip';
+import { css, cx } from '@pokedb2/css-in-js';
 
 interface BossResultControlsProps {
     currentResult?: 'won' | 'lost';
-    showTeam: boolean;
-    onToggleTeam: () => void;
     onResolve: (result: 'won' | 'lost') => Promise<void>;
     onClear: () => Promise<void>;
     isBusy: boolean;
@@ -12,8 +9,6 @@ interface BossResultControlsProps {
 
 export function BossResultControls({
     currentResult,
-    showTeam,
-    onToggleTeam,
     onResolve,
     onClear,
     isBusy,
@@ -23,33 +18,23 @@ export function BossResultControls({
             <div className={buttonGroup}>
                 <button
                     type="button"
-                    className={iconButton}
-                    disabled={isBusy}
-                    onClick={onToggleTeam}
-                    aria-label={showTeam ? 'Hide team' : 'Show team'}
-                    title={showTeam ? 'Hide team' : 'Show team'}
-                >
-                    👥
-                </button>
-                <button
-                    type="button"
-                    className={iconButton}
+                    className={cx(resultButton, wonButton)}
                     disabled={isBusy || currentResult === 'won'}
                     onClick={() => void onResolve('won')}
                     aria-label="Mark won"
                     title="Mark won"
                 >
-                    🏆
+                    🏆 Mark won
                 </button>
                 <button
                     type="button"
-                    className={iconButton}
+                    className={cx(resultButton, lostButton)}
                     disabled={isBusy || currentResult === 'lost'}
                     onClick={() => void onResolve('lost')}
                     aria-label="Mark lost"
                     title="Mark lost"
                 >
-                    💀
+                    💀 Mark lost
                 </button>
                 <button
                     type="button"
@@ -61,10 +46,6 @@ export function BossResultControls({
                 >
                     ↺
                 </button>
-            </div>
-            <div className={resultSection}>
-                <span className={label}>Result</span>
-                <StatusChip status={currentResult ?? 'pending-result'} />
             </div>
         </div>
     );
@@ -103,13 +84,33 @@ const iconButton = css`
     }
 `;
 
-const resultSection = css`
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-1);
+const resultButton = css`
+    min-height: 3.2rem;
+    padding: 0 var(--space-2);
+    border: 0.1rem solid;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+
+    &:hover {
+        background: var(--color-hover-overlay);
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
 `;
 
-const label = css`
-    font-size: var(--font-size-sm);
-    color: var(--color-text-muted);
+const wonButton = css`
+    border-color: var(--color-success);
+    background: var(--color-success-bg);
+    color: var(--color-success);
+`;
+
+const lostButton = css`
+    border-color: var(--color-danger);
+    background: var(--color-danger-bg);
+    color: var(--color-danger);
 `;

@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { css } from '@pokedb2/css-in-js';
 import { BossCollapsedSummary } from './BossCollapsedSummary';
-import { BossRoster } from './BossRoster';
+import { BossHeader, BossRoster } from './BossRoster';
 import { BossResultControls } from './BossResultControls';
 import { ProgressionCard } from '../../../../components/ProgressionCard';
 import { useBossActions } from '../../../../hooks/useBossActions';
@@ -9,6 +9,7 @@ import { getStarterBattleName } from '../../../../db/pokemon-data/starter-battle
 import { useBossBattleRosterQuery } from '../../queries';
 
 const LOCATION_NAME = 'South Province (Area One)';
+const DISPLAY_BATTLE_NAME = 'Nemona (Second Battle)';
 
 interface NemonaSouthProvinceProps {
     isNext?: boolean;
@@ -20,8 +21,6 @@ export function NemonaSouthProvince({ isNext }: NemonaSouthProvinceProps) {
     const starterBattleName = starter
         ? getStarterBattleName(starter)
         : undefined;
-    const [showTeam, setShowTeam] = useState(true);
-
     const rosterQuery = useBossBattleRosterQuery(
         starterBattleName || 'unknown',
     );
@@ -59,43 +58,39 @@ export function NemonaSouthProvince({ isNext }: NemonaSouthProvinceProps) {
     const levelCap = Math.max(
         ...rosterData.pokemon.map((pokemon) => pokemon.level),
     );
-    const acePokemon = [...rosterData.pokemon].sort(
-        (a, b) => b.level - a.level,
-    )[0];
-
     return (
         <ProgressionCard
+            className={bossAccent}
             compact
             isNext={isNext}
             defaultExpanded={false}
-            collapsedContent={
-                acePokemon
-                    ? ({ expand }) => (
-                          <BossCollapsedSummary
-                              battleName={rosterData.battleName}
-                              result={currentResult}
-                              acePokemonName={acePokemon.pokemonName}
-                              levelCap={levelCap}
-                              isNext={isNext}
-                              onExpand={expand}
-                          />
-                      )
-                    : undefined
-            }
+            collapsedContent={({ expand }) => (
+                <BossCollapsedSummary
+                    battleName={DISPLAY_BATTLE_NAME}
+                    locationName={LOCATION_NAME}
+                    result={currentResult}
+                    levelCap={levelCap}
+                    isNext={isNext}
+                    onExpand={expand}
+                />
+            )}
         >
             {({ collapse }) => (
                 <>
-                    <BossRoster
+                    <BossHeader
                         locationName={LOCATION_NAME}
-                        roster={rosterData}
+                        displayBattleName={DISPLAY_BATTLE_NAME}
+                        levelCap={levelCap}
                         onCollapse={collapse}
-                        showTeam={showTeam}
+                        currentResult={currentResult}
                     />
-
+                    <p className={description}>
+                        This battle begins at the large door between South
+                        Province (Area One) and Naranja Academy, beside the
+                        Pokemon Center.
+                    </p>
                     <BossResultControls
                         currentResult={currentResult}
-                        showTeam={showTeam}
-                        onToggleTeam={() => setShowTeam((value) => !value)}
                         onResolve={(result) =>
                             bossActions.resolveBattle(starterBattleName, result)
                         }
@@ -104,8 +99,24 @@ export function NemonaSouthProvince({ isNext }: NemonaSouthProvinceProps) {
                         }
                         isBusy={bossActions.isBusy}
                     />
+                    <BossRoster roster={rosterData} />
                 </>
             )}
         </ProgressionCard>
     );
 }
+
+const bossAccent = css`
+    && {
+        border-color: var(--color-border);
+        border-left: 0.4rem solid var(--color-accent-warm);
+        box-shadow: none;
+    }
+`;
+
+const description = css`
+    max-width: 46rem;
+    margin: 0;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+`;

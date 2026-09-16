@@ -1,68 +1,68 @@
 import { css } from '@pokedb2/css-in-js';
 import { Badge, BadgeButton } from '../../../../components/Badge';
+import { StatusChip } from '../../../../components/StatusChip';
 import { BossPokemonCard } from './BossPokemonCard';
 import type {
     BossBattleRoster,
     BossPokemonView,
 } from '../../../../db/pokemon-data/queries';
 
-interface BossRosterProps {
+interface BossHeaderProps {
     locationName: string;
-    roster: BossBattleRoster;
+    displayBattleName: string;
+    levelCap: number;
     onCollapse?: () => void;
-    showTeam: boolean;
+    currentResult?: 'won' | 'lost';
 }
 
-export function BossRoster({
-    locationName,
-    roster,
-    onCollapse,
-    showTeam,
-}: BossRosterProps) {
-    const levelCap = Math.max(
-        ...roster.pokemon.map((pokemon) => pokemon.level),
-    );
+interface BossRosterProps {
+    roster: BossBattleRoster;
+}
 
+export function BossHeader({
+    locationName,
+    displayBattleName,
+    levelCap,
+    onCollapse,
+    currentResult,
+}: BossHeaderProps) {
     return (
-        <div className={container}>
-            <div className={header}>
-                <div>
-                    <h3 className={titleClass}>{roster.battleName}</h3>
-                    <p className={subtitle}>{locationName}</p>
+        <div className={header}>
+            <div>
+                <div className={titleRow}>
+                    <span className={battleIcon} aria-hidden="true">
+                        ⚔
+                    </span>
+                    <h3 className={titleClass}>{displayBattleName}</h3>
+                    {currentResult && <StatusChip status={currentResult} />}
                 </div>
-                <div className={badges}>
-                    <Badge>Lv {levelCap}</Badge>
-                    <Badge uppercase>{roster.battleType}</Badge>
-                    {onCollapse && (
-                        <BadgeButton
-                            onClick={onCollapse}
-                            ariaLabel="Collapse boss fight"
-                            title="Collapse boss fight"
-                        >
-                            ▾ Fold
-                        </BadgeButton>
-                    )}
-                </div>
+                <p className={subtitle}>{locationName}</p>
             </div>
-            {showTeam && (
-                <div className={pokemonList}>
-                    {roster.pokemon.map((pokemon: BossPokemonView) => (
-                        <BossPokemonCard
-                            key={pokemon.pokemonName}
-                            pokemon={pokemon}
-                        />
-                    ))}
-                </div>
-            )}
+            <div className={badges}>
+                <Badge>Lv cap {levelCap}</Badge>
+                {onCollapse && (
+                    <BadgeButton
+                        onClick={onCollapse}
+                        ariaLabel="Collapse boss fight"
+                        title="Collapse boss fight"
+                    >
+                        ▾ Fold
+                    </BadgeButton>
+                )}
+            </div>
         </div>
     );
 }
 
-const container = css`
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-`;
+export function BossRoster({ roster }: BossRosterProps) {
+    return (
+        <div className={pokemonList}>
+            {roster.pokemon.map((pokemon: BossPokemonView) => (
+                <BossPokemonCard key={pokemon.pokemonName} pokemon={pokemon} />
+            ))}
+        </div>
+    );
+}
 
 const header = css`
     display: flex;
@@ -75,6 +75,25 @@ const titleClass = css`
     margin: 0;
     font-size: var(--font-size-lg);
     font-weight: 600;
+`;
+
+const titleRow = css`
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1);
+`;
+
+const battleIcon = css`
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.8rem;
+    height: 2.8rem;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface-alt);
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-base);
 `;
 
 const subtitle = css`
@@ -92,6 +111,6 @@ const badges = css`
 
 const pokemonList = css`
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: var(--space-2);
 `;

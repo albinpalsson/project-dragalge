@@ -1,7 +1,8 @@
 import { useMemo } from 'react';
 import { useQuery } from '../../../server-query';
-import { getPokemon, getTypeChart } from '../../../db/pokemon-data/queries';
-import { pokemonQueryKey, TYPE_CHART_QUERY_KEY } from '../../../query-keys';
+import { getPokemon } from '../../../db/pokemon-data/queries';
+import { pokemonQueryKey } from '../../../query-keys';
+import { useTypeChartQuery } from '../queries';
 import {
     defensiveEffectiveness,
     type DefensiveEffectivenessEntry,
@@ -11,14 +12,6 @@ export function usePokemonQuery(pokemonName: string) {
     return useQuery({
         queryKey: pokemonQueryKey(pokemonName),
         queryFn: () => getPokemon(pokemonName),
-        staleTime: Infinity,
-    });
-}
-
-export function useTypeChartQuery() {
-    return useQuery({
-        queryKey: TYPE_CHART_QUERY_KEY,
-        queryFn: () => getTypeChart(),
         staleTime: Infinity,
     });
 }

@@ -105,6 +105,7 @@ const topRow = css`
     padding: var(--space-3) 0;
     width: 100%;
     min-width: 0;
+    border-top: var(--space-1) solid var(--color-bg);
     border-bottom: 0.1rem solid var(--color-border);
     background: var(--color-bg);
     box-shadow: 0 0.8rem 1.2rem -1.2rem rgba(0, 0, 0, 0.7);

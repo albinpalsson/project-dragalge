@@ -14,6 +14,7 @@ import {
 import {
     getLocationEncounterDetails,
     getBossBattleRoster,
+    getTypeChart,
     type LocationEncounterView,
 } from '../../db/pokemon-data/queries';
 import {
@@ -23,6 +24,7 @@ import {
     locationEncountersQueryKey,
     bossBattleRosterQueryKey,
     bossBattleProgressQueryKey,
+    TYPE_CHART_QUERY_KEY,
 } from '../../query-keys';
 
 export function useGameRunQuery(gameRunId: string) {
@@ -51,6 +53,14 @@ export function useBossBattleRosterQuery(battleName: string) {
     return useQuery({
         queryKey: bossBattleRosterQueryKey(battleName),
         queryFn: () => getBossBattleRoster(battleName),
+        staleTime: Infinity,
+    });
+}
+
+export function useTypeChartQuery() {
+    return useQuery({
+        queryKey: TYPE_CHART_QUERY_KEY,
+        queryFn: () => getTypeChart(),
         staleTime: Infinity,
     });
 }
