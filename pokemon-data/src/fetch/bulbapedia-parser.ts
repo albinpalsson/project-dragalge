@@ -264,6 +264,65 @@ function parseNarrativeEvolutionEdges(
     return edges;
 }
 
+function normalizeEvolutionMethod(method: string): string {
+    return method.toLowerCase().replaceAll(',', '').replace(/\s+/g, ' ').trim();
+}
+
+function isGenderOnlyMethod(method: string): boolean {
+    return /^(?:female|male)(?: only)?$/i.test(method.trim());
+}
+
+export function consolidateEvolutionEdges(
+    edges: EvolutionEdge[],
+): EvolutionEdge[] {
+    const edgesByPair = new Map<string, EvolutionEdge[]>();
+    for (const edge of edges) {
+        const key = `${edge.from}\u0000${edge.to}`;
+        const pairEdges = edgesByPair.get(key);
+        if (pairEdges) {
+            pairEdges.push(edge);
+        } else {
+            edgesByPair.set(key, [edge]);
+        }
+    }
+
+    const consolidated: EvolutionEdge[] = [];
+    for (const pairEdges of edgesByPair.values()) {
+        const informativeEdges = pairEdges.filter(
+            (edge) => normalizeEvolutionMethod(edge.method) !== 'unknown',
+        );
+        const candidateEdges =
+            informativeEdges.length > 0 ? informativeEdges : pairEdges;
+        const uniqueEdges = candidateEdges.filter((edge, index) =>
+            candidateEdges
+                .slice(0, index)
+                .every(
+                    (previous) =>
+                        normalizeEvolutionMethod(previous.method) !==
+                        normalizeEvolutionMethod(edge.method),
+                ),
+        );
+        const genderEdges = uniqueEdges.filter((edge) =>
+            isGenderOnlyMethod(edge.method),
+        );
+        const requirementEdges = uniqueEdges.filter(
+            (edge) => !isGenderOnlyMethod(edge.method),
+        );
+
+        if (genderEdges.length > 0 && requirementEdges.length === 1) {
+            consolidated.push({
+                ...requirementEdges[0],
+                method: [...genderEdges, ...requirementEdges]
+                    .map((edge) => edge.method)
+                    .join(', '),
+            });
+        } else {
+            consolidated.push(...uniqueEdges);
+        }
+    }
+    return consolidated;
+}
+
 export function parseEvolutionEdges(
     wikitext: string,
     pokemonName: string,

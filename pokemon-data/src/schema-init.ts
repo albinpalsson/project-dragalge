@@ -7,6 +7,7 @@ import {
     fetchPokemonData,
     type PokemonData,
 } from './fetch/fetch-pokemon-data.ts';
+import { consolidateEvolutionEdges } from './fetch/bulbapedia-parser.ts';
 import {
     fetchTrainerParty,
     type TrainerPartyEntry,
@@ -239,41 +240,42 @@ export function buildEvolutionRows(
         method_id: number;
     }[] = [];
 
-    for (const row of pokemonRows) {
-        for (const edge of row.evolution_edges) {
-            const fromPokemonId = pokemonIds.get(edge.from);
-            const toPokemonId = pokemonIds.get(edge.to);
-            assert(fromPokemonId);
-            assert(toPokemonId);
-            if (fromPokemonId === toPokemonId) {
-                continue;
-            }
-
-            const description = edge.method.trim();
-            if (description.length === 0) {
-                continue;
-            }
-
-            const methodKey = description.toLowerCase();
-            let methodId = methodIds.get(methodKey);
-            if (methodId === undefined) {
-                methodId = evolutionMethodRows.length + 1;
-                methodIds.set(methodKey, methodId);
-                evolutionMethodRows.push({ id: methodId, description });
-            }
-
-            const transitionKey = `${fromPokemonId}:${toPokemonId}:${methodId}`;
-            if (transitionKeys.has(transitionKey)) {
-                continue;
-            }
-            transitionKeys.add(transitionKey);
-
-            evolutionTransitionRows.push({
-                from_pokemon_id: fromPokemonId,
-                to_pokemon_id: toPokemonId,
-                method_id: methodId,
-            });
+    const evolutionEdges = consolidateEvolutionEdges(
+        pokemonRows.flatMap((row) => row.evolution_edges),
+    );
+    for (const edge of evolutionEdges) {
+        const fromPokemonId = pokemonIds.get(edge.from);
+        const toPokemonId = pokemonIds.get(edge.to);
+        assert(fromPokemonId);
+        assert(toPokemonId);
+        if (fromPokemonId === toPokemonId) {
+            continue;
         }
+
+        const description = edge.method.trim();
+        if (description.length === 0) {
+            continue;
+        }
+
+        const methodKey = description.toLowerCase();
+        let methodId = methodIds.get(methodKey);
+        if (methodId === undefined) {
+            methodId = evolutionMethodRows.length + 1;
+            methodIds.set(methodKey, methodId);
+            evolutionMethodRows.push({ id: methodId, description });
+        }
+
+        const transitionKey = `${fromPokemonId}:${toPokemonId}:${methodId}`;
+        if (transitionKeys.has(transitionKey)) {
+            continue;
+        }
+        transitionKeys.add(transitionKey);
+
+        evolutionTransitionRows.push({
+            from_pokemon_id: fromPokemonId,
+            to_pokemon_id: toPokemonId,
+            method_id: methodId,
+        });
     }
     return { evolutionMethodRows, evolutionTransitionRows };
 }
