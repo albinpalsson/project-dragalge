@@ -1,18 +1,21 @@
 import type { EncounterStatus } from '../db/game-db/schema';
 import {
     useAddEncounterRollMutation,
+    useSetEncounterPokemonMutation,
     useSetEncounterRollStatusMutation,
     useSetPartySlotMutation,
 } from '../views/Game/queries';
 
 export function useEncounterMutations() {
     const addRollMutation = useAddEncounterRollMutation();
+    const setPokemonMutation = useSetEncounterPokemonMutation();
     const setStatusMutation = useSetEncounterRollStatusMutation();
     const setPartySlotMutation = useSetPartySlotMutation();
 
     return {
         isBusy:
             addRollMutation.isPending ||
+            setPokemonMutation.isPending ||
             setStatusMutation.isPending ||
             setPartySlotMutation.isPending,
         addRoll(
@@ -37,6 +40,17 @@ export function useEncounterMutations() {
                 gameRunId,
                 locationName,
                 status,
+            });
+        },
+        setPokemon(
+            gameRunId: string,
+            locationName: string,
+            pokemonName: string,
+        ) {
+            return setPokemonMutation.mutateAsync({
+                gameRunId,
+                locationName,
+                pokemonName,
             });
         },
         setPartySlot(gameRunId: string, locationName: string, slot: number) {

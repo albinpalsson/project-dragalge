@@ -17,10 +17,6 @@ interface BossPokemonCardProps {
 
 export function BossPokemonCard({ pokemon }: BossPokemonCardProps) {
     const typeChartQuery = useTypeChartQuery();
-    const baseStatTotal = Object.values(pokemon.baseStats).reduce(
-        (total, value) => total + value,
-        0,
-    );
     const defensiveEntries = useMemo(() => {
         if (!typeChartQuery.data) {
             return [];
@@ -90,12 +86,6 @@ export function BossPokemonCard({ pokemon }: BossPokemonCardProps) {
             <div className={content}>
                 <div className={detailsGrid}>
                     <section className={detailsSection}>
-                        <h5 className={sectionTitle}>
-                            <span>Base Stats</span>
-                            <span className={statTotal}>
-                                Total: {baseStatTotal}
-                            </span>
-                        </h5>
                         <PokemonStatsPanel baseStats={pokemon.baseStats} />
                     </section>
                     {pokemon.moves.length > 0 && (
@@ -255,11 +245,4 @@ const sectionTitle = css`
     font-weight: 600;
     text-transform: uppercase;
     color: var(--color-text-muted);
-`;
-
-const statTotal = css`
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-    text-transform: none;
 `;

@@ -5,6 +5,7 @@ import {
     getGameRun,
     listEncounterRolls,
     setEncounterRollStatus,
+    setEncounterPokemon,
     setPartySlot,
     setPocoPathOceanSetting,
     listBossBattleProgress,
@@ -14,6 +15,7 @@ import {
 import {
     getLocationEncounterDetails,
     getBossBattleRoster,
+    getFirstEvolutionStage,
     getTypeChart,
     type LocationEncounterView,
 } from '../../db/pokemon-data/queries';
@@ -24,6 +26,7 @@ import {
     locationEncountersQueryKey,
     bossBattleRosterQueryKey,
     bossBattleProgressQueryKey,
+    pokemonFirstStageQueryKey,
     TYPE_CHART_QUERY_KEY,
 } from '../../query-keys';
 
@@ -53,6 +56,14 @@ export function useBossBattleRosterQuery(battleName: string) {
     return useQuery({
         queryKey: bossBattleRosterQueryKey(battleName),
         queryFn: () => getBossBattleRoster(battleName),
+        staleTime: Infinity,
+    });
+}
+
+export function useFirstEvolutionStageQuery(pokemonName: string) {
+    return useQuery({
+        queryKey: pokemonFirstStageQueryKey(pokemonName),
+        queryFn: () => getFirstEvolutionStage(pokemonName),
         staleTime: Infinity,
     });
 }
@@ -94,6 +105,10 @@ export function useAddEncounterRollMutation() {
 
 export function useSetEncounterRollStatusMutation() {
     return useRollMutation(setEncounterRollStatus);
+}
+
+export function useSetEncounterPokemonMutation() {
+    return useRollMutation(setEncounterPokemon);
 }
 
 export function useSetPartySlotMutation() {

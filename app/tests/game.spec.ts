@@ -52,6 +52,48 @@ test('plays a run from the starter through Inlet Grotto', async ({ page }) => {
     // Verify type effectiveness/defenses data is available
     await expect(details).toContainText('Type Defenses');
 
+    const evolvedStarter = {
+        Sprigatito: 'Floragato',
+        Fuecoco: 'Crocalor',
+        Quaxly: 'Quaxwell',
+    }[starter];
+    if (!evolvedStarter) {
+        throw new Error(`Unexpected starter: ${starter}`);
+    }
+
+    await selectBoxPokemon(page, 'Party', starter);
+    const starterDetails = page.getByRole('region', {
+        name: `${starter} details`,
+    });
+    const evolutionSection = starterDetails.getByRole('region', {
+        name: 'Evolution',
+    });
+    await expect(evolutionSection).toContainText(
+        `Evolves into ${evolvedStarter}`,
+    );
+    await expect(evolutionSection).toContainText('level 16');
+    const evolveButton = evolutionSection.getByRole('button', {
+        name: 'Evolve',
+    });
+    await expect(evolveButton).toHaveAttribute('title', 'Evolve');
+    await evolveButton.click();
+    const evolvedDetails = page.getByRole('region', {
+        name: `${evolvedStarter} details`,
+    });
+    await expect(evolvedDetails).toBeVisible();
+    await expect(
+        boxSection(page, 'Party').getByRole('img', { name: evolvedStarter }),
+    ).toBeVisible();
+    await expect(cardFor(page, 'Starter')).toContainText(starter);
+
+    await evolvedDetails.getByRole('button', { name: 'More options' }).click();
+    await evolvedDetails
+        .getByRole('button', { name: `Devolve to ${starter}` })
+        .click();
+    await expect(starterDetails).toBeVisible();
+
+    await selectBoxPokemon(page, 'Party', rolled);
+    await details.getByRole('button', { name: 'More options' }).click();
     await details.getByRole('button', { name: 'Remove from party' }).click();
     await expect(party.getByRole('img', { name: rolled })).toBeHidden();
     await expect(
@@ -59,6 +101,7 @@ test('plays a run from the starter through Inlet Grotto', async ({ page }) => {
     ).toBeVisible();
 
     // The detail pane stays open on the moved Pokemon, so it can be added straight back.
+    await details.getByRole('button', { name: 'More options' }).click();
     await details.getByRole('button', { name: 'Add to party' }).click();
     await expect(party.getByRole('img', { name: rolled })).toBeVisible();
 
@@ -74,9 +117,7 @@ test('plays a run from the starter through Inlet Grotto', async ({ page }) => {
     ).toBeVisible();
 
     await selectBoxPokemon(page, 'Party', starter);
-    const starterDetails = page.getByRole('region', {
-        name: `${starter} details`,
-    });
+    await starterDetails.getByRole('button', { name: 'More options' }).click();
     await starterDetails.getByRole('button', { name: 'Eliminated' }).click();
     await expect(party.getByRole('img', { name: starter })).toBeHidden();
     await expect(

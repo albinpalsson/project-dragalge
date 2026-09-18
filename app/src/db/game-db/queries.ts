@@ -119,6 +119,7 @@ export async function addEncounterRoll(
         game_run_id: input.gameRunId,
         location_name: input.locationName,
         pokemon_name: input.pokemonName,
+        rolled_as: input.pokemonName,
         status: input.status ?? 'pending',
         party_slot: NO_PARTY_SLOT,
     };
@@ -149,6 +150,24 @@ export async function setEncounterRollStatus(
     await db
         .updateTable('encounter_rolls')
         .set({ status: input.status })
+        .where('game_run_id', '=', input.gameRunId)
+        .where('location_name', '=', input.locationName)
+        .execute();
+}
+
+export interface SetEncounterPokemonInput {
+    gameRunId: string;
+    locationName: string;
+    pokemonName: string;
+}
+
+export async function setEncounterPokemon(
+    input: SetEncounterPokemonInput,
+): Promise<void> {
+    const db = await getGameDb();
+    await db
+        .updateTable('encounter_rolls')
+        .set({ pokemon_name: input.pokemonName })
         .where('game_run_id', '=', input.gameRunId)
         .where('location_name', '=', input.locationName)
         .execute();

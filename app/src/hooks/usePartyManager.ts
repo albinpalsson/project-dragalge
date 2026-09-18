@@ -84,6 +84,12 @@ export function usePartyManager() {
         revive(locationName: string) {
             return mutations.setStatus(game.id, locationName, 'caught');
         },
+        evolve(locationName: string, toPokemonName: string) {
+            return mutations.setPokemon(game.id, locationName, toPokemonName);
+        },
+        devolve(locationName: string, toPokemonName: string) {
+            return mutations.setPokemon(game.id, locationName, toPokemonName);
+        },
         moveToParty,
         moveToBox,
         moveToDeathBox,

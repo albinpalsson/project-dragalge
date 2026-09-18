@@ -18,16 +18,14 @@ export function useEncounterRoll(locationName: string) {
         (encounter) => encounter.location_name === locationName,
     );
     const selectedEncounter = encounterRows.find(
-        (encounter) => encounter.name === roll?.pokemon_name,
+        (encounter) => encounter.name === roll?.rolled_as,
     );
 
     const subAreas = roll
         ? [
               ...new Set(
                   encounterRows
-                      .filter(
-                          (encounter) => encounter.name === roll.pokemon_name,
-                      )
+                      .filter((encounter) => encounter.name === roll.rolled_as)
                       .map((encounter) => encounter.subArea),
               ),
           ]
@@ -38,7 +36,7 @@ export function useEncounterRoll(locationName: string) {
             ? {
                   ...selectedEncounter,
                   status: roll.status,
-                  displayName: getRandomizerDisplayName(roll.pokemon_name),
+                  displayName: getRandomizerDisplayName(roll.rolled_as),
                   subAreas:
                       subAreas.length > 0
                           ? subAreas

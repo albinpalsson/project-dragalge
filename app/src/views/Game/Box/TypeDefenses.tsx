@@ -57,13 +57,11 @@ const container = css`
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
-    flex: 1 1 24rem;
-    min-width: 0;
 `;
 
 const tooltipContainer = css`
-    flex-basis: auto;
-    min-width: 24rem;
+        flex-basis: auto;
+        min-width: 24rem;
 `;
 
 const title = css`

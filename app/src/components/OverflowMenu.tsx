@@ -45,6 +45,7 @@ export function OverflowMenu({
                 type="button"
                 className={trigger}
                 aria-label={label}
+                title={label}
                 aria-haspopup="menu"
                 aria-expanded={isOpen}
                 onClick={() => setIsOpen((value) => !value)}

@@ -40,8 +40,11 @@ test('home game cards list party members before the rest', async ({ page }) => {
 
     await openBox(page);
     await selectBoxPokemon(page, 'Party', pocoPath);
-    await page
-        .getByRole('region', { name: `${pocoPath} details` })
+    const pocoPathDetails = page.getByRole('region', {
+        name: `${pocoPath} details`,
+    });
+    await pocoPathDetails.getByRole('button', { name: 'More options' }).click();
+    await pocoPathDetails
         .getByRole('button', { name: 'Remove from party' })
         .click();
     await expect(

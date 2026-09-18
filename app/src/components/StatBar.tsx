@@ -36,16 +36,17 @@ export function StatBar({ label, value, max = 255 }: StatBarProps) {
 }
 
 function getStatColor(value: number): string {
-    if (value < 50) {
+    if (value < 60) {
         return 'var(--color-danger)';
     }
-    if (value < 80) {
+    if (value < 90) {
         return 'var(--color-accent-warm)';
     }
-    if (value < 110) {
-        return 'var(--color-warning)';
+
+    if (value < 130) {
+        return 'var(--color-success)';
     }
-    return 'var(--color-success)';
+    return 'var(--color-excellent)';
 }
 
 const stat = css`

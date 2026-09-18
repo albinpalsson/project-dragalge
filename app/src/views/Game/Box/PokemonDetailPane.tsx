@@ -10,7 +10,12 @@ import {
 } from '../../../db/game-db/schema';
 import { usePartyManager } from '../../../hooks/usePartyManager';
 import { getRandomizerDisplayName } from '../../../randomizer-groups';
-import { usePokemonQuery, useTypeDefenses } from './queries';
+import {
+    usePokemonEvolutionQuery,
+    usePokemonQuery,
+    useTypeDefenses,
+} from './queries';
+import { PokemonEvolutionSection } from './PokemonEvolutionSection';
 import { TypeDefenses } from './TypeDefenses';
 
 interface PokemonDetailPaneProps {
@@ -22,6 +27,7 @@ export function PokemonDetailPane({ row, party }: PokemonDetailPaneProps) {
     const [isReplacing, setIsReplacing] = useState(false);
     const displayName = getRandomizerDisplayName(row.pokemon_name);
     const pokemonQuery = usePokemonQuery(row.pokemon_name);
+    const evolutionQuery = usePokemonEvolutionQuery(row.pokemon_name);
     const defensiveEntries = useTypeDefenses(row.pokemon_name);
     const actions = usePartyManager();
 
@@ -46,54 +52,73 @@ export function PokemonDetailPane({ row, party }: PokemonDetailPaneProps) {
                     )}
                 </div>
                 <div className={buttons}>
-                    {isEliminated ? (
-                        <Button
-                            variant="secondary"
-                            disabled={actions.isBusy}
-                            onClick={() =>
-                                void actions.revive(row.location_name)
-                            }
-                        >
-                            Revive
-                        </Button>
-                    ) : (
-                        <>
-                            {isInParty ? (
+                    <OverflowMenu label="More options">
+                        {isEliminated ? (
+                            <Button
+                                variant="secondary"
+                                disabled={actions.isBusy}
+                                onClick={() =>
+                                    void actions.revive(row.location_name)
+                                }
+                            >
+                                Revive
+                            </Button>
+                        ) : (
+                            <>
+                                {isInParty ? (
+                                    <Button
+                                        variant="secondary"
+                                        disabled={actions.isBusy}
+                                        onClick={() =>
+                                            actions.removeFromParty(
+                                                row.location_name,
+                                            )
+                                        }
+                                    >
+                                        Remove from party
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        variant="secondary"
+                                        disabled={actions.isBusy || isPartyFull}
+                                        onClick={() =>
+                                            actions.addToParty(
+                                                row.location_name,
+                                            )
+                                        }
+                                    >
+                                        Add to party
+                                    </Button>
+                                )}
                                 <Button
                                     variant="secondary"
                                     disabled={actions.isBusy}
                                     onClick={() =>
-                                        actions.removeFromParty(
+                                        void actions.eliminate(
                                             row.location_name,
                                         )
                                     }
                                 >
-                                    Remove from party
+                                    Eliminated
                                 </Button>
-                            ) : (
-                                <Button
-                                    variant="secondary"
-                                    disabled={actions.isBusy || isPartyFull}
-                                    onClick={() =>
-                                        actions.addToParty(row.location_name)
-                                    }
-                                >
-                                    Add to party
-                                </Button>
-                            )}
-                            <Button
-                                variant="secondary"
-                                ariaLabel="Eliminated"
-                                title="Eliminated"
-                                disabled={actions.isBusy}
-                                onClick={() =>
-                                    void actions.eliminate(row.location_name)
-                                }
-                            >
-                                💀
-                            </Button>
-                            {!isInParty && isPartyFull && (
-                                <OverflowMenu label="More Pokémon actions">
+                                {evolutionQuery.data?.previousEvolutions.map(
+                                    (evolution) => (
+                                        <Button
+                                            key={`${evolution.pokemonName}-${evolution.method}`}
+                                            variant="secondary"
+                                            disabled={actions.isBusy}
+                                            onClick={() =>
+                                                void actions.devolve(
+                                                    row.location_name,
+                                                    evolution.pokemonName,
+                                                )
+                                            }
+                                        >
+                                            Devolve to {evolution.pokemonName}
+                                        </Button>
+                                    ),
+                                )}
+                                {!isInParty && isPartyFull && (
                                     <Button
                                         variant="secondary"
                                         disabled={actions.isBusy}
@@ -103,10 +128,10 @@ export function PokemonDetailPane({ row, party }: PokemonDetailPaneProps) {
                                     >
                                         Replace...
                                     </Button>
-                                </OverflowMenu>
-                            )}
-                        </>
-                    )}
+                                )}
+                            </>
+                        )}
+                    </OverflowMenu>
                 </div>
             </div>
 
@@ -118,17 +143,30 @@ export function PokemonDetailPane({ row, party }: PokemonDetailPaneProps) {
                     </p>
                 )}
                 {pokemonQuery.data && (
-                    <div className={detailsGrid}>
-                        <section className={statsSection}>
-                            <h5 className={sectionTitle}>Base Stats</h5>
-                            <PokemonStatsPanel
-                                baseStats={pokemonQuery.data.baseStats}
+                    <>
+                        {evolutionQuery.data && (
+                            <PokemonEvolutionSection
+                                evolutions={evolutionQuery.data.nextEvolutions}
+                                isBusy={actions.isBusy}
+                                onEvolve={(pokemonName) =>
+                                    void actions.evolve(
+                                        row.location_name,
+                                        pokemonName,
+                                    )
+                                }
                             />
-                        </section>
-                        {defensiveEntries.length > 0 && (
-                            <TypeDefenses entries={defensiveEntries} />
                         )}
-                    </div>
+                        <div className={detailsGrid}>
+                            <section className={statsSection}>
+                                <PokemonStatsPanel
+                                    baseStats={pokemonQuery.data.baseStats}
+                                />
+                            </section>
+                            {defensiveEntries.length > 0 && (
+                                <TypeDefenses entries={defensiveEntries} />
+                            )}
+                        </div>
+                    </>
                 )}
             </div>
 
@@ -213,11 +251,6 @@ const types = css`
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-1);
-`;
-
-const sectionTitle = css`
-    margin: 0;
-    font-size: var(--font-size-base);
 `;
 
 const muted = css`

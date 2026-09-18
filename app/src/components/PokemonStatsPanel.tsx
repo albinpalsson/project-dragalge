@@ -18,14 +18,46 @@ function statEntries(baseStats: PokemonBaseStats): [string, number][] {
 }
 
 export function PokemonStatsPanel({ baseStats }: PokemonStatsPanelProps) {
+    const total = Object.values(baseStats).reduce(
+        (sum, value) => sum + value,
+        0,
+    );
+
     return (
-        <div className={stats}>
-            {statEntries(baseStats).map(([label, value]) => (
-                <StatBar key={label} label={label} value={value} />
-            ))}
+        <div>
+            <h5 className={sectionTitle}>
+                <span>Base Stats</span>
+                <span className={statTotal}>Total: {total}</span>
+            </h5>
+            <div className={stats}>
+                {statEntries(baseStats).map(([label, value]) => (
+                    <StatBar key={label} label={label} value={value} />
+                ))}
+            </div>
         </div>
     );
 }
+
+const sectionTitle = css`
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-2);
+    margin: 0;
+    padding-bottom: var(--space-1);
+    border-bottom: 0.1rem solid var(--color-border);
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+`;
+
+const statTotal = css`
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    text-transform: none;
+`;
 
 const stats = css`
     display: grid;
@@ -34,5 +66,5 @@ const stats = css`
     grid-auto-flow: column;
     column-gap: var(--space-3);
     row-gap: var(--space-2);
-    margin: 0;
+    margin: var(--space-2) 0 0;
 `;

@@ -1,4 +1,5 @@
 import { getPokemonDb } from './client';
+import { getEvolutionGraph } from './evolution-graph';
 import type { LocationRow, PokemonDataDb } from '@pokedb2/pokemon-data';
 
 export interface PokemonNameDto {
@@ -44,6 +45,17 @@ export interface PokemonView {
     // Empty when the Pokémon is single-typed; the seed data stores type id 0 for "none".
     secondaryType: string;
     baseStats: PokemonBaseStats;
+}
+
+export interface EvolutionTarget {
+    pokemonName: string;
+    method: string;
+}
+
+export interface PokemonEvolutionDetails {
+    pokemonName: string;
+    nextEvolutions: EvolutionTarget[];
+    previousEvolutions: EvolutionTarget[];
 }
 
 export interface BossMoveView {
@@ -223,6 +235,27 @@ export async function getPokemon(
             speed: row.base_speed,
         },
     };
+}
+
+export async function getPokemonEvolutionDetails(
+    pokemonName: string,
+): Promise<PokemonEvolutionDetails | undefined> {
+    const graph = await getEvolutionGraph();
+    const pokemon = graph.getNode(pokemonName);
+    if (!pokemon) {
+        return undefined;
+    }
+
+    return {
+        pokemonName: pokemon.pokemonName,
+        nextEvolutions: pokemon.nextEvolutions,
+        previousEvolutions: pokemon.previousEvolutions,
+    };
+}
+
+export async function getFirstEvolutionStage(pokemonName: string) {
+    const graph = await getEvolutionGraph();
+    return graph.getFirstStage(pokemonName);
 }
 
 export async function getTypeChart(): Promise<TypeChartEntry[]> {
