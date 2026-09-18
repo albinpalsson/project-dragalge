@@ -123,6 +123,7 @@ const pickButton = css`
   border: 0.1rem solid var(--color-border);
   border-radius: var(--radius-sm);
   background: transparent;
+  cursor: pointer;
 `;
 
 const variantMismatchRow = css`
@@ -132,4 +133,3 @@ const variantMismatchRow = css`
 const tooltipWrap = css`
     width: 100%;
 `;
-
