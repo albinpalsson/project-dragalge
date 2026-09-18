@@ -4,6 +4,7 @@ const ICON_SLUG_OVERRIDES = {
     'Tauros (Combat Breed)': 'tauros-paldean-combat',
     'Tauros (Blaze Breed)': 'tauros-paldean-blaze',
     'Tauros (Aqua Breed)': 'tauros-paldean-aqua',
+    'Wooper (Paldean Form)': 'wooper-paldean',
     'Oinkologne (Male)': 'oinkologne-male',
     'Oinkologne Male': 'oinkologne-male',
     'Oinkologne (Female)': 'oinkologne-female',

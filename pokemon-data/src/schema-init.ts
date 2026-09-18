@@ -231,6 +231,7 @@ export function buildEvolutionRows(
     }[];
 } {
     const methodIds = new Map<string, number>();
+    const transitionKeys = new Set<string>();
     const evolutionMethodRows: { id: number; description: string }[] = [];
     const evolutionTransitionRows: {
         from_pokemon_id: number;
@@ -239,14 +240,12 @@ export function buildEvolutionRows(
     }[] = [];
 
     for (const row of pokemonRows) {
-        const fromPokemonId = pokemonIds.get(row.name);
-        if (fromPokemonId === undefined) {
-            continue;
-        }
-
         for (const edge of row.evolution_edges) {
+            const fromPokemonId = pokemonIds.get(edge.from);
             const toPokemonId = pokemonIds.get(edge.to);
-            if (toPokemonId === undefined) {
+            assert(fromPokemonId);
+            assert(toPokemonId);
+            if (fromPokemonId === toPokemonId) {
                 continue;
             }
 
@@ -263,6 +262,12 @@ export function buildEvolutionRows(
                 evolutionMethodRows.push({ id: methodId, description });
             }
 
+            const transitionKey = `${fromPokemonId}:${toPokemonId}:${methodId}`;
+            if (transitionKeys.has(transitionKey)) {
+                continue;
+            }
+            transitionKeys.add(transitionKey);
+
             evolutionTransitionRows.push({
                 from_pokemon_id: fromPokemonId,
                 to_pokemon_id: toPokemonId,
@@ -276,30 +281,42 @@ export function buildEvolutionRows(
 export async function fetchAllPokemonRows(
     pokemonIds: Map<string, number>,
 ): Promise<(PokemonData & { id: number })[]> {
-    const buildReturnEntry = async ([name, id]: [string, number]) => ({
-        id,
-        ...(await fetchPokemonData(name)),
-    });
-    const promises = await Promise.allSettled(
-        [...pokemonIds.entries()].map(buildReturnEntry),
-    );
-
     const result: (PokemonData & { id: number })[] = [];
+    const namesToFetch = [...pokemonIds.keys()];
+    let nextPokemonId = pokemonIds.size + 1;
+
     let failed = false;
-    for (const r of promises) {
-        if (r.status === 'fulfilled') {
-            result.push(r.value);
-        }
-        if (r.status === 'rejected') {
-            failed = true;
+
+    for (let index = 0; index < namesToFetch.length; index += 1) {
+        const name = namesToFetch[index];
+        const id = pokemonIds.get(name);
+        assert(id);
+
+        try {
+            const pokemon = { id, ...(await fetchPokemonData(name)) };
+            result.push(pokemon);
+
+            for (const edge of pokemon.evolution_edges) {
+                for (const relatedName of [edge.from, edge.to]) {
+                    if (pokemonIds.has(relatedName)) {
+                        continue;
+                    }
+                    pokemonIds.set(relatedName, nextPokemonId);
+                    nextPokemonId += 1;
+                    namesToFetch.push(relatedName);
+                }
+            }
+        } catch (error) {
             process.stderr.write(
-                `${r.reason instanceof Error ? r.reason.message : String(r.reason)}\n`,
+                `${error instanceof Error ? error.message : String(error)}\n`,
             );
+            failed = true;
         }
     }
     if (failed) {
-        throw new Error(`Some pokemon failed to fetch/parse`);
+        throw new Error('Some pokemon failed to fetch/parse');
     }
+
     return result;
 }
 

@@ -53,12 +53,12 @@ async function main(): Promise<void> {
     }));
     await db.insertInto('locations').values(locationRows).execute();
 
-    // Build a unified Pokémon name→id map covering both wild encounters and boss rosters.
+    // Start with encounter and boss Pokémon; fetching expands the map to their evolution lines.
     const pokemonIds = buildPokemonNameMap(locations, rawRosters);
 
-    const iconData = await fetchPokemonIcons([...pokemonIds.keys()], assetsDir);
-
     const pokemonRows = await fetchAllPokemonRows(pokemonIds);
+
+    const iconData = await fetchPokemonIcons([...pokemonIds.keys()], assetsDir);
 
     const { typeRows, mappedPokemonRows, typeIds } =
         buildTypeRowsAndPokemonRows(pokemonRows);

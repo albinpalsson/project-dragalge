@@ -1,3 +1,5 @@
+import type { EvolutionEdge } from './bulbapedia-parser.ts';
+
 export interface CachedPokemonData {
     primary_type: string;
     secondary_type: string;
@@ -12,6 +14,40 @@ export interface CachedPokemonData {
 
 // Manual data for pokemon whose pages can't be reliably parsed (e.g. multi-form stat blocks)
 export const POKEMON_CACHE: Record<string, CachedPokemonData | undefined> = {
+    // Palafin's multi-form stat blocks require an explicit base (Zero Form) fallback.
+    Palafin: {
+        primary_type: 'water',
+        secondary_type: '',
+        base_hp: 100,
+        base_attack: 70,
+        base_defense: 72,
+        base_sp_attack: 53,
+        base_sp_defense: 62,
+        base_speed: 100,
+    },
+
+    Krookodile: {
+        primary_type: 'ground',
+        secondary_type: 'dark',
+        base_hp: 95,
+        base_attack: 117,
+        base_defense: 80,
+        base_sp_attack: 65,
+        base_sp_defense: 70,
+        base_speed: 92,
+    },
+
+    Ursaluna: {
+        primary_type: 'ground',
+        secondary_type: 'normal',
+        base_hp: 130,
+        base_attack: 140,
+        base_defense: 105,
+        base_sp_attack: 45,
+        base_sp_defense: 80,
+        base_speed: 50,
+    },
+
     Eevee: {
         primary_type: 'normal',
         secondary_type: '',
@@ -63,6 +99,18 @@ export const POKEMON_CACHE: Record<string, CachedPokemonData | undefined> = {
         base_sp_attack: 30,
         base_sp_defense: 70,
         base_speed: 100,
+    },
+
+    // Paldean Wooper's page shares base Wooper's infobox type1/type2, which parseTypes can't distinguish
+    'Wooper (Paldean Form)': {
+        primary_type: 'poison',
+        secondary_type: 'ground',
+        base_hp: 55,
+        base_attack: 45,
+        base_defense: 45,
+        base_sp_attack: 25,
+        base_sp_defense: 25,
+        base_speed: 15,
     },
 
     // Oinkologne: male is the base/default encounter form
@@ -204,4 +252,21 @@ export const POKEMON_CACHE: Record<string, CachedPokemonData | undefined> = {
         base_sp_defense: 105,
         base_speed: 85,
     },
+};
+
+// Manual evolution edges for pokemon whose Bulbapedia prose names ('Paldean Wooper') don't
+// match the encounter/cache key ('Wooper (Paldean Form)'), so narrative parsing drops the edge.
+// Also pins base Wooper's edge, since narrative parsing elsewhere spuriously links it to Clodsire too.
+export const POKEMON_EVOLUTION_OVERRIDES: Record<
+    string,
+    EvolutionEdge[] | undefined
+> = {
+    Wooper: [{ from: 'Wooper', to: 'Quagsire', method: 'level 20' }],
+    'Wooper (Paldean Form)': [
+        { from: 'Wooper (Paldean Form)', to: 'Clodsire', method: 'level 20' },
+    ],
+    // Clodsire's own page has an Evobox template with name1=Wooper/form1=Paldean; parseEvoboxTemplate
+    // ignores the form param, so fetching Clodsire's page spuriously yields a Wooper->Clodsire edge.
+    // Clodsire is fully evolved, so this is always an empty list.
+    Clodsire: [],
 };

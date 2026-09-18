@@ -627,7 +627,7 @@
                         }
                     },
                     {
-                        "pokemon": "Wooper",
+                        "pokemon": "Wooper (Paldean Form)",
                         "games": ["S", "V"],
                         "terrain": ["land", "water_surface"],
                         "levels": { "min": 6, "max": 8 },
@@ -2053,7 +2053,7 @@
                         }
                     },
                     {
-                        "pokemon": "Wooper",
+                        "pokemon": "Wooper (Paldean Form)",
                         "games": ["S", "V"],
                         "terrain": ["land", "water_surface"],
                         "levels": { "min": 16, "max": 20 },

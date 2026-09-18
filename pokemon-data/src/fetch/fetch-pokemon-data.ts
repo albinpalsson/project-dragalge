@@ -6,7 +6,7 @@ import {
     parseTypes,
 } from './bulbapedia-parser.ts';
 import { cachedFetcher } from './cached-fetcher.ts';
-import { POKEMON_CACHE } from './pokemon-cache.ts';
+import { POKEMON_CACHE, POKEMON_EVOLUTION_OVERRIDES } from './pokemon-cache.ts';
 
 export interface PokemonData {
     name: string;
@@ -53,6 +53,8 @@ export async function fetchPokemonData(name: string): Promise<PokemonData> {
         name,
         ...baseStats,
         ...types,
-        evolution_edges: parseEvolutionEdges(wikitext),
+        evolution_edges:
+            POKEMON_EVOLUTION_OVERRIDES[name] ??
+            parseEvolutionEdges(wikitext, name),
     };
 }

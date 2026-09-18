@@ -241,7 +241,10 @@ function parseEvoboxTemplate(block: string): EvolutionEdge[] {
     return edges;
 }
 
-function parseNarrativeEvolutionEdges(wikitext: string): EvolutionEdge[] {
+function parseNarrativeEvolutionEdges(
+    wikitext: string,
+    pokemonName: string,
+): EvolutionEdge[] {
     const matches = wikitext.matchAll(
         /([A-Za-z0-9'()\- ]+?)\s+evolves\s+into\s+\{\{p\|([^}]+)\}\}/gi,
     );
@@ -249,7 +252,11 @@ function parseNarrativeEvolutionEdges(wikitext: string): EvolutionEdge[] {
     for (const match of matches) {
         const from = cleanEvolutionPokemonName(match[1]);
         const to = cleanEvolutionPokemonName(match[2]);
-        if (from.length === 0 || to.length === 0) {
+        if (
+            from.length === 0 ||
+            to.length === 0 ||
+            from.toLowerCase() !== pokemonName.toLowerCase()
+        ) {
             continue;
         }
         edges.push({ from, to, method: 'unknown' });
@@ -257,7 +264,10 @@ function parseNarrativeEvolutionEdges(wikitext: string): EvolutionEdge[] {
     return edges;
 }
 
-export function parseEvolutionEdges(wikitext: string): EvolutionEdge[] {
+export function parseEvolutionEdges(
+    wikitext: string,
+    pokemonName: string,
+): EvolutionEdge[] {
     const templateEdges = extractTemplates(
         wikitext,
         /\{\{\s*Evobox-\d+/i,
@@ -265,7 +275,7 @@ export function parseEvolutionEdges(wikitext: string): EvolutionEdge[] {
     if (templateEdges.length > 0) {
         return templateEdges;
     }
-    return parseNarrativeEvolutionEdges(wikitext);
+    return parseNarrativeEvolutionEdges(wikitext, pokemonName);
 }
 
 function collectStatsBlocks(
@@ -302,7 +312,7 @@ function findPrecedingHeading(wikitext: string, blockStart: number): string {
     let last = '';
     const re = /^={2,5}([^=\n]+)={2,5}/gm;
     while (true) {
-        const m =re.exec(before);
+        const m = re.exec(before);
         if (m === null) {
             break;
         }
