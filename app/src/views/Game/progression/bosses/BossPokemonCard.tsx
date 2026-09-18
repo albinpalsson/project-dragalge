@@ -1,33 +1,26 @@
 import { css } from '@pokedb2/css-in-js';
-import { useMemo } from 'react';
+import { useState } from 'react';
 import { Badge } from '../../../../components/Badge';
+import { Modal } from '../../../../components/Modal';
 import { MoveCard } from '../../../../components/MoveCard';
 import { PokemonStatsPanel } from '../../../../components/PokemonStatsPanel';
 import { TypeBadge } from '../../../../components/TypeBadge';
 import { Tooltip } from '../../../../components/Tooltip';
 import type { BossPokemonView } from '../../../../db/pokemon-data/queries';
 import { pokemonIconSrc, toIconSlug } from '../../../../pokemon-icon';
-import { defensiveEffectiveness } from '../../../../utils/type-effectiveness';
 import { TypeDefenses } from '../../Box/TypeDefenses';
-import { useTypeChartQuery } from '../../queries';
+import { useTypeDefenses } from '../../useTypeDefenses';
 
 interface BossPokemonCardProps {
     pokemon: BossPokemonView;
 }
 
 export function BossPokemonCard({ pokemon }: BossPokemonCardProps) {
-    const typeChartQuery = useTypeChartQuery();
-    const defensiveEntries = useMemo(() => {
-        if (!typeChartQuery.data) {
-            return [];
-        }
-
-        return defensiveEffectiveness(
-            typeChartQuery.data,
-            pokemon.primaryType,
-            pokemon.secondaryType,
-        ).filter((entry) => entry.multiplier !== 1);
-    }, [pokemon.primaryType, pokemon.secondaryType, typeChartQuery.data]);
+    const [isTypeDefensesOpen, setIsTypeDefensesOpen] = useState(false);
+    const defensiveEntries = useTypeDefenses(
+        pokemon.primaryType,
+        pokemon.secondaryType,
+    );
 
     return (
         <article className={card}>
@@ -40,31 +33,23 @@ export function BossPokemonCard({ pokemon }: BossPokemonCardProps) {
                 />
                 <div className={identity}>
                     <div className={identityLine}>
-                        <Tooltip
-                            bubbleClassName={typeDefensesBubble}
-                            content={
-                                <TypeDefenses
-                                    entries={defensiveEntries}
-                                    variant="tooltip"
-                                />
-                            }
-                        >
+                        <span className={pokemonName}>
+                            {pokemon.pokemonName}
+                        </span>
+                        <span className={types}>
+                            <TypeBadge type={pokemon.primaryType} />
+                            {pokemon.secondaryType && (
+                                <TypeBadge type={pokemon.secondaryType} />
+                            )}
+                        </span>
+                        <Tooltip content="View type defenses">
                             <button
                                 type="button"
                                 className={typeDefenseTrigger}
                                 aria-label={`${pokemon.pokemonName} type defenses`}
+                                onClick={() => setIsTypeDefensesOpen(true)}
                             >
-                                <span className={pokemonName}>
-                                    {pokemon.pokemonName}
-                                </span>
-                                <span className={types}>
-                                    <TypeBadge type={pokemon.primaryType} />
-                                    {pokemon.secondaryType && (
-                                        <TypeBadge
-                                            type={pokemon.secondaryType}
-                                        />
-                                    )}
-                                </span>
+                                ▦
                             </button>
                         </Tooltip>
                         <Badge>Lv {pokemon.level}</Badge>
@@ -100,6 +85,14 @@ export function BossPokemonCard({ pokemon }: BossPokemonCardProps) {
                     )}
                 </div>
             </div>
+            {isTypeDefensesOpen && (
+                <Modal
+                    title={`${pokemon.pokemonName} type defenses`}
+                    onClose={() => setIsTypeDefensesOpen(false)}
+                >
+                    <TypeDefenses entries={defensiveEntries} />
+                </Modal>
+            )}
         </article>
     );
 }
@@ -156,27 +149,22 @@ const pokemonName = css`
 `;
 
 const typeDefenseTrigger = css`
-    display: inline-flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-1);
-    max-width: 100%;
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 2.4rem;
+    height: 2.4rem;
     padding: 0;
     border: none;
+    border-radius: var(--radius-md);
     background: none;
     color: var(--color-text);
     cursor: pointer;
-    font: inherit;
-    text-align: left;
+    font-size: var(--font-size-lg);
 
     &:hover {
-        color: var(--color-primary-hover);
+        background: var(--color-hover-overlay);
     }
-`;
-
-const typeDefensesBubble = css`
-    width: 34rem;
-    max-width: calc(100vw - var(--space-4));
 `;
 
 const types = css`

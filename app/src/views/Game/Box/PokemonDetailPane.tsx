@@ -10,13 +10,10 @@ import {
 } from '../../../db/game-db/schema';
 import { usePartyManager } from '../../../hooks/usePartyManager';
 import { getRandomizerDisplayName } from '../../../randomizer-groups';
-import {
-    usePokemonEvolutionQuery,
-    usePokemonQuery,
-    useTypeDefenses,
-} from './queries';
+import { usePokemonEvolutionQuery, usePokemonQuery } from './queries';
 import { PokemonEvolutionSection } from './PokemonEvolutionSection';
 import { TypeDefenses } from './TypeDefenses';
+import { useTypeDefenses } from '../useTypeDefenses';
 
 interface PokemonDetailPaneProps {
     row: EncounterRollRow;
@@ -28,7 +25,10 @@ export function PokemonDetailPane({ row, party }: PokemonDetailPaneProps) {
     const displayName = getRandomizerDisplayName(row.pokemon_name);
     const pokemonQuery = usePokemonQuery(row.pokemon_name);
     const evolutionQuery = usePokemonEvolutionQuery(row.pokemon_name);
-    const defensiveEntries = useTypeDefenses(row.pokemon_name);
+    const defensiveEntries = useTypeDefenses(
+        pokemonQuery.data?.primaryType,
+        pokemonQuery.data?.secondaryType,
+    );
     const actions = usePartyManager();
 
     const isEliminated = row.status === 'eliminated';
