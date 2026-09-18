@@ -42,16 +42,15 @@ export function BossPokemonCard({ pokemon }: BossPokemonCardProps) {
                                 <TypeBadge type={pokemon.secondaryType} />
                             )}
                         </span>
-                        <Tooltip content="View type defenses">
-                            <button
-                                type="button"
-                                className={typeDefenseTrigger}
-                                aria-label={`${pokemon.pokemonName} type defenses`}
-                                onClick={() => setIsTypeDefensesOpen(true)}
-                            >
-                                ▦
-                            </button>
-                        </Tooltip>
+                        <button
+                            type="button"
+                            title="View type defenses"
+                            className={typeDefenseTrigger}
+                            aria-label={`${pokemon.pokemonName} type defenses`}
+                            onClick={() => setIsTypeDefensesOpen(true)}
+                        >
+                            ▦
+                        </button>
                         <Badge>Lv {pokemon.level}</Badge>
                     </div>
                     <p className={abilityLine}>

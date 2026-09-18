@@ -32,7 +32,7 @@ export function EncounterTable({
                         <th>Pokemon</th>
                         <th>Sub-area</th>
                         <th>Levels</th>
-                        <th>Weight</th>
+                        <th>Spawn rate</th>
                         <th>Time</th>
                         <th>Terrain</th>
                         <th>Pick</th>

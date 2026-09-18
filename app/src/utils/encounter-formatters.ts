@@ -13,6 +13,42 @@ export function formatWeight(encounter: LocationEncounterView): string {
     return Number.isInteger(weight) ? String(weight) : weight.toFixed(1);
 }
 
+export function formatRareWeight(
+    encounter: LocationEncounterView,
+): string | undefined {
+    const weight = getEffectiveWeight(encounter);
+    if (weight >= 10) {
+        return undefined;
+    }
+    return `rare (${Number.isInteger(weight) ? weight : weight.toFixed(1)}%)`;
+}
+
+export function formatTerrain(terrainKey: string): string {
+    return terrainKey
+        .split(',')
+        .map((part) => part.trim())
+        .filter((part) => part.length > 0)
+        .map((part) =>
+            part
+                .split('_')
+                .map((word) =>
+                    word.length > 0
+                        ? `${word[0].toUpperCase()}${word.slice(1)}`
+                        : word,
+                )
+                .join(' '),
+        )
+        .join('/');
+}
+
+export function formatSubAreaTerrain(
+    pairs: { subArea: string; terrain: string }[],
+): string {
+    return pairs
+        .map(({ subArea, terrain }) => `${subArea} (${formatTerrain(terrain)})`)
+        .join(' or ');
+}
+
 export function formatTime(encounter: LocationEncounterView): string {
     const times = [
         ['morning', encounter.morningRate],

@@ -7,7 +7,7 @@ import { getRandomizerDisplayName } from '../randomizer-groups';
 export interface EncounterRollDetails extends LocationEncounterView {
     status: EncounterStatus;
     displayName: string;
-    subAreas: string[];
+    subAreaTerrains: { subArea: string; terrain: string }[];
 }
 
 export function useEncounterRoll(locationName: string) {
@@ -21,14 +21,8 @@ export function useEncounterRoll(locationName: string) {
         (encounter) => encounter.name === roll?.rolled_as,
     );
 
-    const subAreas = roll
-        ? [
-              ...new Set(
-                  encounterRows
-                      .filter((encounter) => encounter.name === roll.rolled_as)
-                      .map((encounter) => encounter.subArea),
-              ),
-          ]
+    const matchingEncounters = roll
+        ? encounterRows.filter((encounter) => encounter.name === roll.rolled_as)
         : [];
 
     const encounterRoll =
@@ -37,10 +31,29 @@ export function useEncounterRoll(locationName: string) {
                   ...selectedEncounter,
                   status: roll.status,
                   displayName: getRandomizerDisplayName(roll.rolled_as),
-                  subAreas:
-                      subAreas.length > 0
-                          ? subAreas
-                          : [selectedEncounter.subArea],
+                  subAreaTerrains: matchingEncounters.map((encounter) => ({
+                      subArea: encounter.subArea,
+                      terrain: encounter.terrain,
+                  })),
+                  minLevel: Math.min(
+                      ...matchingEncounters.map((e) => e.minLevel),
+                  ),
+                  maxLevel: Math.max(
+                      ...matchingEncounters.map((e) => e.maxLevel),
+                  ),
+                  // "Joint" rate per time period: the best odds across all matching sub-area/terrain rows.
+                  morningRate: Math.max(
+                      ...matchingEncounters.map((e) => e.morningRate),
+                  ),
+                  dayRate: Math.max(
+                      ...matchingEncounters.map((e) => e.dayRate),
+                  ),
+                  eveningRate: Math.max(
+                      ...matchingEncounters.map((e) => e.eveningRate),
+                  ),
+                  nightRate: Math.max(
+                      ...matchingEncounters.map((e) => e.nightRate),
+                  ),
               }
             : undefined;
 

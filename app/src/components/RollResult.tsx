@@ -4,8 +4,9 @@ import { pokemonIconSrc, toIconSlug } from '../pokemon-icon';
 import { StatusChip } from './StatusChip';
 import {
     formatLevelRange,
+    formatRareWeight,
+    formatSubAreaTerrain,
     formatTime,
-    formatWeight,
 } from '../utils/encounter-formatters';
 
 interface RollResultProps {
@@ -16,6 +17,14 @@ export function RollResult({ encounterRoll }: RollResultProps) {
     if (!encounterRoll) {
         return null;
     }
+
+    const time = formatTime(encounterRoll);
+    const metaParts = [
+        `Lv ${formatLevelRange(encounterRoll)}`,
+        `Found in ${formatSubAreaTerrain(encounterRoll.subAreaTerrains)}`,
+        formatRareWeight(encounterRoll),
+        time !== 'All' ? time : undefined,
+    ].filter((part): part is string => Boolean(part));
 
     return (
         <div className={rollBox}>
@@ -30,11 +39,7 @@ export function RollResult({ encounterRoll }: RollResultProps) {
                     {encounterRoll.displayName}{' '}
                     <StatusChip status={encounterRoll.status} />
                 </p>
-                <p className={rollMeta}>
-                    Lv {formatLevelRange(encounterRoll)} ·{' '}
-                    {encounterRoll.subAreas.join(' or ')} ·{' '}
-                    {formatWeight(encounterRoll)}% · {formatTime(encounterRoll)}
-                </p>
+                <p className={rollMeta}>{metaParts.join(' · ')}</p>
             </div>
         </div>
     );
