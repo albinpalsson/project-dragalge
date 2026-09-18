@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { css } from '@pokedb2/css-in-js';
 import { Drawer } from '../components/Drawer';
+import { getStoredGameRunId, setStoredGameRunId } from '../game-view-storage';
 import type { ActiveView } from '../router';
 import { About } from './About';
 import { AppHeader } from './AppHeader';
@@ -8,11 +9,18 @@ import { Game } from './Game/Game';
 import { Home } from './Home/Home';
 
 export function App() {
-    const [activeView, setActiveView] = useState<ActiveView>({ view: 'home' });
+    const [activeView, setActiveView] = useState<ActiveView>(() => {
+        const storedGameRunId = getStoredGameRunId();
+        if (storedGameRunId) {
+            return { view: 'game', gameRunId: storedGameRunId };
+        }
+        return { view: 'home' };
+    });
     const [isMenuOpen, setMenuOpen] = useState(false);
 
     const navigate = (next: ActiveView) => {
         setActiveView(next);
+        setStoredGameRunId(next.view === 'game' ? next.gameRunId : null);
         setMenuOpen(false);
     };
 

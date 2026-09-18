@@ -73,7 +73,6 @@ test('resolved encounter stays expanded until reload', async ({ page }) => {
 
     await waitForPersistence(page);
     await page.reload();
-    await openGame(page, 'reroll-run');
 
     const reloadedCard = cardFor(page, 'Poco Path');
     await expect(reloadedCard).toContainText('Missed');
@@ -114,5 +113,20 @@ test('header stays visible across views and the menu navigates', async ({
     await expect(page.getByRole('button', { name: 'Open menu' })).toBeVisible();
 
     await navigateTo(page, 'Home');
+    await expect(page.getByRole('heading', { name: 'Games' })).toBeVisible();
+});
+
+test('reload keeps game view until navigating home', async ({ page }) => {
+    await page.goto('/');
+    await createGame(page, 'persisted-game-run');
+    await openGame(page, 'persisted-game-run');
+
+    await page.reload();
+    await expect(cardFor(page, 'Starter')).toBeVisible();
+
+    await navigateTo(page, 'Home');
+    await expect(page.getByRole('heading', { name: 'Games' })).toBeVisible();
+
+    await page.reload();
     await expect(page.getByRole('heading', { name: 'Games' })).toBeVisible();
 });

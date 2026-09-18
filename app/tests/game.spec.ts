@@ -126,7 +126,6 @@ test('plays a run from the starter through Inlet Grotto', async ({ page }) => {
 
     await waitForPersistence(page);
     await page.reload();
-    await openGame(page, 'playthrough-run');
 
     await expect(cardFor(page, 'Starter')).toContainText(starter);
     await expect(cardFor(page, 'Poco Path')).toContainText(rolled);
