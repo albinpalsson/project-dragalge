@@ -48,8 +48,7 @@ async function waitFor<T>(
 }
 
 function extractHtmlAssetSignature(html: string): string {
-    const script =
-        html.match(/<script src="([^"]+\.js)"><\/script>/i)?.[1] ?? '';
+    const script = extractScriptPath(html);
     const css =
         html.match(/<link rel="stylesheet" href="([^"]+\.css)">/i)?.[1] ?? '';
     if (!script) {
@@ -57,6 +56,20 @@ function extractHtmlAssetSignature(html: string): string {
     }
 
     return `${script}|${css}`;
+}
+
+function extractScriptPath(html: string): string {
+    const script =
+        html.match(/<script src="([^"]+\.js)"><\/script>/i)?.[1] ?? '';
+    if (!script) {
+        throw new Error('Could not find bundled script tag in HTML response.');
+    }
+
+    return script;
+}
+
+function fetchAsset(baseUrl: string, assetPath: string): Promise<Response> {
+    return fetch(new URL(assetPath, `${baseUrl}/`));
 }
 
 test('dev server serves html and updates output after source file change', async () => {
@@ -148,8 +161,96 @@ test('dev server serves html and updates output after source file change', async
 
             const secondAssetSignature = extractHtmlAssetSignature(updatedHtml);
             assert.notEqual(secondAssetSignature, firstAssetSignature);
+
+            const [firstScriptPath, firstCssPath] =
+                firstAssetSignature.split('|');
+            const oldScriptResponse = await fetchAsset(
+                baseUrl,
+                firstScriptPath,
+            );
+            const oldCssResponse = await fetchAsset(baseUrl, firstCssPath);
+            assert.equal(oldScriptResponse.status, 200);
+            assert.equal(oldCssResponse.status, 200);
         } finally {
             await server.stop();
+        }
+    });
+});
+
+test('dev servers use independent output and cache directories', async () => {
+    await withTmpDir(async (tmpDir) => {
+        const srcDir = path.join(tmpDir, 'src');
+        await mkdir(srcDir, { recursive: true });
+
+        await Promise.all([
+            writeFile(
+                path.join(srcDir, 'first.ts'),
+                "console.log('first-server');\n",
+                'utf8',
+            ),
+            writeFile(
+                path.join(srcDir, 'second.ts'),
+                "console.log('second-server');\n",
+                'utf8',
+            ),
+            writeFile(
+                path.join(srcDir, 'index.html'),
+                '<!DOCTYPE html><html><body><!-- bundler:js --></body></html>',
+                'utf8',
+            ),
+            writeFile(
+                path.join(tmpDir, 'tsconfig.json'),
+                '{"compilerOptions":{"target":"ES2022","moduleResolution":"Bundler"},"include":["src"]}',
+                'utf8',
+            ),
+        ]);
+
+        const firstServer = await startDevServer({
+            cwd: tmpDir,
+            host: '127.0.0.1',
+            port: 0,
+            configOverrides: { entry: 'src/first.ts', outputDir: 'dist' },
+        });
+        let secondServer:
+            | Awaited<ReturnType<typeof startDevServer>>
+            | undefined;
+
+        try {
+            secondServer = await startDevServer({
+                cwd: tmpDir,
+                host: '127.0.0.1',
+                port: 0,
+                configOverrides: { entry: 'src/second.ts', outputDir: 'dist' },
+            });
+
+            const firstHtml = await (
+                await fetch(`${firstServer.getBaseUrl()}/`)
+            ).text();
+            const secondHtml = await (
+                await fetch(`${secondServer.getBaseUrl()}/`)
+            ).text();
+            const firstScript = await (
+                await fetchAsset(
+                    firstServer.getBaseUrl(),
+                    extractScriptPath(firstHtml),
+                )
+            ).text();
+            const secondScript = await (
+                await fetchAsset(
+                    secondServer.getBaseUrl(),
+                    extractScriptPath(secondHtml),
+                )
+            ).text();
+
+            assert.match(firstScript, /first-server/);
+            assert.match(secondScript, /second-server/);
+            assert.notEqual(
+                firstServer.getBaseUrl(),
+                secondServer.getBaseUrl(),
+            );
+        } finally {
+            await secondServer?.stop();
+            await firstServer.stop();
         }
     });
 });

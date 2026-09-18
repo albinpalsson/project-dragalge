@@ -46,7 +46,10 @@ export class DevServer {
     private readonly debounceMs: number;
 
     private server: Server | undefined;
+    private instanceCacheDir: string | undefined;
     private outputDirPath: string | undefined;
+    private outputBufferPaths: [string, string] | undefined;
+    private activeBufferIndex: 0 | 1 | undefined;
     private currentVersion = '';
     private buildInFlight = false;
     private pendingRebuild = false;
@@ -77,19 +80,6 @@ export class DevServer {
             return;
         }
 
-        const initialRebuildId = ++this.rebuildCounter;
-        this.log(`[dev] rebuild #${initialRebuildId} start (initial)`);
-        const initialBuild = await this.runBuild();
-        if (!initialBuild.success) {
-            this.log(
-                `[dev] rebuild #${initialRebuildId} failed ${formatMs(initialBuild.buildTime)}`,
-            );
-            throw new Error(initialBuild.error ?? 'Initial dev build failed.');
-        }
-        this.log(
-            `[dev] rebuild #${initialRebuildId} done ${formatMs(initialBuild.buildTime)} (modules: ${initialBuild.moduleCount ?? 0}, v: ${shortVersion(initialBuild.version)})`,
-        );
-
         this.server = createServer((request, response) => {
             void this.handleHttpRequest(request, response);
         });
@@ -111,6 +101,22 @@ export class DevServer {
                 resolve();
             });
         });
+
+        this.initializeInstancePaths();
+
+        const initialRebuildId = ++this.rebuildCounter;
+        this.log(`[dev] rebuild #${initialRebuildId} start (initial)`);
+        const initialBuild = await this.runBuild();
+        if (!initialBuild.success) {
+            this.log(
+                `[dev] rebuild #${initialRebuildId} failed ${formatMs(initialBuild.buildTime)}`,
+            );
+            await this.closeServerAfterFailedStart();
+            throw new Error(initialBuild.error ?? 'Initial dev build failed.');
+        }
+        this.log(
+            `[dev] rebuild #${initialRebuildId} done ${formatMs(initialBuild.buildTime)} (modules: ${initialBuild.moduleCount ?? 0}, v: ${shortVersion(initialBuild.version)})`,
+        );
 
         this.log(
             `[dev] ready ${this.getBaseUrl()} (watching ${this.fileWatchers.size} files)`,
@@ -193,24 +199,31 @@ export class DevServer {
         const perf = new BundlerPerformanceCollector({ write() {} });
 
         try {
+            const { cacheDir, outputDir, bufferIndex } =
+                this.getNextBuildPaths();
             const result = await runBundler({
                 cwd: this.cwd,
-                configOverrides: this.configOverrides,
+                configOverrides: {
+                    ...this.configOverrides,
+                    cacheDir,
+                    outputDir,
+                },
                 performance: perf,
             });
-
-            this.outputDirPath = path.resolve(
-                this.cwd,
-                result.config.outputDir,
-            );
 
             const previousVersion = this.currentVersion;
             const nextVersion = buildVersionToken(
                 result.outputPath,
                 result.cssOutputPaths,
             );
-            this.currentVersion = nextVersion;
             this.syncWatchers(result.watchedFilePaths);
+
+            this.outputDirPath = path.resolve(
+                this.cwd,
+                result.config.outputDir,
+            );
+            this.activeBufferIndex = bufferIndex;
+            this.currentVersion = nextVersion;
 
             let reloadTriggered = false;
             if (previousVersion && previousVersion !== nextVersion) {
@@ -238,6 +251,60 @@ export class DevServer {
                 buildTime: performance.now() - start,
             };
         }
+    }
+
+    private initializeInstancePaths(): void {
+        const address = this.server?.address();
+        if (!address || typeof address === 'string') {
+            throw new Error(
+                'Dev server must be listening before it can build.',
+            );
+        }
+
+        const configuredCacheDir = this.configOverrides.cacheDir ?? '.cache';
+        this.instanceCacheDir = path.resolve(
+            this.cwd,
+            configuredCacheDir,
+            `dev-${address.port}`,
+        );
+        this.outputBufferPaths = [
+            path.join(this.instanceCacheDir, 'output-0'),
+            path.join(this.instanceCacheDir, 'output-1'),
+        ];
+    }
+
+    private getNextBuildPaths(): {
+        cacheDir: string;
+        outputDir: string;
+        bufferIndex: 0 | 1;
+    } {
+        if (!this.instanceCacheDir || !this.outputBufferPaths) {
+            throw new Error(
+                'Dev server build paths have not been initialized.',
+            );
+        }
+
+        const bufferIndex = this.activeBufferIndex === 0 ? 1 : 0;
+        return {
+            cacheDir: this.instanceCacheDir,
+            outputDir: path.join(
+                this.instanceCacheDir,
+                `output-${bufferIndex}`,
+            ),
+            bufferIndex,
+        };
+    }
+
+    private async closeServerAfterFailedStart(): Promise<void> {
+        const server = this.server;
+        if (!server) {
+            return;
+        }
+
+        await new Promise<void>((resolve) => {
+            server.close(() => resolve());
+        });
+        this.server = undefined;
     }
 
     private syncWatchers(inputPaths: string[]): void {
@@ -382,15 +449,18 @@ export class DevServer {
             pathname = '/index.html';
         }
 
-        const absolutePath = safeResolveFromRoot(this.outputDirPath, pathname);
-        if (!absolutePath) {
-            response.statusCode = 403;
-            response.end('Forbidden');
-            return;
-        }
-
         try {
-            if (absolutePath.toLowerCase().endsWith('.html')) {
+            if (pathname.toLowerCase().endsWith('.html')) {
+                const absolutePath = safeResolveFromRoot(
+                    this.outputDirPath,
+                    pathname,
+                );
+                if (!absolutePath) {
+                    response.statusCode = 403;
+                    response.end('Forbidden');
+                    return;
+                }
+
                 const sourceHtml = await readFile(absolutePath, 'utf8');
                 const body = injectDevClientScript(
                     sourceHtml,
@@ -406,18 +476,54 @@ export class DevServer {
                 return;
             }
 
-            const fileBuffer = await readFile(absolutePath);
-            response.statusCode = 200;
-            response.setHeader('content-type', guessContentType(absolutePath));
-            if (request.method === 'HEAD') {
-                response.end();
-                return;
+            for (const outputDirPath of this.getOutputDirsForAssetRequest()) {
+                const absolutePath = safeResolveFromRoot(
+                    outputDirPath,
+                    pathname,
+                );
+                if (!absolutePath) {
+                    response.statusCode = 403;
+                    response.end('Forbidden');
+                    return;
+                }
+
+                try {
+                    const fileBuffer = await readFile(absolutePath);
+                    response.statusCode = 200;
+                    response.setHeader(
+                        'content-type',
+                        guessContentType(absolutePath),
+                    );
+                    if (request.method === 'HEAD') {
+                        response.end();
+                        return;
+                    }
+                    response.end(fileBuffer);
+                    return;
+                } catch {}
             }
-            response.end(fileBuffer);
+
+            response.statusCode = 404;
+            response.end('Not Found');
         } catch {
             response.statusCode = 404;
             response.end('Not Found');
         }
+    }
+
+    private getOutputDirsForAssetRequest(): string[] {
+        if (this.activeBufferIndex === undefined || !this.outputBufferPaths) {
+            return [this.outputDirPath].filter(
+                (outputDirPath): outputDirPath is string =>
+                    Boolean(outputDirPath),
+            );
+        }
+
+        const previousBufferIndex = this.activeBufferIndex === 0 ? 1 : 0;
+        return [
+            this.outputBufferPaths[this.activeBufferIndex],
+            this.outputBufferPaths[previousBufferIndex],
+        ];
     }
 
     private handleWsUpgrade(
