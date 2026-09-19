@@ -119,4 +119,6 @@ const description = css`
     margin: 0;
     color: var(--color-text-secondary);
     font-size: var(--font-size-sm);
+    padding-top: var(--space-1);
+    padding-bottom: var(--space-1);
 `;

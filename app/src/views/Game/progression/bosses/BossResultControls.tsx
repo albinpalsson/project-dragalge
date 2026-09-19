@@ -57,6 +57,8 @@ const container = css`
     justify-content: space-between;
     align-items: center;
     gap: var(--space-2);
+    padding-top: var(--space-1);
+    padding-bottom: var(--space-1);
 `;
 
 const buttonGroup = css`
