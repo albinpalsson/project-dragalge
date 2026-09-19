@@ -1,6 +1,6 @@
 ﻿import { createHash } from 'node:crypto';
-import { type FSWatcher, watch } from 'node:fs';
-import { readFile } from 'node:fs/promises';
+import { type FSWatcher, statSync, watch } from 'node:fs';
+import { readFile, stat } from 'node:fs/promises';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { createServer, type Server } from 'node:http';
 import path from 'node:path';
@@ -23,6 +23,11 @@ interface RebuildResult {
     version?: string;
     moduleCount?: number;
     reloadTriggered?: boolean;
+}
+
+interface FileState {
+    mtimeMs: number;
+    size: number;
 }
 
 interface WsSocketLike {
@@ -63,6 +68,7 @@ export class DevServer {
     private pendingChangedPaths = new Set<string>();
     private readonly wsClients = new Set<WsSocketLike>();
     private readonly fileWatchers = new Map<string, FSWatcher>();
+    private readonly watchedFileStates = new Map<string, FileState>();
 
     constructor(config: DevServerConfig) {
         this.cwd = path.resolve(config.cwd ?? process.cwd());
@@ -318,6 +324,7 @@ export class DevServer {
             if (!nextPaths.has(watchedPath)) {
                 watcher.close();
                 this.fileWatchers.delete(watchedPath);
+                this.watchedFileStates.delete(watchedPath);
             }
         }
 
@@ -327,14 +334,38 @@ export class DevServer {
             }
 
             try {
+                this.watchedFileStates.set(
+                    filePath,
+                    toFileState(statSync(filePath)),
+                );
                 const watcher = watch(filePath, () => {
-                    this.onFileChanged(filePath);
+                    void this.handleWatchEvent(filePath);
                 });
                 this.fileWatchers.set(filePath, watcher);
             } catch {
+                this.watchedFileStates.delete(filePath);
                 // Ignore files that cannot be watched (deleted or temporarily unavailable).
             }
         }
+    }
+
+    private async handleWatchEvent(filePath: string): Promise<void> {
+        try {
+            const nextState = toFileState(await stat(filePath));
+            const previousState = this.watchedFileStates.get(filePath);
+            if (
+                previousState?.mtimeMs === nextState.mtimeMs &&
+                previousState.size === nextState.size
+            ) {
+                return;
+            }
+
+            this.watchedFileStates.set(filePath, nextState);
+        } catch {
+            this.watchedFileStates.delete(filePath);
+        }
+
+        this.onFileChanged(filePath);
     }
 
     private onFileChanged(filePath: string): void {
@@ -588,6 +619,10 @@ export async function startDevServer(
     const server = new DevServer(config);
     await server.start();
     return server;
+}
+
+function toFileState(stats: { mtimeMs: number; size: number }): FileState {
+    return { mtimeMs: stats.mtimeMs, size: stats.size };
 }
 
 function shouldWatchFile(cwd: string, filePath: string): boolean {
