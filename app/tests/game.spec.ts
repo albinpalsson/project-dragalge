@@ -7,7 +7,6 @@ import {
     dragBoxPokemon,
     listEncounterNames,
     openBox,
-    openGame,
     resolveEncounter,
     rollEncounter,
     selectBoxPokemon,
@@ -18,7 +17,6 @@ import {
 test('plays a run from the starter through Inlet Grotto', async ({ page }) => {
     await page.goto('/');
     await createGame(page, 'playthrough-run');
-    await openGame(page, 'playthrough-run');
 
     const starter = await chooseStarter(page);
 

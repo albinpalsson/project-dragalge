@@ -6,7 +6,6 @@ import {
     expandCollapsedSummary,
     navigateTo,
     openBox,
-    openGame,
     resolveEncounter,
     rollEncounter,
     selectBoxPokemon,
@@ -16,7 +15,6 @@ import {
 test('home game cards show the Pokemon obtained in a run', async ({ page }) => {
     await page.goto('/');
     await createGame(page, 'card-run');
-    await openGame(page, 'card-run');
 
     const rolled = await rollEncounter(page, 'Poco Path');
     await resolveEncounter(page, 'Poco Path', 'Caught');
@@ -31,7 +29,6 @@ test('home game cards show the Pokemon obtained in a run', async ({ page }) => {
 test('home game cards list party members before the rest', async ({ page }) => {
     await page.goto('/');
     await createGame(page, 'party-order-run');
-    await openGame(page, 'party-order-run');
 
     const pocoPath = await rollEncounter(page, 'Poco Path');
     await resolveEncounter(page, 'Poco Path', 'Caught');
@@ -63,7 +60,6 @@ test('home game cards list party members before the rest', async ({ page }) => {
 test('resolved encounter stays expanded until reload', async ({ page }) => {
     await page.goto('/');
     await createGame(page, 'reroll-run');
-    await openGame(page, 'reroll-run');
 
     const card = cardFor(page, 'Poco Path');
 
@@ -116,10 +112,13 @@ test('header stays visible across views and the menu navigates', async ({
     await expect(page.getByRole('heading', { name: 'Games' })).toBeVisible();
 });
 
-test('reload keeps game view until navigating home', async ({ page }) => {
+test('starting a game opens it immediately and reload keeps game view until navigating home', async ({ page }) => {
     await page.goto('/');
     await createGame(page, 'persisted-game-run');
-    await openGame(page, 'persisted-game-run');
+
+    await expect(
+        page.getByRole('heading', { name: 'persisted-game-run' }),
+    ).toBeVisible();
 
     await page.reload();
     await expect(cardFor(page, 'Starter')).toBeVisible();

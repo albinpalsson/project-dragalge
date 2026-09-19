@@ -25,11 +25,8 @@ export async function createGame(page: Page, name: string) {
     await page.getByRole('button', { name: 'Start New Game' }).click();
     await page.getByLabel('Name (optional)').fill(name);
     await page.getByRole('button', { name: 'Start', exact: true }).click();
-    await expect(page.getByRole('listitem')).toContainText(name);
-}
-
-export async function openGame(page: Page, name: string) {
-    await page.getByRole('button', { name: new RegExp(name) }).click();
+    await expect(page.getByRole('heading', { name })).toBeVisible();
+    await expect(cardFor(page, 'Starter')).toBeVisible();
 }
 
 // The game DB write to localStorage is debounced; give it time to flush before a reload.

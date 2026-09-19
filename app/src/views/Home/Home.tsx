@@ -37,13 +37,14 @@ export function Home({ onOpenGame }: HomeProps) {
     );
 
     const handleStart = async () => {
-        await createGame.mutateAsync({
+        const game = await createGame.mutateAsync({
             name: name || defaultName,
             variant,
             randomizerMode,
         });
         setName('');
         setStartModalOpen(false);
+        onOpenGame(game.id);
     };
 
     return (
