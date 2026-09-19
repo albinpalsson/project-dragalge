@@ -120,7 +120,7 @@ export function StarterCard({ isNext }: StarterCardProps) {
     );
 }
 
-const STARTER_NAMES = ['Sprigatito', 'Fuecoco', 'Quaxly'] as const;
+export const STARTER_NAMES = ['Sprigatito', 'Fuecoco', 'Quaxly'] as const;
 
 function randomStarter() {
     return STARTER_NAMES[Math.floor(Math.random() * STARTER_NAMES.length)];

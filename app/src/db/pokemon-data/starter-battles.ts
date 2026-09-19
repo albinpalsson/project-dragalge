@@ -9,6 +9,10 @@ const STARTER_BATTLE_MAP: Record<string, string> = {
     Quaxly: 'Nemona (Second Battle - Sprigatito)',
 };
 
-export function getStarterBattleName(starterName: string): string | undefined {
-    return STARTER_BATTLE_MAP[starterName];
+export function getStarterBattleName(starterName: string): string {
+    const res = STARTER_BATTLE_MAP[starterName];
+    if (!res) {
+        throw Error(`No starter battle found for ${starterName}`);
+    }
+    return res;
 }

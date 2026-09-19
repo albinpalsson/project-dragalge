@@ -6,6 +6,7 @@ import { ProgressionCard } from '../../../../components/ProgressionCard';
 import { useBossActions } from '../../../../hooks/useBossActions';
 import { useStarter } from '../../../../hooks/useStarter';
 import { getStarterBattleName } from '../../../../db/pokemon-data/starter-battles';
+import { STARTER_NAMES } from '../../../Game/StarterCard';
 import { useBossBattleRosterQuery } from '../../queries';
 
 const LOCATION_NAME = 'South Province (Area One)';
@@ -18,23 +19,10 @@ interface NemonaSouthProvinceProps {
 export function NemonaSouthProvince({ isNext }: NemonaSouthProvinceProps) {
     const bossActions = useBossActions();
     const starter = useStarter();
-    const starterBattleName = starter
-        ? getStarterBattleName(starter)
-        : undefined;
-    const rosterQuery = useBossBattleRosterQuery(
-        starterBattleName || 'unknown',
-    );
-    const currentResult = starterBattleName
-        ? bossActions.getBattleResult(starterBattleName)
-        : undefined;
-
-    if (!starter) {
-        return <p>Starter not selected yet</p>;
-    }
-
-    if (!starterBattleName) {
-        return <p>Error: Unable to determine battle name for {starter}</p>;
-    }
+    const displayStarter = starter ?? STARTER_NAMES[0];
+    const battleName = getStarterBattleName(displayStarter);
+    const rosterQuery = useBossBattleRosterQuery(battleName);
+    const currentResult = bossActions.getBattleResult(battleName);
 
     if (rosterQuery.isPending) {
         return <p>Loading {LOCATION_NAME} roster...</p>;
@@ -50,7 +38,7 @@ export function NemonaSouthProvince({ isNext }: NemonaSouthProvinceProps) {
     }
 
     if (!rosterQuery.data) {
-        return <p>Unable to load {LOCATION_NAME} roster</p>;
+        return <p>Unable to load {battleName} roster</p>;
     }
 
     const rosterData = rosterQuery.data;
@@ -92,11 +80,9 @@ export function NemonaSouthProvince({ isNext }: NemonaSouthProvinceProps) {
                     <BossResultControls
                         currentResult={currentResult}
                         onResolve={(result) =>
-                            bossActions.resolveBattle(starterBattleName, result)
+                            bossActions.resolveBattle(battleName, result)
                         }
-                        onClear={() =>
-                            bossActions.clearBattle(starterBattleName)
-                        }
+                        onClear={() => bossActions.clearBattle(battleName)}
                         isBusy={bossActions.isBusy}
                     />
                     <BossRoster roster={rosterData} />
