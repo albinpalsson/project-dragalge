@@ -50,6 +50,13 @@ export async function chooseStarter(page: Page): Promise<string> {
     return starter;
 }
 
+export async function resetStarter(page: Page): Promise<void> {
+    const card = cardFor(page, 'Starter');
+    await card
+        .getByRole('button', { name: 'Reset starter choice' })
+        .click();
+}
+
 export async function listEncounterNames(
     page: Page,
     cardName: string,

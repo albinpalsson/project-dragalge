@@ -96,7 +96,4 @@ const buttonDisabled = css`
     opacity: 0.5;
   }
 
-  &:hover {
-    background: none;
-  }
 `;

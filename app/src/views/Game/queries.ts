@@ -2,6 +2,7 @@ import { invalidateQueries } from '@pokedb2/server-query';
 import { useClient, useMutation, useQuery } from '../../server-query';
 import {
     addEncounterRoll,
+    clearEncounterRoll,
     getGameRun,
     listEncounterRolls,
     setEncounterRollStatus,
@@ -113,6 +114,10 @@ export function useSetEncounterPokemonMutation() {
 
 export function useSetPartySlotMutation() {
     return useRollMutation(setPartySlot);
+}
+
+export function useClearEncounterRollMutation() {
+    return useRollMutation(clearEncounterRoll);
 }
 
 export function useSetPocoPathOceanSettingMutation() {

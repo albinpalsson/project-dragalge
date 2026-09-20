@@ -194,6 +194,17 @@ export interface ClearEncounterRollInput {
     locationName: string;
 }
 
+export async function clearEncounterRoll(
+    input: ClearEncounterRollInput,
+): Promise<void> {
+    const db = await getGameDb();
+    await db
+        .deleteFrom('encounter_rolls')
+        .where('game_run_id', '=', input.gameRunId)
+        .where('location_name', '=', input.locationName)
+        .execute();
+}
+
 export interface SetPocoPathOceanSettingInput {
     gameRunId: string;
     includeOcean: boolean;

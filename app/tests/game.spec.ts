@@ -7,6 +7,7 @@ import {
     dragBoxPokemon,
     listEncounterNames,
     openBox,
+    resetStarter,
     resolveEncounter,
     rollEncounter,
     selectBoxPokemon,
@@ -18,7 +19,31 @@ test('plays a run from the starter through Inlet Grotto', async ({ page }) => {
     await page.goto('/');
     await createGame(page, 'playthrough-run');
 
+    const firstStarter = await chooseStarter(page);
+    await expect(cardFor(page, 'Starter')).toContainText(firstStarter);
+    await expect(
+        cardFor(page, 'Starter').getByRole('button', {
+            name: 'Re-roll starter',
+        }),
+    ).toBeVisible();
+    await expect(
+        cardFor(page, 'Starter').getByRole('button', {
+            name: 'Reset starter choice',
+        }),
+    ).toBeVisible();
+
+    await resetStarter(page);
+    await expect(
+        cardFor(page, 'Starter').getByRole('button', { name: 'Randomize' }),
+    ).toBeVisible();
+
     const starter = await chooseStarter(page);
+    await expect(cardFor(page, 'Starter')).toContainText(starter);
+    await expect(
+        cardFor(page, 'Starter').getByRole('button', {
+            name: 'Re-roll starter',
+        }),
+    ).toBeVisible();
 
     const listed = await listEncounterNames(page, 'Poco Path');
     const rolled = await rollEncounter(page, 'Poco Path');

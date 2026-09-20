@@ -9,12 +9,13 @@ export type StatusChipState =
 
 interface StatusChipProps {
     status: StatusChipState;
+    labels?: Partial<Record<StatusChipState, string>>;
 }
 
-export function StatusChip({ status }: StatusChipProps) {
+export function StatusChip({ status, labels }: StatusChipProps) {
     return (
         <span className={cx(chip, STATUS_CHIP_CLASS[status])}>
-            {STATUS_LABELS[status]}
+            {labels?.[status] ?? STATUS_LABELS[status]}
         </span>
     );
 }
