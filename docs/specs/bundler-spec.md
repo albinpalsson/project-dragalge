@@ -99,6 +99,12 @@ Example:
 
 This is a correctness-first cache, not a watch-mode incremental compiler.
 
+### Dev Server Cache Directories
+
+- Each dev server instance builds into `<cacheDir>/dev-slots/slot-0` .. `slot-9` (fixed pool of 10), not a directory keyed by port, so disk usage from repeated `--port 0` runs is bounded.
+- On start, an instance picks the first missing slot, or else the least-recently-used one by directory mtime; no locking, so near-simultaneous starts can rarely pick the same slot.
+- Picking a slot clears its `output-0`/`output-1` build-output buffers (stale assets from a previous, possibly unrelated project) but keeps its module transform cache, since that cache is content-addressed and self-pruning.
+
 ### Plugin Architecture
 
 - Built-in transforms still run in this order:

@@ -7,6 +7,7 @@ import path from 'node:path';
 
 import { type BundlerConfig, runBundler } from '../main.ts';
 import { BundlerPerformanceCollector } from '../performance-collector.ts';
+import { OUTPUT_BUFFER_DIR_NAMES, pickCacheSlot } from './cache-slot.ts';
 
 export interface DevServerConfig {
     cwd?: string;
@@ -260,23 +261,13 @@ export class DevServer {
     }
 
     private initializeInstancePaths(): void {
-        const address = this.server?.address();
-        if (!address || typeof address === 'string') {
-            throw new Error(
-                'Dev server must be listening before it can build.',
-            );
-        }
-
         const configuredCacheDir = this.configOverrides.cacheDir ?? '.cache';
-        this.instanceCacheDir = path.resolve(
-            this.cwd,
-            configuredCacheDir,
-            `dev-${address.port}`,
-        );
-        this.outputBufferPaths = [
-            path.join(this.instanceCacheDir, 'output-0'),
-            path.join(this.instanceCacheDir, 'output-1'),
-        ];
+        const cacheRoot = path.resolve(this.cwd, configuredCacheDir);
+        const instanceCacheDir = pickCacheSlot(cacheRoot);
+        this.instanceCacheDir = instanceCacheDir;
+        this.outputBufferPaths = OUTPUT_BUFFER_DIR_NAMES.map((dirName) =>
+            path.join(instanceCacheDir, dirName),
+        ) as [string, string];
     }
 
     private getNextBuildPaths(): {
