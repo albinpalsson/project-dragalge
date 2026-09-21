@@ -87,6 +87,7 @@ export function PocoPath({ isNext }: PocoPathProps) {
                         onChange={(includeOcean) =>
                             setOceanMutation.mutate({
                                 gameRunId: game.id,
+                                gameRunName: game.run.name,
                                 includeOcean,
                             })
                         }

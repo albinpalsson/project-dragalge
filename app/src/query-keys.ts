@@ -3,9 +3,12 @@ export const GAME_CARDS_QUERY_KEY = ['game-cards'];
 export const STARTERS_QUERY_KEY = ['starters'];
 export const TYPE_CHART_QUERY_KEY = ['type-chart'];
 
-export const gameRunQueryKey = (gameRunId: string) => ['game-run', gameRunId];
+export const gameRunQueryKey = (gameRunName: string) => [
+    'game-run',
+    gameRunName,
+];
 
-export const encounterRollsQueryKey = (gameRunId: string) => [
+export const encounterRollsQueryKey = (gameRunId: number) => [
     'encounter-rolls',
     gameRunId,
 ];
@@ -35,7 +38,7 @@ export const bossBattleRosterQueryKey = (battleName: string) => [
     battleName,
 ];
 
-export const bossBattleProgressQueryKey = (gameRunId: string) => [
+export const bossBattleProgressQueryKey = (gameRunId: number) => [
     'boss-battle-progress',
     gameRunId,
 ];

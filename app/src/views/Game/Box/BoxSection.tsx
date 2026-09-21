@@ -1,5 +1,5 @@
 import { css } from '@pokedb2/css-in-js';
-import type { EncounterRollRow } from '../../../db/game-db/schema';
+import type { EncounterRollRow } from '../../../db/game-db/queries';
 import type { BoxSectionKind } from './box-model';
 import { PokemonBoxIcon, type PokemonBoxIconDragProps } from './PokemonBoxIcon';
 

@@ -1,5 +1,5 @@
 import { css, cx } from '@pokedb2/css-in-js';
-import type { EncounterStatus } from '../db/game-db/schema';
+import type { EncounterStatus } from '../db/game-db/queries';
 
 export type StatusChipState =
     | EncounterStatus

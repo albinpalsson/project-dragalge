@@ -8,7 +8,7 @@
         "predev": "npm run sync-assets",
         "prebuild": "npm run sync-assets",
         "build": "pokedb2-bundle --mode production",
-        "dev": "pokedb2-dev-server --port 0",
+        "dev": "pokedb2-dev-server --port 3000",
         "test": "playwright test",
         "lint": "tsc --noEmit"
     },

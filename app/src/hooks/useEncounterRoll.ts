@@ -1,6 +1,6 @@
 import { useGame } from '../views/Game/GameContext';
 import { useLocationEncountersQuery } from '../views/Game/queries';
-import type { EncounterStatus } from '../db/game-db/schema';
+import type { EncounterStatus } from '../db/game-db/queries';
 import type { LocationEncounterView } from '../db/pokemon-data/queries';
 import { getRandomizerDisplayName } from '../randomizer-groups';
 

@@ -6,8 +6,8 @@ import { PokemonStatsPanel } from '../../../components/PokemonStatsPanel';
 import { TypeBadge } from '../../../components/TypeBadge';
 import {
     NO_PARTY_SLOT,
-    type EncounterRollRow,
 } from '../../../db/game-db/schema';
+import type { EncounterRollRow } from '../../../db/game-db/queries';
 import { usePartyManager } from '../../../hooks/usePartyManager';
 import { getRandomizerDisplayName } from '../../../randomizer-groups';
 import { usePokemonEvolutionQuery, usePokemonQuery } from './queries';

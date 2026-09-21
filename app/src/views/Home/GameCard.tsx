@@ -1,9 +1,8 @@
 import { css, cx } from '@pokedb2/css-in-js';
 import {
     NO_PARTY_SLOT,
-    type EncounterRollRow,
-    type GameRunRow,
 } from '../../db/game-db/schema';
+import type { EncounterRollRow, GameRunRow } from '../../db/game-db/queries';
 import { pokemonIconSrc, toIconSlug } from '../../pokemon-icon';
 import { getRandomizerDisplayName } from '../../randomizer-groups';
 
@@ -28,7 +27,7 @@ export function GameCard({ game, obtained, isLost }: GameCardProps) {
                     backgroundImage: `repeating-linear-gradient(45deg, color-mix(in srgb, ${variantColor} 35%, transparent), color-mix(in srgb, ${variantColor} 35%, transparent) 0.6rem, color-mix(in srgb, ${variantColor} 20%, transparent) 0.6rem, color-mix(in srgb, ${variantColor} 20%, transparent) 1.2rem)`,
                 }}
             />
-            <span className={name}>{game.id}</span>
+            <span className={name}>{game.name}</span>
             {isLost && <span className={lostBadge}>Run Lost</span>}
             <span className={progressLabel}>{sorted.length} caught</span>
             {sorted.length > 0 ? (
@@ -91,6 +90,8 @@ const name = css`
   left: var(--space-2);
   font-size: var(--font-size-sm);
   color: var(--color-text-muted);
+  max-width: calc(50% - var(--space-2));
+  overflow-wrap: anywhere;
 `;
 
 const lostBadge = css`

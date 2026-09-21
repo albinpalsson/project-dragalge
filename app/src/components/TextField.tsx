@@ -6,6 +6,10 @@ interface TextFieldProps {
     onChange: (value: string) => void;
     placeholder?: string;
     type?: 'text' | 'password' | 'number';
+    maxLength?: number;
+    error?: string;
+    help?: string;
+    disabled?: boolean;
     className?: string;
 }
 
@@ -15,8 +19,15 @@ export function TextField({
     onChange,
     placeholder,
     type = 'text',
+    maxLength,
+    error,
+    help,
+    disabled,
     className,
 }: TextFieldProps) {
+    const message = error ?? help;
+    const messageId = message ? `${label}-message` : undefined;
+
     return (
         <label className={cx(field, className)}>
             {label}
@@ -25,8 +36,17 @@ export function TextField({
                 type={type}
                 value={value}
                 placeholder={placeholder}
+                maxLength={maxLength}
+                disabled={disabled}
+                aria-invalid={error ? true : undefined}
+                aria-describedby={messageId}
                 onChange={(e) => onChange(e.target.value)}
             />
+            {message && (
+                <span id={messageId} className={error ? errorText : helpText}>
+                    {message}
+                </span>
+            )}
         </label>
     );
 }
@@ -46,4 +66,12 @@ const input = css`
   background: var(--color-bg);
   border: 0.1rem solid var(--color-border);
   border-radius: var(--radius-sm);
+`;
+
+const helpText = css`
+    color: var(--color-text-muted);
+`;
+
+const errorText = css`
+    color: var(--color-danger);
 `;

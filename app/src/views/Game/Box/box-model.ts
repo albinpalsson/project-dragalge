@@ -1,8 +1,8 @@
 import {
     MAX_PARTY_SIZE,
     NO_PARTY_SLOT,
-    type EncounterRollRow,
 } from '../../../db/game-db/schema';
+import type { EncounterRollRow } from '../../../db/game-db/queries';
 
 export type BoxSectionKind = 'party' | 'box' | 'death';
 

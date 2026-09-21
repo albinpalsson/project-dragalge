@@ -12,11 +12,24 @@ interface GameProps {
 
 export function Game({ gameRunId }: GameProps) {
     const gameRunQuery = useGameRunQuery(gameRunId);
-    const encounterRollsQuery = useEncounterRollsQuery(gameRunId);
 
     if (gameRunQuery.isError) {
         return <p>Error loading game: {String(gameRunQuery.error)}</p>;
     }
+
+    if (gameRunQuery.isPending) {
+        return <p>Loading game...</p>;
+    }
+
+    if (!gameRunQuery.data) {
+        return <p>Game not found: {gameRunId}</p>;
+    }
+
+    return <LoadedGame game={gameRunQuery.data} />;
+}
+
+function LoadedGame({ game }: { game: NonNullable<ReturnType<typeof useGameRunQuery>['data']> }) {
+    const encounterRollsQuery = useEncounterRollsQuery(game.id);
 
     if (encounterRollsQuery.isError) {
         return (
@@ -27,15 +40,9 @@ export function Game({ gameRunId }: GameProps) {
         );
     }
 
-    if (gameRunQuery.isPending || encounterRollsQuery.isPending) {
+    if (encounterRollsQuery.isPending) {
         return <p>Loading game...</p>;
     }
-
-    if (!gameRunQuery.data) {
-        return <p>Game not found: {gameRunId}</p>;
-    }
-
-    const game = gameRunQuery.data;
 
     return (
         <GameProvider
@@ -60,7 +67,7 @@ function GameContent() {
         <section className={layout}>
             <div className={topRow}>
                 <h2 className={heading}>
-                    <span>{game.id}</span>
+                    <span className={gameName}>{game.run.name}</span>
                     <span className={mutedText}>
                         {progression.percent}% complete
                     </span>
@@ -115,8 +122,16 @@ const heading = css`
     margin: 0;
     font-size: var(--font-size-lg);
     display: flex;
+    flex: 1 1 24rem;
+    flex-wrap: wrap;
+    min-width: 0;
     align-items: center;
     gap: var(--space-2);
+`;
+
+const gameName = css`
+    min-width: 0;
+    overflow-wrap: anywhere;
 `;
 
 const mutedText = css`

@@ -11,7 +11,7 @@ import type {
     EncounterRollRow,
     GameRunRow,
     BossBattleProgressRow,
-} from '../../db/game-db/schema';
+} from '../../db/game-db/queries';
 import { GAMES_QUERY_KEY, GAME_CARDS_QUERY_KEY } from '../../query-keys';
 
 export interface GameCardState {
@@ -26,8 +26,8 @@ export function useGameCards() {
         queryKey: GAME_CARDS_QUERY_KEY,
         queryFn: async (): Promise<GameCardState[]> => {
             const games = await listGames();
-            const obtainedByGame = new Map<string, EncounterRollRow[]>();
-            const progressByGame = new Map<string, BossBattleProgressRow[]>();
+            const obtainedByGame = new Map<number, EncounterRollRow[]>();
+            const progressByGame = new Map<number, BossBattleProgressRow[]>();
 
             await Promise.all(
                 games.map(async (game) => {

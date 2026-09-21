@@ -8,6 +8,7 @@ import { GameCard } from './GameCard';
 import { useCreateGame, useGameCards } from './queries';
 import {
     generateDefaultGameName,
+    GAME_NAME_MAX_BYTES,
     type GameVariant,
 } from '../../db/game-db/queries';
 import {
@@ -44,7 +45,7 @@ export function Home({ onOpenGame }: HomeProps) {
         });
         setName('');
         setStartModalOpen(false);
-        onOpenGame(game.id);
+        onOpenGame(game.name);
     };
 
     return (
@@ -76,6 +77,7 @@ export function Home({ onOpenGame }: HomeProps) {
                             value={name}
                             placeholder={defaultName}
                             onChange={setName}
+                            maxLength={GAME_NAME_MAX_BYTES}
                         />
                         <Select
                             label="Randomizer"
@@ -108,7 +110,7 @@ export function Home({ onOpenGame }: HomeProps) {
                                 <button
                                     type="button"
                                     className={gameCardButton}
-                                    onClick={() => onOpenGame(card.game.id)}
+                                    onClick={() => onOpenGame(card.game.name)}
                                 >
                                     <GameCard
                                         game={card.game}

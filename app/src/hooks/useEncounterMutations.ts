@@ -1,4 +1,4 @@
-import type { EncounterStatus } from '../db/game-db/schema';
+import type { EncounterStatus } from '../db/game-db/queries';
 import {
     useAddEncounterRollMutation,
     useSetEncounterPokemonMutation,
@@ -19,7 +19,7 @@ export function useEncounterMutations() {
             setStatusMutation.isPending ||
             setPartySlotMutation.isPending,
         addRoll(
-            gameRunId: string,
+            gameRunId: number,
             locationName: string,
             pokemonName: string,
             status?: EncounterStatus,
@@ -32,7 +32,7 @@ export function useEncounterMutations() {
             });
         },
         setStatus(
-            gameRunId: string,
+            gameRunId: number,
             locationName: string,
             status: EncounterStatus,
         ) {
@@ -43,7 +43,7 @@ export function useEncounterMutations() {
             });
         },
         setPokemon(
-            gameRunId: string,
+            gameRunId: number,
             locationName: string,
             pokemonName: string,
         ) {
@@ -53,7 +53,7 @@ export function useEncounterMutations() {
                 pokemonName,
             });
         },
-        setPartySlot(gameRunId: string, locationName: string, slot: number) {
+        setPartySlot(gameRunId: number, locationName: string, slot: number) {
             return setPartySlotMutation.mutateAsync({
                 gameRunId,
                 locationName,

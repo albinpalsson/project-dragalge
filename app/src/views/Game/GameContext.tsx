@@ -1,10 +1,10 @@
 import { createContext, useContext, useMemo, type ReactNode } from 'react';
-import type { EncounterRollRow } from '../../db/game-db/schema';
 import type { GameRun } from '../../db/game-db/queries';
+import type { EncounterRollRow } from '../../db/game-db/queries';
 import type { RandomizerMode } from '../../randomizer';
 
 export interface GameContextValue {
-    id: string;
+    id: number;
     run: GameRun;
     settings: GameRun['settings'];
     randomizerMode: RandomizerMode;

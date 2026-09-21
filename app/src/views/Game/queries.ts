@@ -31,14 +31,14 @@ import {
     TYPE_CHART_QUERY_KEY,
 } from '../../query-keys';
 
-export function useGameRunQuery(gameRunId: string) {
+export function useGameRunQuery(gameRunName: string) {
     return useQuery({
-        queryKey: gameRunQueryKey(gameRunId),
-        queryFn: () => getGameRun(gameRunId),
+        queryKey: gameRunQueryKey(gameRunName),
+        queryFn: () => getGameRun(gameRunName),
     });
 }
 
-export function useEncounterRollsQuery(gameRunId: string) {
+export function useEncounterRollsQuery(gameRunId: number) {
     return useQuery({
         queryKey: encounterRollsQueryKey(gameRunId),
         queryFn: () => listEncounterRolls(gameRunId),
@@ -77,14 +77,14 @@ export function useTypeChartQuery() {
     });
 }
 
-export function useBossBattleProgressQuery(gameRunId: string) {
+export function useBossBattleProgressQuery(gameRunId: number) {
     return useQuery({
         queryKey: bossBattleProgressQueryKey(gameRunId),
         queryFn: () => listBossBattleProgress(gameRunId),
     });
 }
 
-function useRollMutation<TInput extends { gameRunId: string }, TResult>(
+function useRollMutation<TInput extends { gameRunId: number }, TResult>(
     mutationFn: (input: TInput) => Promise<TResult>,
 ) {
     const client = useClient();
@@ -124,19 +124,20 @@ export function useSetPocoPathOceanSettingMutation() {
     const client = useClient();
     return useMutation({
         mutationFn: async (input: {
-            gameRunId: string;
+            gameRunId: number;
+            gameRunName: string;
             includeOcean: boolean;
         }) => {
             await setPocoPathOceanSetting(input);
             invalidateQueries(client, {
-                queryKey: gameRunQueryKey(input.gameRunId),
+                queryKey: gameRunQueryKey(input.gameRunName),
             });
         },
     });
 }
 
 function useBossBattleResultMutation<
-    TInput extends { gameRunId: string },
+    TInput extends { gameRunId: number },
     TResult,
 >(mutationFn: (input: TInput) => Promise<TResult>) {
     const client = useClient();
