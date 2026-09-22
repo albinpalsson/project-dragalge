@@ -7,9 +7,14 @@ import { About } from './About';
 import { AppHeader } from './AppHeader';
 import { Game } from './Game/Game';
 import { Home } from './Home/Home';
+import { useImportDataFromHash } from '../hooks/useImportDataFromHash';
 
 export function App() {
+    const { importData } = useImportDataFromHash();
     const [activeView, setActiveView] = useState<ActiveView>(() => {
+        if (importData !== undefined) {
+            return { view: 'home' };
+        }
         const storedGameRunId = getStoredGameRunId();
         if (storedGameRunId) {
             return { view: 'game', gameRunId: storedGameRunId };
@@ -52,9 +57,7 @@ export function App() {
             <main>
                 {activeView.view === 'home' && (
                     <Home
-                        onOpenGame={(gameRunId) =>
-                            navigate({ view: 'game', gameRunId })
-                        }
+                        onOpenGame={(gameRunId) => navigate({ view: 'game', gameRunId })}
                     />
                 )}
                 {activeView.view === 'game' && (

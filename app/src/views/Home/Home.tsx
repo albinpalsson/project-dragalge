@@ -5,6 +5,7 @@ import { Modal } from '../../components/Modal';
 import { Select } from '../../components/Select';
 import { TextField } from '../../components/TextField';
 import { GameCard } from './GameCard';
+import { ImportGameModal } from './ImportGameModal';
 import { useCreateGame, useGameCards } from './queries';
 import {
     generateDefaultGameName,
@@ -99,6 +100,7 @@ export function Home({ onOpenGame }: HomeProps) {
                     </div>
                 </Modal>
             )}
+            <ImportGameModal />
 
             <section>
                 <h2>Games</h2>
@@ -107,17 +109,12 @@ export function Home({ onOpenGame }: HomeProps) {
                     <ul className={gamesList}>
                         {gameCards.data.map((card) => (
                             <li key={card.game.id}>
-                                <button
-                                    type="button"
-                                    className={gameCardButton}
-                                    onClick={() => onOpenGame(card.game.name)}
-                                >
-                                    <GameCard
-                                        game={card.game}
-                                        obtained={card.obtained}
-                                        isLost={card.isLost}
-                                    />
-                                </button>
+                                <GameCard
+                                    game={card.game}
+                                    obtained={card.obtained}
+                                    isLost={card.isLost}
+                                    onOpenGame={() => onOpenGame(card.game.name)}
+                                />
                             </li>
                         ))}
                     </ul>
@@ -151,6 +148,10 @@ const formActions = css`
   gap: var(--space-2);
 `;
 
+const mutedText = css`
+    color: var(--color-text-muted);
+`;
+
 const gamesList = css`
   display: flex;
     flex-direction: row;
@@ -159,16 +160,4 @@ const gamesList = css`
   list-style: none;
   margin: 0;
   padding: 0;
-`;
-
-const mutedText = css`
-  color: var(--color-text-muted);
-`;
-
-const gameCardButton = css`
-  display: block;
-  padding: 0;
-  border: none;
-  background: transparent;
-  cursor: pointer;
 `;

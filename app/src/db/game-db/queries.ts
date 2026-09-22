@@ -1,4 +1,5 @@
 import type { RandomizerMode } from '../../randomizer';
+import type { Database } from '@pokedb2/query-builder';
 import { getGameDb } from './client';
 import type {
     BooleanFlag,
@@ -37,17 +38,98 @@ export interface BossBattleProgressRow {
     result: BossBattleResult;
 }
 
+export interface GameExportData {
+    game: GameRunRow;
+    encounterRolls: EncounterRollRow[];
+    bossProgress: BossBattleProgressRow[];
+}
+
 export function generateDefaultGameName(variant: GameVariant): string {
     return `game-${VARIANT_NAMES[variant]}-${randomShortHash()}`;
 }
 
 export async function listGames(): Promise<GameRunRow[]> {
     const db = await getGameDb();
+    return selectGameRuns(db);
+}
+
+export async function selectGameRuns(
+    db: Database<GameRunsDb>,
+): Promise<GameRunRow[]> {
     const rows = await db.selectFrom('game_runs').selectAll().execute();
     return rows.map((row) => ({
         ...row,
         randomizer_mode: decodeRandomizerMode(row.randomizer_mode),
     }));
+}
+
+export async function getGameExportData(
+    gameRunId: number,
+): Promise<GameExportData> {
+    const games = await listGames();
+    const game = games.find((row) => row.id === gameRunId);
+    if (!game) {
+        throw new Error('Game not found.');
+    }
+    const [encounterRolls, bossProgress] = await Promise.all([
+        listEncounterRolls(gameRunId),
+        listBossBattleProgress(gameRunId),
+    ]);
+    return { game, encounterRolls, bossProgress };
+}
+
+export async function insertGameRuns(
+    db: Database<GameRunsDb>,
+    rows: readonly GameRunRow[],
+): Promise<void> {
+    if (rows.length === 0) {
+        return;
+    }
+    await db
+        .insertInto('game_runs')
+        .values(
+            rows.map((row) => ({
+                ...row,
+                randomizer_mode: encodeRandomizerMode(row.randomizer_mode),
+            })),
+        )
+        .execute();
+}
+
+export async function insertEncounterRolls(
+    db: Database<GameRunsDb>,
+    rows: readonly EncounterRollRow[],
+): Promise<void> {
+    if (rows.length === 0) {
+        return;
+    }
+    await db
+        .insertInto('encounter_rolls')
+        .values(
+            rows.map((row) => ({
+                ...row,
+                status: encodeEncounterStatus(row.status),
+            })),
+        )
+        .execute();
+}
+
+export async function insertBossBattleProgress(
+    db: Database<GameRunsDb>,
+    rows: readonly BossBattleProgressRow[],
+): Promise<void> {
+    if (rows.length === 0) {
+        return;
+    }
+    await db
+        .insertInto('boss_battle_progress')
+        .values(
+            rows.map((row) => ({
+                ...row,
+                result: encodeBossBattleResult(row.result),
+            })),
+        )
+        .execute();
 }
 
 export interface GameRunSettings {
@@ -83,37 +165,41 @@ export interface CreateGameInput {
 export async function createGame(input: CreateGameInput): Promise<GameRunRow> {
     const db = await getGameDb();
     const existing = await listGames();
-    const existingNames = new Set(existing.map((row) => row.name));
+    const identity = allocateGameIdentity(input.name, existing);
 
-    const baseName = input.name.trim();
+    const row: GameRunRow = {
+        ...identity,
+        variant: input.variant,
+        randomizer_mode: input.randomizerMode,
+        poco_path_ocean: 0,
+    };
+    await insertGameRuns(db, [row]);
+    return row;
+}
+
+export function allocateGameIdentity(
+    requestedName: string,
+    existing: readonly GameRunRow[],
+): Pick<GameRunRow, 'id' | 'name'> {
+    const baseName = requestedName.trim();
     assertGameNameFits(baseName);
-    let newName = baseName;
-    let count = 1;
-    while (existingNames.has(newName)) {
-        newName = `${baseName}-${count++}`;
+
+    const names = new Set(existing.map((game) => game.name));
+    let name = baseName;
+    let suffix = 1;
+    while (names.has(name)) {
+        name = `${baseName}-${suffix++}`;
     }
 
-    const existingIds = new Set(existing.map((row) => row.id));
-    let nextId = 1;
-    while (existingIds.has(nextId) && nextId <= 255) {
-        nextId += 1;
+    const ids = new Set(existing.map((game) => game.id));
+    let id = 1;
+    while (ids.has(id) && id <= 255) {
+        id += 1;
     }
-    if (nextId > 255) {
+    if (id > 255) {
         throw new Error('Cannot create more than 255 games');
     }
-
-    const row = {
-        id: nextId,
-        name: newName,
-        variant: input.variant,
-        randomizer_mode: encodeRandomizerMode(input.randomizerMode),
-        poco_path_ocean: 0,
-    } as const;
-    await db.insertInto('game_runs').values(row).execute();
-    return {
-        ...row,
-        randomizer_mode: decodeRandomizerMode(row.randomizer_mode),
-    };
+    return { id, name };
 }
 
 export const STARTER_LOCATION_NAME = 'Starter';
@@ -122,12 +208,18 @@ export async function listEncounterRolls(
     gameRunId: number,
 ): Promise<EncounterRollRow[]> {
     const db = await getGameDb();
-    const rows = await db
+    return selectEncounterRolls(gameRunId, db);
+}
+
+export async function selectEncounterRolls(
+    gameRunId: number,
+    db: Database<GameRunsDb>,
+) {
+    return (await db
         .selectFrom('encounter_rolls')
         .selectAll()
         .where('game_run_id', '=', gameRunId)
-        .execute();
-    return rows.map((row) => ({
+        .execute()).map((row) => ({
         ...row,
         status: decodeEncounterStatus(row.status),
     }));
@@ -256,6 +348,13 @@ export async function listBossBattleProgress(
     gameRunId: number,
 ): Promise<BossBattleProgressRow[]> {
     const db = await getGameDb();
+    return selectBossBattleProgress(gameRunId, db);
+}
+
+export async function selectBossBattleProgress(
+    gameRunId: number,
+    db: Database<GameRunsDb>,
+): Promise<BossBattleProgressRow[]> {
     const rows = await db
         .selectFrom('boss_battle_progress')
         .selectAll()
@@ -339,17 +438,17 @@ const VARIANT_NAMES: Record<GameVariant, string> = {
     v: 'violet',
 };
 
-const encodeRandomizerMode = (value: RandomizerMode) =>
+export const encodeRandomizerMode = (value: RandomizerMode) =>
     encode(value, RANDOMIZER_MODE_CODES);
-const decodeRandomizerMode = (code: RandomizerModeCode) =>
+export const decodeRandomizerMode = (code: RandomizerModeCode) =>
     decode(code, RANDOMIZER_MODE_CODES);
-const encodeEncounterStatus = (value: EncounterStatus) =>
+export const encodeEncounterStatus = (value: EncounterStatus) =>
     encode(value, ENCOUNTER_STATUS_CODES);
-const decodeEncounterStatus = (code: EncounterStatusCode) =>
+export const decodeEncounterStatus = (code: EncounterStatusCode) =>
     decode(code, ENCOUNTER_STATUS_CODES);
-const encodeBossBattleResult = (value: BossBattleResult) =>
+export const encodeBossBattleResult = (value: BossBattleResult) =>
     encode(value, BOSS_BATTLE_RESULT_CODES);
-const decodeBossBattleResult = (code: BossBattleResultCode) =>
+export const decodeBossBattleResult = (code: BossBattleResultCode) =>
     decode(code, BOSS_BATTLE_RESULT_CODES);
 
 function encode<TValue extends string, TCode extends string>(

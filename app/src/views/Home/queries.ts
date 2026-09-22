@@ -7,6 +7,12 @@ import {
     listBossBattleProgress,
     type CreateGameInput,
 } from '../../db/game-db/queries';
+import {
+    applyImport,
+    buildExport,
+    parseImport,
+    type ParsedImport,
+} from '../../db/game-db/export-import';
 import type {
     EncounterRollRow,
     GameRunRow,
@@ -64,6 +70,38 @@ export function useCreateGame() {
     return useMutation({
         mutationFn: async (input: CreateGameInput) => {
             const game = await createGame(input);
+            invalidateQueries(client, { queryKey: GAMES_QUERY_KEY });
+            invalidateQueries(client, { queryKey: GAME_CARDS_QUERY_KEY });
+            return game;
+        },
+    });
+}
+
+export function useGameExport(gameRunId: number) {
+    return useQuery({
+        queryKey: ['game-export', gameRunId],
+        queryFn: () => buildExport(gameRunId),
+    });
+}
+
+export function useParsedGameImport(importData: string) {
+    return useQuery({
+        queryKey: ['game-import', importData],
+        queryFn: () => parseImport(importData),
+    });
+}
+
+export function useImportGame() {
+    const client = useClient();
+    return useMutation({
+        mutationFn: async ({
+            parsed,
+            name,
+        }: {
+            parsed: Extract<ParsedImport, { status: 'ok' }>;
+            name: string;
+        }) => {
+            const game = await applyImport(parsed, name);
             invalidateQueries(client, { queryKey: GAMES_QUERY_KEY });
             invalidateQueries(client, { queryKey: GAME_CARDS_QUERY_KEY });
             return game;
