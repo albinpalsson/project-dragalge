@@ -1,7 +1,7 @@
 {
     "private": true,
     "scripts": {
-        "dev": "npm --prefix app run dev",
+        "start": "npm --prefix app run start",
         "build": "npm run build:all",
         "build:all": "npm --prefix validator run build && npm --prefix css-in-js run build && npm --prefix db run build && npm --prefix query-builder run build && npm --prefix pokemon-data run build && npm --prefix server-query run build && npm --prefix bundler run build && npm --prefix app run build",
         "test": "npm run test:all",

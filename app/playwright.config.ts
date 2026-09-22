@@ -19,8 +19,8 @@ export default defineConfig({
     forbidOnly: !!process.env.CI,
     /* Retry on CI only */
     retries: process.env.CI ? 2 : 0,
-    /* Opt out of parallel tests on CI. */
-    workers: process.env.CI ? 1 : undefined,
+    /* Keep local browser and in-page database work below machine saturation. */
+    workers: process.env.CI ? 1 : 4,
     /* Reporter to use. See https://playwright.dev/docs/test-reporters */
     reporter: 'list',
     /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -31,6 +31,8 @@ export default defineConfig({
          * use the dev server concurrently without port collisions. */
         baseURL: `http://localhost:${process.env.DEV_SERVER_PORT ?? 3000}`,
 
+        reducedMotion: 'reduce',
+
         /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
         trace: 'on-first-retry',
     },
@@ -38,8 +40,7 @@ export default defineConfig({
     /* Configure projects for major browsers */
     projects: [
         {
-            name: 'Microsoft Edge',
-            use: { ...devices['Desktop Edge'], channel: 'msedge' }, // or "msedge-beta" or 'msedge-dev'
+            name: 'chromium', use: { ...devices['Desktop Chrome'] } 
         },
 
         /* Test against mobile viewports. */
@@ -65,7 +66,7 @@ export default defineConfig({
 
     /* Run your local dev server before starting the tests */
     webServer: {
-        command: 'npm run dev',
+        command: 'npm run playwright-dev',
         /* The dev server logs "[dev] ready http://host:<port>" once it's listening on its
          * random port; capture that port instead of polling a fixed URL. */
         wait: {
