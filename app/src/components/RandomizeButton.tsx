@@ -3,6 +3,7 @@ import { css, cx } from '@pokedb2/css-in-js';
 import { Button } from './Button';
 
 export const ROLL_DELAY_MS = 700;
+const reducedMotionQuery = '(prefers-reduced-motion: reduce)';
 
 interface RandomizeButtonProps {
     label: string;
@@ -40,7 +41,7 @@ export function RandomizeButton({
         rollTimerRef.current = window.setTimeout(() => {
             setRolling(false);
             void onRandomize();
-        }, ROLL_DELAY_MS);
+        }, window.matchMedia(reducedMotionQuery).matches ? 0 : ROLL_DELAY_MS);
     };
 
     return (
@@ -65,6 +66,10 @@ const spinningDie = css`
     animation-duration: 0.8s;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
+
+    @media (prefers-reduced-motion: reduce) {
+        animation: none;
+    }
 `;
 
 const dicePadding = css`
