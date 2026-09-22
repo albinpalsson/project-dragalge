@@ -8,11 +8,11 @@ export function cardFor(page: Page, cardName: string) {
 }
 
 export async function expandCollapsedSummary(page: Page, cardName: string) {
-    await cardFor(page, cardName).click();
+    await cardFor(page, cardName).first().click();
 }
 
 async function ensureCardExpanded(page: Page, cardName: string) {
-    const card = cardFor(page, cardName);
+    const card = cardFor(page, cardName).first();
     const randomizeCount = await card
         .getByRole('button', { name: RANDOMIZE_BUTTON_NAME })
         .count();
@@ -26,7 +26,7 @@ export async function createGame(page: Page, name: string) {
     await page.getByLabel('Name (optional)').fill(name);
     await page.getByRole('button', { name: 'Start', exact: true }).click();
     await expect(page.getByRole('heading', { name })).toBeVisible();
-    await expect(cardFor(page, 'Starter')).toBeVisible();
+    await expect(cardFor(page, 'Starter').first()).toBeVisible();
 }
 
 // The game DB write to localStorage is debounced; give it time to flush before a reload.
@@ -35,7 +35,7 @@ export async function waitForPersistence(page: Page): Promise<void> {
 }
 
 export async function chooseStarter(page: Page): Promise<string> {
-    const card = cardFor(page, 'Starter');
+    const card = cardFor(page, 'Starter').first();
 
     await card.getByRole('button', { name: 'Randomize' }).click();
     await expect(card.getByRole('button', { name: 'Randomize' })).toBeHidden();
@@ -50,21 +50,43 @@ export async function chooseStarter(page: Page): Promise<string> {
     return starter;
 }
 
+export async function selectStarter(
+    page: Page,
+    starterName: 'Sprigatito' | 'Fuecoco' | 'Quaxly',
+): Promise<void> {
+    const card = cardFor(page, 'Starter').first();
+    let starterButton = page
+        .locator('article', {
+            has: page.getByRole('heading', { name: 'Starter - Cabo poco' }),
+        })
+        .getByRole('button')
+        .filter({ hasText: starterName })
+        .first();
+
+    if ((await starterButton.count()) === 0) {
+        await expandCollapsedSummary(page, 'Starter');
+        starterButton = page
+            .locator('article', {
+                has: page.getByRole('heading', {
+                    name: 'Starter - Cabo poco',
+                }),
+            })
+            .getByRole('button')
+            .filter({ hasText: starterName })
+            .first();
+    }
+
+    await starterButton.click();
+    await expect(
+        card.getByRole('button', { name: 'Reset starter choice' }),
+    ).toBeVisible();
+}
+
 export async function resetStarter(page: Page): Promise<void> {
-    const card = cardFor(page, 'Starter');
+    const card = cardFor(page, 'Starter').first();
     await card
         .getByRole('button', { name: 'Reset starter choice' })
         .click();
-}
-
-export async function listEncounterNames(
-    page: Page,
-    cardName: string,
-): Promise<string[]> {
-    await ensureCardExpanded(page, cardName);
-    const card = cardFor(page, cardName);
-    await card.getByRole('button', { name: 'Show encounters' }).click();
-    return card.locator('tbody tr td:first-child').allTextContents();
 }
 
 export async function rollEncounter(
@@ -72,12 +94,12 @@ export async function rollEncounter(
     cardName: string,
 ): Promise<string> {
     await ensureCardExpanded(page, cardName);
-    const card = cardFor(page, cardName);
+    const card = cardFor(page, cardName).first();
 
     await card.getByRole('button', { name: RANDOMIZE_BUTTON_NAME }).click();
-    await expect(
-        card.getByRole('button', { name: RANDOMIZE_BUTTON_NAME }),
-    ).toBeDisabled();
+    await expect(card.getByRole('button', { name: 'Re-roll' })).toBeEnabled({
+        timeout: 15_000,
+    });
 
     const icon = card.getByRole('img').first();
     await expect(icon).toBeVisible();
@@ -89,13 +111,22 @@ export async function rollEncounter(
     return rolled;
 }
 
+export async function catchEncounter(
+    page: Page,
+    cardName: string,
+): Promise<string> {
+    const rolled = await rollEncounter(page, cardName);
+    await resolveEncounter(page, cardName, 'Caught');
+    return rolled;
+}
+
 export async function resolveEncounter(
     page: Page,
     cardName: string,
     status: 'Caught' | 'Missed' | 'Eliminated',
 ): Promise<void> {
     await ensureCardExpanded(page, cardName);
-    const card = cardFor(page, cardName);
+    const card = cardFor(page, cardName).first();
     const statusButton = card.getByRole('button', {
         name: status,
         exact: true,
@@ -108,6 +139,38 @@ export async function resolveEncounter(
 export async function navigateTo(page: Page, destination: 'Home' | 'About') {
     await page.getByRole('button', { name: 'Open menu' }).click();
     await page.getByRole('button', { name: destination, exact: true }).click();
+}
+
+export async function expectNextStep(page: Page, stepName: string) {
+    const nextStepLabel = page.getByText('→ Next step', { exact: true });
+    await expect(nextStepLabel).toHaveCount(1);
+
+    const stepCard = cardFor(page, stepName).first();
+    await expect(stepCard).toBeVisible();
+
+    const stepItem = page.locator('li', { has: stepCard });
+    await expect(stepItem.getByText('→ Next step', { exact: true })).toHaveCount(
+        1,
+    );
+}
+
+export async function winBossBattle(page: Page, battleName: string) {
+    const card = cardFor(page, battleName).first();
+    const wonButton = card.getByRole('button', { name: 'Mark won' });
+    if ((await wonButton.count()) === 0) {
+        await card.click();
+    }
+
+    const expandedWonButton = card.getByRole('button', { name: 'Mark won' });
+    await expandedWonButton.click();
+    await expect(expandedWonButton).toBeDisabled();
+}
+
+export async function expectProgressionComplete(page: Page) {
+    await expect(
+        page.getByRole('heading', { name: /100% complete/ }),
+    ).toBeVisible();
+    await expect(page.getByText('→ Next step', { exact: true })).toHaveCount(0);
 }
 
 export async function openBox(page: Page) {
