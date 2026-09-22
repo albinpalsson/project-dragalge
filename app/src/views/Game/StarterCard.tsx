@@ -25,6 +25,10 @@ export function StarterCard({ isNext }: StarterCardProps) {
     const starter = useStarter();
     const isBusy = encounterActions.isBusy || clearStarterMutation.isPending;
 
+    if (starter === undefined) {
+        return null;
+    }
+
     const randomizeStarter = () => {
         const pick = randomStarter();
         void encounterActions.chooseStarter(pick, STARTER_LOCATION_NAME);

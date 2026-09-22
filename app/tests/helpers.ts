@@ -3,8 +3,11 @@ import { expect, type Page } from '@playwright/test';
 const RANDOMIZE_BUTTON_NAME = /Randomize|Re-roll/;
 
 export function cardFor(page: Page, cardName: string) {
-    // Resolved encounters collapse from an <article> into a summary <button>.
-    return page.locator('article, button', { hasText: cardName });
+    // Cards render either as a direct <article> (expanded) or as a
+    // <div><button/></div> summary shell (collapsed).
+    return page.locator('li > article, li > div > button', {
+        hasText: cardName,
+    });
 }
 
 export async function expandCollapsedSummary(page: Page, cardName: string) {
@@ -35,17 +38,20 @@ export async function waitForPersistence(page: Page): Promise<void> {
 }
 
 export async function chooseStarter(page: Page): Promise<string> {
+    await ensureCardExpanded(page, 'Starter');
     const card = cardFor(page, 'Starter').first();
 
     await card.getByRole('button', { name: 'Randomize' }).click();
     await expect(card.getByRole('button', { name: 'Randomize' })).toBeHidden();
 
-    const icon = card.getByRole('img').first();
+    const icon = cardFor(page, 'Starter').first().getByRole('img').first();
     await expect(icon).toBeVisible();
     const starter = await icon.getAttribute('alt');
     if (!starter) {
         throw new Error('Chosen starter image is missing alt text');
     }
+
+    await ensureCardExpanded(page, 'Starter');
 
     return starter;
 }
@@ -54,7 +60,6 @@ export async function selectStarter(
     page: Page,
     starterName: 'Sprigatito' | 'Fuecoco' | 'Quaxly',
 ): Promise<void> {
-    const card = cardFor(page, 'Starter').first();
     let starterButton = page
         .locator('article', {
             has: page.getByRole('heading', { name: 'Starter - Cabo poco' }),
@@ -77,12 +82,16 @@ export async function selectStarter(
     }
 
     await starterButton.click();
+    await ensureCardExpanded(page, 'Starter');
     await expect(
-        card.getByRole('button', { name: 'Reset starter choice' }),
+        cardFor(page, 'Starter')
+            .first()
+            .getByRole('button', { name: 'Reset starter choice' }),
     ).toBeVisible();
 }
 
 export async function resetStarter(page: Page): Promise<void> {
+    await ensureCardExpanded(page, 'Starter');
     const card = cardFor(page, 'Starter').first();
     await card
         .getByRole('button', { name: 'Reset starter choice' })
@@ -148,10 +157,10 @@ export async function expectNextStep(page: Page, stepName: string) {
     const stepCard = cardFor(page, stepName).first();
     await expect(stepCard).toBeVisible();
 
-    const stepItem = page.locator('li', { has: stepCard });
-    await expect(stepItem.getByText('→ Next step', { exact: true })).toHaveCount(
-        1,
-    );
+    const stepItem = page
+        .locator('li', { hasText: stepName })
+        .filter({ has: page.getByText('→ Next step', { exact: true }) });
+    await expect(stepItem).toHaveCount(1);
 }
 
 export async function winBossBattle(page: Page, battleName: string) {
