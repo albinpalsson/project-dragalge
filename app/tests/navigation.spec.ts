@@ -12,6 +12,9 @@ test('header stays visible across views and the menu navigates', async ({
         await expect(
             page.getByRole('heading', { name: 'persisted-game-run' }),
         ).toBeVisible();
+        await expect(
+            page.getByRole('button', { name: 'Back' }),
+        ).toBeVisible();
 
         await page.reload();
         await expect(cardFor(page, 'Starter')).toBeVisible();
@@ -22,6 +25,31 @@ test('header stays visible across views and the menu navigates', async ({
         await navigateTo(page, 'About');
         await expect(page.getByRole('heading', { name: 'About' })).toBeVisible();
         await expect(page.getByText('PokeDB')).toBeVisible();
+        await expect(page.getByRole('dialog')).toBeHidden();
+    });
+
+    await test.step('browser history restores each visited view', async () => {
+        await page.goBack();
+        await expect(
+            page.getByRole('heading', { name: 'persisted-game-run' }),
+        ).toBeVisible();
+
+        await page.goBack();
+        await expect(page.getByRole('heading', { name: 'Games' })).toBeVisible();
+        await expect(
+            page.getByRole('button', { name: 'Back' }),
+        ).toBeHidden();
+
+        await page.goForward();
+        await expect(
+            page.getByRole('heading', { name: 'persisted-game-run' }),
+        ).toBeVisible();
+
+        await page.goForward();
+        await expect(page.getByRole('heading', { name: 'About' })).toBeVisible();
+
+        await page.reload();
+        await expect(page.getByRole('heading', { name: 'About' })).toBeVisible();
     });
 
     await test.step('navigating Home persists across reload', async () => {

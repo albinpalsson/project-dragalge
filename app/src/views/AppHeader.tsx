@@ -2,13 +2,27 @@ import { css } from '@pokedb2/css-in-js';
 import { ThemeToggle } from './ThemeToggle';
 
 interface AppHeaderProps {
+    onBack?: () => void;
     onOpenMenu: () => void;
 }
 
-export function AppHeader({ onOpenMenu }: AppHeaderProps) {
+export function AppHeader({ onBack, onOpenMenu }: AppHeaderProps) {
     return (
         <header className={header}>
-            <span className={title}>PokeDB</span>
+            <div className={brand}>
+                {onBack && (
+                    <button
+                        type="button"
+                        className={backButton}
+                        onClick={onBack}
+                        aria-label="Back"
+                        title="Back"
+                    >
+                        ←
+                    </button>
+                )}
+                <span className={title}>PokeDB</span>
+            </div>
             <div className={actions}>
                 <ThemeToggle />
                 <button
@@ -37,6 +51,12 @@ const header = css`
   border-bottom: 0.1rem solid var(--color-border);
 `;
 
+const brand = css`
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+`;
+
 const title = css`
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-bold);
@@ -46,6 +66,21 @@ const actions = css`
   display: flex;
   align-items: center;
   gap: var(--space-2);
+`;
+
+const backButton = css`
+  width: 4rem;
+  height: 4rem;
+  border: 0.1rem solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--font-size-lg);
+  cursor: pointer;
+
+  &:hover {
+    background: var(--color-hover-overlay);
+  }
 `;
 
 const menuButton = css`

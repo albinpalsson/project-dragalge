@@ -1,37 +1,31 @@
 import { useState } from 'react';
 import { css } from '@pokedb2/css-in-js';
 import { Drawer } from '../components/Drawer';
-import { getStoredGameRunId, setStoredGameRunId } from '../game-view-storage';
-import type { ActiveView } from '../router';
 import { About } from './About';
 import { AppHeader } from './AppHeader';
 import { Game } from './Game/Game';
 import { Home } from './Home/Home';
 import { useImportDataFromHash } from '../hooks/useImportDataFromHash';
+import { useViewNavigation } from '../hooks/useViewNavigation';
 
 export function App() {
     const { importData } = useImportDataFromHash();
-    const [activeView, setActiveView] = useState<ActiveView>(() => {
-        if (importData !== undefined) {
-            return { view: 'home' };
-        }
-        const storedGameRunId = getStoredGameRunId();
-        if (storedGameRunId) {
-            return { view: 'game', gameRunId: storedGameRunId };
-        }
-        return { view: 'home' };
-    });
     const [isMenuOpen, setMenuOpen] = useState(false);
-
-    const navigate = (next: ActiveView) => {
-        setActiveView(next);
-        setStoredGameRunId(next.view === 'game' ? next.gameRunId : null);
-        setMenuOpen(false);
-    };
+    const { activeView, navigate } = useViewNavigation({
+        onViewChange: () => setMenuOpen(false),
+        startAtHome: importData !== undefined,
+    });
 
     return (
         <>
-            <AppHeader onOpenMenu={() => setMenuOpen(true)} />
+            <AppHeader
+                onBack={
+                    activeView.view === 'home'
+                        ? undefined
+                        : () => navigate({ view: 'home' })
+                }
+                onOpenMenu={() => setMenuOpen(true)}
+            />
 
             {isMenuOpen && (
                 <Drawer title="Menu" onClose={() => setMenuOpen(false)}>

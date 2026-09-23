@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import type { ActiveView } from '../router';
 
 export function useImportDataFromHash() {
     const [importData, setImportData] = useState(() =>
@@ -9,7 +10,7 @@ export function useImportDataFromHash() {
         importData,
         dismissImport: () => {
             window.history.replaceState(
-                null,
+                { view: 'home' } satisfies ActiveView,
                 '',
                 `${window.location.pathname}${window.location.search}`,
             );
