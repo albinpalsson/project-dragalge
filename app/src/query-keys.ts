@@ -1,7 +1,9 @@
 export const GAMES_QUERY_KEY = ['games'];
 export const GAME_CARDS_QUERY_KEY = ['game-cards'];
+export const GAME_RUN_SNAPSHOTS_QUERY_KEY = ['game-run-snapshots'];
 export const STARTERS_QUERY_KEY = ['starters'];
 export const TYPE_CHART_QUERY_KEY = ['type-chart'];
+export const EVOLUTION_GRAPH_QUERY_KEY = ['evolution-graph'];
 
 export const gameRunQueryKey = (gameRunName: string) => [
     'game-run',
@@ -12,6 +14,7 @@ export const encounterRollsQueryKey = (gameRunId: number) => [
     'encounter-rolls',
     gameRunId,
 ];
+export const banListQueryKey = (gameRunId: number) => ['ban-list', gameRunId];
 
 export const locationEncountersQueryKey = (locationName: string) => [
     'location-encounters',

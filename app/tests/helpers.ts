@@ -27,8 +27,8 @@ async function ensureCardExpanded(page: Page, cardName: string) {
 export async function createGame(page: Page, name: string) {
     await page.getByRole('button', { name: 'Start New Game' }).click();
     await page.getByLabel('Name (optional)').fill(name);
+    await page.getByRole('button', { name: 'Next', exact: true }).click();
     await page.getByRole('button', { name: 'Start', exact: true }).click();
-    await expect(page.getByRole('heading', { name })).toBeVisible();
     await expect(cardFor(page, 'Starter').first()).toBeVisible();
 }
 

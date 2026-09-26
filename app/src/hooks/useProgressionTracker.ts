@@ -18,6 +18,13 @@ export function useProgressionTracker(): ProgressionTracker {
     const starter = useStarter();
     const bossProgressQuery = useBossBattleProgressQuery(game.id);
     const bossProgress = bossProgressQuery.data ?? [];
+    const visibleItems = PROGRESSION_ITEMS.filter(
+        (item) =>
+            item.isVisible?.({
+                settings: game.settings,
+                encounters: game.encounters,
+            }) ?? true,
+    );
 
     const isResolved = (item: ProgressionItem): boolean => {
         if (item.kind === 'encounter') {
@@ -26,6 +33,12 @@ export function useProgressionTracker(): ProgressionTracker {
                     encounter.location_name === item.locationName &&
                     encounter.status !== 'pending',
             );
+        }
+        if (item.kind === 'action') {
+            return item.isResolved({
+                settings: game.settings,
+                encounters: game.encounters,
+            });
         }
         const battleName = starter ? item.getBattleName(starter) : undefined;
         if (!battleName) {
@@ -36,7 +49,7 @@ export function useProgressionTracker(): ProgressionTracker {
 
     let completed = 0;
     let nextKey: string | undefined;
-    for (const item of PROGRESSION_ITEMS) {
+    for (const item of visibleItems) {
         if (isResolved(item)) {
             completed += 1;
             continue;
@@ -46,7 +59,7 @@ export function useProgressionTracker(): ProgressionTracker {
         }
     }
 
-    const total = PROGRESSION_ITEMS.length;
+    const total = visibleItems.length;
     const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
 
     return {

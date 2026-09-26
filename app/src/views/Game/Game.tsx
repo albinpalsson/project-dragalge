@@ -2,9 +2,15 @@ import { css } from '@pokedb2/css-in-js';
 import { Box } from './Box/Box';
 import { GameProvider, useGame } from './GameContext';
 import { useProgressionTracker } from '../../hooks/useProgressionTracker';
-import { toRandomizerMode } from '../../randomizer';
+import { useEvolutionGraphQuery } from '../../hooks/useEvolutionGraphQuery';
 import { PROGRESSION_ITEMS } from './progression/progression-items';
-import { useEncounterRollsQuery, useGameRunQuery } from './queries';
+import {
+    useBanListEntriesQuery,
+    useEncounterRollsQuery,
+    useGameRunQuery,
+} from './queries';
+import { GameSettingsModal } from './GameSettingsModal';
+import { buildBanReasonMap } from '../../utils/ban-list';
 
 interface GameProps {
     gameRunId: string;
@@ -28,8 +34,11 @@ export function Game({ gameRunId }: GameProps) {
     return <LoadedGame game={gameRunQuery.data} />;
 }
 
-function LoadedGame({ game }: { game: NonNullable<ReturnType<typeof useGameRunQuery>['data']> }) {
+type Game = NonNullable<ReturnType<typeof useGameRunQuery>['data']>;
+
+function LoadedGame({ game }: { game: Game }) {
     const encounterRollsQuery = useEncounterRollsQuery(game.id);
+    const banReasonsMap = useBanReasonsMap(game);
 
     if (encounterRollsQuery.isError) {
         return (
@@ -40,9 +49,25 @@ function LoadedGame({ game }: { game: NonNullable<ReturnType<typeof useGameRunQu
         );
     }
 
-    if (encounterRollsQuery.isPending) {
+    if (banReasonsMap.status === 'error') {
+        return (
+            <p>
+                Error loading ban list: {banReasonsMap.error.message}
+            </p>
+        );
+    }
+
+    if (
+        encounterRollsQuery.isPending ||
+        banReasonsMap.status === 'pending'
+    ) {
         return <p>Loading game...</p>;
     }
+
+    if (banReasonsMap.status !== 'ready') {
+        return <p>Loading game...</p>;
+    }
+
 
     return (
         <GameProvider
@@ -50,8 +75,9 @@ function LoadedGame({ game }: { game: NonNullable<ReturnType<typeof useGameRunQu
                 id: game.id,
                 run: game,
                 settings: game.settings,
-                randomizerMode: toRandomizerMode(game.randomizer_mode),
+                randomizerMode: game.settings.randomizerMode,
                 encounters: encounterRollsQuery.data,
+                banReasons: banReasonsMap.banReasons,
             }}
         >
             <GameContent />
@@ -59,9 +85,63 @@ function LoadedGame({ game }: { game: NonNullable<ReturnType<typeof useGameRunQu
     );
 }
 
+type BanReasonsMapResult =
+    | { status: 'pending' }
+    | { status: 'error'; error: Error }
+    | { status: 'ready'; banReasons: ReturnType<typeof buildBanReasonMap> };
+
+function useBanReasonsMap(game: Game): BanReasonsMapResult {
+    const encounterRollsQuery = useEncounterRollsQuery(game.id);
+    const banListEntriesQuery = useBanListEntriesQuery(game.id);
+    const evolutionGraphQuery = useEvolutionGraphQuery();
+
+    if (
+        encounterRollsQuery.isPending ||
+        banListEntriesQuery.isPending ||
+        evolutionGraphQuery.isPending
+    ) {
+        return { status: 'pending' };
+    }
+
+    if (encounterRollsQuery.isError) {
+        return { status: 'error', error: encounterRollsQuery.error };
+    }
+    if (banListEntriesQuery.isError) {
+        return { status: 'error', error: banListEntriesQuery.error };
+    }
+    if (evolutionGraphQuery.isError) {
+        return { status: 'error', error: evolutionGraphQuery.error };
+    }
+
+    const usedEncounterNames = encounterRollsQuery.data
+        .filter(
+            (encounter) =>
+                encounter.status === 'caught' ||
+                encounter.status === 'eliminated',
+        )
+        .map((encounter) => encounter.pokemon_name);
+
+    return { status: 'ready', banReasons: buildBanReasonMap({
+        manualBanNames: banListEntriesQuery.data.map(
+            (entry) => entry.pokemon_name,
+        ),
+        getEvolutionFamily: evolutionGraphQuery.data.getEvolutionFamily,
+        banFullEvolutionLines: game.settings.banFullEvolutionLines,
+        dupesClauseEnabled: game.settings.dupesClauseEnabled,
+        usedEncounterNames,
+    }) };
+}
+
 function GameContent() {
     const game = useGame();
     const progression = useProgressionTracker();
+    const visibleItems = PROGRESSION_ITEMS.filter(
+        (item) =>
+            item.isVisible?.({
+                settings: game.settings,
+                encounters: game.encounters,
+            }) ?? true,
+    );
 
     return (
         <section className={layout}>
@@ -72,10 +152,13 @@ function GameContent() {
                         {progression.percent}% complete
                     </span>
                 </h2>
-                <Box />
+                <div className={topActions}>
+                    <GameSettingsModal />
+                    <Box />
+                </div>
             </div>
             <ol className={cardList}>
-                {PROGRESSION_ITEMS.map((item) => (
+                {visibleItems.map((item) => (
                     <li key={item.key} className={cardItem}>
                         {progression.nextKey === item.key && (
                             <p className={nextStepLabel}>→ Next step</p>
@@ -137,6 +220,12 @@ const gameName = css`
 const mutedText = css`
     color: var(--color-text-muted);
     font-size: var(--font-size-sm);
+`;
+
+const topActions = css`
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
 `;
 
 const cardList = css`

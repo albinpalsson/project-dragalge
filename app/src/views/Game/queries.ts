@@ -2,13 +2,16 @@ import { invalidateQueries } from '@pokedb2/server-query';
 import { useClient, useMutation, useQuery } from '../../server-query';
 import {
     addEncounterRoll,
+    type UpdateGameRunSettingsInput,
     clearEncounterRoll,
     getGameRun,
+    listBanListEntries,
     listEncounterRolls,
     setEncounterRollStatus,
     setEncounterPokemon,
     setPartySlot,
     setPocoPathOceanSetting,
+    updateGameRunSettings,
     listBossBattleProgress,
     setBossBattleResult,
     clearBossBattleResult,
@@ -22,7 +25,9 @@ import {
 } from '../../db/pokemon-data/queries';
 import {
     encounterRollsQueryKey,
+    banListQueryKey,
     GAME_CARDS_QUERY_KEY,
+    GAME_RUN_SNAPSHOTS_QUERY_KEY,
     gameRunQueryKey,
     locationEncountersQueryKey,
     bossBattleRosterQueryKey,
@@ -42,6 +47,13 @@ export function useEncounterRollsQuery(gameRunId: number) {
     return useQuery({
         queryKey: encounterRollsQueryKey(gameRunId),
         queryFn: () => listEncounterRolls(gameRunId),
+    });
+}
+
+export function useBanListEntriesQuery(gameRunId: number) {
+    return useQuery({
+        queryKey: banListQueryKey(gameRunId),
+        queryFn: () => listBanListEntries(gameRunId),
     });
 }
 
@@ -95,6 +107,9 @@ function useRollMutation<TInput extends { gameRunId: number }, TResult>(
                 queryKey: encounterRollsQueryKey(input.gameRunId),
             });
             invalidateQueries(client, { queryKey: GAME_CARDS_QUERY_KEY });
+            invalidateQueries(client, {
+                queryKey: GAME_RUN_SNAPSHOTS_QUERY_KEY,
+            });
             return result;
         },
     });
@@ -132,6 +147,32 @@ export function useSetPocoPathOceanSettingMutation() {
             invalidateQueries(client, {
                 queryKey: gameRunQueryKey(input.gameRunName),
             });
+            invalidateQueries(client, {
+                queryKey: GAME_RUN_SNAPSHOTS_QUERY_KEY,
+            });
+        },
+    });
+}
+
+export function useUpdateGameRunSettingsMutation() {
+    const client = useClient();
+    return useMutation({
+        mutationFn: async (
+            input: UpdateGameRunSettingsInput & { gameRunName: string },
+        ) => {
+            await updateGameRunSettings(input);
+            invalidateQueries(client, {
+                queryKey: gameRunQueryKey(input.gameRunName),
+            });
+            invalidateQueries(client, {
+                queryKey: banListQueryKey(input.gameRunId),
+            });
+            invalidateQueries(client, {
+                queryKey: GAME_CARDS_QUERY_KEY,
+            });
+            invalidateQueries(client, {
+                queryKey: GAME_RUN_SNAPSHOTS_QUERY_KEY,
+            });
         },
     });
 }
@@ -148,6 +189,9 @@ function useBossBattleResultMutation<
                 queryKey: bossBattleProgressQueryKey(input.gameRunId),
             });
             invalidateQueries(client, { queryKey: GAME_CARDS_QUERY_KEY });
+            invalidateQueries(client, {
+                queryKey: GAME_RUN_SNAPSHOTS_QUERY_KEY,
+            });
             return result;
         },
     });

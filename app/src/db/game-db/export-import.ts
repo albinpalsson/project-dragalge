@@ -9,6 +9,7 @@ import {
 import {
     allocateGameIdentity,
     getGameExportData,
+    insertBanListEntries,
     insertBossBattleProgress,
     insertEncounterRolls,
     insertGameRuns,
@@ -16,9 +17,11 @@ import {
     selectGameRuns,
     type BossBattleProgressRow,
     type EncounterRollRow,
-    type GameRunRow,
+    type BanListEntryRow,
+    type GameRun,
   selectEncounterRolls,
   selectBossBattleProgress,
+  selectBanListEntries,
 } from './queries';
 import { getGameDb } from './client';
 import {
@@ -32,19 +35,21 @@ export const EXPORT_FORMAT_VERSION = 1;
 export type ParsedImport =
     | {
           status: 'ok';
-          game: GameRunRow;
+          game: GameRun;
+          banListEntries: BanListEntryRow[];
           encounterRolls: EncounterRollRow[];
           bossProgress: BossBattleProgressRow[];
       }
     | { status: 'error'; message: string };
 
 export async function buildExport(gameRunId: number): Promise<string> {
-    const { game, encounterRolls, bossProgress } =
+    const { game, banListEntries, encounterRolls, bossProgress } =
         await getGameExportData(gameRunId);
     const storage = new CaptureStoragePlugin();
     const db = createExportDatabase(storage);
 
     await insertGameRuns(db, [game]);
+    await insertBanListEntries(db, banListEntries);
     await insertEncounterRolls(db, encounterRolls);
     await insertBossBattleProgress(db, bossProgress);
 
@@ -75,13 +80,15 @@ export async function parseImport(
             return { status: 'error', message: 'This link does not contain exactly one game.' };
         }
         const game = games[0];
-        const [encounterRolls, bossProgress] = await Promise.all([
+        const [banListEntries, encounterRolls, bossProgress] = await Promise.all([
+            selectBanListEntries(game.id, db),
             selectEncounterRolls(game.id, db),
             selectBossBattleProgress(game.id, db),
         ]);
         return {
             status: 'ok',
             game,
+            banListEntries,
             encounterRolls,
             bossProgress,
         };
@@ -93,13 +100,20 @@ export async function parseImport(
 export async function applyImport(
     imported: Extract<ParsedImport, { status: 'ok' }>,
     requestedName: string,
-): Promise<GameRunRow> {
+): Promise<GameRun> {
     const existing = await listGames();
     const { id, name } = allocateGameIdentity(requestedName, existing);
     const db = await getGameDb();
     const game = { ...imported.game, id, name };
 
     await insertGameRuns(db, [game]);
+    await insertBanListEntries(
+        db,
+        imported.banListEntries.map((row) => ({
+            ...row,
+            game_run_id: id,
+        })),
+    );
     await insertEncounterRolls(
         db,
         imported.encounterRolls.map((row) => ({

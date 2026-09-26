@@ -67,4 +67,10 @@ const interactive = css`
   &:hover {
     background: var(--color-hover-overlay);
   }
+
+    &:disabled {
+        color: var(--color-text-muted);
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
 `;

@@ -45,7 +45,7 @@ export function Tooltip({
 
             if (isInside) {
                 const trigger = target as HTMLElement;
-                if (trigger.closest('button, a')) {
+                if (trigger.closest('button, a, [role="button"]')) {
                     setPinned((value) => !value);
                 }
                 return;

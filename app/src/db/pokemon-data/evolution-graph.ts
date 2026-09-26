@@ -16,6 +16,7 @@ export interface EvolutionGraphNode {
 export interface EvolutionGraph {
     getNode: (pokemonName: string) => EvolutionGraphNode | undefined;
     getFirstStage: (pokemonName: string) => string | undefined;
+    getEvolutionFamily: (pokemonName: string) => string[];
 }
 
 async function buildEvolutionGraph(
@@ -68,6 +69,32 @@ async function buildEvolutionGraph(
                 current = nodesByName.get(previous.pokemonName);
             }
             return undefined;
+        },
+        getEvolutionFamily: (pokemonName) => {
+            const start = nodesByName.get(pokemonName);
+            if (!start) {
+                return [];
+            }
+
+            const family = new Set<string>();
+            const pending = [start];
+            while (pending.length > 0) {
+                const current = pending.pop();
+                if (!current || family.has(current.pokemonName)) {
+                    continue;
+                }
+                family.add(current.pokemonName);
+                for (const edge of [
+                    ...current.nextEvolutions,
+                    ...current.previousEvolutions,
+                ]) {
+                    const next = nodesByName.get(edge.pokemonName);
+                    if (next && !family.has(next.pokemonName)) {
+                        pending.push(next);
+                    }
+                }
+            }
+            return [...family];
         },
     };
 }

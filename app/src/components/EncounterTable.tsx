@@ -1,15 +1,13 @@
 import { css } from '@pokedb2/css-in-js';
 import type { LocationEncounterView } from '../db/pokemon-data/queries';
-import { Tooltip } from './Tooltip';
+import { useBanReasons } from '../hooks/useBanReasons';
+import { getBanReason } from '../utils/ban-list';
 import {
     formatLevelRange,
     formatTime,
     formatWeight,
 } from '../utils/encounter-formatters';
-import {
-    isEncounterInVariant,
-    variantDisplayName,
-} from '../utils/game-variant';
+import { isEncounterInVariant } from '../utils/game-variant';
 
 interface EncounterTableProps {
     encounters: LocationEncounterView[];
@@ -24,6 +22,7 @@ export function EncounterTable({
     disabled,
     onPick,
 }: EncounterTableProps) {
+    const banReasons = useBanReasons();
     return (
         <div className={tableWrap}>
             <table className={table}>
@@ -44,43 +43,51 @@ export function EncounterTable({
                             encounter.games,
                             variant,
                         );
-                        const isPickDisabled = disabled || !matchesVariant;
+                        const banReason = getBanReason(
+                            banReasons,
+                            encounter.name,
+                        );
+                        const isPickDisabled =
+                            disabled || !matchesVariant || !!banReason;
 
                         return (
                             <tr
                                 key={`${encounter.name}-${encounter.subArea}-${encounter.terrain}`}
                                 className={
-                                    !matchesVariant
+                                    !matchesVariant || banReason
                                         ? variantMismatchRow
                                         : undefined
                                 }
                             >
-                                <td>{encounter.name}</td>
+                                <td>
+                                    <span
+                                        className={
+                                            banReason ? excludedName : undefined
+                                        }
+                                    >
+                                        {encounter.name}
+                                    </span>
+                                    {banReason && (
+                                        <span className={exclusionReason}>
+                                            ({banReason})
+                                        </span>
+                                    )}
+                                </td>
                                 <td>{encounter.subArea}</td>
                                 <td>{formatLevelRange(encounter)}</td>
                                 <td>{formatWeight(encounter)}%</td>
                                 <td>{formatTime(encounter)}</td>
                                 <td>{encounter.terrain}</td>
                                 <td>
-                                    <Tooltip
-                                        content={
-                                            matchesVariant
-                                                ? ''
-                                                : `Only in ${variantDisplayName(encounter.games)}`
-                                        }
-                                        className={tooltipWrap}
+                                    <button
+                                        type="button"
+                                        className={pickButton}
+                                        onClick={() => onPick(encounter)}
+                                        disabled={isPickDisabled}
+                                        aria-label={`Pick ${encounter.name}`}
                                     >
-                                        <button
-                                            type="button"
-                                            className={pickButton}
-                                            onClick={() => onPick(encounter)}
-                                            disabled={isPickDisabled}
-                                            aria-label={`Pick ${encounter.name}`}
-                                            title={`Pick ${encounter.name}`}
-                                        >
-                                            🎣
-                                        </button>
-                                    </Tooltip>
+                                        🎣
+                                    </button>
                                 </td>
                             </tr>
                         );
@@ -124,12 +131,25 @@ const pickButton = css`
   border-radius: var(--radius-sm);
   background: transparent;
   cursor: pointer;
+
+    &:disabled {
+        color: var(--color-text-muted);
+        opacity: 0.45;
+        cursor: not-allowed;
+    }
 `;
 
 const variantMismatchRow = css`
     opacity: 0.6;
 `;
 
-const tooltipWrap = css`
-    width: 100%;
+const excludedName = css`
+    text-decoration: line-through;
 `;
+
+const exclusionReason = css`
+    display: block;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+`;
+

@@ -237,6 +237,12 @@ export async function getPokemon(
     };
 }
 
+export async function listAllPokemon(): Promise<string[]> {
+    const db = await getPokemonDb();
+    const rows = await db.selectFrom('pokemon').selectAll().execute();
+    return rows.map((row) => row.name);
+}
+
 export async function getPokemonEvolutionDetails(
     pokemonName: string,
 ): Promise<PokemonEvolutionDetails | undefined> {

@@ -5,13 +5,13 @@ import { OverflowMenu } from '../../components/OverflowMenu';
 import {
     NO_PARTY_SLOT,
 } from '../../db/game-db/schema';
-import type { EncounterRollRow, GameRunRow } from '../../db/game-db/queries';
+import type { EncounterRollRow, GameRun } from '../../db/game-db/queries';
 import { pokemonIconSrc, toIconSlug } from '../../pokemon-icon';
 import { getRandomizerDisplayName } from '../../randomizer-groups';
 import { ExportGameModal } from './ExportGameModal';
 
 interface GameCardProps {
-    game: GameRunRow;
+    game: GameRun;
     obtained: EncounterRollRow[];
     isLost: boolean;
     onOpenGame: () => void;

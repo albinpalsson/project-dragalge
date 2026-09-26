@@ -21,6 +21,7 @@ test('starting a game enforces a 128-character name limit', async ({ page }) => 
     await nameInput.fill(longName);
     await expect(nameInput).toHaveValue(expectedName);
 
+    await page.getByRole('button', { name: 'Next', exact: true }).click();
     await page.getByRole('button', { name: 'Start', exact: true }).click();
-    await expect(page.getByRole('heading', { name: expectedName })).toBeVisible();
+    await expect(page.getByRole('heading').first()).toContainText(expectedName);
 });

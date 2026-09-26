@@ -7,20 +7,40 @@ import type {
     EncounterStatusCode,
     GameRunsDb,
     RandomizerModeCode,
+    TeraRaidsCode,
 } from './schema';
 import { NO_PARTY_SLOT } from './schema';
 
 export type GameVariant = 's' | 'v';
-export type EncounterStatus = 'pending' | 'caught' | 'missed' | 'eliminated';
+export type EncounterStatus =
+    | 'pending'
+    | 'caught'
+    | 'missed'
+    | 'eliminated'
+    | 'released';
+export type TeraRaidsSetting = 'none' | 'single' | 'unlimited';
 export type BossBattleResult = 'won' | 'lost';
 export const GAME_NAME_MAX_BYTES = 128;
 
-export interface GameRunRow {
+export interface GameSettings {
+    randomizerMode: RandomizerMode;
+    pocoPathOcean: boolean;
+    dupesClauseEnabled: boolean;
+    banFullEvolutionLines: boolean;
+    releaseStarterEnabled: boolean;
+    teraRaids: TeraRaidsSetting;
+    showHelpfulTips: boolean;
+    includeTeamStarBattles: boolean;
+}
+
+// The encoded storage columns for GameSettings: every game_runs column except identity.
+type EncodedGameSettings = Omit<GameRunsDb['game_runs'], 'id' | 'name' | 'variant'>;
+
+export interface GameRun {
     id: number;
     name: string;
     variant: string;
-    randomizer_mode: RandomizerMode;
-    poco_path_ocean: BooleanFlag;
+    settings: GameSettings;
 }
 
 export interface EncounterRollRow {
@@ -32,6 +52,11 @@ export interface EncounterRollRow {
     party_slot: number;
 }
 
+export interface BanListEntryRow {
+    game_run_id: number;
+    pokemon_name: string;
+}
+
 export interface BossBattleProgressRow {
     game_run_id: number;
     battle_name: string;
@@ -39,7 +64,8 @@ export interface BossBattleProgressRow {
 }
 
 export interface GameExportData {
-    game: GameRunRow;
+    game: GameRun;
+    banListEntries: BanListEntryRow[];
     encounterRolls: EncounterRollRow[];
     bossProgress: BossBattleProgressRow[];
 }
@@ -48,19 +74,16 @@ export function generateDefaultGameName(variant: GameVariant): string {
     return `game-${VARIANT_NAMES[variant]}-${randomShortHash()}`;
 }
 
-export async function listGames(): Promise<GameRunRow[]> {
+export async function listGames(): Promise<GameRun[]> {
     const db = await getGameDb();
     return selectGameRuns(db);
 }
 
 export async function selectGameRuns(
     db: Database<GameRunsDb>,
-): Promise<GameRunRow[]> {
+): Promise<GameRun[]> {
     const rows = await db.selectFrom('game_runs').selectAll().execute();
-    return rows.map((row) => ({
-        ...row,
-        randomizer_mode: decodeRandomizerMode(row.randomizer_mode),
-    }));
+    return rows.map(gameRunFromRow);
 }
 
 export async function getGameExportData(
@@ -71,16 +94,17 @@ export async function getGameExportData(
     if (!game) {
         throw new Error('Game not found.');
     }
-    const [encounterRolls, bossProgress] = await Promise.all([
+    const [banListEntries, encounterRolls, bossProgress] = await Promise.all([
+        listBanListEntries(gameRunId),
         listEncounterRolls(gameRunId),
         listBossBattleProgress(gameRunId),
     ]);
-    return { game, encounterRolls, bossProgress };
+    return { game, banListEntries, encounterRolls, bossProgress };
 }
 
 export async function insertGameRuns(
     db: Database<GameRunsDb>,
-    rows: readonly GameRunRow[],
+    rows: readonly GameRun[],
 ): Promise<void> {
     if (rows.length === 0) {
         return;
@@ -89,11 +113,23 @@ export async function insertGameRuns(
         .insertInto('game_runs')
         .values(
             rows.map((row) => ({
-                ...row,
-                randomizer_mode: encodeRandomizerMode(row.randomizer_mode),
+                id: row.id,
+                name: row.name,
+                variant: row.variant,
+                ...encodeGameSettings(row.settings),
             })),
         )
         .execute();
+}
+
+export async function insertBanListEntries(
+    db: Database<GameRunsDb>,
+    rows: readonly BanListEntryRow[],
+): Promise<void> {
+    if (rows.length === 0) {
+        return;
+    }
+    await db.insertInto('ban_list_entries').values([...rows]).execute();
 }
 
 export async function insertEncounterRolls(
@@ -132,18 +168,6 @@ export async function insertBossBattleProgress(
         .execute();
 }
 
-export interface GameRunSettings {
-    pocoPathOcean: boolean;
-}
-
-export interface GameRun {
-    id: number;
-    name: string;
-    variant: string;
-    randomizer_mode: string;
-    settings: GameRunSettings;
-}
-
 export async function getGameRun(
     gameRunName: string,
 ): Promise<GameRun | undefined> {
@@ -159,28 +183,35 @@ export async function getGameRun(
 export interface CreateGameInput {
     name: string;
     variant: GameVariant;
-    randomizerMode: RandomizerMode;
+    settings: Omit<GameSettings, 'pocoPathOcean'>;
+    banListNames: string[];
 }
 
-export async function createGame(input: CreateGameInput): Promise<GameRunRow> {
+export async function createGame(input: CreateGameInput): Promise<GameRun> {
     const db = await getGameDb();
     const existing = await listGames();
     const identity = allocateGameIdentity(input.name, existing);
 
-    const row: GameRunRow = {
+    const game: GameRun = {
         ...identity,
         variant: input.variant,
-        randomizer_mode: input.randomizerMode,
-        poco_path_ocean: 0,
+        settings: { ...input.settings, pocoPathOcean: false },
     };
-    await insertGameRuns(db, [row]);
-    return row;
+    await insertGameRuns(db, [game]);
+    await insertBanListEntries(
+        db,
+        input.banListNames.map((pokemonName) => ({
+            game_run_id: game.id,
+            pokemon_name: pokemonName,
+        })),
+    );
+    return game;
 }
 
 export function allocateGameIdentity(
     requestedName: string,
-    existing: readonly GameRunRow[],
-): Pick<GameRunRow, 'id' | 'name'> {
+    existing: readonly GameRun[],
+): Pick<GameRun, 'id' | 'name'> {
     const baseName = requestedName.trim();
     assertGameNameFits(baseName);
 
@@ -203,6 +234,24 @@ export function allocateGameIdentity(
 }
 
 export const STARTER_LOCATION_NAME = 'Starter';
+
+export async function listBanListEntries(
+    gameRunId: number,
+): Promise<BanListEntryRow[]> {
+    const db = await getGameDb();
+    return selectBanListEntries(gameRunId, db);
+}
+
+export async function selectBanListEntries(
+    gameRunId: number,
+    db: Database<GameRunsDb>,
+): Promise<BanListEntryRow[]> {
+    return db
+        .selectFrom('ban_list_entries')
+        .selectAll()
+        .where('game_run_id', '=', gameRunId)
+        .execute();
+}
 
 export async function listEncounterRolls(
     gameRunId: number,
@@ -331,15 +380,52 @@ export interface SetPocoPathOceanSettingInput {
     includeOcean: boolean;
 }
 
+export interface UpdateGameRunSettingsInput {
+    gameRunId: number;
+    settings: Omit<GameSettings, 'pocoPathOcean'>;
+    banListNames: string[];
+}
+
+export async function updateGameRunSettings(
+    input: UpdateGameRunSettingsInput,
+): Promise<void> {
+    const db = await getGameDb();
+    const s = input.settings;
+    await db
+        .updateTable('game_runs')
+        .set({
+            randomizer_mode: encodeRandomizerMode(s.randomizerMode),
+            dupes_clause_enabled: encodeFlag(s.dupesClauseEnabled),
+            ban_full_evolution_lines: encodeFlag(s.banFullEvolutionLines),
+            release_starter_enabled: encodeFlag(s.releaseStarterEnabled),
+            tera_raids: encodeTeraRaids(s.teraRaids),
+            show_helpful_tips: encodeFlag(s.showHelpfulTips),
+            include_team_star_battles: encodeFlag(s.includeTeamStarBattles),
+        })
+        .where('id', '=', input.gameRunId)
+        .execute();
+
+    await db
+        .deleteFrom('ban_list_entries')
+        .where('game_run_id', '=', input.gameRunId)
+        .execute();
+
+    await insertBanListEntries(
+        db,
+        input.banListNames.map((pokemonName) => ({
+            game_run_id: input.gameRunId,
+            pokemon_name: pokemonName,
+        })),
+    );
+}
+
 export async function setPocoPathOceanSetting(
     input: SetPocoPathOceanSettingInput,
 ): Promise<void> {
     const db = await getGameDb();
     await db
         .updateTable('game_runs')
-        .set({
-            poco_path_ocean: input.includeOcean ? 1 : 0,
-        })
+        .set({ poco_path_ocean: encodeFlag(input.includeOcean) })
         .where('id', '=', input.gameRunId)
         .execute();
 }
@@ -423,6 +509,13 @@ const ENCOUNTER_STATUS_CODES: Record<EncounterStatus, EncounterStatusCode> = {
     caught: 'c',
     missed: 'm',
     eliminated: 'e',
+    released: 'r',
+};
+
+const TERA_RAIDS_CODES: Record<TeraRaidsSetting, TeraRaidsCode> = {
+    none: 'n',
+    single: 's',
+    unlimited: 'u',
 };
 
 const BOSS_BATTLE_RESULT_CODES: Record<
@@ -446,6 +539,10 @@ export const encodeEncounterStatus = (value: EncounterStatus) =>
     encode(value, ENCOUNTER_STATUS_CODES);
 export const decodeEncounterStatus = (code: EncounterStatusCode) =>
     decode(code, ENCOUNTER_STATUS_CODES);
+export const encodeTeraRaids = (value: TeraRaidsSetting) =>
+    encode(value, TERA_RAIDS_CODES);
+export const decodeTeraRaids = (code: TeraRaidsCode) =>
+    decode(code, TERA_RAIDS_CODES);
 export const encodeBossBattleResult = (value: BossBattleResult) =>
     encode(value, BOSS_BATTLE_RESULT_CODES);
 export const decodeBossBattleResult = (code: BossBattleResultCode) =>
@@ -476,15 +573,44 @@ function decode<TValue extends string, TCode extends string>(
 }
 
 function gameRunFromRow(row: GameRunsDb['game_runs']): GameRun {
+    const { id, name, variant, ...encodedSettings } = row;
+    return { id, name, variant, settings: decodeGameSettings(encodedSettings) };
+}
+
+function encodeGameSettings(settings: GameSettings): EncodedGameSettings {
     return {
-        id: row.id,
-        name: row.name,
-        variant: row.variant,
-        randomizer_mode: decodeRandomizerMode(row.randomizer_mode),
-        settings: {
-            pocoPathOcean: row.poco_path_ocean === 1,
-        },
+        randomizer_mode: encodeRandomizerMode(settings.randomizerMode),
+        poco_path_ocean: encodeFlag(settings.pocoPathOcean),
+        dupes_clause_enabled: encodeFlag(settings.dupesClauseEnabled),
+        ban_full_evolution_lines: encodeFlag(settings.banFullEvolutionLines),
+        release_starter_enabled: encodeFlag(settings.releaseStarterEnabled),
+        tera_raids: encodeTeraRaids(settings.teraRaids),
+        show_helpful_tips: encodeFlag(settings.showHelpfulTips),
+        include_team_star_battles: encodeFlag(
+            settings.includeTeamStarBattles,
+        ),
     };
+}
+
+function decodeGameSettings(row: EncodedGameSettings): GameSettings {
+    return {
+        randomizerMode: decodeRandomizerMode(row.randomizer_mode),
+        pocoPathOcean: decodeFlag(row.poco_path_ocean),
+        dupesClauseEnabled: decodeFlag(row.dupes_clause_enabled),
+        banFullEvolutionLines: decodeFlag(row.ban_full_evolution_lines),
+        releaseStarterEnabled: decodeFlag(row.release_starter_enabled),
+        teraRaids: decodeTeraRaids(row.tera_raids),
+        showHelpfulTips: decodeFlag(row.show_helpful_tips),
+        includeTeamStarBattles: decodeFlag(row.include_team_star_battles),
+    };
+}
+
+function encodeFlag(value: boolean): BooleanFlag {
+    return value ? 1 : 0;
+}
+
+function decodeFlag(value: BooleanFlag): boolean {
+    return value === 1;
 }
 
 function randomShortHash(): string {

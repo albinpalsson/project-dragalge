@@ -1,4 +1,4 @@
-import { css } from '@pokedb2/css-in-js';
+import { css, cx } from '@pokedb2/css-in-js';
 import { BadgeButton } from '../../components/Badge';
 import { Button } from '../../components/Button';
 import { CollapsedSummaryRow } from '../../components/CollapsedSummaryRow';
@@ -10,7 +10,9 @@ import { getPokemonTypeColor } from '../../utils/pokemon-type-colors';
 
 import { STARTER_LOCATION_NAME } from '../../db/game-db/queries';
 import { useEncounterActions } from '../../hooks/useEncounterActions';
+import { useBanReasons } from '../../hooks/useBanReasons';
 import { useStarter } from '../../hooks/useStarter';
+import { getBanReason } from '../../utils/ban-list';
 import { useGame } from './GameContext';
 import { useClearEncounterRollMutation } from './queries';
 
@@ -22,6 +24,7 @@ export function StarterCard({ isNext }: StarterCardProps) {
     const game = useGame();
     const encounterActions = useEncounterActions();
     const clearStarterMutation = useClearEncounterRollMutation();
+    const banReasons = useBanReasons();
     const starter = useStarter();
     const isBusy = encounterActions.isBusy || clearStarterMutation.isPending;
 
@@ -29,8 +32,15 @@ export function StarterCard({ isNext }: StarterCardProps) {
         return null;
     }
 
+    const availableStarterChoices = STARTER_CHOICES.filter(
+        (choice) => !getBanReason(banReasons, choice.name),
+    );
+
     const randomizeStarter = () => {
-        const pick = randomStarter();
+        const pick = randomStarter(availableStarterChoices);
+        if (!pick) {
+            return;
+        }
         void encounterActions.chooseStarter(pick, STARTER_LOCATION_NAME);
     };
 
@@ -182,49 +192,82 @@ export function StarterCard({ isNext }: StarterCardProps) {
                         <>
                             <p className={hint}>Choose your starter Pokémon.</p>
                             <ul className={options}>
-                                {STARTER_CHOICES.map((starterChoice) => (
-                                    <li key={starterChoice.name}>
-                                        <button
-                                            type="button"
-                                            className={option}
-                                            onClick={() =>
-                                                void encounterActions.chooseStarter(
-                                                    starterChoice.name,
-                                                    STARTER_LOCATION_NAME,
-                                                )
-                                            }
-                                            disabled={isBusy}
-                                        >
-                                            <span
-                                                className={iconFrameSmall}
-                                                style={{
-                                                    borderColor:
-                                                        getPokemonTypeColor(
-                                                            starterChoice.type,
-                                                        ),
-                                                }}
+                                {STARTER_CHOICES.map((starterChoice) => {
+                                    const banReason = getBanReason(
+                                        banReasons,
+                                        starterChoice.name,
+                                    );
+                                    return (
+                                        <li key={starterChoice.name}>
+                                            <button
+                                                type="button"
+                                                className={cx(
+                                                    option,
+                                                    banReason && blockedOption,
+                                                )}
+                                                onClick={() =>
+                                                    void encounterActions.chooseStarter(
+                                                        starterChoice.name,
+                                                        STARTER_LOCATION_NAME,
+                                                    )
+                                                }
+                                                title={
+                                                    banReason
+                                                        ? `Blocked: ${banReason}`
+                                                        : undefined
+                                                }
+                                                disabled={isBusy || !!banReason}
                                             >
-                                                <img
-                                                    className={optionIcon}
-                                                    src={pokemonIconSrc(
-                                                        toIconSlug(
-                                                            starterChoice.name,
-                                                        ),
-                                                    )}
-                                                    alt={starterChoice.name}
-                                                    loading="lazy"
-                                                />
-                                            </span>
-                                            <span>{starterChoice.name}</span>
-                                        </button>
-                                    </li>
-                                ))}
+                                                <span
+                                                    className={iconFrameSmall}
+                                                    style={{
+                                                        borderColor:
+                                                            getPokemonTypeColor(
+                                                                starterChoice.type,
+                                                            ),
+                                                    }}
+                                                >
+                                                    <img
+                                                        className={optionIcon}
+                                                        src={pokemonIconSrc(
+                                                            toIconSlug(
+                                                                starterChoice.name,
+                                                            ),
+                                                        )}
+                                                        alt={starterChoice.name}
+                                                        loading="lazy"
+                                                    />
+                                                </span>
+                                                <span
+                                                    className={
+                                                        banReason
+                                                            ? excludedName
+                                                            : undefined
+                                                    }
+                                                >
+                                                    {starterChoice.name}
+                                                </span>
+                                                {banReason && (
+                                                    <span className={exclusionReason}>
+                                                        {banReason}
+                                                    </span>
+                                                )}
+                                            </button>
+                                        </li>
+                                    );
+                                })}
                             </ul>
+                            {availableStarterChoices.length === 0 && (
+                                <p className={hint}>No available starters.</p>
+                            )}
                             <div className={actionRow}>
                                 <RandomizeButton
                                     label="Randomize"
                                     variant="warm"
-                                    disabled={isBusy}
+                                    disabled={
+                                        isBusy ||
+                                        availableStarterChoices.length === 0
+                                    }
                                     onRandomize={randomizeStarter}
                                     ariaLabel="Randomize"
                                     title="Randomize"
@@ -244,10 +287,6 @@ const STARTER_CHOICES = [
     { name: 'Quaxly', type: 'Water' },
 ] as const;
 
-function starterChoiceForName(name: string) {
-    return STARTER_CHOICES.find((starterChoice) => starterChoice.name === name);
-}
-
 export const STARTER_NAMES = STARTER_CHOICES.map(
     (starterChoice) => starterChoice.name,
 ) as [
@@ -256,8 +295,17 @@ export const STARTER_NAMES = STARTER_CHOICES.map(
     (typeof STARTER_CHOICES)[2]['name'],
 ];
 
-function randomStarter() {
-    return STARTER_NAMES[Math.floor(Math.random() * STARTER_NAMES.length)];
+function starterChoiceForName(name: string) {
+    return STARTER_CHOICES.find((starterChoice) => starterChoice.name === name);
+}
+
+function randomStarter(
+    choices: readonly (typeof STARTER_CHOICES)[number][],
+) {
+    if (choices.length === 0) {
+        return undefined;
+    }
+    return choices[Math.floor(Math.random() * choices.length)].name;
 }
 
 const heading = css`
@@ -293,6 +341,7 @@ const actionRow = css`
 `;
 
 const option = css`
+    position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -307,6 +356,27 @@ const option = css`
   &:hover {
     background: var(--color-hover-overlay);
   }
+
+    &:disabled {
+        cursor: not-allowed;
+    }
+`;
+
+const blockedOption = css`
+        opacity: 0.62;
+
+        > * {
+                filter: grayscale(0.35);
+        }
+`;
+
+const excludedName = css`
+    text-decoration: line-through;
+`;
+
+const exclusionReason = css`
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
 `;
 
 const optionIcon = css`
