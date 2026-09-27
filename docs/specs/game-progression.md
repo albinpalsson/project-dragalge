@@ -8,7 +8,14 @@ The canonical order lives in the `PROGRESSION` array (encounter/boss/starter int
 
 1. Starter
 2. Poco Path
-3. Inlet Grotto
+3. Release Starter (optional, shown when the "Release starter" setting is on)
+4. Inlet Grotto
+5. South Province (Area One)
+6. Nemona (Second Battle)
+7. Tera Raid 1★ (optional, hidden when the "Tera raids" setting is "None"; only required for completion when the setting is "Single")
+8. Pokemon League (Paldea)
+9. South Province (Area Two)
+10. Katy (Bug Gym)
 
 ## Full Progression Order
 
@@ -16,15 +23,15 @@ Legend: **Boss type** — Rival / Gym / Titan / Starfall / Elite Four. "Implemen
 
 | # | Kind | Name | Boss Type | Level Cap | Province / Location | Implemented |
 | ---: | --- | --- | --- | ---: | --- | :---: |
-| 1 | Starter | Starter | — | — | — | |
+| 1 | Starter | Starter | — | — | — | ✅ |
 | 2 | Boss | Nemona (First Battle) | Rival | 5 | Cabo Poco | |
 | 3 | Encounter | Poco Path | — | — | South Province | ✅ |
-| 4 | Encounter | Inlet Grotto | — | — | South Province | |
-| 5 | Encounter | South Province (Area One) | — | — | South Province | |
-| 6 | Boss | Nemona (Second Battle) | Rival | 9 | South Province (Area One) | |
-| 7 | Encounter | Pokemon League (Paldea) | — | — | South Province | |
-| 8 | Encounter | South Province (Area Two) | — | — | South Province | |
-| 9 | Boss | Katy (Bug Gym) | Gym | 15 | Cortondo | |
+| 4 | Encounter | Inlet Grotto | — | — | South Province | ✅ |
+| 5 | Encounter | South Province (Area One) | — | — | South Province | ✅ |
+| 6 | Boss | Nemona (Second Battle) | Rival | 9 | South Province (Area One) | ✅ |
+| 7 | Encounter | Pokemon League (Paldea) | — | — | South Province | ✅ |
+| 8 | Encounter | South Province (Area Two) | — | — | South Province | ✅ |
+| 9 | Boss | Katy (Bug Gym) | Gym | 15 | Cortondo | ✅ |
 | 10 | Encounter | South Province (Area Three) | — | — | South Province | |
 | 11 | Boss | Klawf (Stony Cliff Titan) | Titan | 16 | South Province (Area Three) | |
 | 12 | Boss | Brassius (Grass Gym) | Gym | 17 | Artazon | |
@@ -75,4 +82,37 @@ Legend: **Boss type** — Rival / Gym / Titan / Starfall / Elite Four. "Implemen
 | 57 | Boss | Hassel (Elite Four) | Elite Four | 61 | Pokemon League | |
 | 58 | Boss | Geeta (Top Champion) | Elite Four | 62 | Pokemon League | |
 | 59 | Boss | Nemona (Final Battle) | Rival | 66 | Mesagoza | |
+
+## Tera Raids
+
+Tera Raids are optional side content, not part of the main story route. The "Tera raids" game setting controls their behavior: `None` hides every raid card; `Single` shows one raid slot per star tier and counts it toward progression completion (the player must resolve it — Caught, Missed, or Eliminated — before the tracker considers it done); `Unlimited` shows the same cards but lets the player log any number of Pokemon per tier, and those cards never block completion since they have no natural endpoint.
+
+Each raid card lets the player search out a den of the matching star rating in-game and record whichever Pokemon they find there — the app does not simulate the raid's own encounter table.
+
+### Star rating reference (Bulbapedia)
+
+Source: [Tera Raid Battle - Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Tera_Raid_Battle).
+
+| Star rating | Level in battle | Level when caught | Available from |
+| :---: | ---: | ---: | --- |
+| ★ | 12 | 12 | Start of the game (80%), tapering off after 3 badges |
+| ★★ | 20 | 20 | Start of the game (20%), most common between 3–6 badges |
+| ★★★ | 35 | 35 | After 3 badges |
+| ★★★★ | 45 | 45 | After 6 badges |
+| ★★★★★ | 75 | 75 | After the ending credits |
+| ★★★★★★ | 90 | 75 | After the Academy Ace Tournament and 10 4★/5★ raids (one per real-life day) |
+
+### Runtime placement
+
+Card placement follows the caught level so a raid never appears before the player's level cap can safely accommodate it — this is independent of when a tier first becomes *available* in-game (a tier can unlock earlier than its card is placed here).
+
+| Star rating | Caught level | Placement |
+| :---: | ---: | --- |
+| ★ | 12 | After Nemona's Second Battle (cap 9), before Katy (cap 15) — implemented |
+| ★★ | 20 | After the cap-20 progression point (Bombirdier), before cap 21 — not yet registered |
+| ★★★ | 35 | After cap 33 (Giacomo), before cap 36 (Larry) — not yet registered |
+| ★★★★ | 45 | After a cap-45 point (Great Tusk/Iron Treads or Nemona's Fifth Battle), before cap 48 (Grusha) — not yet registered |
+| ★★★★★ / ★★★★★★ | 75 | Deferred until the roadmap includes a postgame/Academy Ace Tournament progression point — not yet registered |
+
+Only the 1★ card is registered in `PROGRESSION_ITEMS` today. Later tiers reuse the same generic card/action model and are added once their surrounding runtime progression exists.
 

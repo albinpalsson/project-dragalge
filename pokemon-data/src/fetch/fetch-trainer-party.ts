@@ -9,7 +9,7 @@ import { cachedFetcher } from './cached-fetcher.ts';
 
 export type { TrainerPartyEntry };
 
-function parseWikitextResponse(json: string, pageName: string): string {
+export function parseWikitextResponse(json: string, pageName: string): string {
     const parsed = JSON.parse(json) as {
         parse?: { wikitext: { '*': string } };
     };

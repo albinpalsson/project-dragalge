@@ -21,7 +21,11 @@ import {
     initializeDb,
     insertLocationEncounters,
 } from './schema-init.ts';
-import { fetchBossFightSeeds, fetchLocationSeeds } from './sources/index.ts';
+import {
+    fetchBossFightSeeds,
+    fetchLocationSeeds,
+    fetchTeraRaidSeeds,
+} from './sources/index.ts';
 
 async function main(): Promise<void> {
     const root = resolve(dirname(fileURLToPath(import.meta.url)));
@@ -36,6 +40,7 @@ async function main(): Promise<void> {
     // Load local seed data first so schema generation can follow data shape.
     const { locations } = await fetchLocationSeeds();
     const bossSeeds = await fetchBossFightSeeds();
+    const teraRaidPokemonNames = await fetchTeraRaidSeeds([1, 2, 3, 4]);
 
     // Fetch boss rosters early so boss Pokémon are included in the unified pokemonIds map.
     const rawRosters = await fetchAllBossRosters(bossSeeds);
@@ -54,7 +59,11 @@ async function main(): Promise<void> {
     await db.insertInto('locations').values(locationRows).execute();
 
     // Start with encounter and boss Pokémon; fetching expands the map to their evolution lines.
-    const pokemonIds = buildPokemonNameMap(locations, rawRosters);
+    const pokemonIds = buildPokemonNameMap(
+        locations,
+        rawRosters,
+        teraRaidPokemonNames,
+    );
 
     const pokemonRows = await fetchAllPokemonRows(pokemonIds);
 

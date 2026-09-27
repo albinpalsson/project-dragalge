@@ -335,6 +335,7 @@ export function buildLocationIdMap(
 export function buildPokemonNameMap(
     locations: readonly LocationSeed[],
     rosters: readonly RawBossRoster[],
+    teraRaidPokemonNames: readonly string[],
 ): Map<string, number> {
     const ids = new Map<string, number>();
     for (const location of locations) {
@@ -349,6 +350,11 @@ export function buildPokemonNameMap(
             if (!ids.has(entry.pokemon)) {
                 ids.set(entry.pokemon, ids.size + 1);
             }
+        }
+    }
+    for (const name of teraRaidPokemonNames) {
+        if (!ids.has(name)) {
+            ids.set(name, ids.size + 1);
         }
     }
     return ids;
