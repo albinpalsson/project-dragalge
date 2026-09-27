@@ -32,7 +32,10 @@ function extractInfoboxParams(block: string): Record<string, string> {
 }
 
 function parsePowerOrAccuracy(raw: string): number {
-    const cleaned = raw.trim();
+    // {{tt|<current value>|<older generations' values>}}: keep the current value
+    const cleaned = raw
+        .replace(/\{\{\s*tt\s*\|([^|}]*)(?:\|[^}]*)?\}\}/gi, '$1')
+        .trim();
     // "—" or "∞" or "-" all mean "no value" → 0
     if (!cleaned || /^[—–\-∞]/.test(cleaned)) {
         return 0;
