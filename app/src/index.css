@@ -4,10 +4,12 @@ html {
 }
 
 :root {
-    --color-primary: #ff5f6f;
-    --color-primary-hover: #ff7c8a;
-    --color-accent: #b083d6;
-    --color-accent-hover: #c49ee6;
+    --color-primary: #b083d6;
+    --color-primary-hover: #c49ee6;
+    --color-accent: #ff5f6f;
+    --color-accent-hover: #ff7c8a;
+    --color-game-scarlet: #ff5f6f;
+    --color-game-violet: #b083d6;
     --color-accent-warm: #e8a23d;
     --color-accent-warm-hover: #f0b45e;
     --color-bg: #16141c;
@@ -54,10 +56,12 @@ html {
 }
 
 :root[data-theme="light"] {
-    --color-primary: #d0273a;
-    --color-primary-hover: #ab1f2f;
-    --color-accent: #7b3fa0;
-    --color-accent-hover: #632f81;
+    --color-primary: #7b3fa0;
+    --color-primary-hover: #632f81;
+    --color-accent: #d0273a;
+    --color-accent-hover: #ab1f2f;
+    --color-game-scarlet: #d0273a;
+    --color-game-violet: #7b3fa0;
     --color-accent-warm: #b5720f;
     --color-accent-warm-hover: #955e0c;
     --color-bg: #f5f3f7;

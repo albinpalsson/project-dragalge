@@ -114,7 +114,7 @@ export function InletGrotto({ isNext }: InletGrottoProps) {
 }
 
 const warning = css`
-    border-left: 0.3rem solid var(--color-primary);
+    border-left: 0.3rem solid var(--color-warning);
     padding-left: var(--space-3);
 `;
 

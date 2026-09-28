@@ -17,7 +17,9 @@ Add to `app/src/index.css`, mirrored in both the default (dark) `:root` block an
 | Token | Purpose |
 |---|---|
 | `--color-text-secondary` | Tertiary text tone between `--color-text` and `--color-text-muted`, for body copy that shouldn't compete with headings/titles. |
-| `--color-accent-warm` | Warm gold/orange accent for primary "roll" actions (Randomize/Roll Encounter/Roll Starter), distinct from the existing pink/red `--color-primary` used for structural emphasis. |
+| `--color-primary` | Violet primary color for buttons and structural emphasis. |
+| `--color-accent` | Scarlet accent color. |
+| `--color-accent-warm` | Warm gold/orange accent for primary "roll" actions (Randomize/Roll Encounter/Roll Starter), distinct from `--color-primary`. |
 | `--color-success` / `--color-success-bg` | Caught status — saturated text/icon color plus a subtle tinted background for chips. |
 | `--color-warning` / `--color-warning-bg` | Missed status. |
 | `--color-danger-bg` | Tinted background companion to the existing `--color-danger`, for Eliminated status chips (reuses `--color-danger` as the text/icon color). |

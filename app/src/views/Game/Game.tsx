@@ -254,7 +254,7 @@ const cardItem = css`
 
 const nextStepLabel = css`
     margin: 0;
-    color: var(--color-accent);
+    color: var(--color-primary);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-bold);
 `;

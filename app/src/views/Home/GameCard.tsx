@@ -22,7 +22,9 @@ interface GameCardProps {
     const sorted = partyFirst(obtained);
     const progress = Math.min(sorted.length * 8, 100);
     const variantColor =
-        game.variant === 'v' ? 'var(--color-accent)' : 'var(--color-primary)';
+      game.variant === 'v'
+        ? 'var(--color-game-violet)'
+        : 'var(--color-game-scarlet)';
 
     return (
         <div className={container}>

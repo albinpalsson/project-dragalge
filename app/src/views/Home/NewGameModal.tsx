@@ -269,7 +269,7 @@ const presetButtons = css`
 `;
 
 const activePreset = css`
-    border-color: var(--color-accent);
+    border-color: var(--color-primary);
 `;
 
 const presetDescription = css`
