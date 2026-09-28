@@ -17,6 +17,7 @@ export function RollActions({ locationName, encounters }: RollActionsProps) {
     const game = useGame();
     const encounterRoll = useEncounterRoll(locationName);
     const encounterActions = useEncounterActions();
+    const highlightResolutionActions = encounterRoll?.status === 'pending';
 
     const setStatus = (status: (typeof STATUSES)[number]) => {
         if (status === 'caught') {
@@ -43,6 +44,11 @@ export function RollActions({ locationName, encounters }: RollActionsProps) {
                 <>
                     <Button
                         variant="secondary"
+                        className={
+                            highlightResolutionActions
+                                ? pendingActionHighlight
+                                : undefined
+                        }
                         ariaLabel="Caught"
                         title="Caught"
                         onClick={() => void setStatus('caught')}
@@ -55,6 +61,11 @@ export function RollActions({ locationName, encounters }: RollActionsProps) {
                     </Button>
                     <Button
                         variant="secondary"
+                        className={
+                            highlightResolutionActions
+                                ? pendingActionHighlight
+                                : undefined
+                        }
                         ariaLabel="Missed"
                         title="Missed"
                         onClick={() => void setStatus('missed')}
@@ -87,4 +98,10 @@ const actionRow = css`
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
+`;
+
+const pendingActionHighlight = css`
+    &&& {
+        border-color: var(--color-accent-warm);
+    }
 `;
