@@ -1,6 +1,7 @@
 import { test } from '@playwright/test';
 import {
     catchEncounter,
+    catchTeraRaid,
     createGame,
     expectNextStep,
     expectProgressionComplete,
@@ -28,8 +29,20 @@ test('plays the canonical perfect run through the current progression', async ({
     await expectNextStep(page, 'South Province (Area One)');
     await catchEncounter(page, 'South Province (Area One)');
 
-    await expectNextStep(page, 'Nemona (Second Battle)');
-    await winBossBattle(page, 'Nemona (Second Battle)');
+    await expectNextStep(page, 'Nemona (Second rival battle)');
+    await winBossBattle(page, 'Nemona (Second rival battle)');
+
+    await expectNextStep(page, 'Pokemon League (Paldea)');
+    await catchEncounter(page, 'Pokemon League (Paldea)');
+
+    await expectNextStep(page, 'South Province (Area Two)');
+    await catchEncounter(page, 'South Province (Area Two)');
+
+    await expectNextStep(page, 'Tera Raid ★');
+    await catchTeraRaid(page, 1, 'Hoppip');
+
+    await expectNextStep(page, 'Katy (Gym)');
+    await winBossBattle(page, 'Katy (Gym)');
 
     await expectProgressionComplete(page);
 });

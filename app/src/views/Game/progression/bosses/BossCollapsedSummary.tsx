@@ -1,7 +1,9 @@
-import { css, cx } from '@pokedb2/css-in-js';
+import { css } from '@pokedb2/css-in-js';
+import type { ReactNode } from 'react';
 import { Badge } from '../../../../components/Badge';
 import { CollapsedSummaryRow } from '../../../../components/CollapsedSummaryRow';
 import { StatusChip } from '../../../../components/StatusChip';
+import { TypeBadge } from '../../../../components/TypeBadge';
 
 interface BossCollapsedSummaryProps {
     battleName: string;
@@ -11,6 +13,8 @@ interface BossCollapsedSummaryProps {
     levelCap: number;
     isNext?: boolean;
     onExpand: () => void;
+    icon?: ReactNode;
+    specialtyType?: string;
 }
 
 export function BossCollapsedSummary({
@@ -21,18 +25,25 @@ export function BossCollapsedSummary({
     levelCap,
     isNext,
     onExpand,
+    icon = '⚔',
+    specialtyType,
 }: BossCollapsedSummaryProps) {
     return (
         <CollapsedSummaryRow
-            className={cx(bossAccent, className)}
+            className={className}
             icon={
-                <span className={icon} aria-hidden="true">
-                    ⚔
+                <span className={iconStyle} aria-hidden="true">
+                    {icon}
                 </span>
             }
             label={locationName}
             title={battleName}
-            leftBadges={result && <StatusChip status={result} />}
+            leftBadges={
+                <>
+                    {specialtyType && <TypeBadge type={specialtyType} />}
+                    {result && <StatusChip status={result} />}
+                </>
+            }
             rightBadges={<Badge>Lv cap {levelCap}</Badge>}
             isNext={isNext}
             onExpand={onExpand}
@@ -40,7 +51,7 @@ export function BossCollapsedSummary({
     );
 }
 
-const icon = css`
+const iconStyle = css`
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -50,12 +61,7 @@ const icon = css`
     background: var(--color-surface-alt);
     color: var(--color-text-secondary);
     font-size: var(--font-size-lg);
+    filter: grayscale(1);
+    opacity: 0.78;
 `;
 
-const bossAccent = css`
-    && {
-        border-color: var(--color-border);
-        border-left: 0.4rem solid var(--color-accent-warm);
-        box-shadow: none;
-    }
-`;

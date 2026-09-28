@@ -62,7 +62,7 @@ const row = css`
   text-align: left;
   cursor: pointer;
 
-  &:hover {
+  &&:hover {
     background: var(--color-hover-overlay);
   }
 `;

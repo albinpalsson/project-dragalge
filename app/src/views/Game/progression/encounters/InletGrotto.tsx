@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { css } from '@pokedb2/css-in-js';
 import { EncounterCollapsedSummary } from '../../../../components/EncounterCollapsedSummary';
+import { ProgressionDescription } from '../../../../components/ProgressionDescription';
 import { EncounterHeader } from '../../../../components/EncounterHeader';
 import { EncounterTable } from '../../../../components/EncounterTable';
 import { EncounterTableToggle } from '../../../../components/EncounterTableToggle';
@@ -73,13 +74,13 @@ export function InletGrotto({ isNext }: InletGrottoProps) {
                     <RollResult encounterRoll={encounterRoll} />
 
                     {showHoundourWarning && (
-                        <p className={warning}>
+                        <ProgressionDescription className={warning}>
                             Houndour is first available in Inlet Grotto after
-                            finishing the Naranja Academy introduction, which is
+                            finishing the Naranja Academy (Scarlet) or Uva Academy (Violet) introduction,
                             after the first rival battle, when the level cap is
                             increased above 9. Re-rolling for the early
                             encounter pickup is valid.
-                        </p>
+                        </ProgressionDescription>
                     )}
 
                     <RollActions
@@ -113,8 +114,7 @@ export function InletGrotto({ isNext }: InletGrottoProps) {
 }
 
 const warning = css`
-  margin: 0;
-  padding: var(--space-2) var(--space-3);
-  border-left: 0.3rem solid var(--color-primary);
-  color: var(--color-text-secondary);
+    border-left: 0.3rem solid var(--color-primary);
+    padding-left: var(--space-3);
 `;
+

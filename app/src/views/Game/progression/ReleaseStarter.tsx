@@ -1,5 +1,6 @@
 import { css } from '@pokedb2/css-in-js';
 import { Button } from '../../../components/Button';
+import { ProgressionDescription } from '../../../components/ProgressionDescription';
 import { ProgressionCard } from '../../../components/ProgressionCard';
 import { StatusChip } from '../../../components/StatusChip';
 import { STARTER_LOCATION_NAME } from '../../../db/game-db/queries';
@@ -31,13 +32,15 @@ export function ReleaseStarter({ isNext }: ReleaseStarterProps) {
                 <h3 className={heading}>Release starter</h3>
                 {starterStatus === 'released' && <StatusChip status="released" />}
             </div>
-            <p className={copy}>
-                Press Release to mark starter released, which move it out of your team and box.
-            </p>
+            {starterStatus === 'caught' && (
+                <ProgressionDescription>
+                    Press Release to mark starter released, which move it out of your team and box.
+                </ProgressionDescription>
+            )}
             {starterStatus !== 'released' && (
                 <Button
                     className={compactControl}
-                    variant="warm"
+                    variant="secondary"
                     disabled={!canRelease || encounterActions.isBusy}
                     onClick={() =>
                         void encounterActions.releaseStarter(
@@ -63,12 +66,6 @@ const headingRow = css`
     justify-content: flex-start;
     align-items: center;
     gap: var(--space-2);
-`;
-
-const copy = css`
-    margin: 0;
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-sm);
 `;
 
 const compactControl = css`

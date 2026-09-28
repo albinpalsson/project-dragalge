@@ -3,6 +3,7 @@ import { useBossBattleProgressQuery } from '../views/Game/queries';
 import { useStarter } from './useStarter';
 import {
     PROGRESSION_ITEMS,
+    isRaidResolved,
     type ProgressionItem,
 } from '../views/Game/progression/progression-items';
 
@@ -25,6 +26,13 @@ export function useProgressionTracker(): ProgressionTracker {
                 encounters: game.encounters,
             }) ?? true,
     );
+    const countedItems = visibleItems.filter(
+        (item) =>
+            item.countsTowardProgress?.({
+                settings: game.settings,
+                encounters: game.encounters,
+            }) ?? true,
+    );
 
     const isResolved = (item: ProgressionItem): boolean => {
         if (item.kind === 'encounter') {
@@ -40,6 +48,9 @@ export function useProgressionTracker(): ProgressionTracker {
                 encounters: game.encounters,
             });
         }
+        if (item.kind === 'raid') {
+            return isRaidResolved(game.encounters, item.stars);
+        }
         const battleName = starter ? item.getBattleName(starter) : undefined;
         if (!battleName) {
             return false;
@@ -49,7 +60,7 @@ export function useProgressionTracker(): ProgressionTracker {
 
     let completed = 0;
     let nextKey: string | undefined;
-    for (const item of visibleItems) {
+    for (const item of countedItems) {
         if (isResolved(item)) {
             completed += 1;
             continue;
@@ -59,7 +70,7 @@ export function useProgressionTracker(): ProgressionTracker {
         }
     }
 
-    const total = visibleItems.length;
+    const total = countedItems.length;
     const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
 
     return {

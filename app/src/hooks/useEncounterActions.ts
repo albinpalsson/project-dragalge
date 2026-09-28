@@ -63,5 +63,8 @@ export function useEncounterActions() {
                 await mutations.setPartySlot(game.id, locationName, slot);
             }
         },
+        clearEncounter(locationName: string) {
+            return mutations.clear(game.id, locationName);
+        },
     };
 }

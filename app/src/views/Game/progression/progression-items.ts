@@ -4,10 +4,15 @@ import { STARTER_LOCATION_NAME } from '../../../db/game-db/queries';
 import { StarterCard } from '../StarterCard';
 import { InletGrotto } from './encounters/InletGrotto';
 import { PocoPath } from './encounters/PocoPath';
+import { PokemonLeaguePaldea } from './encounters/PokemonLeaguePaldea';
 import { SouthProvinceAreaOne } from './encounters/SouthProvinceAreaOne';
+import { SouthProvinceAreaTwo } from './encounters/SouthProvinceAreaTwo';
+import { TeraRaid1Star } from './encounters/TeraRaidXStar';
+import { KatyBugGym } from './bosses/KatyBugGym';
 import { NemonaSouthProvince } from './bosses/NemonaSouthProvince';
 import { ReleaseStarter } from './ReleaseStarter';
 import { getStarterBattleName } from '../../../db/pokemon-data/starter-battles';
+import { parseTeraRaidLocationName } from '../../../utils/tera-raid-location';
 
 interface ProgressionItemProps {
     isNext?: boolean;
@@ -22,6 +27,7 @@ interface ProgressionBaseItem {
     key: string;
     Component: ComponentType<ProgressionItemProps>;
     isVisible?: (state: ProgressionItemState) => boolean;
+    countsTowardProgress?: (state: ProgressionItemState) => boolean;
 }
 
 interface EncounterProgressionItem extends ProgressionBaseItem {
@@ -39,10 +45,16 @@ interface ActionProgressionItem extends ProgressionBaseItem {
     isResolved: (state: ProgressionItemState) => boolean;
 }
 
+interface RaidProgressionItem extends ProgressionBaseItem {
+    kind: 'raid';
+    stars: number;
+}
+
 export type ProgressionItem =
     | EncounterProgressionItem
     | BossProgressionItem
-    | ActionProgressionItem;
+    | ActionProgressionItem
+    | RaidProgressionItem;
 
 export const PROGRESSION_ITEMS: ProgressionItem[] = [
     {
@@ -87,4 +99,40 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
         getBattleName: getStarterBattleName,
         Component: NemonaSouthProvince,
     },
+    {
+        key: 'pokemon-league-paldea',
+        kind: 'encounter',
+        locationName: 'Pokemon League (Paldea)',
+        Component: PokemonLeaguePaldea,
+    },
+    {
+        key: 'south-province-area-two',
+        kind: 'encounter',
+        locationName: 'South Province (Area Two)',
+        Component: SouthProvinceAreaTwo,
+    },
+    {
+        key: 'tera-raid-1-star',
+        kind: 'raid',
+        stars: 1,
+        isVisible: ({ settings }) => settings.teraRaids !== 'none',
+        countsTowardProgress: ({ settings }) => settings.teraRaids === 'single',
+        Component: TeraRaid1Star,
+    },
+    {
+        key: 'katy-bug-gym',
+        kind: 'boss',
+        getBattleName: () => 'Katy (Bug Gym)',
+        Component: KatyBugGym,
+    },
 ];
+
+export function isRaidResolved(
+    encounters: EncounterRollRow[],
+    stars: number,
+): boolean {
+    return encounters.some((encounter) => {
+        const parsed = parseTeraRaidLocationName(encounter.location_name);
+        return parsed?.stars === stars && encounter.status !== 'pending';
+    });
+}

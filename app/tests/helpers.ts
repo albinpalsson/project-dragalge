@@ -32,6 +32,36 @@ export async function createGame(page: Page, name: string) {
     await expect(cardFor(page, 'Starter').first()).toBeVisible();
 }
 
+export async function createGameWithTeraRaids(
+    page: Page,
+    name: string,
+    mode: 'none' | 'single' | 'unlimited',
+) {
+    await page.getByRole('button', { name: 'Start New Game' }).click();
+    await page.getByLabel('Name (optional)').fill(name);
+    await page.getByRole('button', { name: 'Next', exact: true }).click();
+    await page.getByLabel('Tera raids').selectOption(mode);
+    await page.getByRole('button', { name: 'Start', exact: true }).click();
+    await expect(cardFor(page, 'Starter').first()).toBeVisible();
+}
+
+export async function catchTeraRaid(
+    page: Page,
+    stars: number,
+    pokemonName: string,
+): Promise<void> {
+    const cardName = `Tera Raid ${'★'.repeat(stars)}`;
+    await ensureCardExpanded(page, cardName);
+    const card = cardFor(page, cardName).first();
+    const picker = card.getByRole('combobox', {
+        name: `Add a ${stars}-star Tera Raid Pokémon`,
+    });
+    await picker.fill(pokemonName);
+    await picker.press('Enter');
+    await card.getByRole('button', { name: 'Caught', exact: true }).click();
+    await expect(card).toContainText('Caught');
+}
+
 // The game DB write to localStorage is debounced; give it time to flush before a reload.
 export async function waitForPersistence(page: Page): Promise<void> {
     await page.waitForTimeout(300);

@@ -102,6 +102,7 @@ export function GameSettingsPanel({
                 })}
             </div>
             <PokemonAutocomplete
+                label="Add a Pokémon ban"
                 suggestions={suggestions}
                 onAdd={(name) => addNames([name])}
             />

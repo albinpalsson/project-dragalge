@@ -1,6 +1,6 @@
 import { css, cx } from '@pokedb2/css-in-js';
 import { useEffect, useState } from 'react';
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { nextHighlight } from './progression-highlight';
 
 interface ProgressionCardRenderProps {
@@ -11,6 +11,7 @@ interface ProgressionCardRenderProps {
 
 interface ProgressionCardProps {
     className?: string;
+    style?: CSSProperties;
     children: ReactNode | ((props: ProgressionCardRenderProps) => ReactNode);
     collapsedContent?:
         | ReactNode
@@ -24,6 +25,7 @@ interface ProgressionCardProps {
 
 export function ProgressionCard({
     className,
+    style,
     children,
     collapsedContent,
     defaultExpanded = true,
@@ -48,7 +50,7 @@ export function ProgressionCard({
 
     if (!isExpanded && collapsedContent) {
         return (
-            <div className={collapsedShell}>
+            <div className={collapsedShell} style={style}>
                 {typeof collapsedContent === 'function'
                     ? collapsedContent(renderProps)
                     : collapsedContent}
@@ -64,6 +66,7 @@ export function ProgressionCard({
                 compact && compactCard,
                 isNext && nextHighlight,
             )}
+            style={style}
             aria-labelledby={ariaLabelledBy}
         >
             {typeof children === 'function' ? children(renderProps) : children}

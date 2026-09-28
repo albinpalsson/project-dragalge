@@ -1,6 +1,9 @@
 import { css } from '@pokedb2/css-in-js';
+import type { ReactNode } from 'react';
 import { Badge, BadgeButton } from '../../../../components/Badge';
+import { ProgressionCardHeader } from '../../../../components/ProgressionCardHeader';
 import { StatusChip } from '../../../../components/StatusChip';
+import { TypeBadge } from '../../../../components/TypeBadge';
 import { BossPokemonCard } from './BossPokemonCard';
 import type {
     BossBattleRoster,
@@ -13,10 +16,18 @@ interface BossHeaderProps {
     levelCap: number;
     onCollapse?: () => void;
     currentResult?: 'won' | 'lost';
+    icon?: ReactNode;
+    specialtyType?: string;
+}
+
+export interface TeraAce {
+    pokemonName: string;
+    teraType: string;
 }
 
 interface BossRosterProps {
     roster: BossBattleRoster;
+    teraAce?: TeraAce;
 }
 
 export function BossHeader({
@@ -25,51 +36,58 @@ export function BossHeader({
     levelCap,
     onCollapse,
     currentResult,
+    icon = '⚔',
+    specialtyType,
 }: BossHeaderProps) {
     return (
-        <div className={header}>
+        <ProgressionCardHeader
+            actions={
+                <>
+                    <Badge>Lv cap {levelCap}</Badge>
+                    {onCollapse && (
+                        <BadgeButton
+                            onClick={onCollapse}
+                            ariaLabel="Collapse boss fight"
+                            title="Collapse boss fight"
+                        >
+                            ▾ Fold
+                        </BadgeButton>
+                    )}
+                </>
+            }
+        >
             <div>
                 <div className={titleRow}>
                     <span className={battleIcon} aria-hidden="true">
-                        ⚔
+                        {icon}
                     </span>
                     <h3 className={titleClass}>{displayBattleName}</h3>
+                    {specialtyType && <TypeBadge type={specialtyType} />}
                     {currentResult && <StatusChip status={currentResult} />}
                 </div>
                 <p className={subtitle}>{locationName}</p>
             </div>
-            <div className={badges}>
-                <Badge>Lv cap {levelCap}</Badge>
-                {onCollapse && (
-                    <BadgeButton
-                        onClick={onCollapse}
-                        ariaLabel="Collapse boss fight"
-                        title="Collapse boss fight"
-                    >
-                        ▾ Fold
-                    </BadgeButton>
-                )}
-            </div>
-        </div>
+        </ProgressionCardHeader>
     );
 }
 
-export function BossRoster({ roster }: BossRosterProps) {
+export function BossRoster({ roster, teraAce }: BossRosterProps) {
     return (
         <div className={pokemonList}>
             {roster.pokemon.map((pokemon: BossPokemonView) => (
-                <BossPokemonCard key={pokemon.pokemonName} pokemon={pokemon} />
+                <BossPokemonCard
+                    key={pokemon.pokemonName}
+                    pokemon={pokemon}
+                    teraType={
+                        teraAce?.pokemonName === pokemon.pokemonName
+                            ? teraAce.teraType
+                            : undefined
+                    }
+                />
             ))}
         </div>
     );
 }
-
-const header = css`
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: var(--space-2);
-`;
 
 const titleClass = css`
     margin: 0;
@@ -94,19 +112,14 @@ const battleIcon = css`
     background: var(--color-surface-alt);
     color: var(--color-text-secondary);
     font-size: var(--font-size-base);
+    filter: grayscale(1);
+    opacity: 0.78;
 `;
 
 const subtitle = css`
     margin: var(--space-1) 0 0;
     color: var(--color-text-muted);
     font-size: var(--font-size-sm);
-`;
-
-const badges = css`
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: var(--space-1);
 `;
 
 const pokemonList = css`

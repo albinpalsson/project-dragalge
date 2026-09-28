@@ -21,8 +21,7 @@ import {
     GAME_CARDS_QUERY_KEY,
     GAME_RUN_SNAPSHOTS_QUERY_KEY,
 } from '../../query-keys';
-import { PROGRESSION_ITEMS } from '../Game/progression/progression-items';
-import { getStarterBattleName } from '../../db/pokemon-data/starter-battles';
+import { PROGRESSION_ITEMS, isRaidResolved } from '../Game/progression/progression-items';
 import { listBossBattleProgress, listEncounterRolls, listGames } from '../../db/game-db/queries';
 import { useEvolutionGraphQuery } from '../../hooks/useEvolutionGraphQuery';
 
@@ -136,6 +135,12 @@ export function useCompletedGameChampionPresets() {
                 ) {
                     return true;
                 }
+                if (
+                    item.countsTowardProgress &&
+                    !item.countsTowardProgress({ settings, encounters: rolls })
+                ) {
+                    return true;
+                }
                 if (item.kind === 'encounter') {
                     return rolls.some(
                         (roll) =>
@@ -149,9 +154,10 @@ export function useCompletedGameChampionPresets() {
                         encounters: rolls,
                     });
                 }
-                const battleName = starterRoot
-                    ? getStarterBattleName(starterRoot)
-                    : undefined;
+                if (item.kind === 'raid') {
+                    return isRaidResolved(rolls, item.stars);
+                }
+                const battleName = item.getBattleName(starterRoot ?? '');
                 return Boolean(
                     battleName &&
                         progress.some(

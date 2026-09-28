@@ -22,7 +22,7 @@ const DEFAULT_FULL_SETTINGS: FullGameSettingsValue = {
     banFullEvolutionLines: true,
     banList: [...DEFAULT_BAN_PRESET],
     releaseStarterEnabled: false,
-    teraRaids: 'none',
+    teraRaids: 'single',
     showHelpfulTips: false,
     includeTeamStarBattles: false,
 };

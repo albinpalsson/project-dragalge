@@ -1,16 +1,19 @@
-import { css } from '@pokedb2/css-in-js';
 import { BossCollapsedSummary } from './BossCollapsedSummary';
 import { BossHeader, BossRoster } from './BossRoster';
 import { BossResultControls } from './BossResultControls';
+import { ProgressionDescription } from '../../../../components/ProgressionDescription';
 import { ProgressionCard } from '../../../../components/ProgressionCard';
 import { useBossActions } from '../../../../hooks/useBossActions';
 import { useStarter } from '../../../../hooks/useStarter';
 import { getStarterBattleName } from '../../../../db/pokemon-data/starter-battles';
 import { STARTER_NAMES } from '../../../Game/StarterCard';
 import { useBossBattleRosterQuery } from '../../queries';
+import type { CSSProperties } from 'react';
+import { progressionCardPattern } from './progression-card-pattern';
 
 const LOCATION_NAME = 'South Province (Area One)';
-const DISPLAY_BATTLE_NAME = 'Nemona (Second Battle)';
+const DISPLAY_BATTLE_NAME = 'Nemona (Second rival battle)';
+const TERA_ACE = { pokemonName: 'Pawmi', teraType: 'Electric' };
 
 interface NemonaSouthProvinceProps {
     isNext?: boolean;
@@ -48,12 +51,14 @@ export function NemonaSouthProvince({ isNext }: NemonaSouthProvinceProps) {
     );
     return (
         <ProgressionCard
-            className={bossAccent}
+            className={progressionCardPattern}
+            style={{ '--progression-card-pattern-color': 'var(--color-accent-warm)' } as CSSProperties}
             compact
             isNext={isNext}
             defaultExpanded={false}
             collapsedContent={({ expand }) => (
                 <BossCollapsedSummary
+                    className={progressionCardPattern}
                     battleName={DISPLAY_BATTLE_NAME}
                     locationName={LOCATION_NAME}
                     result={currentResult}
@@ -72,11 +77,11 @@ export function NemonaSouthProvince({ isNext }: NemonaSouthProvinceProps) {
                         onCollapse={collapse}
                         currentResult={currentResult}
                     />
-                    <p className={description}>
+                    <ProgressionDescription>
                         This battle begins at the large door between South
-                        Province (Area One) and Naranja Academy, beside the
+                        Province (Area One) and Mesagoza, beside the
                         Pokemon Center.
-                    </p>
+                    </ProgressionDescription>
                     <BossResultControls
                         currentResult={currentResult}
                         onResolve={(result) =>
@@ -85,26 +90,10 @@ export function NemonaSouthProvince({ isNext }: NemonaSouthProvinceProps) {
                         onClear={() => bossActions.clearBattle(battleName)}
                         isBusy={bossActions.isBusy}
                     />
-                    <BossRoster roster={rosterData} />
+                    <BossRoster roster={rosterData} teraAce={TERA_ACE} />
                 </>
             )}
         </ProgressionCard>
     );
 }
 
-const bossAccent = css`
-    && {
-        border-color: var(--color-border);
-        border-left: 0.4rem solid var(--color-accent-warm);
-        box-shadow: none;
-    }
-`;
-
-const description = css`
-    max-width: 46rem;
-    margin: 0;
-    color: var(--color-text-secondary);
-    font-size: var(--font-size-sm);
-    padding-top: var(--space-1);
-    padding-bottom: var(--space-1);
-`;

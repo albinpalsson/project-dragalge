@@ -78,7 +78,7 @@ test('Unlimited Tera Raids allow multiple Pokemon and never become a required st
     await catchEncounter(page, 'Poco Path');
     await catchEncounter(page, 'Inlet Grotto');
     await catchEncounter(page, 'South Province (Area One)');
-    await winBossBattle(page, 'Nemona (Second Battle)');
+    await winBossBattle(page, 'Nemona (Second rival battle)');
 
     await expectNextStep(page, 'Pokemon League (Paldea)');
 

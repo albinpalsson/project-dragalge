@@ -13,13 +13,14 @@ import { useTypeDefenses } from '../../useTypeDefenses';
 
 interface BossPokemonCardProps {
     pokemon: BossPokemonView;
+    teraType?: string;
 }
 
-export function BossPokemonCard({ pokemon }: BossPokemonCardProps) {
+export function BossPokemonCard({ pokemon, teraType }: BossPokemonCardProps) {
     const [isTypeDefensesOpen, setIsTypeDefensesOpen] = useState(false);
     const defensiveEntries = useTypeDefenses(
-        pokemon.primaryType,
-        pokemon.secondaryType,
+        teraType?.toLowerCase() ?? pokemon.primaryType,
+        teraType ? undefined : pokemon.secondaryType,
     );
 
     return (
@@ -40,6 +41,23 @@ export function BossPokemonCard({ pokemon }: BossPokemonCardProps) {
                             <TypeBadge type={pokemon.primaryType} />
                             {pokemon.secondaryType && (
                                 <TypeBadge type={pokemon.secondaryType} />
+                            )}
+                            {teraType && (
+                                <Tooltip
+                                    content={`Terastallizes into the ${teraType} type: its defensive typing becomes ${teraType}, it keeps STAB from its original types, and gains boosted STAB on ${teraType}-type moves.`}
+                                >
+                                    <button
+                                        type="button"
+                                        className={teraTrigger}
+                                        title={`Terastallizes to ${teraType}`}
+                                        aria-label={`${pokemon.pokemonName} Terastallizes to ${teraType}`}
+                                    >
+                                        <TypeBadge
+                                            type={teraType}
+                                            variant="tera"
+                                        />
+                                    </button>
+                                </Tooltip>
                             )}
                         </span>
                         <button
@@ -86,7 +104,7 @@ export function BossPokemonCard({ pokemon }: BossPokemonCardProps) {
             </div>
             {isTypeDefensesOpen && (
                 <Modal
-                    title={`${pokemon.pokemonName} type defenses`}
+                    title={`${pokemon.pokemonName} ${teraType ? `(${teraType} Tera)` : ''}`}
                     onClose={() => setIsTypeDefensesOpen(false)}
                 >
                     <TypeDefenses entries={defensiveEntries} />
@@ -170,6 +188,14 @@ const types = css`
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-1);
+`;
+
+const teraTrigger = css`
+    display: inline-flex;
+    padding: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
 `;
 
 const content = css`

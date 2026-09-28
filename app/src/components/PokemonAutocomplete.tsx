@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { css } from '@pokedb2/css-in-js';
 
 interface PokemonAutocompleteProps {
+    label: string;
     suggestions: readonly string[];
     onAdd: (name: string) => void;
     placeholder?: string;
 }
 
 export function PokemonAutocomplete({
+    label,
     suggestions,
     onAdd,
     placeholder = 'Search Pokémon',
@@ -31,8 +33,8 @@ export function PokemonAutocomplete({
 
     return (
         <div className={container}>
-            <label className={label}>
-                Add a Pokémon ban
+            <label className={labelStyle}>
+                {label}
                 <input
                     className={input}
                     value={query}
@@ -85,7 +87,7 @@ const container = css`
     position: relative;
 `;
 
-const label = css`
+const labelStyle = css`
     display: flex;
     flex-direction: column;
     gap: var(--space-1);

@@ -1,15 +1,24 @@
-import { css } from '@pokedb2/css-in-js';
+import { css, cx } from '@pokedb2/css-in-js';
 import { getPokemonTypeColor } from '../utils/pokemon-type-colors';
 
 interface TypeBadgeProps {
     type: string;
+    variant?: 'type' | 'tera';
 }
 
-export function TypeBadge({ type }: TypeBadgeProps) {
+export function TypeBadge({ type, variant = 'type' }: TypeBadgeProps) {
     const color = getPokemonTypeColor(type);
 
     return (
-        <span className={badge} style={{ borderColor: color, color }}>
+        <span
+            className={cx(badge, variant === 'tera' && teraBadge)}
+            style={{ borderColor: color, color }}
+        >
+            {variant === 'tera' && (
+                <span aria-hidden="true" className={sparkle}>
+                    ✦
+                </span>
+            )}
             {type}
         </span>
     );
@@ -26,4 +35,13 @@ const badge = css`
     font-weight: 600;
     line-height: 1.2;
     text-transform: uppercase;
+`;
+
+const teraBadge = css`
+    gap: 0.2rem;
+    border-style: dashed;
+`;
+
+const sparkle = css`
+    font-size: 1rem;
 `;

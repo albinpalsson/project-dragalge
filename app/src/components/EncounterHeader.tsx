@@ -1,5 +1,6 @@
 import { css } from '@pokedb2/css-in-js';
 import { Badge, BadgeButton } from './Badge';
+import { ProgressionCardHeader } from './ProgressionCardHeader';
 import type { LocationEncounterDetails } from '../db/pokemon-data/queries';
 import type { LocationEncounterView } from '../db/pokemon-data/queries';
 import { formatEncounterGroupLevelRange } from '../utils/encounter-formatters';
@@ -20,34 +21,29 @@ export function EncounterHeader({
     const levelRange = formatEncounterGroupLevelRange(encounters);
 
     return (
-        <header className={header}>
+        <ProgressionCardHeader
+            actions={
+                <>
+                    {levelRange && <Badge>Lv {levelRange}</Badge>}
+                    {canCollapse && onCollapse && (
+                        <BadgeButton
+                            ariaLabel="Collapse encounter"
+                            title="Collapse encounter"
+                            onClick={onCollapse}
+                        >
+                            ▾ Fold
+                        </BadgeButton>
+                    )}
+                </>
+            }
+        >
             <div>
                 <h3 className={heading}>{location.name}</h3>
-                <p className={subheading}>{location.region}</p>
+                <p className={subheading}>{location.province}</p>
             </div>
-            <div className={badges}>
-                <Badge>{location.province}</Badge>
-                {levelRange && <Badge>Lv {levelRange}</Badge>}
-                {canCollapse && onCollapse && (
-                    <BadgeButton
-                        ariaLabel="Collapse encounter"
-                        title="Collapse encounter"
-                        onClick={onCollapse}
-                    >
-                        ▾ Fold
-                    </BadgeButton>
-                )}
-            </div>
-        </header>
+        </ProgressionCardHeader>
     );
 }
-
-const header = css`
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--space-3);
-`;
 
 const heading = css`
   margin: 0;
@@ -60,9 +56,3 @@ const subheading = css`
   font-size: var(--font-size-sm);
 `;
 
-const badges = css`
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  gap: var(--space-1);
-`;
