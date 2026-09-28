@@ -29,7 +29,7 @@ export function ExportGameModal({ gameRunId, onClose }: ExportGameModalProps) {
     };
 
     return (
-        <Modal title="Export game" onClose={onClose}>
+        <Modal title="Export game" onClose={onClose} dismissMode="closeButton">
             <div className={content}>
                 <p>
                     This link contains this game&apos;s progress. Anyone with it can
@@ -48,9 +48,6 @@ export function ExportGameModal({ gameRunId, onClose }: ExportGameModalProps) {
                         {copyError && <p className={errorText}>{copyError}</p>}
                         <div className={actions}>
                             <Button onClick={() => void copyLink()}>Copy link</Button>
-                            <Button variant="secondary" onClick={onClose}>
-                                Close
-                            </Button>
                         </div>
                     </>
                 )}

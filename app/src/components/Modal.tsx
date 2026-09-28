@@ -1,15 +1,20 @@
-import { useEffect, type ReactNode } from 'react';
+import { useEffect, useId, type ReactNode } from 'react';
 import { css, cx } from '@pokedb2/css-in-js';
 
 interface ModalProps {
     title?: string;
-    onClose: () => void;
+    onClose?: () => void;
     children: ReactNode;
     className?: string;
+    dismissMode?: 'any' | 'closeButton' | 'none';
 }
 
-export function Modal({ title, onClose, children, className }: ModalProps) {
+export function Modal({ title, onClose, children, className, dismissMode = 'any' }: ModalProps) {
+    const titleId = useId();
     useEffect(() => {
+        if (dismissMode !== 'any' || !onClose) {
+            return;
+        }
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
                 onClose();
@@ -17,44 +22,47 @@ export function Modal({ title, onClose, children, className }: ModalProps) {
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [onClose]);
+    }, [onClose, dismissMode]);
 
     const handleOverlayClick = (e: React.MouseEvent) => {
         if (e.target === e.currentTarget) {
-            onClose();
+            onClose?.();
         }
     };
 
     return (
-        // biome-ignore lint/a11y/useSemanticElements: Modal overlay pattern
+        // biome-ignore lint/a11y/noStaticElementInteractions: Only the default mode enables overlay interaction.
         <div
             className={overlay}
-            onClick={handleOverlayClick}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => {
+            onClick={dismissMode === 'any' ? handleOverlayClick : undefined}
+            role={dismissMode === 'any' ? 'button' : undefined}
+            tabIndex={dismissMode === 'any' ? 0 : undefined}
+            onKeyDown={dismissMode === 'any' ? (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                     handleOverlayClick(
                         e as unknown as React.MouseEvent<HTMLDivElement>,
                     );
                 }
-            }}
+            } : undefined}
         >
             <div
                 className={cx(panel, className)}
                 role="dialog"
                 aria-modal="true"
+                aria-labelledby={title ? titleId : undefined}
             >
                 <div className={header}>
-                    {title && <h2>{title}</h2>}
-                    <button
-                        type="button"
-                        className={closeButton}
-                        onClick={onClose}
-                        aria-label="Close dialog"
-                    >
-                        ✕
-                    </button>
+                    {title && <h2 id={titleId}>{title}</h2>}
+                    {dismissMode !== 'none' && onClose && (
+                        <button
+                            type="button"
+                            className={closeButton}
+                            onClick={onClose}
+                            aria-label="Close dialog"
+                        >
+                            ✕
+                        </button>
+                    )}
                 </div>
                 {children}
             </div>

@@ -3,7 +3,6 @@ import {
     cardFor,
     catchEncounter,
     chooseStarter,
-    createGame,
     createGameWithTeraRaids,
     expandCollapsedSummary,
     expectNextStep,

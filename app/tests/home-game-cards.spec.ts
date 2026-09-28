@@ -58,11 +58,19 @@ test('a game can be exported and imported from its shareable link', async ({
     const linkInput = page.getByLabel('Shareable link');
     await expect(linkInput).toBeVisible();
     const exportLink = await linkInput.inputValue();
+    await page.mouse.click(5, 5);
+    await page.keyboard.press('Escape');
+    await expect(page.getByRole('dialog', { name: 'Export game' })).toBeVisible();
+    await page.getByRole('button', { name: 'Close dialog' }).click();
+    await expect(page.getByRole('dialog')).toBeHidden();
 
     const importContext = await browser.newContext();
     const importPage = await importContext.newPage();
     await importPage.goto(exportLink);
     await expect(importPage.getByRole('dialog')).toBeVisible();
+    await importPage.mouse.click(5, 5);
+    await importPage.keyboard.press('Escape');
+    await expect(importPage.getByRole('dialog', { name: 'Import game' })).toBeVisible();
     await expect(importPage.getByLabel('Name this game')).toHaveValue(
         'shared-run',
     );
@@ -84,5 +92,10 @@ test('a game can be exported and imported from its shareable link', async ({
     await expect(
         duplicateImportPage.getByRole('button', { name: /shared-run-1/ }),
     ).toBeVisible();
+    const dismissImportPage = await importContext.newPage();
+    await dismissImportPage.goto(exportLink);
+    await expect(dismissImportPage.getByRole('dialog', { name: 'Import game' })).toBeVisible();
+    await dismissImportPage.getByRole('button', { name: 'Close dialog' }).click();
+    await expect(dismissImportPage.getByRole('dialog')).toBeHidden();
     await importContext.close();
 });

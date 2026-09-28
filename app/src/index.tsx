@@ -1,6 +1,7 @@
 import { createRoot } from 'react-dom/client';
 import { createQueryClient } from '@pokedb2/server-query';
 import './index.css';
+import { UnexpectedErrorBoundary } from './components/UnexpectedErrorBoundary';
 import { App } from './views/App';
 import { QueryClientProvider } from './server-query';
 import { initTheme } from './theme';
@@ -16,7 +17,9 @@ if (!rootElement) {
 const queryClient = createQueryClient();
 
 createRoot(rootElement).render(
-    <QueryClientProvider client={queryClient}>
-        <App />
-    </QueryClientProvider>,
+    <UnexpectedErrorBoundary>
+        <QueryClientProvider client={queryClient}>
+            <App />
+        </QueryClientProvider>
+    </UnexpectedErrorBoundary>,
 );

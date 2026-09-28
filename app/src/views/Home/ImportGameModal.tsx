@@ -33,7 +33,7 @@ function ImportGameDialog({
 
     if (parsedImport.isPending) {
         return (
-            <Modal title="Import game" onClose={onClose}>
+            <Modal title="Import game" onClose={onClose} dismissMode="closeButton">
                 <p>Preparing import...</p>
             </Modal>
         );
@@ -41,10 +41,9 @@ function ImportGameDialog({
 
     if (parsedImport.isError) {
         return (
-            <Modal title="Import game" onClose={onClose}>
+            <Modal title="Import game" onClose={onClose} dismissMode="closeButton">
                 <div className={content}>
                     <p className={errorText}>Unable to read this import.</p>
-                    <Button onClick={onClose}>Dismiss</Button>
                 </div>
             </Modal>
         );
@@ -53,10 +52,9 @@ function ImportGameDialog({
     const parsed = parsedImport.data;
     if (parsed.status === 'error') {
         return (
-            <Modal title="Import game" onClose={onClose}>
+            <Modal title="Import game" onClose={onClose} dismissMode="closeButton">
                 <div className={content}>
                     <p className={errorText}>{parsed.message}</p>
-                    <Button onClick={onClose}>Dismiss</Button>
                 </div>
             </Modal>
         );
@@ -81,7 +79,7 @@ function ImportForm({
     };
 
     return (
-        <Modal title="Import game" onClose={onClose}>
+        <Modal title="Import game" onClose={onClose} dismissMode="closeButton">
             <div className={content}>
                 <p>A copy of this game will be added to your tracker.</p>
                 <TextField
@@ -99,9 +97,6 @@ function ImportForm({
                         disabled={importGame.isPending || name.trim().length === 0}
                     >
                         Import
-                    </Button>
-                    <Button variant="secondary" onClick={onClose}>
-                        Cancel
                     </Button>
                 </div>
             </div>

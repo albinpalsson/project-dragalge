@@ -127,6 +127,8 @@ Both DBs flow through the data access boundary below. The App/Game DB additional
 
 **Schema versioning**: the app DB's `LocalStoragePlugin` stores its blob under a version-suffixed key (`pokedb2:game-db:v{N}`, `N` from `GAME_DB_SCHEMA_VERSION` in `app/src/db/game-db/schema.ts`). Bump `GAME_DB_SCHEMA_VERSION` whenever the DDL changes. A mismatched/missing version key is treated as no existing data and the schema is (re)initialized fresh — old versioned keys are left in place rather than deleted, so a future migration step can read them explicitly by name instead of trying to decode incompatible data under the current schema.
 
+**Single-writer guard**: each page load claims a fresh token in a version-scoped localStorage key next to the game DB blob. The storage plugin verifies that token before every snapshot write. Opening or reloading another tab makes older tabs unable to save; they display a blocking error dialog instead of continuing with stale in-memory data. Reloading the affected tab reads the latest saved snapshot and takes ownership. Tabs do not synchronize or merge changes. localStorage has no compare-and-swap across the ownership check and blob write, so this guard is not a transactional multi-tab database.
+
 ### Progression Timeline
 
 The ordered Game view timeline is application-specific, not general Pokémon data. The active runtime order is declared directly in `app/src/views/Game/Game.tsx` as readable JSX. A progression point becomes visible when its direct component is added there in story order. The full future roadmap is retained in `docs/specs/game-progression.md` for reference only and must not be imported by runtime code.
