@@ -4,9 +4,7 @@ import { Button } from '../../../components/Button';
 import { OverflowMenu } from '../../../components/OverflowMenu';
 import { PokemonStatsPanel } from '../../../components/PokemonStatsPanel';
 import { TypeBadge } from '../../../components/TypeBadge';
-import {
-    NO_PARTY_SLOT,
-} from '../../../db/game-db/schema';
+import { NO_PARTY_SLOT } from '../../../db/game-db/schema';
 import type { EncounterRollRow } from '../../../db/game-db/queries';
 import { usePartyManager } from '../../../hooks/usePartyManager';
 import { getRandomizerDisplayName } from '../../../randomizer-groups';
@@ -126,7 +124,7 @@ export function PokemonDetailPane({ row, party }: PokemonDetailPaneProps) {
                                             setIsReplacing(!isReplacing)
                                         }
                                     >
-                                        Replace...
+                                        Replace
                                     </Button>
                                 )}
                             </>

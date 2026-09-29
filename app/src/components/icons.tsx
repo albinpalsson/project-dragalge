@@ -18,6 +18,16 @@ export function BoxIcon() {
     );
 }
 
+export function KebabIcon() {
+    return (
+        <svg viewBox="0 0 16 16" className={kebabIcon} aria-hidden="true">
+            <circle cx="8" cy="3" r="1.35" />
+            <circle cx="8" cy="8" r="1.35" />
+            <circle cx="8" cy="13" r="1.35" />
+        </svg>
+    );
+}
+
 const icon = css`
   width: 1.8rem;
   height: 1.8rem;
@@ -27,4 +37,11 @@ const icon = css`
   stroke-width: 1.5;
   stroke-linecap: round;
   stroke-linejoin: round;
+`;
+
+const kebabIcon = css`
+    width: 1.6rem;
+    height: 1.6rem;
+    flex: none;
+    fill: currentColor;
 `;

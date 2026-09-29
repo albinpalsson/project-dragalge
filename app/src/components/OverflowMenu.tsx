@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { css } from '@pokedb2/css-in-js';
+import { IconButton } from './IconButton';
+import { KebabIcon } from './icons';
 
 interface OverflowMenuProps {
     children: ReactNode;
@@ -41,17 +43,14 @@ export function OverflowMenu({
 
     return (
         <div className={container} ref={containerRef}>
-            <button
-                type="button"
-                className={trigger}
-                aria-label={label}
-                title={label}
-                aria-haspopup="menu"
-                aria-expanded={isOpen}
+            <IconButton
+                label={label}
+                ariaHasPopup="menu"
+                ariaExpanded={isOpen}
                 onClick={() => setIsOpen((value) => !value)}
             >
-                ⋯
-            </button>
+                <KebabIcon />
+            </IconButton>
             {isOpen && (
                 <div
                     className={menu}
@@ -73,26 +72,6 @@ export function OverflowMenu({
 const container = css`
   position: relative;
   display: inline-flex;
-`;
-
-const trigger = css`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 3.6rem;
-  height: 3.6rem;
-  padding: 0;
-  border: 0.1rem solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: transparent;
-  color: var(--color-text-muted);
-  font-size: var(--font-size-lg);
-  cursor: pointer;
-
-  &:hover {
-    background: var(--color-hover-overlay);
-    color: var(--color-text);
-  }
 `;
 
 const menu = css`
