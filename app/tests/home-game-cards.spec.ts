@@ -31,12 +31,15 @@ test('home game cards show the Pokemon obtained in a run', async ({ page }) => {
         boxSection(page, 'Box').getByRole('img', { name: pocoPath }),
     ).toBeVisible();
 
+    await page.keyboard.press('Escape');
     await navigateTo(page, 'Home');
 
     const gameCard = page.getByRole('button', { name: /card-run/ });
     await expect(gameCard).toContainText('2 caught');
     await expect(gameCard.getByRole('img', { name: pocoPath })).toBeVisible();
-    await expect(gameCard.getByRole('img', { name: inletGrotto })).toBeVisible();
+    await expect(
+        gameCard.getByRole('img', { name: inletGrotto }),
+    ).toBeVisible();
     await expect(gameCard.getByRole('img').first()).toHaveAttribute(
         'alt',
         inletGrotto,
@@ -60,7 +63,9 @@ test('a game can be exported and imported from its shareable link', async ({
     const exportLink = await linkInput.inputValue();
     await page.mouse.click(5, 5);
     await page.keyboard.press('Escape');
-    await expect(page.getByRole('dialog', { name: 'Export game' })).toBeVisible();
+    await expect(
+        page.getByRole('dialog', { name: 'Export game' }),
+    ).toBeVisible();
     await page.getByRole('button', { name: 'Close dialog' }).click();
     await expect(page.getByRole('dialog')).toBeHidden();
 
@@ -70,7 +75,9 @@ test('a game can be exported and imported from its shareable link', async ({
     await expect(importPage.getByRole('dialog')).toBeVisible();
     await importPage.mouse.click(5, 5);
     await importPage.keyboard.press('Escape');
-    await expect(importPage.getByRole('dialog', { name: 'Import game' })).toBeVisible();
+    await expect(
+        importPage.getByRole('dialog', { name: 'Import game' }),
+    ).toBeVisible();
     await expect(importPage.getByLabel('Name this game')).toHaveValue(
         'shared-run',
     );
@@ -94,8 +101,12 @@ test('a game can be exported and imported from its shareable link', async ({
     ).toBeVisible();
     const dismissImportPage = await importContext.newPage();
     await dismissImportPage.goto(exportLink);
-    await expect(dismissImportPage.getByRole('dialog', { name: 'Import game' })).toBeVisible();
-    await dismissImportPage.getByRole('button', { name: 'Close dialog' }).click();
+    await expect(
+        dismissImportPage.getByRole('dialog', { name: 'Import game' }),
+    ).toBeVisible();
+    await dismissImportPage
+        .getByRole('button', { name: 'Close dialog' })
+        .click();
     await expect(dismissImportPage.getByRole('dialog')).toBeHidden();
     await importContext.close();
 });

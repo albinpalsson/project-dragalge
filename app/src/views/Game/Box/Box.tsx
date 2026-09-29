@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { css } from '@pokedb2/css-in-js';
 import { Modal } from '../../../components/Modal';
+import { BoxIcon } from '../../../components/icons';
 import { MAX_PARTY_SIZE } from '../../../db/game-db/schema';
 import { useGame } from '../GameContext';
 import { deriveBoxSections } from './box-model';
@@ -10,19 +11,20 @@ export function Box() {
     const game = useGame();
     const [isOpen, setIsOpen] = useState(false);
     const { party, stored, eliminated } = deriveBoxSections(game.encounters);
+    const total = party.length + stored.length + eliminated.length;
+    const label = `Open box (Party ${party.length}/${MAX_PARTY_SIZE}, Box ${stored.length}, Fallen ${eliminated.length})`;
 
     return (
-        <div className={summary}>
-            <span className={counts}>
-                Party {party.length}/{MAX_PARTY_SIZE} · Box {stored.length} ·
-                Fallen {eliminated.length}
-            </span>
+        <>
             <button
                 type="button"
                 className={toggle}
                 onClick={() => setIsOpen(true)}
+                aria-label={label}
+                title={label}
             >
-                Open box
+                {total}
+                <BoxIcon />
             </button>
 
             {isOpen && (
@@ -34,35 +36,34 @@ export function Box() {
                     <BoxContents />
                 </Modal>
             )}
-        </div>
+        </>
     );
 }
 
-const summary = css`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: flex-end;
-  gap: var(--space-2);
-`;
-
 const toggle = css`
-  padding: var(--space-2) var(--space-3);
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  gap: var(--space-2);
+  height: 3.6rem;
+  padding: 0 var(--space-3);
   border: 0.1rem solid var(--color-border);
   border-radius: var(--radius-md);
   background: transparent;
   color: var(--color-text);
   font-size: var(--font-size-base);
+  white-space: nowrap;
   cursor: pointer;
+  transition: background-color 0.15s;
 
   &:hover {
     background: var(--color-hover-overlay);
   }
-`;
 
-const counts = css`
-  font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
+  &:focus-visible {
+    outline: 0.2rem solid var(--color-accent);
+    outline-offset: 0.1rem;
+  }
 `;
 
 const modalPanel = css`

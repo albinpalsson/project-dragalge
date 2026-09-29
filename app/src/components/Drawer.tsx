@@ -3,12 +3,19 @@ import { css, cx } from '@pokedb2/css-in-js';
 
 interface DrawerProps {
     title?: string;
+    headerAction?: ReactNode;
     onClose: () => void;
     children: ReactNode;
     className?: string;
 }
 
-export function Drawer({ title, onClose, children, className }: DrawerProps) {
+export function Drawer({
+    title,
+    headerAction,
+    onClose,
+    children,
+    className,
+}: DrawerProps) {
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
@@ -32,7 +39,12 @@ export function Drawer({ title, onClose, children, className }: DrawerProps) {
                 role="dialog"
                 aria-modal="true"
             >
-                {title && <h2>{title}</h2>}
+                {(title || headerAction) && (
+                    <div className={header}>
+                        {title && <h2>{title}</h2>}
+                        {headerAction}
+                    </div>
+                )}
                 {children}
             </div>
         </div>
@@ -54,6 +66,17 @@ const backdrop = css`
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(0.4rem);
   cursor: pointer;
+`;
+
+const header = css`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+
+  h2 {
+    margin: 0;
+  }
 `;
 
 const panel = css`

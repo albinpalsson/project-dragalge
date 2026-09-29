@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { css } from '@pokedb2/css-in-js';
 import { Modal } from '../../components/Modal';
+import { IconButton } from '../../components/IconButton';
 import { useBanListPresetOptions } from '../../hooks/useBanListPresetOptions';
 import { usePokemonListQuery } from '../../hooks/usePokemonListQuery';
 import {
@@ -61,15 +62,9 @@ export function GameSettingsModal() {
 
     return (
         <>
-            <button
-                type="button"
-                className={toggle}
-                onClick={() => setIsOpen(true)}
-                aria-label="Game settings"
-                title="Game settings"
-            >
+            <IconButton label="Game settings" onClick={() => setIsOpen(true)}>
                 ⚙
-            </button>
+            </IconButton>
 
             {isOpen && (
                 <Modal title="Game settings" onClose={() => setIsOpen(false)}>
@@ -91,20 +86,6 @@ export function GameSettingsModal() {
         </>
     );
 }
-
-const toggle = css`
-  padding: var(--space-2) var(--space-3);
-  border: 0.1rem solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: transparent;
-  color: var(--color-text);
-  font-size: var(--font-size-base);
-  cursor: pointer;
-
-  &:hover {
-    background: var(--color-hover-overlay);
-  }
-`;
 
 const status = css`
     margin: 0;

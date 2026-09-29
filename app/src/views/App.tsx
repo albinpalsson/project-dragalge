@@ -1,16 +1,19 @@
 import { useState } from 'react';
 import { css } from '@pokedb2/css-in-js';
 import { Drawer } from '../components/Drawer';
+import { HeaderSlotContext } from '../components/HeaderSlot';
 import { About } from './About';
 import { AppHeader } from './AppHeader';
 import { Game } from './Game/Game';
 import { Home } from './Home/Home';
+import { ThemeToggle } from './ThemeToggle';
 import { useImportDataFromHash } from '../hooks/useImportDataFromHash';
 import { useViewNavigation } from '../hooks/useViewNavigation';
 
 export function App() {
     const { importData } = useImportDataFromHash();
     const [isMenuOpen, setMenuOpen] = useState(false);
+    const [headerSlot, setHeaderSlot] = useState<HTMLElement | null>(null);
     const { activeView, navigate } = useViewNavigation({
         onViewChange: () => setMenuOpen(false),
         startAtHome: importData !== undefined,
@@ -25,10 +28,16 @@ export function App() {
                         : () => navigate({ view: 'home' })
                 }
                 onOpenMenu={() => setMenuOpen(true)}
+                showTitle={activeView.view !== 'game'}
+                slotRef={setHeaderSlot}
             />
 
             {isMenuOpen && (
-                <Drawer title="Menu" onClose={() => setMenuOpen(false)}>
+                <Drawer
+                    title="Menu"
+                    headerAction={<ThemeToggle />}
+                    onClose={() => setMenuOpen(false)}
+                >
                     <nav className={menuNav}>
                         <button
                             type="button"
@@ -48,17 +57,21 @@ export function App() {
                 </Drawer>
             )}
 
-            <main>
-                {activeView.view === 'home' && (
-                    <Home
-                        onOpenGame={(gameRunId) => navigate({ view: 'game', gameRunId })}
-                    />
-                )}
-                {activeView.view === 'game' && (
-                    <Game gameRunId={activeView.gameRunId} />
-                )}
-                {activeView.view === 'about' && <About />}
-            </main>
+            <HeaderSlotContext.Provider value={headerSlot}>
+                <main>
+                    {activeView.view === 'home' && (
+                        <Home
+                            onOpenGame={(gameRunId) =>
+                                navigate({ view: 'game', gameRunId })
+                            }
+                        />
+                    )}
+                    {activeView.view === 'game' && (
+                        <Game gameRunId={activeView.gameRunId} />
+                    )}
+                    {activeView.view === 'about' && <About />}
+                </main>
+            </HeaderSlotContext.Provider>
         </>
     );
 }

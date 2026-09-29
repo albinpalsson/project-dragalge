@@ -1,4 +1,5 @@
 import { css } from '@pokedb2/css-in-js';
+import { HeaderSlot } from '../../components/HeaderSlot';
 import { Box } from './Box/Box';
 import { GameProvider, useGame } from './GameContext';
 import { useProgressionTracker } from '../../hooks/useProgressionTracker';
@@ -50,24 +51,16 @@ function LoadedGame({ game }: { game: Game }) {
     }
 
     if (banReasonsMap.status === 'error') {
-        return (
-            <p>
-                Error loading ban list: {banReasonsMap.error.message}
-            </p>
-        );
+        return <p>Error loading ban list: {banReasonsMap.error.message}</p>;
     }
 
-    if (
-        encounterRollsQuery.isPending ||
-        banReasonsMap.status === 'pending'
-    ) {
+    if (encounterRollsQuery.isPending || banReasonsMap.status === 'pending') {
         return <p>Loading game...</p>;
     }
 
     if (banReasonsMap.status !== 'ready') {
         return <p>Loading game...</p>;
     }
-
 
     return (
         <GameProvider
@@ -121,15 +114,18 @@ function useBanReasonsMap(game: Game): BanReasonsMapResult {
         )
         .map((encounter) => encounter.pokemon_name);
 
-    return { status: 'ready', banReasons: buildBanReasonMap({
-        manualBanNames: banListEntriesQuery.data.map(
-            (entry) => entry.pokemon_name,
-        ),
-        getEvolutionFamily: evolutionGraphQuery.data.getEvolutionFamily,
-        banFullEvolutionLines: game.settings.banFullEvolutionLines,
-        dupesClauseEnabled: game.settings.dupesClauseEnabled,
-        usedEncounterNames,
-    }) };
+    return {
+        status: 'ready',
+        banReasons: buildBanReasonMap({
+            manualBanNames: banListEntriesQuery.data.map(
+                (entry) => entry.pokemon_name,
+            ),
+            getEvolutionFamily: evolutionGraphQuery.data.getEvolutionFamily,
+            banFullEvolutionLines: game.settings.banFullEvolutionLines,
+            dupesClauseEnabled: game.settings.dupesClauseEnabled,
+            usedEncounterNames,
+        }),
+    };
 }
 
 function GameContent() {
@@ -145,18 +141,11 @@ function GameContent() {
 
     return (
         <section className={layout}>
-            <div className={topRow}>
-                <h2 className={heading}>
-                    <span className={gameName}>{game.run.name}</span>
-                    <span className={mutedText}>
-                        {progression.percent}% complete
-                    </span>
-                </h2>
-                <div className={topActions}>
-                    <GameSettingsModal />
-                    <Box />
-                </div>
-            </div>
+            <HeaderSlot>
+                <h2 className={gameName}>{game.run.name}</h2>
+                <Box />
+                <GameSettingsModal />
+            </HeaderSlot>
             <ol className={cardList}>
                 {visibleItems.map((item) => (
                     <li key={item.key} className={cardItem}>
@@ -183,49 +172,14 @@ const layout = css`
     min-width: 0;
 `;
 
-const topRow = css`
-    position: sticky;
-    top: var(--header-height);
-    z-index: 800;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-3);
-    padding: var(--space-3) 0;
-    width: 100%;
-    min-width: 0;
-    border-top: var(--space-1) solid var(--color-bg);
-    border-bottom: 0.1rem solid var(--color-border);
-    background: var(--color-bg);
-    box-shadow: 0 0.8rem 1.2rem -1.2rem rgba(0, 0, 0, 0.7);
-`;
-
-const heading = css`
-    margin: 0;
-    font-size: var(--font-size-lg);
-    display: flex;
-    flex: 1 1 24rem;
-    flex-wrap: wrap;
-    min-width: 0;
-    align-items: center;
-    gap: var(--space-2);
-`;
-
 const gameName = css`
+    flex: 1;
     min-width: 0;
-    overflow-wrap: anywhere;
-`;
-
-const mutedText = css`
-    color: var(--color-text-muted);
-    font-size: var(--font-size-sm);
-`;
-
-const topActions = css`
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
+    margin: 0;
+    overflow: hidden;
+    font-size: var(--font-size-lg);
+    text-overflow: ellipsis;
+    white-space: nowrap;
 `;
 
 const cardList = css`

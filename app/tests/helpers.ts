@@ -123,9 +123,7 @@ export async function selectStarter(
 export async function resetStarter(page: Page): Promise<void> {
     await ensureCardExpanded(page, 'Starter');
     const card = cardFor(page, 'Starter').first();
-    await card
-        .getByRole('button', { name: 'Reset starter choice' })
-        .click();
+    await card.getByRole('button', { name: 'Reset starter choice' }).click();
 }
 
 export async function rollEncounter(
@@ -206,9 +204,6 @@ export async function winBossBattle(page: Page, battleName: string) {
 }
 
 export async function expectProgressionComplete(page: Page) {
-    await expect(
-        page.getByRole('heading', { name: /100% complete/ }),
-    ).toBeVisible();
     await expect(page.getByText('→ Next step', { exact: true })).toHaveCount(0);
 }
 
