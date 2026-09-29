@@ -2,9 +2,7 @@ import { useState } from 'react';
 import { css, cx } from '@pokedb2/css-in-js';
 import { Button } from '../../components/Button';
 import { OverflowMenu } from '../../components/OverflowMenu';
-import {
-    NO_PARTY_SLOT,
-} from '../../db/game-db/schema';
+import { NO_PARTY_SLOT } from '../../db/game-db/schema';
 import type { EncounterRollRow, GameRun } from '../../db/game-db/queries';
 import { pokemonIconSrc, toIconSlug } from '../../pokemon-icon';
 import { getRandomizerDisplayName } from '../../randomizer-groups';
@@ -17,67 +15,80 @@ interface GameCardProps {
     onOpenGame: () => void;
 }
 
-  export function GameCard({ game, obtained, isLost, onOpenGame }: GameCardProps) {
+export function GameCard({
+    game,
+    obtained,
+    isLost,
+    onOpenGame,
+}: GameCardProps) {
     const [isExportOpen, setExportOpen] = useState(false);
     const sorted = partyFirst(obtained);
     const progress = Math.min(sorted.length * 8, 100);
     const variantColor =
-      game.variant === 'v'
-        ? 'var(--color-game-violet)'
-        : 'var(--color-game-scarlet)';
+        game.variant === 'v'
+            ? 'var(--color-game-violet)'
+            : 'var(--color-game-scarlet)';
 
     return (
         <div className={container}>
-          <button type="button" className={cardButton} onClick={onOpenGame}>
-            <div className={cx(card, isLost && lostCard)}>
-              <div
-                className={fill}
-                style={{
-                  width: `${progress}%`,
-                  backgroundImage: `repeating-linear-gradient(45deg, color-mix(in srgb, ${variantColor} 35%, transparent), color-mix(in srgb, ${variantColor} 35%, transparent) 0.6rem, color-mix(in srgb, ${variantColor} 20%, transparent) 0.6rem, color-mix(in srgb, ${variantColor} 20%, transparent) 1.2rem)`,
-                }}
-              />
-              <span className={name}>{game.name}</span>
-              {isLost && <span className={lostBadge}>Run Lost</span>}
-              <span className={progressLabel}>{sorted.length} caught</span>
-              {sorted.length > 0 ? (
-                <span className={icons}>
-                  {sorted.slice(0, 6).map((row, index, shown) => (
-                    <span className={iconSlot} key={row.location_name}>
-                      {index > 0 &&
-                        shown[index - 1].party_slot !== NO_PARTY_SLOT &&
-                        row.party_slot === NO_PARTY_SLOT && (
-                          <span className={divider} />
-                        )}
-                      <img
-                        className={icon}
-                        src={pokemonIconSrc(
-                          toIconSlug(row.pokemon_name),
-                        )}
-                        alt={getRandomizerDisplayName(row.pokemon_name)}
-                        loading="lazy"
-                      />
-                    </span>
-                  ))}
-                </span>
-              ) : (
-                <span className={emptyText}>No caught Pokémon</span>
-              )}
+            <button type="button" className={cardButton} onClick={onOpenGame}>
+                <div className={cx(card, isLost && lostCard)}>
+                    <div
+                        className={fill}
+                        style={{
+                            width: `${progress}%`,
+                            backgroundImage: `repeating-linear-gradient(45deg, color-mix(in srgb, ${variantColor} 35%, transparent), color-mix(in srgb, ${variantColor} 35%, transparent) 0.6rem, color-mix(in srgb, ${variantColor} 20%, transparent) 0.6rem, color-mix(in srgb, ${variantColor} 20%, transparent) 1.2rem)`,
+                        }}
+                    />
+                    <span className={name}>{game.name}</span>
+                    {isLost && <span className={lostBadge}>Run Lost</span>}
+                    {sorted.length > 0 ? (
+                        <span className={icons}>
+                            {sorted.slice(0, 6).map((row, index, shown) => (
+                                <span
+                                    className={iconSlot}
+                                    key={row.location_name}
+                                >
+                                    {index > 0 &&
+                                        shown[index - 1].party_slot !==
+                                            NO_PARTY_SLOT &&
+                                        row.party_slot === NO_PARTY_SLOT && (
+                                            <span className={divider} />
+                                        )}
+                                    <img
+                                        className={icon}
+                                        src={pokemonIconSrc(
+                                            toIconSlug(row.pokemon_name),
+                                        )}
+                                        alt={getRandomizerDisplayName(
+                                            row.pokemon_name,
+                                        )}
+                                        loading="lazy"
+                                    />
+                                </span>
+                            ))}
+                        </span>
+                    ) : (
+                        <span className={emptyText}>No caught Pokémon</span>
+                    )}
+                </div>
+            </button>
+            <div className={menuSlot}>
+                <OverflowMenu label="Game options">
+                    <Button
+                        variant="secondary"
+                        onClick={() => setExportOpen(true)}
+                    >
+                        Export game
+                    </Button>
+                </OverflowMenu>
             </div>
-          </button>
-          <div className={menuSlot}>
-            <OverflowMenu label="Game options">
-              <Button variant="secondary" onClick={() => setExportOpen(true)}>
-                Export game
-              </Button>
-            </OverflowMenu>
-          </div>
-          {isExportOpen && (
-            <ExportGameModal
-              gameRunId={game.id}
-              onClose={() => setExportOpen(false)}
-            />
-          )}
+            {isExportOpen && (
+                <ExportGameModal
+                    gameRunId={game.id}
+                    onClose={() => setExportOpen(false)}
+                />
+            )}
         </div>
     );
 }
@@ -141,14 +152,6 @@ const lostBadge = css`
   font-weight: 600;
   color: var(--color-danger);
   background-color: var(--color-danger-bg);
-`;
-
-const progressLabel = css`
-  position: absolute;
-  top: var(--space-2);
-  right: calc(3.6rem + var(--space-4));
-  font-size: var(--font-size-sm);
-  color: var(--color-text-muted);
 `;
 
 const icons = css`
