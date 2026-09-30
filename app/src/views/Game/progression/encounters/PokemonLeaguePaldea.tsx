@@ -58,6 +58,7 @@ export function PokemonLeaguePaldea({ isNext }: PokemonLeaguePaldeaProps) {
                     encounterRoll={encounterRoll}
                     encounters={allEncounters}
                     isNext={isNext}
+                    zoomedIcon
                     onExpand={expand}
                 />
             )}
@@ -71,7 +72,7 @@ export function PokemonLeaguePaldea({ isNext }: PokemonLeaguePaldeaProps) {
                         onCollapse={collapse}
                     />
 
-                    <RollResult encounterRoll={encounterRoll} />
+                    <RollResult encounterRoll={encounterRoll} zoomedIcon />
 
                     <RollActions
                         locationName={LOCATION_NAME}

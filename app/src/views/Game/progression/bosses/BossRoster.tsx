@@ -1,6 +1,7 @@
 import { css } from '@pokedb2/css-in-js';
 import type { ReactNode } from 'react';
 import { Badge, BadgeButton } from '../../../../components/Badge';
+import type { PokemonIconSize } from '../../../../components/PokemonIcon';
 import { ProgressionCardHeader } from '../../../../components/ProgressionCardHeader';
 import { StatusChip } from '../../../../components/StatusChip';
 import { TypeBadge } from '../../../../components/TypeBadge';
@@ -28,6 +29,8 @@ export interface TeraAce {
 interface BossRosterProps {
     roster: BossBattleRoster;
     teraAce?: TeraAce;
+    iconSize: PokemonIconSize;
+    zoomedIcon?: boolean;
 }
 
 export function BossHeader({
@@ -71,13 +74,20 @@ export function BossHeader({
     );
 }
 
-export function BossRoster({ roster, teraAce }: BossRosterProps) {
+export function BossRoster({
+    roster,
+    teraAce,
+    iconSize,
+    zoomedIcon,
+}: BossRosterProps) {
     return (
         <div className={pokemonList}>
             {roster.pokemon.map((pokemon: BossPokemonView) => (
                 <BossPokemonCard
                     key={pokemon.pokemonName}
                     pokemon={pokemon}
+                    iconSize={iconSize}
+                    zoomedIcon={zoomedIcon}
                     teraType={
                         teraAce?.pokemonName === pokemon.pokemonName
                             ? teraAce.teraType

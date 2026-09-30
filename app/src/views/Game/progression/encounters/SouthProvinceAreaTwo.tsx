@@ -57,6 +57,7 @@ export function SouthProvinceAreaTwo({ isNext }: SouthProvinceAreaTwoProps) {
                     encounterRoll={encounterRoll}
                     encounters={allEncounters}
                     isNext={isNext}
+                    zoomedIcon
                     onExpand={expand}
                 />
             )}
@@ -70,7 +71,7 @@ export function SouthProvinceAreaTwo({ isNext }: SouthProvinceAreaTwoProps) {
                         onCollapse={collapse}
                     />
 
-                    <RollResult encounterRoll={encounterRoll} />
+                    <RollResult encounterRoll={encounterRoll} zoomedIcon />
 
                     <RollActions
                         locationName={LOCATION_NAME}

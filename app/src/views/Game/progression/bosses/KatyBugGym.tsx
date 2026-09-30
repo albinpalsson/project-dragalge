@@ -49,7 +49,12 @@ export function KatyBugGym({ isNext }: KatyBugGymProps) {
     return (
         <ProgressionCard
             className={progressionCardPattern}
-            style={{ '--progression-card-pattern-color': getPokemonTypeColor('Bug') } as CSSProperties}
+            style={
+                {
+                    '--progression-card-pattern-color':
+                        getPokemonTypeColor('Bug'),
+                } as CSSProperties
+            }
             compact
             isNext={isNext}
             defaultExpanded={false}
@@ -80,8 +85,8 @@ export function KatyBugGym({ isNext }: KatyBugGymProps) {
                     />
                     <ProgressionDescription>
                         The Olive Roll gym challenge contains 0–2 optional
-                        trainer battles with 0–2 Pokemon in total before you
-                        can face Katy.
+                        trainer battles with 0–2 Pokemon in total before you can
+                        face Katy.
                     </ProgressionDescription>
                     <BossResultControls
                         currentResult={currentResult}
@@ -91,10 +96,14 @@ export function KatyBugGym({ isNext }: KatyBugGymProps) {
                         onClear={() => bossActions.clearBattle(BATTLE_NAME)}
                         isBusy={bossActions.isBusy}
                     />
-                    <BossRoster roster={rosterData} teraAce={TERA_ACE} />
+                    <BossRoster
+                        roster={rosterData}
+                        teraAce={TERA_ACE}
+                        iconSize="lg"
+                        zoomedIcon
+                    />
                 </>
             )}
         </ProgressionCard>
     );
 }
-

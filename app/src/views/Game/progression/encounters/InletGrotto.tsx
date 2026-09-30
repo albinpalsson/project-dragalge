@@ -58,6 +58,7 @@ export function InletGrotto({ isNext }: InletGrottoProps) {
                     encounterRoll={encounterRoll}
                     encounters={encountersQuery.data.encounters}
                     isNext={isNext}
+                    zoomedIcon
                     onExpand={expand}
                 />
             )}
@@ -71,7 +72,7 @@ export function InletGrotto({ isNext }: InletGrottoProps) {
                         onCollapse={collapse}
                     />
 
-                    <RollResult encounterRoll={encounterRoll} />
+                    <RollResult encounterRoll={encounterRoll} zoomedIcon />
 
                     {showHoundourWarning && (
                         <ProgressionDescription className={warning}>

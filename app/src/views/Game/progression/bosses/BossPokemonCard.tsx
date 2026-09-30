@@ -3,20 +3,30 @@ import { useState } from 'react';
 import { Badge } from '../../../../components/Badge';
 import { Modal } from '../../../../components/Modal';
 import { MoveCard } from '../../../../components/MoveCard';
+import {
+    PokemonIcon,
+    type PokemonIconSize,
+} from '../../../../components/PokemonIcon';
 import { PokemonStatsPanel } from '../../../../components/PokemonStatsPanel';
 import { TypeBadge } from '../../../../components/TypeBadge';
 import { Tooltip } from '../../../../components/Tooltip';
 import type { BossPokemonView } from '../../../../db/pokemon-data/queries';
-import { pokemonIconSrc, toIconSlug } from '../../../../pokemon-icon';
 import { TypeDefenses } from '../../Box/TypeDefenses';
 import { useTypeDefenses } from '../../useTypeDefenses';
 
 interface BossPokemonCardProps {
     pokemon: BossPokemonView;
     teraType?: string;
+    iconSize: PokemonIconSize;
+    zoomedIcon?: boolean;
 }
 
-export function BossPokemonCard({ pokemon, teraType }: BossPokemonCardProps) {
+export function BossPokemonCard({
+    pokemon,
+    teraType,
+    iconSize,
+    zoomedIcon,
+}: BossPokemonCardProps) {
     const [isTypeDefensesOpen, setIsTypeDefensesOpen] = useState(false);
     const defensiveEntries = useTypeDefenses(
         teraType?.toLowerCase() ?? pokemon.primaryType,
@@ -26,11 +36,10 @@ export function BossPokemonCard({ pokemon, teraType }: BossPokemonCardProps) {
     return (
         <article className={card}>
             <div className={header}>
-                <img
-                    className={icon}
-                    src={pokemonIconSrc(toIconSlug(pokemon.pokemonName))}
-                    alt={pokemon.pokemonName}
-                    loading="lazy"
+                <PokemonIcon
+                    name={pokemon.pokemonName}
+                    size={iconSize}
+                    zoomed={zoomedIcon}
                 />
                 <div className={identity}>
                     <div className={identityLine}>
@@ -137,11 +146,6 @@ const header = css`
     align-items: center;
     gap: var(--space-2);
     padding: var(--space-2);
-`;
-
-const icon = css`
-    width: 4.4rem;
-    height: 4.4rem;
 `;
 
 const identity = css`

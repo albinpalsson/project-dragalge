@@ -66,6 +66,7 @@ export function PocoPath({ isNext }: PocoPathProps) {
                     encounterRoll={encounterRoll}
                     encounters={activeEncounters}
                     isNext={isNext}
+                    zoomedIcon
                     onExpand={expand}
                 />
             )}
@@ -93,7 +94,7 @@ export function PocoPath({ isNext }: PocoPathProps) {
                         }
                     />
 
-                    <RollResult encounterRoll={encounterRoll} />
+                    <RollResult encounterRoll={encounterRoll} zoomedIcon />
 
                     <RollActions
                         locationName={LOCATION_NAME}

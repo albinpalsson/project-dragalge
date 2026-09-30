@@ -5,5 +5,5 @@ interface TeraRaid1StarProps {
 }
 
 export function TeraRaid1Star({ isNext }: TeraRaid1StarProps) {
-    return <TeraRaid stars={1} isNext={isNext} />;
+    return <TeraRaid stars={1} isNext={isNext} zoomedIcon />;
 }

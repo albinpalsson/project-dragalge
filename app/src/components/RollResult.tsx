@@ -1,6 +1,6 @@
 import { css } from '@pokedb2/css-in-js';
 import type { EncounterRollDetails } from '../hooks/useEncounterRoll';
-import { pokemonIconSrc, toIconSlug } from '../pokemon-icon';
+import { PokemonIcon } from './PokemonIcon';
 import { StatusChip } from './StatusChip';
 import {
     formatLevelRange,
@@ -11,9 +11,10 @@ import {
 
 interface RollResultProps {
     encounterRoll: EncounterRollDetails | undefined;
+    zoomedIcon?: boolean;
 }
 
-export function RollResult({ encounterRoll }: RollResultProps) {
+export function RollResult({ encounterRoll, zoomedIcon }: RollResultProps) {
     if (!encounterRoll) {
         return null;
     }
@@ -28,11 +29,11 @@ export function RollResult({ encounterRoll }: RollResultProps) {
 
     return (
         <div className={rollBox}>
-            <img
-                className={rollIcon}
-                src={pokemonIconSrc(toIconSlug(encounterRoll.name))}
+            <PokemonIcon
+                name={encounterRoll.name}
                 alt={encounterRoll.displayName}
-                loading="lazy"
+                size="lg"
+                zoomed={zoomedIcon}
             />
             <div>
                 <p className={rollTitle}>
@@ -49,11 +50,6 @@ const rollBox = css`
   display: flex;
   align-items: center;
   gap: var(--space-3);
-`;
-
-const rollIcon = css`
-  width: 5.6rem;
-  height: 5.6rem;
 `;
 
 const rollTitle = css`

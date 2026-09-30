@@ -4,13 +4,13 @@ import { Badge, BadgeButton } from '../../../../components/Badge';
 import { Button } from '../../../../components/Button';
 import { CollapsedSummaryRow } from '../../../../components/CollapsedSummaryRow';
 import { PokemonAutocomplete } from '../../../../components/PokemonAutocomplete';
+import { PokemonIcon } from '../../../../components/PokemonIcon';
 import { ProgressionCard } from '../../../../components/ProgressionCard';
 import { ProgressionDescription } from '../../../../components/ProgressionDescription';
 import { StatusChip } from '../../../../components/StatusChip';
 import { useBanReasons } from '../../../../hooks/useBanReasons';
 import { useEncounterActions } from '../../../../hooks/useEncounterActions';
 import { usePokemonListQuery } from '../../../../hooks/usePokemonListQuery';
-import { pokemonIconSrc, toIconSlug } from '../../../../pokemon-icon';
 import { getRandomizerDisplayName } from '../../../../randomizer-groups';
 import { getBanReason } from '../../../../utils/ban-list';
 import {
@@ -25,9 +25,10 @@ import { useGame } from '../../GameContext';
 interface TeraRaidProps {
     stars: number;
     isNext?: boolean;
+    zoomedIcon?: boolean;
 }
 
-export function TeraRaid({ stars, isNext }: TeraRaidProps) {
+export function TeraRaid({ stars, isNext, zoomedIcon }: TeraRaidProps) {
     const game = useGame();
     const pokemonQuery = usePokemonListQuery();
     const banReasons = useBanReasons();
@@ -136,15 +137,13 @@ export function TeraRaid({ stars, isNext }: TeraRaidProps) {
                                     key={row.location_name}
                                     className={rowItem}
                                 >
-                                    <img
-                                        className={rowIcon}
-                                        src={pokemonIconSrc(
-                                            toIconSlug(row.pokemon_name),
-                                        )}
+                                    <PokemonIcon
+                                        name={row.pokemon_name}
                                         alt={getRandomizerDisplayName(
                                             row.pokemon_name,
                                         )}
-                                        loading="lazy"
+                                        size="md"
+                                        zoomed={zoomedIcon}
                                     />
                                     <span className={rowName}>
                                         {getRandomizerDisplayName(
@@ -282,11 +281,6 @@ const rowItem = css`
     padding: var(--space-2);
     border: 0.1rem solid var(--color-border);
     border-radius: var(--radius-md);
-`;
-
-const rowIcon = css`
-    width: 3.6rem;
-    height: 3.6rem;
 `;
 
 const rowName = css`

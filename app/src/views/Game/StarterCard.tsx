@@ -2,10 +2,10 @@ import { css, cx } from '@pokedb2/css-in-js';
 import { BadgeButton } from '../../components/Badge';
 import { Button } from '../../components/Button';
 import { CollapsedSummaryRow } from '../../components/CollapsedSummaryRow';
+import { PokemonIcon } from '../../components/PokemonIcon';
 import { ProgressionCard } from '../../components/ProgressionCard';
 import { RandomizeButton } from '../../components/RandomizeButton';
 import { StatusChip } from '../../components/StatusChip';
-import { pokemonIconSrc, toIconSlug } from '../../pokemon-icon';
 import { getPokemonTypeColor } from '../../utils/pokemon-type-colors';
 
 import { STARTER_LOCATION_NAME } from '../../db/game-db/queries';
@@ -76,21 +76,12 @@ export function StarterCard({ isNext }: StarterCardProps) {
                     ? ({ expand }) => (
                           <CollapsedSummaryRow
                               icon={
-                                  <span
-                                      className={summaryIconFrame}
-                                      style={{
-                                          borderColor: starterBorderColor,
-                                      }}
-                                  >
-                                      <img
-                                          className={summaryIcon}
-                                          src={pokemonIconSrc(
-                                              toIconSlug(starter),
-                                          )}
-                                          alt={starter}
-                                          loading="lazy"
-                                      />
-                                  </span>
+                                  <PokemonIcon
+                                      name={starter}
+                                      size="sm"
+                                      zoomed
+                                      borderColor={starterBorderColor}
+                                  />
                               }
                               label="Starter - Cabo poco"
                               title={starter}
@@ -125,21 +116,12 @@ export function StarterCard({ isNext }: StarterCardProps) {
                     {starter ? (
                         <div className={chosenBox}>
                             <span className={chosenTopRow}>
-                                <span
-                                    className={iconFrameLarge}
-                                    style={{
-                                        borderColor: starterBorderColor,
-                                    }}
-                                >
-                                    <img
-                                        className={chosenIcon}
-                                        src={pokemonIconSrc(
-                                            toIconSlug(starter),
-                                        )}
-                                        alt={starter}
-                                        loading="lazy"
-                                    />
-                                </span>
+                                <PokemonIcon
+                                    name={starter}
+                                    size="xl"
+                                    zoomed
+                                    borderColor={starterBorderColor}
+                                />
                                 <span className={chosenDetails}>
                                     <span className={chosenIdentity}>
                                         <span className={chosenName}>
@@ -218,26 +200,14 @@ export function StarterCard({ isNext }: StarterCardProps) {
                                                 }
                                                 disabled={isBusy || !!banReason}
                                             >
-                                                <span
-                                                    className={iconFrameSmall}
-                                                    style={{
-                                                        borderColor:
-                                                            getPokemonTypeColor(
-                                                                starterChoice.type,
-                                                            ),
-                                                    }}
-                                                >
-                                                    <img
-                                                        className={optionIcon}
-                                                        src={pokemonIconSrc(
-                                                            toIconSlug(
-                                                                starterChoice.name,
-                                                            ),
-                                                        )}
-                                                        alt={starterChoice.name}
-                                                        loading="lazy"
-                                                    />
-                                                </span>
+                                                <PokemonIcon
+                                                    name={starterChoice.name}
+                                                    size="option"
+                                                    zoomed
+                                                    borderColor={getPokemonTypeColor(
+                                                        starterChoice.type,
+                                                    )}
+                                                />
                                                 <span
                                                     className={
                                                         banReason
@@ -379,32 +349,6 @@ const exclusionReason = css`
     font-size: var(--font-size-sm);
 `;
 
-const optionIcon = css`
-    width: 100%;
-    height: 100%;
-    transform: translateY(
-            calc(-1 * (var(--starter-icon-pad-top) + 0.08rem))
-        )
-        scale(1.24);
-    transform-origin: center bottom;
-`;
-
-const iconFrameSmall = css`
-    width: 6.4rem;
-    height: 6.4rem;
-    --starter-icon-pad-x: 0.3rem;
-    --starter-icon-pad-top: 0.24rem;
-    --starter-icon-pad-bottom: 0.4rem;
-    padding: var(--starter-icon-pad-top) var(--starter-icon-pad-x)
-        var(--starter-icon-pad-bottom) var(--starter-icon-pad-x);
-    border: 0.1rem solid currentColor;
-    border-radius: var(--radius-sm);
-    overflow: hidden;
-    display: inline-flex;
-    align-items: flex-end;
-    justify-content: center;
-`;
-
 const chosenBox = css`
     display: flex;
     flex-direction: column;
@@ -438,32 +382,6 @@ const chosenActions = css`
     gap: var(--space-2);
 `;
 
-const chosenIcon = css`
-    width: 100%;
-    height: 100%;
-    transform: translateY(
-            calc(-1 * (var(--starter-icon-pad-top) + 0.08rem))
-        )
-        scale(1.17);
-    transform-origin: center bottom;
-`;
-
-const iconFrameLarge = css`
-    width: 8rem;
-    height: 8rem;
-    --starter-icon-pad-x: 0.3rem;
-    --starter-icon-pad-top: 0.24rem;
-    --starter-icon-pad-bottom: 0.4rem;
-    padding: var(--starter-icon-pad-top) var(--starter-icon-pad-x)
-        var(--starter-icon-pad-bottom) var(--starter-icon-pad-x);
-    border: 0.1rem solid var(--color-border);
-    border-radius: var(--radius-sm);
-    overflow: hidden;
-    display: inline-flex;
-    align-items: flex-end;
-    justify-content: center;
-`;
-
 const chosenName = css`
     font-weight: var(--font-weight-bold);
 `;
@@ -477,30 +395,4 @@ const chosenIdentity = css`
 
 const eliminatedButtonInactive = css`
     opacity: 0.7;
-`;
-
-const summaryIcon = css`
-    width: 100%;
-    height: 100%;
-    transform: translateY(
-            calc(-1 * (var(--starter-icon-pad-top) + 0.04rem))
-        )
-        scale(1.17);
-    transform-origin: center bottom;
-`;
-
-const summaryIconFrame = css`
-    width: 3.2rem;
-    height: 3.2rem;
-    --starter-icon-pad-x: 0.12rem;
-    --starter-icon-pad-top: 0.08rem;
-    --starter-icon-pad-bottom: 0.18rem;
-    padding: var(--starter-icon-pad-top) var(--starter-icon-pad-x)
-        var(--starter-icon-pad-bottom) var(--starter-icon-pad-x);
-    border: 0.1rem solid var(--color-border);
-    border-radius: var(--radius-sm);
-    overflow: hidden;
-    display: inline-flex;
-    align-items: flex-end;
-    justify-content: center;
 `;

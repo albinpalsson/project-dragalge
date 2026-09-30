@@ -52,7 +52,12 @@ export function NemonaSouthProvince({ isNext }: NemonaSouthProvinceProps) {
     return (
         <ProgressionCard
             className={progressionCardPattern}
-            style={{ '--progression-card-pattern-color': 'var(--color-accent-warm)' } as CSSProperties}
+            style={
+                {
+                    '--progression-card-pattern-color':
+                        'var(--color-accent-warm)',
+                } as CSSProperties
+            }
             compact
             isNext={isNext}
             defaultExpanded={false}
@@ -79,8 +84,8 @@ export function NemonaSouthProvince({ isNext }: NemonaSouthProvinceProps) {
                     />
                     <ProgressionDescription>
                         This battle begins at the large door between South
-                        Province (Area One) and Mesagoza, beside the
-                        Pokemon Center.
+                        Province (Area One) and Mesagoza, beside the Pokemon
+                        Center.
                     </ProgressionDescription>
                     <BossResultControls
                         currentResult={currentResult}
@@ -90,10 +95,14 @@ export function NemonaSouthProvince({ isNext }: NemonaSouthProvinceProps) {
                         onClear={() => bossActions.clearBattle(battleName)}
                         isBusy={bossActions.isBusy}
                     />
-                    <BossRoster roster={rosterData} teraAce={TERA_ACE} />
+                    <BossRoster
+                        roster={rosterData}
+                        teraAce={TERA_ACE}
+                        iconSize="lg"
+                        zoomedIcon
+                    />
                 </>
             )}
         </ProgressionCard>
     );
 }
-

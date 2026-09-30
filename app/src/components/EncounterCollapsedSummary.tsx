@@ -1,10 +1,10 @@
 import { css } from '@pokedb2/css-in-js';
 import type { LocationEncounterView } from '../db/pokemon-data/queries';
 import type { EncounterRollDetails } from '../hooks/useEncounterRoll';
-import { pokemonIconSrc, toIconSlug } from '../pokemon-icon';
 import { formatEncounterGroupLevelRange } from '../utils/encounter-formatters';
 import { Badge } from './Badge';
 import { CollapsedSummaryRow } from './CollapsedSummaryRow';
+import { PokemonIcon } from './PokemonIcon';
 import { StatusChip } from './StatusChip';
 
 interface EncounterCollapsedSummaryProps {
@@ -13,6 +13,7 @@ interface EncounterCollapsedSummaryProps {
     encounterRoll: EncounterRollDetails | undefined;
     encounters: LocationEncounterView[];
     isNext?: boolean;
+    zoomedIcon?: boolean;
     onExpand: () => void;
 }
 
@@ -23,6 +24,7 @@ export function EncounterCollapsedSummary({
     encounterRoll,
     encounters,
     isNext,
+    zoomedIcon,
     onExpand,
 }: EncounterCollapsedSummaryProps) {
     const levelRange = formatEncounterGroupLevelRange(encounters);
@@ -31,11 +33,11 @@ export function EncounterCollapsedSummary({
         <CollapsedSummaryRow
             icon={
                 encounterRoll ? (
-                    <img
-                        className={icon}
-                        src={pokemonIconSrc(toIconSlug(encounterRoll.name))}
+                    <PokemonIcon
+                        name={encounterRoll.name}
                         alt={encounterRoll.displayName}
-                        loading="lazy"
+                        size="sm"
+                        zoomed={zoomedIcon}
                     />
                 ) : (
                     <span className={placeholderIcon} aria-hidden="true">
@@ -61,11 +63,6 @@ export function EncounterCollapsedSummary({
         />
     );
 }
-
-const icon = css`
-  width: 3.2rem;
-  height: 3.2rem;
-`;
 
 const placeholderIcon = css`
     display: inline-flex;
