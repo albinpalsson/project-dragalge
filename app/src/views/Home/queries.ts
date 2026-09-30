@@ -3,6 +3,7 @@ import { useMutation, useQuery, useClient } from '../../server-query';
 import { invalidateQueries } from '@pokedb2/server-query';
 import {
     createGame,
+    deleteGame,
     type CreateGameInput,
 } from '../../db/game-db/queries';
 import {
@@ -21,8 +22,15 @@ import {
     GAME_CARDS_QUERY_KEY,
     GAME_RUN_SNAPSHOTS_QUERY_KEY,
 } from '../../query-keys';
-import { PROGRESSION_ITEMS, isRaidResolved } from '../Game/progression/progression-items';
-import { listBossBattleProgress, listEncounterRolls, listGames } from '../../db/game-db/queries';
+import {
+    PROGRESSION_ITEMS,
+    isRaidResolved,
+} from '../Game/progression/progression-items';
+import {
+    listBossBattleProgress,
+    listEncounterRolls,
+    listGames,
+} from '../../db/game-db/queries';
 import { useEvolutionGraphQuery } from '../../hooks/useEvolutionGraphQuery';
 
 export interface GameCardState {
@@ -103,6 +111,20 @@ export function useCreateGame() {
     });
 }
 
+export function useDeleteGame() {
+    const client = useClient();
+    return useMutation({
+        mutationFn: async (gameRunId: number) => {
+            await deleteGame(gameRunId);
+            invalidateQueries(client, { queryKey: GAMES_QUERY_KEY });
+            invalidateQueries(client, { queryKey: GAME_CARDS_QUERY_KEY });
+            invalidateQueries(client, {
+                queryKey: GAME_RUN_SNAPSHOTS_QUERY_KEY,
+            });
+        },
+    });
+}
+
 export interface ChampionPreset {
     label: string;
     names: string[];
@@ -119,8 +141,11 @@ export function useCompletedGameChampionPresets() {
 
         const presets: ChampionPreset[] = [];
         for (const snapshot of snapshotsQuery.data) {
-            const { game, encounterRolls: rolls, bossProgress: progress } =
-                snapshot;
+            const {
+                game,
+                encounterRolls: rolls,
+                bossProgress: progress,
+            } = snapshot;
             const settings = game.settings;
             const starter = rolls.find(
                 (roll) => roll.location_name === 'Starter',

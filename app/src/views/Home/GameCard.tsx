@@ -5,6 +5,7 @@ import { NO_PARTY_SLOT } from '../../db/game-db/schema';
 import type { EncounterRollRow, GameRun } from '../../db/game-db/queries';
 import { pokemonIconSrc, toIconSlug } from '../../pokemon-icon';
 import { getRandomizerDisplayName } from '../../randomizer-groups';
+import { DeleteGameModal } from './DeleteGameModal';
 import { ExportGameModal } from './ExportGameModal';
 
 interface GameCardProps {
@@ -21,6 +22,7 @@ export function GameCard({
     onOpenGame,
 }: GameCardProps) {
     const [isExportOpen, setExportOpen] = useState(false);
+    const [isDeleteOpen, setDeleteOpen] = useState(false);
     const sorted = partyFirst(obtained);
     const progress = Math.min(sorted.length * 8, 100);
     const variantColor =
@@ -77,12 +79,22 @@ export function GameCard({
                     <OverflowMenuItem onClick={() => setExportOpen(true)}>
                         Export game
                     </OverflowMenuItem>
+                    <OverflowMenuItem onClick={() => setDeleteOpen(true)}>
+                        Delete game
+                    </OverflowMenuItem>
                 </OverflowMenu>
             </div>
             {isExportOpen && (
                 <ExportGameModal
                     gameRunId={game.id}
                     onClose={() => setExportOpen(false)}
+                />
+            )}
+            {isDeleteOpen && (
+                <DeleteGameModal
+                    gameRunId={game.id}
+                    gameName={game.name}
+                    onClose={() => setDeleteOpen(false)}
                 />
             )}
         </div>

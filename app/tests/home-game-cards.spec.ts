@@ -7,6 +7,7 @@ import {
     resolveEncounter,
     rollEncounter,
     selectBoxPokemon,
+    waitForPersistence,
 } from './helpers';
 
 test('home game cards show the Pokemon obtained in a run', async ({ page }) => {
@@ -108,4 +109,42 @@ test('a game can be exported and imported from its shareable link', async ({
         .click();
     await expect(dismissImportPage.getByRole('dialog')).toBeHidden();
     await importContext.close();
+});
+
+test('a game can be deleted from its home card', async ({ page }) => {
+    await page.goto('/');
+    await createGame(page, 'doomed-run');
+    await rollEncounter(page, 'Poco Path');
+    await resolveEncounter(page, 'Poco Path', 'Caught');
+    await navigateTo(page, 'Home');
+
+    const gameCard = page.getByRole('button', { name: /doomed-run/ });
+    await expect(gameCard).toBeVisible();
+
+    await page.getByRole('button', { name: 'Game options' }).click();
+    await page.getByRole('button', { name: 'Delete game' }).click();
+    await expect(
+        page.getByRole('dialog', { name: 'Delete game' }),
+    ).toBeVisible();
+    await page.getByRole('button', { name: 'Cancel' }).click();
+    await expect(page.getByRole('dialog')).toBeHidden();
+    await expect(gameCard).toBeVisible();
+
+    await page.getByRole('button', { name: 'Game options' }).click();
+    await page.getByRole('button', { name: 'Delete game' }).click();
+    await page.getByRole('button', { name: 'Delete', exact: true }).click();
+    await expect(page.getByRole('dialog')).toBeHidden();
+    await expect(gameCard).toBeHidden();
+
+    await waitForPersistence(page);
+    await page.reload();
+    await expect(page.getByRole('heading', { name: 'Games' })).toBeVisible();
+    await expect(gameCard).toBeHidden();
+
+    // The freed id is reused, so the new game must not inherit old rows.
+    await createGame(page, 'fresh-run');
+    await navigateTo(page, 'Home');
+    await expect(page.getByRole('button', { name: /fresh-run/ })).toContainText(
+        'No caught Pokémon',
+    );
 });

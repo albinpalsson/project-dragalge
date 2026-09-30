@@ -382,6 +382,24 @@ export async function clearEncounterRoll(
         .execute();
 }
 
+export async function deleteGame(gameRunId: number): Promise<void> {
+    const db = await getGameDb();
+    // The db package has no cascade, so child rows go first.
+    await db
+        .deleteFrom('encounter_rolls')
+        .where('game_run_id', '=', gameRunId)
+        .execute();
+    await db
+        .deleteFrom('ban_list_entries')
+        .where('game_run_id', '=', gameRunId)
+        .execute();
+    await db
+        .deleteFrom('boss_battle_progress')
+        .where('game_run_id', '=', gameRunId)
+        .execute();
+    await db.deleteFrom('game_runs').where('id', '=', gameRunId).execute();
+}
+
 export interface UpdateGameRunSettingsInput {
     gameRunId: number;
     settings: GameSettings;
