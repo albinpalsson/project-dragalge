@@ -9,12 +9,10 @@ import { RollActions } from '../../../../components/RollActions';
 import { RollResult } from '../../../../components/RollResult';
 import { useEncounterRoll } from '../../../../hooks/useEncounterRoll';
 import { useEncounterActions } from '../../../../hooks/useEncounterActions';
+import { usePersistentGameState } from '../../../../hooks/usePersistentGameState';
 import { filterEncountersForVariant } from '../../../../utils/game-variant';
 import { useGame } from '../../GameContext';
-import {
-    useLocationEncountersQuery,
-    useSetPocoPathOceanSettingMutation,
-} from '../../queries';
+import { useLocationEncountersQuery } from '../../queries';
 
 const LOCATION_NAME = 'Poco Path';
 
@@ -26,7 +24,11 @@ export function PocoPath({ isNext }: PocoPathProps) {
     const game = useGame();
     const encountersQuery = useLocationEncountersQuery(LOCATION_NAME);
     const encounterRoll = useEncounterRoll(LOCATION_NAME);
-    const setOceanMutation = useSetPocoPathOceanSettingMutation();
+    const [includeOcean, setIncludeOcean] = usePersistentGameState(
+        game.id,
+        'poco-path-include-ocean',
+        false,
+    );
     const [isTableExpanded, setTableExpanded] = useState(false);
     const encounterActions = useEncounterActions();
 
@@ -44,7 +46,7 @@ export function PocoPath({ isNext }: PocoPathProps) {
     }
 
     const allEncounters = encountersQuery.data.encounters;
-    const activeEncounters = game.settings.pocoPathOcean
+    const activeEncounters = includeOcean
         ? allEncounters
         : allEncounters.filter(
               (encounter) => !['Ocean', 'Beach'].includes(encounter.subArea),
@@ -82,16 +84,9 @@ export function PocoPath({ isNext }: PocoPathProps) {
 
                     <Checkbox
                         label="Include ocean/beach encounters"
-                        checked={game.settings.pocoPathOcean}
-                        disabled={setOceanMutation.isPending}
+                        checked={includeOcean}
                         title="Beach area encounters are first accessible after finishing the Naranja Academy (Scarlet) or Uva Academy (Violet) introduction, after the first rival battle, you may save this encounter for later."
-                        onChange={(includeOcean) =>
-                            setOceanMutation.mutate({
-                                gameRunId: game.id,
-                                gameRunName: game.run.name,
-                                includeOcean,
-                            })
-                        }
+                        onChange={setIncludeOcean}
                     />
 
                     <RollResult encounterRoll={encounterRoll} zoomedIcon />

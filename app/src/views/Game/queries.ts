@@ -10,7 +10,6 @@ import {
     setEncounterRollStatus,
     setEncounterPokemon,
     setPartySlot,
-    setPocoPathOceanSetting,
     updateGameRunSettings,
     listBossBattleProgress,
     setBossBattleResult,
@@ -133,25 +132,6 @@ export function useSetPartySlotMutation() {
 
 export function useClearEncounterRollMutation() {
     return useRollMutation(clearEncounterRoll);
-}
-
-export function useSetPocoPathOceanSettingMutation() {
-    const client = useClient();
-    return useMutation({
-        mutationFn: async (input: {
-            gameRunId: number;
-            gameRunName: string;
-            includeOcean: boolean;
-        }) => {
-            await setPocoPathOceanSetting(input);
-            invalidateQueries(client, {
-                queryKey: gameRunQueryKey(input.gameRunName),
-            });
-            invalidateQueries(client, {
-                queryKey: GAME_RUN_SNAPSHOTS_QUERY_KEY,
-            });
-        },
-    });
 }
 
 export function useUpdateGameRunSettingsMutation() {

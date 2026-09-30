@@ -4,8 +4,7 @@ import { DEFAULT_BAN_PRESET, PSEUDO_LEGENDARY_PRESET } from './ban-list';
 
 export type SettingsPresetKey = 'fun' | 'challenging' | 'clean';
 
-export interface FullGameSettingsValue
-    extends Omit<GameSettings, 'pocoPathOcean'> {
+export interface FullGameSettingsValue extends GameSettings {
     banList: string[];
 }
 

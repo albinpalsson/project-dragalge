@@ -24,7 +24,6 @@ export const GAME_NAME_MAX_BYTES = 128;
 
 export interface GameSettings {
     randomizerMode: RandomizerMode;
-    pocoPathOcean: boolean;
     dupesClauseEnabled: boolean;
     banFullEvolutionLines: boolean;
     releaseStarterEnabled: boolean;
@@ -34,7 +33,10 @@ export interface GameSettings {
 }
 
 // The encoded storage columns for GameSettings: every game_runs column except identity.
-type EncodedGameSettings = Omit<GameRunsDb['game_runs'], 'id' | 'name' | 'variant'>;
+type EncodedGameSettings = Omit<
+    GameRunsDb['game_runs'],
+    'id' | 'name' | 'variant'
+>;
 
 export interface GameRun {
     id: number;
@@ -129,7 +131,10 @@ export async function insertBanListEntries(
     if (rows.length === 0) {
         return;
     }
-    await db.insertInto('ban_list_entries').values([...rows]).execute();
+    await db
+        .insertInto('ban_list_entries')
+        .values([...rows])
+        .execute();
 }
 
 export async function insertEncounterRolls(
@@ -183,7 +188,7 @@ export async function getGameRun(
 export interface CreateGameInput {
     name: string;
     variant: GameVariant;
-    settings: Omit<GameSettings, 'pocoPathOcean'>;
+    settings: GameSettings;
     banListNames: string[];
 }
 
@@ -195,7 +200,7 @@ export async function createGame(input: CreateGameInput): Promise<GameRun> {
     const game: GameRun = {
         ...identity,
         variant: input.variant,
-        settings: { ...input.settings, pocoPathOcean: false },
+        settings: input.settings,
     };
     await insertGameRuns(db, [game]);
     await insertBanListEntries(
@@ -264,11 +269,13 @@ export async function selectEncounterRolls(
     gameRunId: number,
     db: Database<GameRunsDb>,
 ) {
-    return (await db
-        .selectFrom('encounter_rolls')
-        .selectAll()
-        .where('game_run_id', '=', gameRunId)
-        .execute()).map((row) => ({
+    return (
+        await db
+            .selectFrom('encounter_rolls')
+            .selectAll()
+            .where('game_run_id', '=', gameRunId)
+            .execute()
+    ).map((row) => ({
         ...row,
         status: decodeEncounterStatus(row.status),
     }));
@@ -375,14 +382,9 @@ export async function clearEncounterRoll(
         .execute();
 }
 
-export interface SetPocoPathOceanSettingInput {
-    gameRunId: number;
-    includeOcean: boolean;
-}
-
 export interface UpdateGameRunSettingsInput {
     gameRunId: number;
-    settings: Omit<GameSettings, 'pocoPathOcean'>;
+    settings: GameSettings;
     banListNames: string[];
 }
 
@@ -417,17 +419,6 @@ export async function updateGameRunSettings(
             pokemon_name: pokemonName,
         })),
     );
-}
-
-export async function setPocoPathOceanSetting(
-    input: SetPocoPathOceanSettingInput,
-): Promise<void> {
-    const db = await getGameDb();
-    await db
-        .updateTable('game_runs')
-        .set({ poco_path_ocean: encodeFlag(input.includeOcean) })
-        .where('id', '=', input.gameRunId)
-        .execute();
 }
 
 export async function listBossBattleProgress(
@@ -518,13 +509,11 @@ const TERA_RAIDS_CODES: Record<TeraRaidsSetting, TeraRaidsCode> = {
     unlimited: 'u',
 };
 
-const BOSS_BATTLE_RESULT_CODES: Record<
-    BossBattleResult,
-    BossBattleResultCode
-> = {
-    won: 'w',
-    lost: 'l',
-};
+const BOSS_BATTLE_RESULT_CODES: Record<BossBattleResult, BossBattleResultCode> =
+    {
+        won: 'w',
+        lost: 'l',
+    };
 
 const VARIANT_NAMES: Record<GameVariant, string> = {
     s: 'scarlet',
@@ -580,22 +569,18 @@ function gameRunFromRow(row: GameRunsDb['game_runs']): GameRun {
 function encodeGameSettings(settings: GameSettings): EncodedGameSettings {
     return {
         randomizer_mode: encodeRandomizerMode(settings.randomizerMode),
-        poco_path_ocean: encodeFlag(settings.pocoPathOcean),
         dupes_clause_enabled: encodeFlag(settings.dupesClauseEnabled),
         ban_full_evolution_lines: encodeFlag(settings.banFullEvolutionLines),
         release_starter_enabled: encodeFlag(settings.releaseStarterEnabled),
         tera_raids: encodeTeraRaids(settings.teraRaids),
         show_helpful_tips: encodeFlag(settings.showHelpfulTips),
-        include_team_star_battles: encodeFlag(
-            settings.includeTeamStarBattles,
-        ),
+        include_team_star_battles: encodeFlag(settings.includeTeamStarBattles),
     };
 }
 
 function decodeGameSettings(row: EncodedGameSettings): GameSettings {
     return {
         randomizerMode: decodeRandomizerMode(row.randomizer_mode),
-        pocoPathOcean: decodeFlag(row.poco_path_ocean),
         dupesClauseEnabled: decodeFlag(row.dupes_clause_enabled),
         banFullEvolutionLines: decodeFlag(row.ban_full_evolution_lines),
         releaseStarterEnabled: decodeFlag(row.release_starter_enabled),
