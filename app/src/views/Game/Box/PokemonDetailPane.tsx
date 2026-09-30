@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { css } from '@pokedb2/css-in-js';
 import { Button } from '../../../components/Button';
-import { OverflowMenu } from '../../../components/OverflowMenu';
+import {
+    OverflowMenu,
+    OverflowMenuItem,
+} from '../../../components/OverflowMenu';
 import { PokemonStatsPanel } from '../../../components/PokemonStatsPanel';
 import { TypeBadge } from '../../../components/TypeBadge';
 import { NO_PARTY_SLOT } from '../../../db/game-db/schema';
@@ -52,20 +55,18 @@ export function PokemonDetailPane({ row, party }: PokemonDetailPaneProps) {
                 <div className={buttons}>
                     <OverflowMenu label="More options">
                         {isEliminated ? (
-                            <Button
-                                variant="secondary"
+                            <OverflowMenuItem
                                 disabled={actions.isBusy}
                                 onClick={() =>
                                     void actions.revive(row.location_name)
                                 }
                             >
                                 Revive
-                            </Button>
+                            </OverflowMenuItem>
                         ) : (
                             <>
                                 {isInParty ? (
-                                    <Button
-                                        variant="secondary"
+                                    <OverflowMenuItem
                                         disabled={actions.isBusy}
                                         onClick={() =>
                                             actions.removeFromParty(
@@ -74,10 +75,9 @@ export function PokemonDetailPane({ row, party }: PokemonDetailPaneProps) {
                                         }
                                     >
                                         Remove from party
-                                    </Button>
+                                    </OverflowMenuItem>
                                 ) : (
-                                    <Button
-                                        variant="secondary"
+                                    <OverflowMenuItem
                                         disabled={actions.isBusy || isPartyFull}
                                         onClick={() =>
                                             actions.addToParty(
@@ -86,10 +86,9 @@ export function PokemonDetailPane({ row, party }: PokemonDetailPaneProps) {
                                         }
                                     >
                                         Add to party
-                                    </Button>
+                                    </OverflowMenuItem>
                                 )}
-                                <Button
-                                    variant="secondary"
+                                <OverflowMenuItem
                                     disabled={actions.isBusy}
                                     onClick={() =>
                                         void actions.eliminate(
@@ -98,12 +97,11 @@ export function PokemonDetailPane({ row, party }: PokemonDetailPaneProps) {
                                     }
                                 >
                                     Eliminated
-                                </Button>
+                                </OverflowMenuItem>
                                 {evolutionQuery.data?.previousEvolutions.map(
                                     (evolution) => (
-                                        <Button
+                                        <OverflowMenuItem
                                             key={`${evolution.pokemonName}-${evolution.method}`}
-                                            variant="secondary"
                                             disabled={actions.isBusy}
                                             onClick={() =>
                                                 void actions.devolve(
@@ -113,19 +111,18 @@ export function PokemonDetailPane({ row, party }: PokemonDetailPaneProps) {
                                             }
                                         >
                                             Devolve to {evolution.pokemonName}
-                                        </Button>
+                                        </OverflowMenuItem>
                                     ),
                                 )}
                                 {!isInParty && isPartyFull && (
-                                    <Button
-                                        variant="secondary"
+                                    <OverflowMenuItem
                                         disabled={actions.isBusy}
                                         onClick={() =>
                                             setIsReplacing(!isReplacing)
                                         }
                                     >
                                         Replace
-                                    </Button>
+                                    </OverflowMenuItem>
                                 )}
                             </>
                         )}

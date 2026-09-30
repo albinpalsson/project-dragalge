@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { css, cx } from '@pokedb2/css-in-js';
-import { Button } from '../../components/Button';
-import { OverflowMenu } from '../../components/OverflowMenu';
+import { OverflowMenu, OverflowMenuItem } from '../../components/OverflowMenu';
 import { NO_PARTY_SLOT } from '../../db/game-db/schema';
 import type { EncounterRollRow, GameRun } from '../../db/game-db/queries';
 import { pokemonIconSrc, toIconSlug } from '../../pokemon-icon';
@@ -75,12 +74,9 @@ export function GameCard({
             </button>
             <div className={menuSlot}>
                 <OverflowMenu label="Game options">
-                    <Button
-                        variant="secondary"
-                        onClick={() => setExportOpen(true)}
-                    >
+                    <OverflowMenuItem onClick={() => setExportOpen(true)}>
                         Export game
-                    </Button>
+                    </OverflowMenuItem>
                 </OverflowMenu>
             </div>
             {isExportOpen && (

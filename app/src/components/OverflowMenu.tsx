@@ -8,6 +8,12 @@ interface OverflowMenuProps {
     label?: string;
 }
 
+interface OverflowMenuItemProps {
+    children: ReactNode;
+    onClick?: () => void;
+    disabled?: boolean;
+}
+
 // Kebab-trigger popover for secondary/destructive actions, keeping primary actions as direct buttons.
 export function OverflowMenu({
     children,
@@ -69,6 +75,23 @@ export function OverflowMenu({
     );
 }
 
+export function OverflowMenuItem({
+    children,
+    onClick,
+    disabled = false,
+}: OverflowMenuItemProps) {
+    return (
+        <button
+            type="button"
+            className={menuItem}
+            onClick={onClick}
+            disabled={disabled}
+        >
+            {children}
+        </button>
+    );
+}
+
 const container = css`
   position: relative;
   display: inline-flex;
@@ -81,11 +104,38 @@ const menu = css`
   z-index: 1050;
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
-  padding: var(--space-2);
+    padding: 0;
   min-width: 16rem;
   background: var(--color-surface);
   border: 0.1rem solid var(--color-border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-md);
+    overflow: hidden;
+`;
+
+const menuItem = css`
+    display: block;
+    width: 100%;
+    padding: var(--space-2) var(--space-4);
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+    text-align: left;
+    cursor: pointer;
+
+    & + & {
+        border-top: 0.1rem solid var(--color-border);
+    }
+
+    &:hover:not(:disabled) {
+        background: var(--color-hover-overlay);
+        color: var(--color-text);
+    }
+
+    &:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
 `;
