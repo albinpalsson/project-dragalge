@@ -9,7 +9,13 @@ interface ModalProps {
     dismissMode?: 'any' | 'closeButton' | 'none';
 }
 
-export function Modal({ title, onClose, children, className, dismissMode = 'any' }: ModalProps) {
+export function Modal({
+    title,
+    onClose,
+    children,
+    className,
+    dismissMode = 'any',
+}: ModalProps) {
     const titleId = useId();
     useEffect(() => {
         if (dismissMode !== 'any' || !onClose) {
@@ -37,13 +43,17 @@ export function Modal({ title, onClose, children, className, dismissMode = 'any'
             onClick={dismissMode === 'any' ? handleOverlayClick : undefined}
             role={dismissMode === 'any' ? 'button' : undefined}
             tabIndex={dismissMode === 'any' ? 0 : undefined}
-            onKeyDown={dismissMode === 'any' ? (e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    handleOverlayClick(
-                        e as unknown as React.MouseEvent<HTMLDivElement>,
-                    );
-                }
-            } : undefined}
+            onKeyDown={
+                dismissMode === 'any'
+                    ? (e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                              handleOverlayClick(
+                                  e as unknown as React.MouseEvent<HTMLDivElement>,
+                              );
+                          }
+                      }
+                    : undefined
+            }
         >
             <div
                 className={cx(panel, className)}
@@ -105,7 +115,6 @@ const header = css`
     margin: -0.5rem;
     padding: 0.5rem;
     background: var(--color-surface);
-    box-shadow: 0 0.8rem 1.2rem -1.2rem rgba(0, 0, 0, 0.7);
 
   h2 {
         margin: 0;

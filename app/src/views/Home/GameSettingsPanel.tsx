@@ -67,62 +67,6 @@ export function GameSettingsPanel({
                     onChange({ ...value, releaseStarterEnabled })
                 }
             />
-            <section className={section}>
-            <h3>Ban list</h3>
-            <Checkbox
-                label="Ban full evolution lines"
-                checked={value.banFullEvolutionLines}
-                title="When enabled, manual bans and presets also ban every Pokémon in each evolution line."
-                onChange={(banFullEvolutionLines) =>
-                    onChange({ ...value, banFullEvolutionLines })
-                }
-            />
-            <div className={presetList}>
-                {presets.map((preset) => {
-                    const addsNoNewNames =
-                        preset.names.length > 0 &&
-                        preset.names.every((name) => banListSet.has(name));
-                    const isDisabled = Boolean(preset.disabled || addsNoNewNames);
-                    const title = preset.title
-                        ? preset.title
-                        : addsNoNewNames
-                          ? 'All Pokemon in this preset are already in the ban list.'
-                          : `Add ${preset.label} to the ban list`;
-
-                    return (
-                        <BadgeButton
-                            key={preset.label}
-                            onClick={() => addNames(preset.names)}
-                            disabled={isDisabled}
-                            title={title}
-                        >
-                            {preset.label}
-                        </BadgeButton>
-                    );
-                })}
-            </div>
-            <PokemonAutocomplete
-                label="Add a Pokémon ban"
-                suggestions={suggestions}
-                onAdd={(name) => addNames([name])}
-            />
-            <div className={banList}>
-                {value.banList.map((name) => (
-                    <BadgeButton
-                        key={name}
-                        onClick={() =>
-                            onChange({
-                                ...value,
-                                banList: value.banList.filter((item) => item !== name),
-                            })
-                        }
-                        ariaLabel={`Remove ${name} from ban list`}
-                        title={`Remove ${name}`}
-                    >
-                        {name} ×
-                    </BadgeButton>
-                ))}
-            </div>
             <Select
                 label="Tera raids"
                 value={value.teraRaids}
@@ -153,6 +97,62 @@ export function GameSettingsPanel({
                     onChange({ ...value, includeTeamStarBattles })
                 }
             />
+            <section className={section}>
+                <h3 className={banHeading}>Ban list</h3>
+                <Checkbox
+                    label="Ban full evolution lines"
+                    checked={value.banFullEvolutionLines}
+                    title="When enabled, manual bans and presets also ban every Pokémon in each evolution line."
+                    onChange={(banFullEvolutionLines) =>
+                        onChange({ ...value, banFullEvolutionLines })
+                    }
+                />
+                <div className={presetList}>
+                    {presets.map((preset) => {
+                        const addsNoNewNames =
+                            preset.names.length > 0 &&
+                            preset.names.every((name) => banListSet.has(name));
+                        const isDisabled = Boolean(preset.disabled || addsNoNewNames);
+                        const title = preset.title
+                            ? preset.title
+                            : addsNoNewNames
+                              ? 'All Pokemon in this preset are already in the ban list.'
+                              : `Add ${preset.label} to the ban list`;
+
+                        return (
+                            <BadgeButton
+                                key={preset.label}
+                                onClick={() => addNames(preset.names)}
+                                disabled={isDisabled}
+                                title={title}
+                            >
+                                {preset.label}
+                            </BadgeButton>
+                        );
+                    })}
+                </div>
+                <PokemonAutocomplete
+                    label="Add a Pokémon ban"
+                    suggestions={suggestions}
+                    onAdd={(name) => addNames([name])}
+                />
+                <div className={banList}>
+                    {value.banList.map((name) => (
+                        <BadgeButton
+                            key={name}
+                            onClick={() =>
+                                onChange({
+                                    ...value,
+                                    banList: value.banList.filter((item) => item !== name),
+                                })
+                            }
+                            ariaLabel={`Remove ${name} from ban list`}
+                            title={`Remove ${name}`}
+                        >
+                            {name} ×
+                        </BadgeButton>
+                    ))}
+                </div>
             </section>
         </div>
     );
@@ -168,6 +168,13 @@ const section = css`
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
+    padding-block: var(--space-2);
+    border-block: 0.1rem solid var(--color-border);
+`;
+
+const banHeading = css`
+    margin: 0;
+    font-size: var(--font-size-base);
 `;
 
 const presetList = css`
