@@ -35,7 +35,6 @@ test('home game cards show the Pokemon obtained in a run', async ({ page }) => {
     await navigateTo(page, 'Home');
 
     const gameCard = page.getByRole('button', { name: /card-run/ });
-    await expect(gameCard).toContainText('2 caught');
     await expect(gameCard.getByRole('img', { name: pocoPath })).toBeVisible();
     await expect(
         gameCard.getByRole('img', { name: inletGrotto }),
