@@ -28,10 +28,6 @@ export function StarterCard({ isNext }: StarterCardProps) {
     const starter = useStarter();
     const isBusy = encounterActions.isBusy || clearStarterMutation.isPending;
 
-    if (starter === undefined) {
-        return null;
-    }
-
     const availableStarterChoices = STARTER_CHOICES.filter(
         (choice) => !getBanReason(banReasons, choice.name),
     );
@@ -218,7 +214,11 @@ export function StarterCard({ isNext }: StarterCardProps) {
                                                     {starterChoice.name}
                                                 </span>
                                                 {banReason && (
-                                                    <span className={exclusionReason}>
+                                                    <span
+                                                        className={
+                                                            exclusionReason
+                                                        }
+                                                    >
                                                         {banReason}
                                                     </span>
                                                 )}
@@ -269,9 +269,7 @@ function starterChoiceForName(name: string) {
     return STARTER_CHOICES.find((starterChoice) => starterChoice.name === name);
 }
 
-function randomStarter(
-    choices: readonly (typeof STARTER_CHOICES)[number][],
-) {
+function randomStarter(choices: readonly (typeof STARTER_CHOICES)[number][]) {
     if (choices.length === 0) {
         return undefined;
     }

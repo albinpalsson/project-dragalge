@@ -259,11 +259,6 @@ export async function getPokemonEvolutionDetails(
     };
 }
 
-export async function getFirstEvolutionStage(pokemonName: string) {
-    const graph = await getEvolutionGraph();
-    return graph.getFirstStage(pokemonName);
-}
-
 export async function getTypeChart(): Promise<TypeChartEntry[]> {
     const db = await getPokemonDb();
     const [types, effectiveness] = await Promise.all([

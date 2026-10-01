@@ -31,11 +31,6 @@ export const pokemonEvolutionQueryKey = (pokemonName: string) => [
     pokemonName,
 ];
 
-export const pokemonFirstStageQueryKey = (pokemonName: string) => [
-    'pokemon-first-stage',
-    pokemonName,
-];
-
 export const bossBattleRosterQueryKey = (battleName: string) => [
     'boss-battle-roster',
     battleName,

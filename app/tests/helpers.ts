@@ -81,8 +81,6 @@ export async function chooseStarter(page: Page): Promise<string> {
         throw new Error('Chosen starter image is missing alt text');
     }
 
-    await ensureCardExpanded(page, 'Starter');
-
     return starter;
 }
 
@@ -112,7 +110,6 @@ export async function selectStarter(
     }
 
     await starterButton.click();
-    await ensureCardExpanded(page, 'Starter');
     await expect(
         cardFor(page, 'Starter')
             .first()
