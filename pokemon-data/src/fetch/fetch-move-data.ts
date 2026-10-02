@@ -5,6 +5,7 @@ import {
     buildPageWikitextUrl,
 } from './bulbapedia-parser.ts';
 import { cachedFetcher } from './cached-fetcher.ts';
+import { MOVE_DESCRIPTION_CACHE } from './move-cache.ts';
 
 export type { MoveData };
 
@@ -28,6 +29,20 @@ function parseWikitextResponse(
 }
 
 export async function fetchMoveData(moveName: string): Promise<MoveData> {
+    const data = await fetchParsedMoveData(moveName);
+    const cached = MOVE_DESCRIPTION_CACHE[moveName];
+    if (cached) {
+        return { ...data, effect: cached };
+    }
+    if (/^[-—–\s]*$/.test(data.effect)) {
+        throw new Error(
+            `[${moveName}] SV description is a placeholder; add an entry to MOVE_DESCRIPTION_CACHE`,
+        );
+    }
+    return data;
+}
+
+async function fetchParsedMoveData(moveName: string): Promise<MoveData> {
     // Try the standard "(move)" disambig page first
     const moveUrl = buildMoveWikitextUrl(moveName);
     const { wikitext, missing } = parseWikitextResponse(
