@@ -1,0 +1,317 @@
+{
+    "id": "socarrat-trail",
+    "name": "Socarrat Trail",
+    "region": "Paldea",
+    "province": "North Province",
+    "subAreas": [
+        {
+            "name": "Forest",
+            "encounters": [
+                {
+                    "pokemon": "Raichu",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 53,
+                        "max": 56
+                    },
+                    "subArea": "Forest",
+                    "probabilityByTime": {
+                        "morning": 5,
+                        "day": 5,
+                        "evening": 5,
+                        "night": 5
+                    }
+                },
+                {
+                    "pokemon": "Jolteon",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 53,
+                        "max": 56
+                    },
+                    "subArea": "Forest",
+                    "probabilityByTime": {
+                        "morning": 1,
+                        "day": 1,
+                        "evening": 1,
+                        "night": 1
+                    }
+                },
+                {
+                    "pokemon": "Sudowoodo",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 53,
+                        "max": 56
+                    },
+                    "subArea": "Forest",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Forretress",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 53,
+                        "max": 56
+                    },
+                    "subArea": "Forest",
+                    "probabilityByTime": {
+                        "morning": 20,
+                        "day": 20,
+                        "evening": 20,
+                        "night": 20
+                    }
+                },
+                {
+                    "pokemon": "Heracross",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 53,
+                        "max": 56
+                    },
+                    "subArea": "Forest",
+                    "probabilityByTime": {
+                        "morning": 30,
+                        "day": 30,
+                        "evening": 30,
+                        "night": 30
+                    }
+                },
+                {
+                    "pokemon": "Slaking",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 53,
+                        "max": 56
+                    },
+                    "subArea": "Forest",
+                    "probabilityByTime": {
+                        "morning": 5,
+                        "day": 5,
+                        "evening": 5,
+                        "night": 5
+                    }
+                },
+                {
+                    "pokemon": "Honchkrow",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 53,
+                        "max": 56
+                    },
+                    "subArea": "Forest",
+                    "probabilityByTime": {
+                        "morning": 0,
+                        "day": 0,
+                        "evening": 0,
+                        "night": 0
+                    },
+                    "groupRate": "100%",
+                    "groupPokemon": "Murkrow"
+                },
+                {
+                    "pokemon": "Skuntank",
+                    "games": ["S"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 53,
+                        "max": 53
+                    },
+                    "subArea": "Forest",
+                    "probabilityByTime": {
+                        "morning": 20,
+                        "day": 20,
+                        "evening": 20,
+                        "night": 20
+                    },
+                    "groupRate": "100%",
+                    "groupPokemon": "Stunky"
+                },
+                {
+                    "pokemon": "Leafeon",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 53,
+                        "max": 56
+                    },
+                    "subArea": "Forest",
+                    "probabilityByTime": {
+                        "morning": 1,
+                        "day": 1,
+                        "evening": 1,
+                        "night": 1
+                    }
+                },
+                {
+                    "pokemon": "Zoroark",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 53,
+                        "max": 56
+                    },
+                    "subArea": "Forest",
+                    "probabilityByTime": {
+                        "morning": 10,
+                        "day": 10,
+                        "evening": 10,
+                        "night": 10
+                    }
+                },
+                {
+                    "pokemon": "Sawsbuck (Autumn Form)",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 53,
+                        "max": 55
+                    },
+                    "subArea": "Forest",
+                    "probabilityByTime": {
+                        "morning": 50,
+                        "day": 50,
+                        "evening": 50,
+                        "night": 50
+                    },
+                    "groupRate": "100%",
+                    "groupPokemon": "Deerling"
+                },
+                {
+                    "pokemon": "Amoonguss",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 53,
+                        "max": 56
+                    },
+                    "subArea": "Forest",
+                    "probabilityByTime": {
+                        "morning": 30,
+                        "day": 30,
+                        "evening": 30,
+                        "night": 30
+                    },
+                    "groupRate": "100%",
+                    "groupPokemon": "Foongus"
+                },
+                {
+                    "pokemon": "Lurantis",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 53,
+                        "max": 56
+                    },
+                    "subArea": "Forest",
+                    "probabilityByTime": {
+                        "morning": 30,
+                        "day": 30,
+                        "evening": 30,
+                        "night": 30
+                    },
+                    "groupRate": "100%",
+                    "groupPokemon": "Fomantis"
+                },
+                {
+                    "pokemon": "Spidops",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 53,
+                        "max": 55
+                    },
+                    "subArea": "Forest",
+                    "probabilityByTime": {
+                        "morning": 30,
+                        "day": 30,
+                        "evening": 30,
+                        "night": 30
+                    },
+                    "groupRate": "40%",
+                    "groupPokemon": "Tarountula"
+                },
+                {
+                    "pokemon": "Mabosstiff",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 53,
+                        "max": 56
+                    },
+                    "subArea": "Forest",
+                    "probabilityByTime": {
+                        "morning": 20,
+                        "day": 20,
+                        "evening": 20,
+                        "night": 20
+                    },
+                    "groupRate": "100%",
+                    "groupPokemon": "Maschiff"
+                },
+                {
+                    "pokemon": "Brambleghast",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 53,
+                        "max": 56
+                    },
+                    "subArea": "Forest",
+                    "probabilityByTime": {
+                        "morning": 1,
+                        "day": 1,
+                        "evening": 1,
+                        "night": 1
+                    }
+                },
+                {
+                    "pokemon": "Toedscool",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 53,
+                        "max": 56
+                    },
+                    "subArea": "Forest",
+                    "probabilityByTime": {
+                        "morning": 150,
+                        "day": 150,
+                        "evening": 150,
+                        "night": 150
+                    }
+                },
+                {
+                    "pokemon": "Toedscruel",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 53,
+                        "max": 56
+                    },
+                    "subArea": "Forest",
+                    "probabilityByTime": {
+                        "morning": 40,
+                        "day": 40,
+                        "evening": 40,
+                        "night": 40
+                    },
+                    "groupRate": "100%",
+                    "groupPokemon": "Toedscool"
+                }
+            ]
+        }
+    ]
+}

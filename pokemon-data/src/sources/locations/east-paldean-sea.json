@@ -1,0 +1,702 @@
+{
+    "id": "east-paldean-sea",
+    "name": "East Paldean Sea",
+    "region": "Paldea",
+    "province": "East Province",
+    "subAreas": [
+        {
+            "name": "Ocean",
+            "encounters": [
+                {
+                    "pokemon": "Shellder",
+                    "games": ["S", "V"],
+                    "terrain": ["underwater"],
+                    "levels": {
+                        "min": 15,
+                        "max": 36
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Cloyster",
+                    "games": ["S", "V"],
+                    "terrain": ["underwater"],
+                    "levels": {
+                        "min": 35,
+                        "max": 36
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 10,
+                        "day": 10,
+                        "evening": 10,
+                        "night": 10
+                    }
+                },
+                {
+                    "pokemon": "Magikarp",
+                    "games": ["S", "V"],
+                    "terrain": ["water-surface", "underwater"],
+                    "levels": {
+                        "min": 14,
+                        "max": 36
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Gyarados",
+                    "games": ["S", "V"],
+                    "terrain": ["water-surface", "underwater"],
+                    "levels": {
+                        "min": 20,
+                        "max": 36
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 5,
+                        "day": 5,
+                        "evening": 5,
+                        "night": 5
+                    }
+                },
+                {
+                    "pokemon": "Qwilfish",
+                    "games": ["S", "V"],
+                    "terrain": ["underwater"],
+                    "levels": {
+                        "min": 15,
+                        "max": 36
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 30,
+                        "day": 30,
+                        "evening": 30,
+                        "night": 30
+                    }
+                },
+                {
+                    "pokemon": "Luvdisc",
+                    "games": ["S", "V"],
+                    "terrain": ["underwater"],
+                    "levels": {
+                        "min": 15,
+                        "max": 25
+                    },
+                    "subArea": "Ocean",
+                    "groupRate": "70%",
+                    "groupPokemon": "Luvdisc",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Buizel",
+                    "games": ["S", "V"],
+                    "terrain": ["land", "water-surface"],
+                    "levels": {
+                        "min": 14,
+                        "max": 30
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 20,
+                        "day": 20,
+                        "evening": 20,
+                        "night": 20
+                    }
+                },
+                {
+                    "pokemon": "Floatzel",
+                    "games": ["S", "V"],
+                    "terrain": ["land", "water-surface"],
+                    "levels": {
+                        "min": 28,
+                        "max": 36
+                    },
+                    "subArea": "Ocean",
+                    "groupRate": "100%",
+                    "groupPokemon": "Buizel",
+                    "probabilityByTime": {
+                        "morning": 40,
+                        "day": 40,
+                        "evening": 40,
+                        "night": 40
+                    }
+                },
+                {
+                    "pokemon": "Skrelp",
+                    "games": ["S", "V"],
+                    "terrain": ["underwater"],
+                    "levels": {
+                        "min": 34,
+                        "max": 36
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Clauncher",
+                    "games": ["S", "V"],
+                    "terrain": ["underwater"],
+                    "levels": {
+                        "min": 23,
+                        "max": 36
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Mareanie",
+                    "games": ["S", "V"],
+                    "terrain": ["land", "underwater"],
+                    "levels": {
+                        "min": 16,
+                        "max": 36
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Bruxish",
+                    "games": ["S", "V"],
+                    "terrain": ["underwater"],
+                    "levels": {
+                        "min": 20,
+                        "max": 36
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 30,
+                        "day": 30,
+                        "evening": 30,
+                        "night": 30
+                    }
+                },
+                {
+                    "pokemon": "Arrokuda",
+                    "games": ["S", "V"],
+                    "terrain": ["underwater"],
+                    "levels": {
+                        "min": 14,
+                        "max": 30
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Barraskewda",
+                    "games": ["S", "V"],
+                    "terrain": ["underwater"],
+                    "levels": {
+                        "min": 26,
+                        "max": 36
+                    },
+                    "subArea": "Ocean",
+                    "groupRate": "100%",
+                    "groupPokemon": "Arrokuda",
+                    "probabilityByTime": {
+                        "morning": 20,
+                        "day": 20,
+                        "evening": 20,
+                        "night": 20
+                    }
+                },
+                {
+                    "pokemon": "Finizen",
+                    "games": ["S", "V"],
+                    "terrain": ["water-surface"],
+                    "levels": {
+                        "min": 15,
+                        "max": 36
+                    },
+                    "subArea": "Ocean",
+                    "groupRate": "30%",
+                    "groupPokemon": "Finizen",
+                    "probabilityByTime": {
+                        "morning": 30,
+                        "day": 30,
+                        "evening": 30,
+                        "night": 30
+                    }
+                },
+                {
+                    "pokemon": "Wattrel",
+                    "games": ["S", "V"],
+                    "terrain": ["land", "overland", "sky"],
+                    "levels": {
+                        "min": 14,
+                        "max": 29
+                    },
+                    "subArea": "Ocean",
+                    "groupRate": "60%",
+                    "groupPokemon": "Wattrel",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Kilowattrel",
+                    "games": ["S", "V"],
+                    "terrain": ["land", "overland", "sky"],
+                    "levels": {
+                        "min": 28,
+                        "max": 36
+                    },
+                    "subArea": "Ocean",
+                    "groupRate": "40%",
+                    "groupPokemon": "Kilowattrel",
+                    "probabilityByTime": {
+                        "morning": 30,
+                        "day": 30,
+                        "evening": 30,
+                        "night": 30
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Beach",
+            "encounters": [
+                {
+                    "pokemon": "Buizel",
+                    "games": ["S", "V"],
+                    "terrain": ["land", "water-surface"],
+                    "levels": {
+                        "min": 18,
+                        "max": 26
+                    },
+                    "subArea": "Beach",
+                    "probabilityByTime": {
+                        "morning": 20,
+                        "day": 20,
+                        "evening": 20,
+                        "night": 20
+                    }
+                },
+                {
+                    "pokemon": "Crabrawler",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 18,
+                        "max": 26
+                    },
+                    "subArea": "Beach",
+                    "probabilityByTime": {
+                        "morning": 30,
+                        "day": 30,
+                        "evening": 30,
+                        "night": 30
+                    }
+                },
+                {
+                    "pokemon": "Mareanie",
+                    "games": ["S", "V"],
+                    "terrain": ["land", "underwater"],
+                    "levels": {
+                        "min": 18,
+                        "max": 26
+                    },
+                    "subArea": "Beach",
+                    "probabilityByTime": {
+                        "morning": 80,
+                        "day": 80,
+                        "evening": 80,
+                        "night": 80
+                    }
+                },
+                {
+                    "pokemon": "Pincurchin",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 20,
+                        "max": 26
+                    },
+                    "subArea": "Beach",
+                    "probabilityByTime": {
+                        "morning": 10,
+                        "day": 10,
+                        "evening": 10,
+                        "night": 10
+                    }
+                },
+                {
+                    "pokemon": "Wiglett",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 18,
+                        "max": 26
+                    },
+                    "subArea": "Beach",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Wugtrio",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 26,
+                        "max": 26
+                    },
+                    "subArea": "Beach",
+                    "probabilityByTime": {
+                        "morning": 20,
+                        "day": 20,
+                        "evening": 20,
+                        "night": 20
+                    }
+                },
+                {
+                    "pokemon": "Wattrel",
+                    "games": ["S", "V"],
+                    "terrain": ["land", "overland", "sky"],
+                    "levels": {
+                        "min": 18,
+                        "max": 26
+                    },
+                    "subArea": "Beach",
+                    "groupRate": "60%",
+                    "groupPokemon": "Wattrel",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Nacli",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 18,
+                        "max": 26
+                    },
+                    "subArea": "Beach",
+                    "probabilityByTime": {
+                        "morning": 15,
+                        "day": 15,
+                        "evening": 15,
+                        "night": 15
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Flower",
+            "encounters": [
+                {
+                    "pokemon": "Chansey",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 25,
+                        "max": 28
+                    },
+                    "subArea": "Flower",
+                    "probabilityByTime": {
+                        "morning": 1,
+                        "day": 1,
+                        "evening": 1,
+                        "night": 1
+                    }
+                },
+                {
+                    "pokemon": "Sunflora",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 25,
+                        "max": 28
+                    },
+                    "subArea": "Flower",
+                    "probabilityByTime": {
+                        "morning": 30,
+                        "day": 30,
+                        "evening": 30,
+                        "night": 0
+                    }
+                },
+                {
+                    "pokemon": "Combee",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 20,
+                        "max": 25
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "90%",
+                    "groupPokemon": "Combee",
+                    "probabilityByTime": {
+                        "morning": 0,
+                        "day": 0,
+                        "evening": 40,
+                        "night": 40
+                    }
+                },
+                {
+                    "pokemon": "Vivillon (Fancy Pattern)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 25,
+                        "max": 28
+                    },
+                    "subArea": "Flower",
+                    "note": "Form changes via Pok??mon GO postcards",
+                    "probabilityByTime": {
+                        "morning": 0,
+                        "day": 0,
+                        "evening": 0,
+                        "night": 30
+                    }
+                },
+                {
+                    "pokemon": "Flabébé (Red Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 20,
+                        "max": 23
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "50%",
+                    "groupPokemon": "Flabébé Red Flower",
+                    "probabilityByTime": {
+                        "morning": 0,
+                        "day": 0,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Flabébé (Yellow Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 20,
+                        "max": 23
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "50%",
+                    "groupPokemon": "Flabébé Yellow Flower",
+                    "probabilityByTime": {
+                        "morning": 0,
+                        "day": 0,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Flabébé (Orange Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 20,
+                        "max": 23
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "50%",
+                    "groupPokemon": "Flabébé Orange Flower",
+                    "probabilityByTime": {
+                        "morning": 0,
+                        "day": 0,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Flabébé (Blue Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 20,
+                        "max": 23
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "50%",
+                    "groupPokemon": "Flabébé Blue Flower",
+                    "probabilityByTime": {
+                        "morning": 0,
+                        "day": 0,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Flabébé (White Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 20,
+                        "max": 23
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "50%",
+                    "groupPokemon": "Flabébé White Flower",
+                    "probabilityByTime": {
+                        "morning": 0,
+                        "day": 0,
+                        "evening": 6,
+                        "night": 6
+                    }
+                },
+                {
+                    "pokemon": "Floette (Red Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 20,
+                        "max": 28
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "40%",
+                    "groupPokemon": "Floette Red Flower",
+                    "probabilityByTime": {
+                        "morning": 0,
+                        "day": 0,
+                        "evening": 55,
+                        "night": 55
+                    }
+                },
+                {
+                    "pokemon": "Floette (Yellow Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 20,
+                        "max": 28
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "40%",
+                    "groupPokemon": "Floette Yellow Flower",
+                    "probabilityByTime": {
+                        "morning": 0,
+                        "day": 0,
+                        "evening": 55,
+                        "night": 55
+                    }
+                },
+                {
+                    "pokemon": "Floette (Orange Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 20,
+                        "max": 28
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "40%",
+                    "groupPokemon": "Floette Orange Flower",
+                    "probabilityByTime": {
+                        "morning": 0,
+                        "day": 0,
+                        "evening": 55,
+                        "night": 55
+                    }
+                },
+                {
+                    "pokemon": "Floette (Blue Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 20,
+                        "max": 28
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "40%",
+                    "groupPokemon": "Floette Blue Flower",
+                    "probabilityByTime": {
+                        "morning": 0,
+                        "day": 0,
+                        "evening": 55,
+                        "night": 55
+                    }
+                },
+                {
+                    "pokemon": "Floette (White Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 20,
+                        "max": 28
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "40%",
+                    "groupPokemon": "Floette White Flower",
+                    "probabilityByTime": {
+                        "morning": 0,
+                        "day": 0,
+                        "evening": 3,
+                        "night": 3
+                    }
+                },
+                {
+                    "pokemon": "Dolliv",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 25,
+                        "max": 28
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "100%",
+                    "groupPokemon": "Smoliv",
+                    "probabilityByTime": {
+                        "morning": 10,
+                        "day": 10,
+                        "evening": 10,
+                        "night": 10
+                    }
+                }
+            ]
+        }
+    ]
+}

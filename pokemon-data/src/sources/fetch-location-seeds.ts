@@ -1,4 +1,4 @@
-import locationsData from './locations.json' with { type: 'json' };
+import locationsData from './locations.ts';
 
 export interface LocationEncounterSeed {
     subArea: string;

@@ -6,12 +6,7 @@
         "useIgnoreFile": true
     },
     "files": {
-        "includes": [
-            "**",
-            "!!**/dist",
-            "!!**/.cache",
-            "!pokemon-data/src/sources/locations.json"
-        ]
+        "includes": ["**", "!!**/dist", "!!**/.cache"]
     },
     "formatter": {
         "enabled": true,

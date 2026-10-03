@@ -1,0 +1,219 @@
+{
+    "id": "poco-path",
+    "name": "Poco Path",
+    "region": "Paldea",
+    "province": "South Province",
+    "subAreas": [
+        {
+            "name": "Prairie",
+            "encounters": [
+                {
+                    "pokemon": "Hoppip",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 2,
+                        "max": 4
+                    },
+                    "subArea": "Prairie",
+                    "groupRate": "40%",
+                    "groupPokemon": "Hoppip",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Fletchling",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 2,
+                        "max": 4
+                    },
+                    "subArea": "Prairie",
+                    "groupRate": "100%",
+                    "groupPokemon": "Fletchling",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Scatterbug",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 4,
+                        "max": 4
+                    },
+                    "subArea": "Prairie",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Lechonk",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 2,
+                        "max": 4
+                    },
+                    "subArea": "Prairie",
+                    "probabilityByTime": {
+                        "morning": 80,
+                        "day": 80,
+                        "evening": 80,
+                        "night": 80
+                    }
+                },
+                {
+                    "pokemon": "Tarountula",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 2,
+                        "max": 4
+                    },
+                    "subArea": "Prairie",
+                    "probabilityByTime": {
+                        "morning": 50,
+                        "day": 50,
+                        "evening": 50,
+                        "night": 50
+                    }
+                },
+                {
+                    "pokemon": "Pawmi",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 5,
+                        "max": 5
+                    },
+                    "subArea": "Prairie",
+                    "probabilityByTime": {
+                        "morning": 5,
+                        "day": 5,
+                        "evening": 5,
+                        "night": 5
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Ocean",
+            "encounters": [
+                {
+                    "pokemon": "Magikarp",
+                    "games": ["S", "V"],
+                    "terrain": ["water_surface", "underwater"],
+                    "levels": {
+                        "min": 2,
+                        "max": 4
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Wingull",
+                    "games": ["S", "V"],
+                    "terrain": ["land", "overland", "sky"],
+                    "levels": {
+                        "min": 2,
+                        "max": 4
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 80,
+                        "day": 80,
+                        "evening": 80,
+                        "night": 80
+                    }
+                },
+                {
+                    "pokemon": "Buizel",
+                    "games": ["S", "V"],
+                    "terrain": ["land", "water_surface"],
+                    "levels": {
+                        "min": 2,
+                        "max": 4
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 20,
+                        "day": 20,
+                        "evening": 20,
+                        "night": 20
+                    }
+                },
+                {
+                    "pokemon": "Arrokuda",
+                    "games": ["S", "V"],
+                    "terrain": ["underwater"],
+                    "levels": {
+                        "min": 2,
+                        "max": 4
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Beach",
+            "encounters": [
+                {
+                    "pokemon": "Wingull",
+                    "games": ["S", "V"],
+                    "terrain": ["land", "overland", "sky"],
+                    "levels": {
+                        "min": 2,
+                        "max": 4
+                    },
+                    "subArea": "Beach",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Buizel",
+                    "games": ["S", "V"],
+                    "terrain": ["land", "water_surface"],
+                    "levels": {
+                        "min": 2,
+                        "max": 4
+                    },
+                    "subArea": "Beach",
+                    "probabilityByTime": {
+                        "morning": 20,
+                        "day": 20,
+                        "evening": 20,
+                        "night": 20
+                    }
+                }
+            ]
+        }
+    ]
+}

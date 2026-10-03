@@ -1,0 +1,63 @@
+{
+    "id": "inlet-grotto",
+    "name": "Inlet Grotto",
+    "region": "Paldea",
+    "province": "South Province",
+    "subAreas": [
+        {
+            "name": "Cave",
+            "encounters": [
+                {
+                    "pokemon": "Diglett",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 3,
+                        "max": 5
+                    },
+                    "subArea": "Cave",
+                    "probabilityByTime": {
+                        "morning": 20,
+                        "day": 20,
+                        "evening": 20,
+                        "night": 20
+                    }
+                },
+                {
+                    "pokemon": "Houndour",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 3,
+                        "max": 5
+                    },
+                    "subArea": "Cave",
+                    "groupRate": "40%",
+                    "groupPokemon": "Houndour",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Yungoos",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 3,
+                        "max": 5
+                    },
+                    "subArea": "Cave",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                }
+            ]
+        }
+    ]
+}

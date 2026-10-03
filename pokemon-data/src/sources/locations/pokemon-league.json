@@ -1,0 +1,118 @@
+{
+    "id": "pokemon-league",
+    "name": "Pokemon League (Paldea)",
+    "region": "Paldea",
+    "province": "South Province",
+    "availableAfter": "Available after school introduction",
+    "minBossOrder": 2,
+    "subAreas": [
+        {
+            "name": "Town",
+            "encounters": [
+                {
+                    "pokemon": "Igglybuff",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 7,
+                        "max": 9
+                    },
+                    "subArea": "Town",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Tandemaus",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 7,
+                        "max": 9
+                    },
+                    "subArea": "Town",
+                    "probabilityByTime": {
+                        "morning": 70,
+                        "day": 70,
+                        "evening": 70,
+                        "night": 70
+                    }
+                },
+                {
+                    "pokemon": "Fidough",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 7,
+                        "max": 9
+                    },
+                    "subArea": "Town",
+                    "probabilityByTime": {
+                        "morning": 50,
+                        "day": 50,
+                        "evening": 50,
+                        "night": 50
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Flower",
+            "encounters": [
+                {
+                    "pokemon": "Sunkern",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 7,
+                        "max": 9
+                    },
+                    "subArea": "Flower",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 0
+                    }
+                },
+                {
+                    "pokemon": "Combee",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 7,
+                        "max": 9
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "90%",
+                    "groupPokemon": "Combee",
+                    "probabilityByTime": {
+                        "morning": 40,
+                        "day": 40,
+                        "evening": 40,
+                        "night": 40
+                    }
+                },
+                {
+                    "pokemon": "Happiny",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 7,
+                        "max": 9
+                    },
+                    "subArea": "Flower",
+                    "probabilityByTime": {
+                        "morning": 1,
+                        "day": 1,
+                        "evening": 1,
+                        "night": 1
+                    }
+                }
+            ]
+        }
+    ]
+}

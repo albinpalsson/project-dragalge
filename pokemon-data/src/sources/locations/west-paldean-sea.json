@@ -1,0 +1,431 @@
+{
+    "id": "west-paldean-sea",
+    "name": "West Paldean Sea",
+    "region": "Paldea",
+    "province": "West Province",
+    "subAreas": [
+        {
+            "name": "Ocean",
+            "encounters": [
+                {
+                    "pokemon": "Shellder",
+                    "games": ["S", "V"],
+                    "terrain": ["underwater"],
+                    "levels": {
+                        "min": 18,
+                        "max": 40
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Cloyster",
+                    "games": ["S", "V"],
+                    "terrain": ["underwater"],
+                    "levels": {
+                        "min": 35,
+                        "max": 42
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 10,
+                        "day": 10,
+                        "evening": 10,
+                        "night": 10
+                    }
+                },
+                {
+                    "pokemon": "Magikarp",
+                    "games": ["S", "V"],
+                    "terrain": ["water_surface", "underwater"],
+                    "levels": {
+                        "min": 18,
+                        "max": 39
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Gyarados",
+                    "games": ["S", "V"],
+                    "terrain": ["water_surface", "underwater"],
+                    "levels": {
+                        "min": 20,
+                        "max": 42
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 5,
+                        "day": 5,
+                        "evening": 5,
+                        "night": 5
+                    }
+                },
+                {
+                    "pokemon": "Qwilfish",
+                    "games": ["S", "V"],
+                    "terrain": ["underwater"],
+                    "levels": {
+                        "min": 18,
+                        "max": 40
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 30,
+                        "day": 30,
+                        "evening": 30,
+                        "night": 30
+                    }
+                },
+                {
+                    "pokemon": "Wingull",
+                    "games": ["S", "V"],
+                    "terrain": ["land", "overland", "sky"],
+                    "levels": {
+                        "min": 18,
+                        "max": 29
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 80,
+                        "day": 80,
+                        "evening": 80,
+                        "night": 80
+                    }
+                },
+                {
+                    "pokemon": "Pelipper",
+                    "games": ["S", "V"],
+                    "terrain": ["land", "overland", "sky"],
+                    "levels": {
+                        "min": 32,
+                        "max": 42
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 40,
+                        "day": 40,
+                        "evening": 40,
+                        "night": 40
+                    }
+                },
+                {
+                    "pokemon": "Luvdisc",
+                    "games": ["S", "V"],
+                    "terrain": ["underwater"],
+                    "levels": {
+                        "min": 18,
+                        "max": 25
+                    },
+                    "subArea": "Ocean",
+                    "groupRate": "70%",
+                    "groupPokemon": "Luvdisc",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Buizel",
+                    "games": ["S", "V"],
+                    "terrain": ["land", "water_surface"],
+                    "levels": {
+                        "min": 18,
+                        "max": 30
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 20,
+                        "day": 20,
+                        "evening": 20,
+                        "night": 20
+                    }
+                },
+                {
+                    "pokemon": "Floatzel",
+                    "games": ["S", "V"],
+                    "terrain": ["land", "water_surface"],
+                    "levels": {
+                        "min": 28,
+                        "max": 42
+                    },
+                    "subArea": "Ocean",
+                    "groupRate": "100%",
+                    "groupPokemon": "Buizel",
+                    "probabilityByTime": {
+                        "morning": 40,
+                        "day": 40,
+                        "evening": 40,
+                        "night": 40
+                    }
+                },
+                {
+                    "pokemon": "Finneon",
+                    "games": ["S", "V"],
+                    "terrain": ["underwater"],
+                    "levels": {
+                        "min": 18,
+                        "max": 35
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Lumineon",
+                    "games": ["S", "V"],
+                    "terrain": ["underwater"],
+                    "levels": {
+                        "min": 31,
+                        "max": 42
+                    },
+                    "subArea": "Ocean",
+                    "groupRate": "100%",
+                    "groupPokemon": "Finneon",
+                    "probabilityByTime": {
+                        "morning": 30,
+                        "day": 30,
+                        "evening": 30,
+                        "night": 30
+                    }
+                },
+                {
+                    "pokemon": "Tynamo",
+                    "games": ["S", "V"],
+                    "terrain": ["underwater"],
+                    "levels": {
+                        "min": 25,
+                        "max": 42
+                    },
+                    "subArea": "Ocean",
+                    "groupRate": "50%",
+                    "groupPokemon": "Tynamo",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Eelektrik",
+                    "games": ["S", "V"],
+                    "terrain": ["underwater"],
+                    "levels": {
+                        "min": 39,
+                        "max": 42
+                    },
+                    "subArea": "Ocean",
+                    "groupRate": "100%",
+                    "groupPokemon": "Tynamo",
+                    "probabilityByTime": {
+                        "morning": 30,
+                        "day": 30,
+                        "evening": 30,
+                        "night": 30
+                    }
+                },
+                {
+                    "pokemon": "Skrelp",
+                    "games": ["S"],
+                    "terrain": ["underwater"],
+                    "levels": {
+                        "min": 34,
+                        "max": 42
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Clauncher",
+                    "games": ["V"],
+                    "terrain": ["underwater"],
+                    "levels": {
+                        "min": 23,
+                        "max": 41
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Clawitzer",
+                    "games": ["V"],
+                    "terrain": ["underwater"],
+                    "levels": {
+                        "min": 37,
+                        "max": 42
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 20,
+                        "day": 20,
+                        "evening": 20,
+                        "night": 20
+                    }
+                },
+                {
+                    "pokemon": "Bruxish",
+                    "games": ["S", "V"],
+                    "terrain": ["underwater"],
+                    "levels": {
+                        "min": 20,
+                        "max": 42
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 30,
+                        "day": 30,
+                        "evening": 30,
+                        "night": 30
+                    }
+                },
+                {
+                    "pokemon": "Arrokuda",
+                    "games": ["S", "V"],
+                    "terrain": ["underwater"],
+                    "levels": {
+                        "min": 18,
+                        "max": 30
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Barraskewda",
+                    "games": ["S", "V"],
+                    "terrain": ["underwater"],
+                    "levels": {
+                        "min": 26,
+                        "max": 42
+                    },
+                    "subArea": "Ocean",
+                    "groupRate": "100%",
+                    "groupPokemon": "Arrokuda",
+                    "probabilityByTime": {
+                        "morning": 20,
+                        "day": 20,
+                        "evening": 20,
+                        "night": 20
+                    }
+                },
+                {
+                    "pokemon": "Veluza",
+                    "games": ["S", "V"],
+                    "terrain": ["underwater"],
+                    "levels": {
+                        "min": 25,
+                        "max": 42
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 20,
+                        "day": 20,
+                        "evening": 20,
+                        "night": 20
+                    }
+                },
+                {
+                    "pokemon": "Finizen",
+                    "games": ["S", "V"],
+                    "terrain": ["water_surface"],
+                    "levels": {
+                        "min": 18,
+                        "max": 42
+                    },
+                    "subArea": "Ocean",
+                    "groupRate": "30%",
+                    "groupPokemon": "Finizen",
+                    "probabilityByTime": {
+                        "morning": 30,
+                        "day": 30,
+                        "evening": 30,
+                        "night": 30
+                    }
+                },
+                {
+                    "pokemon": "Wattrel",
+                    "games": ["S", "V"],
+                    "terrain": ["land", "overland", "sky"],
+                    "levels": {
+                        "min": 18,
+                        "max": 29
+                    },
+                    "subArea": "Ocean",
+                    "groupRate": "60%",
+                    "groupPokemon": "Wattrel",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Kilowattrel",
+                    "games": ["S", "V"],
+                    "terrain": ["land", "overland", "sky"],
+                    "levels": {
+                        "min": 28,
+                        "max": 42
+                    },
+                    "subArea": "Ocean",
+                    "groupRate": "40%",
+                    "groupPokemon": "Kilowattrel",
+                    "probabilityByTime": {
+                        "morning": 30,
+                        "day": 30,
+                        "evening": 30,
+                        "night": 30
+                    }
+                },
+                {
+                    "pokemon": "Bombirdier",
+                    "games": ["S", "V"],
+                    "terrain": ["land", "overland", "sky"],
+                    "levels": {
+                        "min": 19,
+                        "max": 42
+                    },
+                    "subArea": "Ocean",
+                    "probabilityByTime": {
+                        "morning": 40,
+                        "day": 40,
+                        "evening": 40,
+                        "night": 40
+                    }
+                }
+            ]
+        }
+    ]
+}

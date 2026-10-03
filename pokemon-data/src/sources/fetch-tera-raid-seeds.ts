@@ -18,6 +18,5 @@ export async function fetchTeraRaidSeeds(
             names.add(name);
         }
     }
-    console.log("Fetched Tera Raid seeds:", [...names], names.size);
     return [...names];
 }
