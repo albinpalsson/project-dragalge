@@ -179,59 +179,74 @@ export function stripWikiMarkup(value: string): string {
     return text;
 }
 
-function extractConditionSentence(raw: string): string {
-    const conditionPattern =
-        /(level|friendship|holding|knowing|during|night|day|time|outside|steps|trade|male|female|bag|evolve)/i;
+function parseEvolutionMethod(value: string): string {
+    const raw = value
+        .replace(/\[\[(?:File|Image):[^\]]*\]\]/gi, '')
+        .replace(/\{\{\s*Bag\/s\|[^}]*\}\}/gi, '')
+        .replace(/\{\{\s*(?:acolor|mcolor)\|([^|}]+)(?:\|[^}]*)?\}\}/gi, '$1')
+        .replace(/\{\{\s*color2\|[^|}]+\|([^|}]+)\}\}/gi, '$1');
     const lines = raw
         .replace(/<br\s*\/?\s*>/gi, '\n')
         .split(/\r?\n/)
-        .map((line) => stripWikiMarkup(line).trim())
-        .filter((line) => line.length > 0)
-        .filter((line) => conditionPattern.test(line));
-
-    const sentence = lines.join(' ').replace(/\s+/g, ' ').trim();
-    return sentence;
-}
-
-function parseEvolutionMethod(value: string): string {
-    const raw = value.trim();
-    const cleaned = stripWikiMarkup(raw).trim();
-    const lower = cleaned.toLowerCase();
-
-    const levelMatch = /\blevel\s*(\d+)\b/i.exec(cleaned);
-    if (lower.includes('rare candy') && levelMatch) {
-        return `level ${levelMatch[1]}`;
-    }
-
-    const stoneMatch = /\b([a-z]+)\s+stone\b/i.exec(cleaned);
-    if (stoneMatch) {
-        return `${stoneMatch[1].toLowerCase()} stone`;
-    }
-
-    const sentence = extractConditionSentence(raw);
-    return sentence.length > 0 ? sentence : 'unknown';
+        .map((line) =>
+            stripWikiMarkup(line)
+                .replace(/^\s*\+\s*|\s*\+\s*$/g, '')
+                .trim(),
+        )
+        .filter((line) => line.length > 0);
+    const method = lines
+        .filter((line, index) => index === 0 || line !== lines[index - 1])
+        .join(' ')
+        .replace(/\blevel\s+(\d+)/gi, 'level $1');
+    return method || 'unknown';
 }
 
 function cleanEvolutionPokemonName(value: string): string {
     return stripWikiMarkup(value).split('|', 1)[0].trim();
 }
 
+function resolveEvolutionPokemonName(name: string, form: string): string {
+    const cleanedName = cleanEvolutionPokemonName(name);
+    const cleanedForm = cleanEvolutionPokemonName(form);
+    if (!cleanedName || !cleanedForm) {
+        return cleanedName;
+    }
+    if (cleanedName === 'Oinkologne' && /^(male|female)$/i.test(cleanedForm)) {
+        return `${cleanedName} ${cleanedForm}`;
+    }
+    const regionalForm = /^(Alolan|Galarian|Hisuian|Paldean)$/i.test(
+        cleanedForm,
+    )
+        ? `${cleanedForm} Form`
+        : cleanedForm;
+    return `${cleanedName} (${regionalForm})`;
+}
+
 function parseEvoboxTemplate(block: string): EvolutionEdge[] {
     const params = parseTemplateParameters(block);
-    const stageIndexes = new Set<number>();
-    for (const key of Object.keys(params)) {
-        const match = /^(?:name|evo)(\d+)$/i.exec(key);
-        if (match) {
-            stageIndexes.add(parseInt(match[1], 10));
-        }
-    }
-
-    const maxStage = Math.max(...stageIndexes, 0);
     const edges: EvolutionEdge[] = [];
-    for (let index = 1; index < maxStage; index += 1) {
-        const from = cleanEvolutionPokemonName(params[`name${index}`] ?? '');
-        const to = cleanEvolutionPokemonName(params[`name${index + 1}`] ?? '');
-        const method = params[`evo${index}`]?.trim();
+    for (const key of Object.keys(params)) {
+        const match = /^name(\d+)([a-z]?)$/i.exec(key);
+        if (!match || Number(match[1]) < 2) {
+            continue;
+        }
+        const targetStage = `${match[1]}${match[2]}`;
+        const previousStage = Number(match[1]) - 1;
+        const branchStage = `${previousStage}${match[2]}`;
+        const sourceStage = params[`name${branchStage}`]
+            ? branchStage
+            : `${previousStage}`;
+        const from = resolveEvolutionPokemonName(
+            params[`name${sourceStage}`] ?? '',
+            params[`form${sourceStage}`] ?? '',
+        );
+        const to = resolveEvolutionPokemonName(
+            params[key],
+            params[`form${targetStage}`] ?? '',
+        );
+        const method = (
+            params[`evo${branchStage}`] ?? params[`evo${previousStage}`]
+        )?.trim();
         if (!from || !to || !method) {
             continue;
         }
@@ -264,6 +279,45 @@ function parseNarrativeEvolutionEdges(
     return edges;
 }
 
+function parseEvolutionTableEdges(wikitext: string): EvolutionEdge[] {
+    const setups = extractTemplates(wikitext, /\{\{\s*Evobox\/Setup\|/i);
+    const edges: EvolutionEdge[] = [];
+    for (let index = 0; index < setups.length - 1; index += 1) {
+        const source = setups[index];
+        const target = setups[index + 1];
+        if (
+            !source.includes('|Unevolved') ||
+            !target.includes('|First Evolution')
+        ) {
+            continue;
+        }
+        const sourceEnd = wikitext.indexOf(source) + source.length;
+        const targetStart = wikitext.indexOf(target, sourceEnd);
+        const condition = wikitext.slice(sourceEnd, targetStart);
+        if (/^\s*\|[-}]/m.test(condition)) {
+            continue;
+        }
+        const from = /^\{\{\s*Evobox\/Setup\|[^|]+\|([^|]+)/i.exec(source)?.[1];
+        const to = /^\{\{\s*Evobox\/Setup\|[^|]+\|([^|]+)/i.exec(target)?.[1];
+        if (!from || !to) {
+            continue;
+        }
+        const methods = condition
+            .replace(/^\s*\|[ \t]*/gm, '')
+            .split(/\u2192|\u2193/)
+            .map(parseEvolutionMethod)
+            .filter((method) => method !== 'unknown');
+        if (methods.length > 0) {
+            edges.push({
+                from: cleanEvolutionPokemonName(from),
+                to: cleanEvolutionPokemonName(to),
+                method: methods.join(' or '),
+            });
+        }
+    }
+    return edges;
+}
+
 function normalizeEvolutionMethod(method: string): string {
     return method.toLowerCase().replaceAll(',', '').replace(/\s+/g, ' ').trim();
 }
@@ -272,11 +326,30 @@ function isGenderOnlyMethod(method: string): boolean {
     return /^(?:female|male)(?: only)?$/i.test(method.trim());
 }
 
+function normalizeFormName(form: string): string {
+    return form
+        .toLowerCase()
+        .replace(/\bform\b/g, '')
+        .replace(/[^a-z0-9]+/g, ' ')
+        .trim();
+}
+
 export function consolidateEvolutionEdges(
     edges: EvolutionEdge[],
 ): EvolutionEdge[] {
     const edgesByPair = new Map<string, EvolutionEdge[]>();
     for (const edge of edges) {
+        if (
+            normalizeEvolutionMethod(edge.method) === 'unknown' &&
+            edges.some(
+                (candidate) =>
+                    candidate.from === edge.from &&
+                    candidate.to !== edge.to &&
+                    candidate.to.replace(/\s*\([^)]+\)$/, '') === edge.to,
+            )
+        ) {
+            continue;
+        }
         const key = `${edge.from}\u0000${edge.to}`;
         const pairEdges = edgesByPair.get(key);
         if (pairEdges) {
@@ -327,14 +400,29 @@ export function parseEvolutionEdges(
     wikitext: string,
     pokemonName: string,
 ): EvolutionEdge[] {
-    const templateEdges = extractTemplates(
-        wikitext,
-        /\{\{\s*Evobox-\d+/i,
-    ).flatMap(parseEvoboxTemplate);
-    if (templateEdges.length > 0) {
-        return templateEdges;
+    const text = wikitext.replace(/<!--[\s\S]*?-->/g, '');
+    const evolutionSection =
+        /(?:^|\n)===\s*Evolution data\s*===\s*\n([\s\S]*?)(?=\n==[^=]|\n===[^=]|$)/i.exec(
+            text,
+        )?.[1];
+    const templatePattern =
+        /\{\{\s*Evobox(?:-\d+|\/(?:1branch\d+|2branch[12]))\s*(?=\||\r?\n|\}\})/i;
+    const detailedEdges = evolutionSection
+        ? [
+              ...extractTemplates(evolutionSection, templatePattern).flatMap(
+                  parseEvoboxTemplate,
+              ),
+              ...parseEvolutionTableEdges(evolutionSection),
+          ]
+        : [];
+    const templateEdges = extractTemplates(text, templatePattern).flatMap(
+        parseEvoboxTemplate,
+    );
+    const edges = detailedEdges.length > 0 ? detailedEdges : templateEdges;
+    if (edges.length > 0) {
+        return consolidateEvolutionEdges(edges);
     }
-    return parseNarrativeEvolutionEdges(wikitext, pokemonName);
+    return parseNarrativeEvolutionEdges(text, pokemonName);
 }
 
 function collectStatsBlocks(
@@ -410,6 +498,14 @@ export function parseBaseStats(
         );
         return null;
     }
+    const requestedForm = /\(([^)]+)\)$/.exec(pokemonName ?? '')?.[1];
+    const formStats = requestedForm
+        ? all.filter(({ start }) =>
+              ` ${normalizeFormName(findPrecedingHeading(wikitext, start))} `.includes(
+                  ` ${normalizeFormName(requestedForm)} `,
+              ),
+          )
+        : [];
     const relevant = all.filter(({ start }) => {
         const heading = findPrecedingHeading(wikitext, start);
         const ignored = STATS_IGNORE_PATTERNS.some((p) =>
@@ -417,7 +513,8 @@ export function parseBaseStats(
         );
         return !ignored;
     });
-    const candidates = relevant.length > 0 ? relevant : all;
+    const candidates =
+        formStats.length > 0 ? formStats : relevant.length > 0 ? relevant : all;
     if (candidates.length === 1) {
         return parseStatsBlock(candidates[0].block);
     }
@@ -442,23 +539,35 @@ export function parseBaseStats(
     if (
         allSameHeading &&
         pokemonName &&
-        LATE_GEN_STAT_CHANGES.has(pokemonName)
+        LATE_GEN_STAT_CHANGES.has(pokemonName.replace(/\s*\([^)]+\)$/, ''))
     ) {
         return parseStatsBlock(candidates[candidates.length - 1].block);
     }
     return null;
 }
 
-export function parseTypes(wikitext: string): {
+export function parseTypes(
+    wikitext: string,
+    pokemonName?: string,
+): {
     primary_type: string;
     secondary_type: string;
 } {
     // Scope to the infobox to avoid false matches in moveset or form sections
     const scope = extractTemplate(wikitext, 'Pokémon Infobox') ?? wikitext;
-    const primary_type =
-        /\|\s*type1\s*=\s*(\w+)/i.exec(scope)?.[1]?.toLowerCase() ?? '';
-    const raw2 =
-        /\|\s*type2\s*=\s*(\w+)/i.exec(scope)?.[1]?.toLowerCase() ?? '';
+    const params = parseTemplateParameters(scope);
+    const requestedForm = /\(([^)]+)\)$/.exec(pokemonName ?? '')?.[1];
+    const formKey = requestedForm
+        ? Object.keys(params).find(
+              (key) =>
+                  /^form\d+$/.test(key) &&
+                  normalizeFormName(params[key]) ===
+                      normalizeFormName(requestedForm),
+          )
+        : undefined;
+    const formPrefix = formKey && params[`${formKey}type1`] ? formKey : '';
+    const primary_type = (params[`${formPrefix}type1`] ?? '').toLowerCase();
+    const raw2 = (params[`${formPrefix}type2`] ?? '').toLowerCase();
     // Bulbapedia sometimes mirrors type1 into type2 for display; treat that as no secondary
     const secondary_type = raw2 === primary_type ? '' : raw2;
     return { primary_type, secondary_type };

@@ -42,7 +42,7 @@ export async function fetchPokemonData(name: string): Promise<PokemonData> {
         );
     }
 
-    const types = cached ?? parseTypes(wikitext);
+    const types = cached ?? parseTypes(wikitext, name);
     if (!types.primary_type) {
         throw new Error(
             `[${name}] Failed to parse types from Bulbapedia wikitext`,

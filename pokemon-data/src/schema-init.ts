@@ -1,6 +1,7 @@
 import { rm } from 'node:fs/promises';
 import type { DB } from '@pokedb2/db';
 import type { Database, DbClient } from '@pokedb2/query-builder';
+import { toCanonicalPokemonName } from './pokemon-names.ts';
 import { fetchAbilityData } from './fetch/fetch-ability-data.ts';
 import { fetchMoveData } from './fetch/fetch-move-data.ts';
 import {
@@ -33,7 +34,7 @@ export const PROVISIONAL_SCHEMA_SQL: readonly string[] = [
     'CREATE TABLE type_effectiveness (attacking_type_id TINYINT, defending_type_id TINYINT, multiplier_pct TINYINT)',
     'CREATE TABLE sub_areas (id TINYINT, name CHAR(16))',
     'CREATE TABLE terrain_types (id TINYINT, key CHAR(29))',
-    'CREATE TABLE evolution_methods (id TINYINT, description CHAR(95))',
+    'CREATE TABLE evolution_methods (id TINYINT, description CHAR(132))',
     'CREATE TABLE evolution_transitions (from_pokemon_id INT, to_pokemon_id INT, method_id TINYINT)',
     'CREATE TABLE locations (id CHAR(32), name CHAR(27), region CHAR(6), province CHAR(14))',
     `CREATE TABLE abilities (id TINYINT, name CHAR(24), description CHAR(${ABILITY_DESCRIPTION_MAX_LENGTH}))`,
@@ -241,7 +242,13 @@ export function buildEvolutionRows(
     }[] = [];
 
     const evolutionEdges = consolidateEvolutionEdges(
-        pokemonRows.flatMap((row) => row.evolution_edges),
+        pokemonRows
+            .flatMap((row) => row.evolution_edges)
+            .map((edge) => ({
+                ...edge,
+                from: toCanonicalPokemonName(edge.from),
+                to: toCanonicalPokemonName(edge.to),
+            })),
     );
     for (const edge of evolutionEdges) {
         const fromPokemonId = pokemonIds.get(edge.from);
@@ -299,7 +306,8 @@ export async function fetchAllPokemonRows(
             result.push(pokemon);
 
             for (const edge of pokemon.evolution_edges) {
-                for (const relatedName of [edge.from, edge.to]) {
+                for (const rawName of [edge.from, edge.to]) {
+                    const relatedName = toCanonicalPokemonName(rawName);
                     if (pokemonIds.has(relatedName)) {
                         continue;
                     }
@@ -340,19 +348,22 @@ export function buildPokemonNameMap(
     const ids = new Map<string, number>();
     for (const location of locations) {
         for (const encounter of location.encounters) {
-            if (!ids.has(encounter.pokemonName)) {
-                ids.set(encounter.pokemonName, ids.size + 1);
+            const name = toCanonicalPokemonName(encounter.pokemonName);
+            if (!ids.has(name)) {
+                ids.set(name, ids.size + 1);
             }
         }
     }
     for (const roster of rosters) {
         for (const entry of roster.party) {
-            if (!ids.has(entry.pokemon)) {
-                ids.set(entry.pokemon, ids.size + 1);
+            const name = toCanonicalPokemonName(entry.pokemon);
+            if (!ids.has(name)) {
+                ids.set(name, ids.size + 1);
             }
         }
     }
-    for (const name of teraRaidPokemonNames) {
+    for (const rawName of teraRaidPokemonNames) {
+        const name = toCanonicalPokemonName(rawName);
         if (!ids.has(name)) {
             ids.set(name, ids.size + 1);
         }
@@ -365,8 +376,9 @@ export function buildPokemonIdMap(
 ): Map<string, number> {
     const ids = new Map<string, number>();
     for (const row of pokemonRows) {
-        if (!ids.has(row.name)) {
-            ids.set(row.name, ids.size + 1);
+        const name = toCanonicalPokemonName(row.name);
+        if (!ids.has(name)) {
+            ids.set(name, ids.size + 1);
         }
     }
     return ids;
@@ -383,7 +395,9 @@ export async function insertLocationEncounters(
         const rows = location.encounters.map((encounter) => {
             const sub_area_id = subAreaIds.get(encounter.subArea.trim());
             assert(sub_area_id);
-            const pokemon_id = pokemonIds.get(encounter.pokemonName);
+            const pokemon_id = pokemonIds.get(
+                toCanonicalPokemonName(encounter.pokemonName),
+            );
             assert(pokemon_id);
             const terrain_id = terrainIds.get(
                 canonicalTerrainKey(encounter.terrain),
@@ -519,7 +533,9 @@ export function buildBossBattlePokemonRows(
         const bossId = roster.bossIndex + 1;
         for (let slot = 0; slot < roster.party.length; slot++) {
             const entry = roster.party[slot];
-            const pokemonId = pokemonIds.get(entry.pokemon);
+            const pokemonId = pokemonIds.get(
+                toCanonicalPokemonName(entry.pokemon),
+            );
             if (pokemonId === undefined) {
                 throw new Error(
                     `[Boss id=${bossId}] Unknown Pokémon: "${entry.pokemon}"`,

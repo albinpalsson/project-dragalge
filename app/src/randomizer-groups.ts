@@ -68,32 +68,6 @@ export const RANDOMIZER_MERGE_GROUPS: readonly RandomizerMergeGroup[] = [
         members: ['Gastrodon', 'Gastrodon (East Sea)', 'Gastrodon (West Sea)'],
     },
     {
-        key: 'indeedee',
-        displayName: 'Indeedee',
-        members: ['Indeedee', 'Indeedee (Female)', 'Indeedee (Male)'],
-    },
-    {
-        key: 'lycanroc',
-        displayName: 'Lycanroc',
-        members: [
-            'Lycanroc',
-            'Lycanroc (Dusk Form)',
-            'Lycanroc (Midday Form)',
-            'Lycanroc (Midnight Form)',
-        ],
-    },
-    {
-        key: 'oinkologne',
-        displayName: 'Oinkologne',
-        members: [
-            'Oinkologne',
-            'Oinkologne (Female)',
-            'Oinkologne (Male)',
-            'Oinkologne Female',
-            'Oinkologne Male',
-        ],
-    },
-    {
         key: 'pyroar',
         displayName: 'Pyroar',
         members: ['Pyroar', 'Pyroar (Female)', 'Pyroar (Male)'],
@@ -146,25 +120,6 @@ export const RANDOMIZER_MERGE_GROUPS: readonly RandomizerMergeGroup[] = [
             'Tatsugiri (Curly Form)',
             'Tatsugiri (Droopy Form)',
             'Tatsugiri (Stretchy Form)',
-        ],
-    },
-    {
-        key: 'tauros',
-        displayName: 'Tauros',
-        members: [
-            'Tauros',
-            'Tauros (Aqua Breed)',
-            'Tauros (Blaze Breed)',
-            'Tauros (Combat Breed)',
-        ],
-    },
-    {
-        key: 'toxtricity',
-        displayName: 'Toxtricity',
-        members: [
-            'Toxtricity',
-            'Toxtricity (Amped Form)',
-            'Toxtricity (Low Key Form)',
         ],
     },
     {
