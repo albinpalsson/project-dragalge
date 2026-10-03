@@ -80,11 +80,7 @@ export function TeraRaid({ stars, isNext, zoomedIcon }: TeraRaidProps) {
             defaultExpanded={false}
             collapsedContent={({ expand }) => (
                 <CollapsedSummaryRow
-                    icon={
-                        <span className={starIcon} aria-hidden="true">
-                            ✦
-                        </span>
-                    }
+                    icon={<span className={emptyIcon} aria-hidden="true" />}
                     title={displayName}
                     detail={
                         rows.length > 0 ? `${rows.length} logged` : undefined
@@ -223,16 +219,9 @@ export function TeraRaid({ stars, isNext, zoomedIcon }: TeraRaidProps) {
     );
 }
 
-const starIcon = css`
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 3.2rem;
+const emptyIcon = css`
+    width: 0rem;
     height: 3.2rem;
-    border-radius: var(--radius-sm);
-    background: var(--color-surface-alt);
-    color: var(--color-accent-warm);
-    font-size: var(--font-size-lg);
 `;
 
 const header = css`
