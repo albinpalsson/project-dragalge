@@ -125,16 +125,16 @@ export function TeraRaid({ stars, isNext, zoomedIcon }: TeraRaidProps) {
                             {rows.map(({ row }) => (
                                 <li key={row.location_name} className={rowItem}>
                                     <PokemonIcon
-                                        name={row.pokemon_name}
+                                        name={row.rolled_as}
                                         alt={getRandomizerDisplayName(
-                                            row.pokemon_name,
+                                            row.rolled_as,
                                         )}
                                         size="md"
                                         zoomed={zoomedIcon}
                                     />
                                     <span className={rowName}>
                                         {getRandomizerDisplayName(
-                                            row.pokemon_name,
+                                            row.rolled_as,
                                         )}
                                     </span>
                                     <StatusChip status={row.status} />
