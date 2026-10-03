@@ -43,7 +43,8 @@ test('West Province can exclude ocean encounters and remember the setting', asyn
     const includeOcean = card.getByRole('checkbox', {
         name: 'Include ocean encounters',
     });
-    await expect(includeOcean).toBeChecked();
+    await expect(includeOcean).not.toBeChecked();
+    await includeOcean.check();
     await card.getByRole('button', { name: 'Show encounters' }).click();
     await expect(card.locator('tr', { hasText: 'Ocean' }).first()).toBeVisible();
 
