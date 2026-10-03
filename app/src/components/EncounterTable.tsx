@@ -7,18 +7,15 @@ import {
     formatTime,
     formatWeight,
 } from '../utils/encounter-formatters';
-import { isEncounterInVariant } from '../utils/game-variant';
 
 interface EncounterTableProps {
     encounters: LocationEncounterView[];
-    variant: string;
     disabled: boolean;
     onPick: (encounter: LocationEncounterView) => void;
 }
 
 export function EncounterTable({
     encounters,
-    variant,
     disabled,
     onPick,
 }: EncounterTableProps) {
@@ -39,25 +36,16 @@ export function EncounterTable({
                 </thead>
                 <tbody>
                     {encounters.map((encounter) => {
-                        const matchesVariant = isEncounterInVariant(
-                            encounter.games,
-                            variant,
-                        );
                         const banReason = getBanReason(
                             banReasons,
                             encounter.name,
                         );
-                        const isPickDisabled =
-                            disabled || !matchesVariant || !!banReason;
+                        const isPickDisabled = disabled || !!banReason;
 
                         return (
                             <tr
                                 key={`${encounter.name}-${encounter.subArea}-${encounter.terrain}`}
-                                className={
-                                    !matchesVariant || banReason
-                                        ? variantMismatchRow
-                                        : undefined
-                                }
+                                className={banReason ? excludedRow : undefined}
                             >
                                 <td>
                                     <span
@@ -139,7 +127,7 @@ const pickButton = css`
     }
 `;
 
-const variantMismatchRow = css`
+const excludedRow = css`
     opacity: 0.6;
 `;
 

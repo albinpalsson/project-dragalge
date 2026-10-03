@@ -10,9 +10,7 @@ import { RollActions } from '../../../../components/RollActions';
 import { RollResult } from '../../../../components/RollResult';
 import { useEncounterRoll } from '../../../../hooks/useEncounterRoll';
 import { useEncounterActions } from '../../../../hooks/useEncounterActions';
-import { filterEncountersForVariant } from '../../../../utils/game-variant';
-import { useGame } from '../../GameContext';
-import { useLocationEncountersQuery } from '../../queries';
+import { useLocationEncounterCandidates } from '../../queries';
 
 const LOCATION_NAME = 'Inlet Grotto';
 
@@ -21,8 +19,7 @@ interface InletGrottoProps {
 }
 
 export function InletGrotto({ isNext }: InletGrottoProps) {
-    const game = useGame();
-    const encountersQuery = useLocationEncountersQuery(LOCATION_NAME);
+    const encountersQuery = useLocationEncounterCandidates(LOCATION_NAME);
     const encounterRoll = useEncounterRoll(LOCATION_NAME);
     const [isTableExpanded, setTableExpanded] = useState(false);
     const encounterActions = useEncounterActions();
@@ -41,10 +38,7 @@ export function InletGrotto({ isNext }: InletGrottoProps) {
     }
 
     const showHoundourWarning = encounterRoll?.name === 'Houndour';
-    const rollableEncounters = filterEncountersForVariant(
-        encountersQuery.data.encounters,
-        game.run.variant,
-    );
+    const { allEncounters, rollableEncounters } = encountersQuery.data;
 
     return (
         <ProgressionCard
@@ -56,7 +50,7 @@ export function InletGrotto({ isNext }: InletGrottoProps) {
                     areaName={encountersQuery.data.location.province}
                     locationName={LOCATION_NAME}
                     encounterRoll={encounterRoll}
-                    encounters={encountersQuery.data.encounters}
+                    encounters={allEncounters}
                     isNext={isNext}
                     zoomedIcon
                     onExpand={expand}
@@ -67,7 +61,7 @@ export function InletGrotto({ isNext }: InletGrottoProps) {
                 <>
                     <EncounterHeader
                         location={encountersQuery.data.location}
-                        encounters={encountersQuery.data.encounters}
+                        encounters={allEncounters}
                         canCollapse
                         onCollapse={collapse}
                     />
@@ -77,10 +71,10 @@ export function InletGrotto({ isNext }: InletGrottoProps) {
                     {showHoundourWarning && (
                         <ProgressionDescription className={warning}>
                             Houndour is first available in Inlet Grotto after
-                            finishing the Naranja Academy (Scarlet) or Uva Academy (Violet) introduction,
-                            after the first rival battle, when the level cap is
-                            increased above 9. Re-rolling for the early
-                            encounter pickup is valid.
+                            finishing the Naranja Academy (Scarlet) or Uva
+                            Academy (Violet) introduction, after the first rival
+                            battle, when the level cap is increased above 9.
+                            Re-rolling for the early encounter pickup is valid.
                         </ProgressionDescription>
                     )}
 
@@ -91,14 +85,13 @@ export function InletGrotto({ isNext }: InletGrottoProps) {
 
                     <EncounterTableToggle
                         expanded={isTableExpanded}
-                        count={encountersQuery.data.encounters.length}
+                        count={allEncounters.length}
                         onToggle={() => setTableExpanded((value) => !value)}
                     />
 
                     {isTableExpanded && (
                         <EncounterTable
-                            encounters={encountersQuery.data.encounters}
-                            variant={game.run.variant}
+                            encounters={allEncounters}
                             disabled={encounterActions.isBusy}
                             onPick={(encounter) =>
                                 encounterActions.rollEncounter(
@@ -118,4 +111,3 @@ const warning = css`
     border-left: 0.3rem solid var(--color-warning);
     padding-left: var(--space-3);
 `;
-

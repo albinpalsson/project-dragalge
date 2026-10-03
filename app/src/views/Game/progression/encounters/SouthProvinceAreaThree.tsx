@@ -8,9 +8,7 @@ import { RollActions } from '../../../../components/RollActions';
 import { RollResult } from '../../../../components/RollResult';
 import { useEncounterActions } from '../../../../hooks/useEncounterActions';
 import { useEncounterRoll } from '../../../../hooks/useEncounterRoll';
-import { filterEncountersForVariant } from '../../../../utils/game-variant';
-import { useGame } from '../../GameContext';
-import { useLocationEncountersQuery } from '../../queries';
+import { useLocationEncounterCandidates } from '../../queries';
 
 const LOCATION_NAME = 'South Province (Area Three)';
 
@@ -19,8 +17,7 @@ interface SouthProvinceAreaThreeProps {
 }
 
 export function SouthProvinceAreaThree({ isNext }: SouthProvinceAreaThreeProps) {
-    const game = useGame();
-    const encountersQuery = useLocationEncountersQuery(LOCATION_NAME);
+    const encountersQuery = useLocationEncounterCandidates(LOCATION_NAME);
     const encounterRoll = useEncounterRoll(LOCATION_NAME);
     const [isTableExpanded, setTableExpanded] = useState(false);
     const encounterActions = useEncounterActions();
@@ -38,11 +35,7 @@ export function SouthProvinceAreaThree({ isNext }: SouthProvinceAreaThreeProps) 
         );
     }
 
-    const allEncounters = encountersQuery.data.encounters;
-    const rollableEncounters = filterEncountersForVariant(
-        allEncounters,
-        game.run.variant,
-    );
+    const { allEncounters, rollableEncounters } = encountersQuery.data;
 
     return (
         <ProgressionCard
@@ -83,7 +76,6 @@ export function SouthProvinceAreaThree({ isNext }: SouthProvinceAreaThreeProps) 
                     {isTableExpanded && (
                         <EncounterTable
                             encounters={allEncounters}
-                            variant={game.run.variant}
                             disabled={encounterActions.isBusy}
                             onPick={(encounter) =>
                                 encounterActions.rollEncounter(

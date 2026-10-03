@@ -10,9 +10,9 @@ import { RollResult } from '../../../../components/RollResult';
 import { useEncounterActions } from '../../../../hooks/useEncounterActions';
 import { useEncounterRoll } from '../../../../hooks/useEncounterRoll';
 import { usePersistentGameState } from '../../../../hooks/usePersistentGameState';
-import { filterEncountersForVariant } from '../../../../utils/game-variant';
+import type { LocationEncounterView } from '../../../../db/pokemon-data/queries';
 import { useGame } from '../../GameContext';
-import { useLocationEncountersQuery } from '../../queries';
+import { useLocationEncounterCandidates } from '../../queries';
 
 const LOCATION_NAME = 'West Province (Area One)';
 
@@ -22,7 +22,7 @@ interface WestProvinceAreaOneProps {
 
 export function WestProvinceAreaOne({ isNext }: WestProvinceAreaOneProps) {
     const game = useGame();
-    const encountersQuery = useLocationEncountersQuery(LOCATION_NAME);
+    const encountersQuery = useLocationEncounterCandidates(LOCATION_NAME);
     const encounterRoll = useEncounterRoll(LOCATION_NAME);
     const [excludeOcean, setExcludeOcean] = usePersistentGameState(
         game.id,
@@ -45,14 +45,9 @@ export function WestProvinceAreaOne({ isNext }: WestProvinceAreaOneProps) {
         );
     }
 
-    const allEncounters = encountersQuery.data.encounters;
-    const activeEncounters = excludeOcean
-        ? allEncounters.filter((encounter) => encounter.subArea !== 'Ocean')
-        : allEncounters;
-    const rollableEncounters = filterEncountersForVariant(
-        activeEncounters,
-        game.run.variant,
-    );
+    const { data } = encountersQuery;
+    const activeEncounters = filter(data.allEncounters, excludeOcean);
+    const rollableEncounters = filter(data.rollableEncounters, excludeOcean);
 
     return (
         <ProgressionCard
@@ -99,7 +94,6 @@ export function WestProvinceAreaOne({ isNext }: WestProvinceAreaOneProps) {
                     {isTableExpanded && (
                         <EncounterTable
                             encounters={activeEncounters}
-                            variant={game.run.variant}
                             disabled={encounterActions.isBusy}
                             onPick={(encounter) =>
                                 encounterActions.rollEncounter(
@@ -113,4 +107,13 @@ export function WestProvinceAreaOne({ isNext }: WestProvinceAreaOneProps) {
             )}
         </ProgressionCard>
     );
+}
+
+function filter(
+    encounters: LocationEncounterView[],
+    excludeOcean: boolean,
+): LocationEncounterView[] {
+    return excludeOcean
+        ? encounters.filter((encounter) => encounter.subArea !== 'Ocean')
+        : encounters;
 }

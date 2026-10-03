@@ -32,6 +32,10 @@ import {
     bossBattleProgressQueryKey,
     TYPE_CHART_QUERY_KEY,
 } from '../../query-keys';
+import { getBanReason } from '../../utils/ban-list';
+import { filterEncountersForVariant } from '../../utils/game-variant';
+import { useBanReasons } from '../../hooks/useBanReasons';
+import { useGame } from './GameContext';
 
 export function useGameRunQuery(gameRunName: string) {
     return useQuery({
@@ -60,6 +64,34 @@ export function useLocationEncountersQuery(locationName: string) {
         queryFn: () => getLocationEncounterDetails(locationName),
         staleTime: Infinity,
     });
+}
+
+export function useLocationEncounterCandidates(locationName: string) {
+    const query = useLocationEncountersQuery(locationName);
+    const game = useGame();
+    const banReasons = useBanReasons();
+
+    if (!query.isSuccess) {
+        return query;
+    }
+
+    const { encounters, ...locationDetails } = query.data;
+    const allEncounters = filterEncountersForVariant(
+        encounters,
+        game.run.variant,
+    );
+    const rollableEncounters = allEncounters.filter(
+        (encounter) => !getBanReason(banReasons, encounter.name),
+    );
+
+    return {
+        ...query,
+        data: {
+            ...locationDetails,
+            allEncounters,
+            rollableEncounters,
+        },
+    };
 }
 
 export function useBossBattleRosterQuery(battleName: string) {

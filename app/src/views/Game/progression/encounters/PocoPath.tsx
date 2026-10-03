@@ -10,9 +10,9 @@ import { RollResult } from '../../../../components/RollResult';
 import { useEncounterRoll } from '../../../../hooks/useEncounterRoll';
 import { useEncounterActions } from '../../../../hooks/useEncounterActions';
 import { usePersistentGameState } from '../../../../hooks/usePersistentGameState';
-import { filterEncountersForVariant } from '../../../../utils/game-variant';
+import type { LocationEncounterView } from '../../../../db/pokemon-data/queries';
 import { useGame } from '../../GameContext';
-import { useLocationEncountersQuery } from '../../queries';
+import { useLocationEncounterCandidates } from '../../queries';
 
 const LOCATION_NAME = 'Poco Path';
 
@@ -22,7 +22,7 @@ interface PocoPathProps {
 
 export function PocoPath({ isNext }: PocoPathProps) {
     const game = useGame();
-    const encountersQuery = useLocationEncountersQuery(LOCATION_NAME);
+    const encountersQuery = useLocationEncounterCandidates(LOCATION_NAME);
     const encounterRoll = useEncounterRoll(LOCATION_NAME);
     const [includeOcean, setIncludeOcean] = usePersistentGameState(
         game.id,
@@ -45,16 +45,9 @@ export function PocoPath({ isNext }: PocoPathProps) {
         );
     }
 
-    const allEncounters = encountersQuery.data.encounters;
-    const activeEncounters = includeOcean
-        ? allEncounters
-        : allEncounters.filter(
-              (encounter) => !['Ocean', 'Beach'].includes(encounter.subArea),
-          );
-    const rollableEncounters = filterEncountersForVariant(
-        activeEncounters,
-        game.run.variant,
-    );
+    const { data } = encountersQuery;
+    const activeEncounters = filter(data.allEncounters, includeOcean);
+    const rollableEncounters = filter(data.rollableEncounters, includeOcean);
 
     return (
         <ProgressionCard
@@ -105,7 +98,6 @@ export function PocoPath({ isNext }: PocoPathProps) {
                     {isTableExpanded && (
                         <EncounterTable
                             encounters={activeEncounters}
-                            variant={game.run.variant}
                             disabled={encounterActions.isBusy}
                             onPick={(encounter) =>
                                 encounterActions.rollEncounter(
@@ -119,4 +111,15 @@ export function PocoPath({ isNext }: PocoPathProps) {
             )}
         </ProgressionCard>
     );
+}
+
+function filter(
+    encounters: LocationEncounterView[],
+    includeOcean: boolean,
+): LocationEncounterView[] {
+    return includeOcean
+        ? encounters
+        : encounters.filter(
+              (encounter) => !['Ocean', 'Beach'].includes(encounter.subArea),
+          );
 }

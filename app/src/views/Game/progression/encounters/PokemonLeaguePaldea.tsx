@@ -8,9 +8,7 @@ import { RollActions } from '../../../../components/RollActions';
 import { RollResult } from '../../../../components/RollResult';
 import { useEncounterRoll } from '../../../../hooks/useEncounterRoll';
 import { useEncounterActions } from '../../../../hooks/useEncounterActions';
-import { filterEncountersForVariant } from '../../../../utils/game-variant';
-import { useGame } from '../../GameContext';
-import { useLocationEncountersQuery } from '../../queries';
+import { useLocationEncounterCandidates } from '../../queries';
 import { ProgressionDescription } from '../../../../components/ProgressionDescription';
 
 const LOCATION_NAME = 'Pokemon League (Paldea)';
@@ -20,8 +18,7 @@ interface PokemonLeaguePaldeaProps {
 }
 
 export function PokemonLeaguePaldea({ isNext }: PokemonLeaguePaldeaProps) {
-    const game = useGame();
-    const encountersQuery = useLocationEncountersQuery(LOCATION_NAME);
+    const encountersQuery = useLocationEncounterCandidates(LOCATION_NAME);
     const encounterRoll = useEncounterRoll(LOCATION_NAME);
     const [isTableExpanded, setTableExpanded] = useState(false);
     const encounterActions = useEncounterActions();
@@ -39,11 +36,7 @@ export function PokemonLeaguePaldea({ isNext }: PokemonLeaguePaldeaProps) {
         );
     }
 
-    const allEncounters = encountersQuery.data.encounters;
-    const rollableEncounters = filterEncountersForVariant(
-        allEncounters,
-        game.run.variant,
-    );
+    const { allEncounters, rollableEncounters } = encountersQuery.data;
 
     return (
         <ProgressionCard
@@ -80,7 +73,9 @@ export function PokemonLeaguePaldea({ isNext }: PokemonLeaguePaldeaProps) {
                     />
 
                     <ProgressionDescription>
-                        Located on a hill next to Naranja Academy (Scarlet) or Uva Academy (Violet) and accessible from northwest of Mesagoza.
+                        Located on a hill next to Naranja Academy (Scarlet) or
+                        Uva Academy (Violet) and accessible from northwest of
+                        Mesagoza.
                     </ProgressionDescription>
 
                     <EncounterTableToggle
@@ -92,7 +87,6 @@ export function PokemonLeaguePaldea({ isNext }: PokemonLeaguePaldeaProps) {
                     {isTableExpanded && (
                         <EncounterTable
                             encounters={allEncounters}
-                            variant={game.run.variant}
                             disabled={encounterActions.isBusy}
                             onPick={(encounter) =>
                                 encounterActions.rollEncounter(
