@@ -1,5 +1,8 @@
 import type { ComponentType } from 'react';
-import type { EncounterRollRow, GameSettings } from '../../../db/game-db/queries';
+import type {
+    EncounterRollRow,
+    GameSettings,
+} from '../../../db/game-db/queries';
 import { STARTER_LOCATION_NAME } from '../../../db/game-db/queries';
 import { StarterCard } from '../StarterCard';
 import { InletGrotto } from './encounters/InletGrotto';
@@ -181,6 +184,7 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
         key: 'giacomo-dark-star',
         kind: 'boss',
         getBattleName: () => 'Giacomo (Dark Star)',
+        isVisible: ({ settings }) => settings.includeTeamStarBattles,
         Component: GiacomoDarkStar,
     },
 ];

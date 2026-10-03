@@ -1,4 +1,45 @@
 import { test, expect } from '@playwright/test';
+import { cardFor, createGame, waitForPersistence } from './helpers';
+
+test('Team Star battle setting updates card visibility and persists', async ({
+    page,
+}) => {
+    await page.goto('/');
+    await createGame(page, 'team-star-toggle-run');
+
+    const settingsButton = page.getByRole('button', {
+        name: 'Game settings',
+        exact: true,
+    });
+    const giacomoCard = cardFor(page, 'Giacomo (Team Star)');
+
+    await expect(giacomoCard).toHaveCount(0);
+    await settingsButton.click();
+    const checkbox = page.getByLabel('Include Team Star battles');
+    await expect(checkbox).not.toBeChecked();
+    await checkbox.check();
+    await page.keyboard.press('Escape');
+    await expect(giacomoCard.first()).toBeVisible();
+
+    await waitForPersistence(page);
+    await page.reload();
+    await expect(giacomoCard.first()).toBeVisible();
+
+    await settingsButton.click();
+    const enabledCheckbox = page.getByLabel('Include Team Star battles');
+    await expect(enabledCheckbox).toBeChecked();
+    await enabledCheckbox.uncheck();
+    await page.keyboard.press('Escape');
+    await expect(giacomoCard).toHaveCount(0);
+
+    await waitForPersistence(page);
+    await page.reload();
+    await expect(giacomoCard).toHaveCount(0);
+    await settingsButton.click();
+    await expect(
+        page.getByLabel('Include Team Star battles'),
+    ).not.toBeChecked();
+});
 
 test('the start-game modal can be dismissed', async ({ page }) => {
     await page.goto('/');
@@ -11,7 +52,9 @@ test('the start-game modal can be dismissed', async ({ page }) => {
     await expect(page.getByRole('listitem')).toHaveCount(0);
 });
 
-test('starting a game enforces a 128-character name limit', async ({ page }) => {
+test('starting a game enforces a 128-character name limit', async ({
+    page,
+}) => {
     await page.goto('/');
     await page.getByRole('button', { name: 'Start New Game' }).click();
 
