@@ -27,7 +27,7 @@ export function WestProvinceAreaOne({ isNext }: WestProvinceAreaOneProps) {
     const [excludeOcean, setExcludeOcean] = usePersistentGameState(
         game.id,
         'west-province-area-one-exclude-ocean',
-        false,
+        true,
     );
     const [isTableExpanded, setTableExpanded] = useState(false);
     const encounterActions = useEncounterActions();
