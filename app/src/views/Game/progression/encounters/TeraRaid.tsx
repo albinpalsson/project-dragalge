@@ -42,9 +42,7 @@ export function TeraRaid({ stars, isNext, zoomedIcon }: TeraRaidProps) {
         () =>
             game.encounters
                 .flatMap((row) => {
-                    const parsed = parseTeraRaidLocationName(
-                        row.location_name,
-                    );
+                    const parsed = parseTeraRaidLocationName(row.location_name);
                     return parsed?.stars === stars
                         ? [{ row, sequence: parsed.sequence }]
                         : [];
@@ -56,8 +54,7 @@ export function TeraRaid({ stars, isNext, zoomedIcon }: TeraRaidProps) {
     const canAddMore =
         game.settings.teraRaids === 'unlimited' || rows.length === 0;
     const summaryStatus =
-        rows.length === 1 &&
-        (rows[0].row.status !== 'pending')
+        rows.length === 1 && rows[0].row.status !== 'pending'
             ? rows[0].row.status
             : undefined;
     const suggestions = (pokemonQuery.data ?? []).filter(
@@ -90,14 +87,10 @@ export function TeraRaid({ stars, isNext, zoomedIcon }: TeraRaidProps) {
                     }
                     title={displayName}
                     detail={
-                        rows.length > 0
-                            ? `${rows.length} logged`
-                            : undefined
+                        rows.length > 0 ? `${rows.length} logged` : undefined
                     }
                     leftBadges={
-                        summaryStatus && (
-                            <StatusChip status={summaryStatus} />
-                        )
+                        summaryStatus && <StatusChip status={summaryStatus} />
                     }
                     rightBadges={<Badge>Lv {caughtLevel}</Badge>}
                     isNext={isNext}
@@ -113,9 +106,10 @@ export function TeraRaid({ stars, isNext, zoomedIcon }: TeraRaidProps) {
                                 {displayName}
                             </h3>
                             <ProgressionDescription>
-                                Sugggested: Search out a Tera Raid den and battle it —
-                                the first {stars}-star raid you find is your
-                                randomized encounter.
+                                Sugggested: Search out a Tera Raid den and
+                                battle it — the first {stars}-star raid you find
+                                is your randomized encounter. Failure to catch
+                                equates to a missed encounter.
                             </ProgressionDescription>
                         </div>
                         <div className={badges}>
@@ -133,10 +127,7 @@ export function TeraRaid({ stars, isNext, zoomedIcon }: TeraRaidProps) {
                     {rows.length > 0 && (
                         <ul className={rowList}>
                             {rows.map(({ row }) => (
-                                <li
-                                    key={row.location_name}
-                                    className={rowItem}
-                                >
+                                <li key={row.location_name} className={rowItem}>
                                     <PokemonIcon
                                         name={row.pokemon_name}
                                         alt={getRandomizerDisplayName(

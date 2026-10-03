@@ -44,5 +44,29 @@ test('plays the canonical perfect run through the current progression', async ({
     await expectNextStep(page, 'Katy (Gym)');
     await winBossBattle(page, 'Katy (Gym)');
 
+    await expectNextStep(page, 'South Province (Area Three)');
+    await catchEncounter(page, 'South Province (Area Three)');
+
+    await expectNextStep(page, 'Klawf (Stony Cliff Titan)');
+    await winBossBattle(page, 'Klawf (Stony Cliff Titan)');
+
+    await expectNextStep(page, 'Brassius (Gym)');
+    await winBossBattle(page, 'Brassius (Gym)');
+
+    await expectNextStep(page, 'South Province (Area Four)');
+    await catchEncounter(page, 'South Province (Area Four)');
+
+    await expectNextStep(page, 'Tera Raid ★★');
+    await catchTeraRaid(page, 2, 'Hoppip');
+
+    await expectNextStep(page, 'West Province (Area One)');
+    await catchEncounter(page, 'West Province (Area One)');
+
+    await expectNextStep(page, 'Bombirdier (Open Sky Titan)');
+    await winBossBattle(page, 'Bombirdier (Open Sky Titan)');
+
+    await expectNextStep(page, 'Giacomo (Team Star)');
+    await winBossBattle(page, 'Giacomo (Team Star)');
+
     await expectProgressionComplete(page);
 });

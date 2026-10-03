@@ -1,8 +1,8 @@
 # Game Progression Roadmap
 
-This is a planning reference for the Paldea Nuzlocke tracker. It is not runtime data and must not be imported by the app. The active progression is declared directly, in story order, in `app/src/views/Game/Game.tsx`. Add a progression component there when its implementation is ready.
+This is a planning reference for the Paldea Nuzlocke tracker. It is not runtime data and must not be imported by the app. The active progression is declared in story order in `app/src/views/Game/progression/progression-items.ts`. Add a progression component there when its implementation is ready.
 
-The canonical order lives in the `PROGRESSION` array (encounter/boss/starter interleaved as the player would hit them). The table below mirrors that array's order exactly — do not re-sort or split it by entry type, since the relative order between encounters and bosses is the whole point of the data.
+The canonical order interleaves encounters, bosses, and optional raid cards as they appear in the player's route. The table below mirrors the main story entries; optional raid placement is listed separately below.
 
 ## Current Runtime Order
 
@@ -16,10 +16,18 @@ The canonical order lives in the `PROGRESSION` array (encounter/boss/starter int
 8. Pokemon League (Paldea)
 9. South Province (Area Two)
 10. Katy (Bug Gym)
+11. South Province (Area Three)
+12. Klawf (Stony Cliff Titan)
+13. Brassius (Grass Gym)
+14. South Province (Area Four)
+15. Tera Raid 2★ (optional, hidden when the "Tera raids" setting is "None"; only required for completion when the setting is "Single")
+16. West Province (Area One)
+17. Bombirdier (Open Sky Titan)
+18. Giacomo (Dark Star)
 
 ## Full Progression Order
 
-Legend: **Boss type** — Rival / Gym / Titan / Starfall / Elite Four. "Implemented" marks entries with `isImplemented: true` in `PROGRESSION` (independent from what's actually wired into `Game.tsx`, see Current Runtime Order above).
+Legend: **Boss type** — Rival / Gym / Titan / Starfall / Elite Four. "Implemented" marks entries registered in `PROGRESSION_ITEMS`.
 
 | # | Kind | Name | Boss Type | Level Cap | Province / Location | Implemented |
 | ---: | --- | --- | --- | ---: | --- | :---: |
@@ -32,13 +40,13 @@ Legend: **Boss type** — Rival / Gym / Titan / Starfall / Elite Four. "Implemen
 | 7 | Encounter | Pokemon League (Paldea) | — | — | South Province | ✅ |
 | 8 | Encounter | South Province (Area Two) | — | — | South Province | ✅ |
 | 9 | Boss | Katy (Bug Gym) | Gym | 15 | Cortondo | ✅ |
-| 10 | Encounter | South Province (Area Three) | — | — | South Province | |
-| 11 | Boss | Klawf (Stony Cliff Titan) | Titan | 16 | South Province (Area Three) | |
-| 12 | Boss | Brassius (Grass Gym) | Gym | 17 | Artazon | |
-| 13 | Encounter | West Province (Area One) | — | — | West Province | |
-| 14 | Boss | Bombirdier (Open Sky Titan) | Titan | 20 | West Province (Area One) | |
-| 15 | Encounter | South Province (Area Four) | — | — | South Province | |
-| 16 | Boss | Giacomo (Dark Star) | Starfall | 21 | West Province (Area One) | |
+| 10 | Encounter | South Province (Area Three) | — | — | South Province | ✅ |
+| 11 | Boss | Klawf (Stony Cliff Titan) | Titan | 16 | South Province (Area Three) | ✅ |
+| 12 | Boss | Brassius (Grass Gym) | Gym | 17 | Artazon | ✅ |
+| 13 | Encounter | South Province (Area Four) | — | — | South Province | ✅ |
+| 14 | Encounter | West Province (Area One) | — | — | West Province | ✅ |
+| 15 | Boss | Bombirdier (Open Sky Titan) | Titan | 20 | West Province (Area One) | ✅ |
+| 16 | Boss | Giacomo (Dark Star) | Starfall | 21 | West Province (Area One) | ✅ |
 | 17 | Boss | Nemona (Third Battle) | Rival | 22 | Levincia | |
 | 18 | Encounter | East Province (Area One) | — | — | East Province | |
 | 19 | Encounter | East Province (Area Two) | — | — | East Province | |
@@ -104,15 +112,15 @@ Source: [Tera Raid Battle - Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/
 
 ### Runtime placement
 
-Card placement follows the caught level so a raid never appears before the player's level cap can safely accommodate it — this is independent of when a tier first becomes *available* in-game (a tier can unlock earlier than its card is placed here).
+Raid cards are placed at the intended point in the tracker route, independently of when a tier first becomes *available* in-game. The 2★ card follows South Province (Area Four), before West Province (Area One), as requested for the runtime card order.
 
 | Star rating | Caught level | Placement |
 | :---: | ---: | --- |
 | ★ | 12 | After Nemona's Second Battle (cap 9), before Katy (cap 15) — implemented |
-| ★★ | 20 | After the cap-20 progression point (Bombirdier), before cap 21 — not yet registered |
+| ★★ | 20 | After South Province (Area Four), before West Province (Area One) — implemented |
 | ★★★ | 35 | After cap 33 (Giacomo), before cap 36 (Larry) — not yet registered |
 | ★★★★ | 45 | After a cap-45 point (Great Tusk/Iron Treads or Nemona's Fifth Battle), before cap 48 (Grusha) — not yet registered |
 | ★★★★★ / ★★★★★★ | 75 | Deferred until the roadmap includes a postgame/Academy Ace Tournament progression point — not yet registered |
 
-Only the 1★ card is registered in `PROGRESSION_ITEMS` today. Later tiers reuse the same generic card/action model and are added once their surrounding runtime progression exists.
+The 1★ and 2★ cards are registered in `PROGRESSION_ITEMS`. Later tiers reuse the same generic card/action model and are added once their surrounding runtime progression exists.
 

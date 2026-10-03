@@ -10,12 +10,12 @@ import {
 import { PokemonStatsPanel } from '../../../../components/PokemonStatsPanel';
 import { TypeBadge } from '../../../../components/TypeBadge';
 import { Tooltip } from '../../../../components/Tooltip';
-import type { BossPokemonView } from '../../../../db/pokemon-data/queries';
+import type { BossRosterPokemon } from './BossRoster';
 import { TypeDefenses } from '../../Box/TypeDefenses';
 import { useTypeDefenses } from '../../useTypeDefenses';
 
 interface BossPokemonCardProps {
-    pokemon: BossPokemonView;
+    pokemon: BossRosterPokemon;
     teraType?: string;
     iconSize: PokemonIconSize;
     zoomedIcon?: boolean;
@@ -28,6 +28,7 @@ export function BossPokemonCard({
     zoomedIcon,
 }: BossPokemonCardProps) {
     const [isTypeDefensesOpen, setIsTypeDefensesOpen] = useState(false);
+    const displayName = pokemon.displayName ?? pokemon.pokemonName;
     const defensiveEntries = useTypeDefenses(
         teraType?.toLowerCase() ?? pokemon.primaryType,
         teraType ? undefined : pokemon.secondaryType,
@@ -38,14 +39,13 @@ export function BossPokemonCard({
             <div className={header}>
                 <PokemonIcon
                     name={pokemon.pokemonName}
+                    alt={displayName}
                     size={iconSize}
                     zoomed={zoomedIcon}
                 />
                 <div className={identity}>
                     <div className={identityLine}>
-                        <span className={pokemonName}>
-                            {pokemon.pokemonName}
-                        </span>
+                        <span className={pokemonName}>{displayName}</span>
                         <span className={types}>
                             <TypeBadge type={pokemon.primaryType} />
                             {pokemon.secondaryType && (
@@ -59,7 +59,7 @@ export function BossPokemonCard({
                                         type="button"
                                         className={teraTrigger}
                                         title={`Terastallizes to ${teraType}`}
-                                        aria-label={`${pokemon.pokemonName} Terastallizes to ${teraType}`}
+                                        aria-label={`${displayName} Terastallizes to ${teraType}`}
                                     >
                                         <TypeBadge
                                             type={teraType}
@@ -73,7 +73,7 @@ export function BossPokemonCard({
                             type="button"
                             title="View type defenses"
                             className={typeDefenseTrigger}
-                            aria-label={`${pokemon.pokemonName} type defenses`}
+                            aria-label={`${displayName} type defenses`}
                             onClick={() => setIsTypeDefensesOpen(true)}
                         >
                             ▦
@@ -97,7 +97,10 @@ export function BossPokemonCard({
             <div className={content}>
                 <div className={detailsGrid}>
                     <section className={detailsSection}>
-                        <PokemonStatsPanel baseStats={pokemon.baseStats} />
+                        <PokemonStatsPanel
+                            baseStats={pokemon.baseStats}
+                            equivalent={pokemon.equivalentBaseStats}
+                        />
                     </section>
                     {pokemon.moves.length > 0 && (
                         <section className={detailsSection}>
@@ -113,7 +116,7 @@ export function BossPokemonCard({
             </div>
             {isTypeDefensesOpen && (
                 <Modal
-                    title={`${pokemon.pokemonName} ${teraType ? `(${teraType} Tera)` : ''}`}
+                    title={`${displayName} ${teraType ? `(${teraType} Tera)` : ''}`}
                     onClose={() => setIsTypeDefensesOpen(false)}
                 >
                     <TypeDefenses entries={defensiveEntries} />

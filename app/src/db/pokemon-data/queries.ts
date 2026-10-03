@@ -73,6 +73,7 @@ export interface BossAbilityView {
 }
 
 export interface BossPokemonView {
+    slot: number;
     pokemonName: string;
     level: number;
     primaryType: string;
@@ -177,6 +178,7 @@ export async function getBossBattleRoster(
 
         return [
             {
+                slot: rosterRow.slot,
                 pokemonName: rosterRow.name,
                 level: rosterRow.level,
                 primaryType: typeById.get(rosterRow.primary_type_id) ?? '',

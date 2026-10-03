@@ -32,6 +32,37 @@ test('resolved encounter stays expanded until reload', async ({ page }) => {
     ).toBeVisible();
 });
 
+test('West Province can exclude ocean encounters and remember the setting', async ({
+    page,
+}) => {
+    await page.goto('/');
+    await createGame(page, 'west-province-ocean-run');
+    await expandCollapsedSummary(page, 'West Province (Area One)');
+
+    const card = cardFor(page, 'West Province (Area One)').first();
+    const includeOcean = card.getByRole('checkbox', {
+        name: 'Include ocean encounters',
+    });
+    await expect(includeOcean).toBeChecked();
+    await card.getByRole('button', { name: 'Show encounters' }).click();
+    await expect(card.locator('tr', { hasText: 'Ocean' }).first()).toBeVisible();
+
+    await includeOcean.uncheck();
+    await expect(card.locator('tr', { hasText: 'Ocean' })).toHaveCount(0);
+    await waitForPersistence(page);
+    await page.reload();
+
+    await expandCollapsedSummary(page, 'West Province (Area One)');
+    const reloadedCard = cardFor(page, 'West Province (Area One)').first();
+    await expect(
+        reloadedCard.getByRole('checkbox', {
+            name: 'Include ocean encounters',
+        }),
+    ).not.toBeChecked();
+    await reloadedCard.getByRole('button', { name: 'Show encounters' }).click();
+    await expect(reloadedCard.locator('tr', { hasText: 'Ocean' })).toHaveCount(0);
+});
+
 test('a manual ban blocks the full evolution line when enabled', async ({
     page,
 }) => {

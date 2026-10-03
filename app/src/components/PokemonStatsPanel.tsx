@@ -1,9 +1,11 @@
 import { css } from '@pokedb2/css-in-js';
 import type { PokemonBaseStats } from '../db/pokemon-data/queries';
 import { StatBar } from './StatBar';
+import { Tooltip } from './Tooltip';
 
 interface PokemonStatsPanelProps {
     baseStats: PokemonBaseStats;
+    equivalent?: boolean;
 }
 
 function statEntries(baseStats: PokemonBaseStats): [string, number][] {
@@ -17,7 +19,10 @@ function statEntries(baseStats: PokemonBaseStats): [string, number][] {
     ];
 }
 
-export function PokemonStatsPanel({ baseStats }: PokemonStatsPanelProps) {
+export function PokemonStatsPanel({
+    baseStats,
+    equivalent,
+}: PokemonStatsPanelProps) {
     const total = Object.values(baseStats).reduce(
         (sum, value) => sum + value,
         0,
@@ -26,7 +31,15 @@ export function PokemonStatsPanel({ baseStats }: PokemonStatsPanelProps) {
     return (
         <div>
             <h5 className={sectionTitle}>
-                <span>Base Stats</span>
+                {equivalent ? (
+                    <Tooltip content="Equivalent base stats based on exact exact stat values, calculated for comparison.">
+                        <button type="button" className={equivalentLabel}>
+                            EQUIVALENT BASE STATS
+                        </button>
+                    </Tooltip>
+                ) : (
+                    <span>BASE STATS</span>
+                )}
                 <span className={statTotal}>Total: {total}</span>
             </h5>
             <div className={stats}>
@@ -48,8 +61,18 @@ const sectionTitle = css`
     border-bottom: 0.1rem solid var(--color-border);
     font-size: var(--font-size-sm);
     font-weight: 600;
-    text-transform: uppercase;
     color: var(--color-text-muted);
+`;
+
+const equivalentLabel = css`
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    text-transform: inherit;
+    cursor: help;
 `;
 
 const statTotal = css`

@@ -7,12 +7,12 @@ import { getPokemonTypeColor } from '../../../../utils/pokemon-type-colors';
 import { ProgressionCard } from '../../../../components/ProgressionCard';
 import { useBossActions } from '../../../../hooks/useBossActions';
 import { useBossBattleRosterQuery } from '../../queries';
+import { GYM_BOSS_ICON } from './boss-category-icons';
 import { progressionCardPattern } from './progression-card-pattern';
 
 const LOCATION_NAME = 'Cortondo';
 const DISPLAY_BATTLE_NAME = 'Katy (Gym)';
 const BATTLE_NAME = 'Katy (Bug Gym)';
-const GYM_ICON = '🏅';
 const TERA_ACE = { pokemonName: 'Teddiursa', teraType: 'Bug' };
 
 interface KatyBugGymProps {
@@ -67,7 +67,7 @@ export function KatyBugGym({ isNext }: KatyBugGymProps) {
                     levelCap={levelCap}
                     isNext={isNext}
                     onExpand={expand}
-                    icon={GYM_ICON}
+                    icon={GYM_BOSS_ICON}
                     specialtyType="Bug"
                 />
             )}
@@ -80,7 +80,7 @@ export function KatyBugGym({ isNext }: KatyBugGymProps) {
                         levelCap={levelCap}
                         onCollapse={collapse}
                         currentResult={currentResult}
-                        icon={GYM_ICON}
+                        icon={GYM_BOSS_ICON}
                         specialtyType="Bug"
                     />
                     <ProgressionDescription>

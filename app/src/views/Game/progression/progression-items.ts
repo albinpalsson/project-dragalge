@@ -8,8 +8,16 @@ import { PokemonLeaguePaldea } from './encounters/PokemonLeaguePaldea';
 import { SouthProvinceAreaOne } from './encounters/SouthProvinceAreaOne';
 import { SouthProvinceAreaTwo } from './encounters/SouthProvinceAreaTwo';
 import { TeraRaid1Star } from './encounters/TeraRaidXStar';
+import { TeraRaid2Star } from './encounters/TeraRaid2Star';
+import { SouthProvinceAreaThree } from './encounters/SouthProvinceAreaThree';
+import { WestProvinceAreaOne } from './encounters/WestProvinceAreaOne';
+import { SouthProvinceAreaFour } from './encounters/SouthProvinceAreaFour';
 import { KatyBugGym } from './bosses/KatyBugGym';
 import { NemonaSouthProvince } from './bosses/NemonaSouthProvince';
+import { KlawfStonyCliffTitan } from './bosses/KlawfStonyCliffTitan';
+import { BrassiusGrassGym } from './bosses/BrassiusGrassGym';
+import { BombirdierOpenSkyTitan } from './bosses/BombirdierOpenSkyTitan';
+import { GiacomoDarkStar } from './bosses/GiacomoDarkStar';
 import { ReleaseStarter } from './ReleaseStarter';
 import { getStarterBattleName } from '../../../db/pokemon-data/starter-battles';
 import { parseTeraRaidLocationName } from '../../../utils/tera-raid-location';
@@ -124,6 +132,56 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
         kind: 'boss',
         getBattleName: () => 'Katy (Bug Gym)',
         Component: KatyBugGym,
+    },
+    {
+        key: 'south-province-area-three',
+        kind: 'encounter',
+        locationName: 'South Province (Area Three)',
+        Component: SouthProvinceAreaThree,
+    },
+    {
+        key: 'klawf-stony-cliff-titan',
+        kind: 'boss',
+        getBattleName: () => 'Klawf (Stony Cliff Titan)',
+        Component: KlawfStonyCliffTitan,
+    },
+    {
+        key: 'brassius-grass-gym',
+        kind: 'boss',
+        getBattleName: () => 'Brassius (Grass Gym)',
+        Component: BrassiusGrassGym,
+    },
+    {
+        key: 'south-province-area-four',
+        kind: 'encounter',
+        locationName: 'South Province (Area Four)',
+        Component: SouthProvinceAreaFour,
+    },
+    {
+        key: 'tera-raid-2-star',
+        kind: 'raid',
+        stars: 2,
+        isVisible: ({ settings }) => settings.teraRaids !== 'none',
+        countsTowardProgress: ({ settings }) => settings.teraRaids === 'single',
+        Component: TeraRaid2Star,
+    },
+    {
+        key: 'west-province-area-one',
+        kind: 'encounter',
+        locationName: 'West Province (Area One)',
+        Component: WestProvinceAreaOne,
+    },
+    {
+        key: 'bombirdier-open-sky-titan',
+        kind: 'boss',
+        getBattleName: () => 'Bombirdier (Open Sky Titan)',
+        Component: BombirdierOpenSkyTitan,
+    },
+    {
+        key: 'giacomo-dark-star',
+        kind: 'boss',
+        getBattleName: () => 'Giacomo (Dark Star)',
+        Component: GiacomoDarkStar,
     },
 ];
 

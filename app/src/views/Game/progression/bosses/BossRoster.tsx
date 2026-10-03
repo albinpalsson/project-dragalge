@@ -11,6 +11,15 @@ import type {
     BossPokemonView,
 } from '../../../../db/pokemon-data/queries';
 
+export interface BossRosterPokemon extends BossPokemonView {
+    displayName?: string;
+    equivalentBaseStats?: boolean;
+}
+
+export interface BossRosterView extends BossBattleRoster {
+    pokemon: BossRosterPokemon[];
+}
+
 interface BossHeaderProps {
     locationName: string;
     displayBattleName: string;
@@ -27,7 +36,7 @@ export interface TeraAce {
 }
 
 interface BossRosterProps {
-    roster: BossBattleRoster;
+    roster: BossRosterView;
     teraAce?: TeraAce;
     iconSize: PokemonIconSize;
     zoomedIcon?: boolean;
@@ -82,9 +91,9 @@ export function BossRoster({
 }: BossRosterProps) {
     return (
         <div className={pokemonList}>
-            {roster.pokemon.map((pokemon: BossPokemonView) => (
+            {roster.pokemon.map((pokemon) => (
                 <BossPokemonCard
-                    key={pokemon.pokemonName}
+                    key={pokemon.slot}
                     pokemon={pokemon}
                     iconSize={iconSize}
                     zoomedIcon={zoomedIcon}

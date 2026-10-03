@@ -6,7 +6,7 @@ interface StatBarProps {
     max?: number;
 }
 
-export function StatBar({ label, value, max = 255 }: StatBarProps) {
+export function StatBar({ label, value, max = 200 }: StatBarProps) {
     const percentage = Math.min(Math.max((value / max) * 100, 0), 100);
 
     return (
