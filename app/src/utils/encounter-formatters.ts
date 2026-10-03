@@ -1,11 +1,22 @@
 import type { LocationEncounterView } from '../db/pokemon-data/queries';
 import { getEffectiveWeight } from '../randomizer';
 
+const LEVEL_RANGE_TAIL = 0.025;
+const LEVEL_RANGE_EPSILON = 1e-12;
+
+interface EncounterGroupLevelRange {
+    min: number;
+    max: number;
+    trimmedMin: number;
+    trimmedMax: number;
+}
+
 export function formatLevelRange(encounter: LocationEncounterView): string {
-    if (encounter.minLevel === encounter.maxLevel) {
-        return String(encounter.minLevel);
-    }
-    return `${encounter.minLevel}-${encounter.maxLevel}`;
+    return formatLevelBounds(encounter.minLevel, encounter.maxLevel);
+}
+
+export function formatLevelBounds(min: number, max: number): string {
+    return min === max ? String(min) : `${min}-${max}`;
 }
 
 export function formatWeight(encounter: LocationEncounterView): string {
@@ -68,10 +79,56 @@ export function formatGames(games: string): string {
 export function formatEncounterGroupLevelRange(
     encounters: LocationEncounterView[],
 ): string | undefined {
+    const range = getEncounterGroupLevelRange(encounters);
+    return range
+        ? formatLevelBounds(range.trimmedMin, range.trimmedMax)
+        : undefined;
+}
+
+function getEncounterGroupLevelRange(
+    encounters: LocationEncounterView[],
+): EncounterGroupLevelRange | undefined {
     if (encounters.length === 0) {
         return undefined;
     }
     const min = Math.min(...encounters.map((encounter) => encounter.minLevel));
     const max = Math.max(...encounters.map((encounter) => encounter.maxLevel));
-    return `${min}-${max}`;
+    const levelProbabilities = new Array<number>(max - min + 1).fill(0);
+
+    for (const encounter of encounters) {
+        const levelCount = encounter.maxLevel - encounter.minLevel + 1;
+        const probabilityPerLevel = 1 / (encounters.length * levelCount);
+        for (
+            let level = encounter.minLevel;
+            level <= encounter.maxLevel;
+            level++
+        ) {
+            levelProbabilities[level - min] += probabilityPerLevel;
+        }
+    }
+
+    let cumulativeProbability = 0;
+    let trimmedMin = min;
+    let trimmedMax = max;
+    let foundMin = false;
+
+    for (let index = 0; index < levelProbabilities.length; index++) {
+        cumulativeProbability += levelProbabilities[index];
+        if (
+            !foundMin &&
+            cumulativeProbability + LEVEL_RANGE_EPSILON >= LEVEL_RANGE_TAIL
+        ) {
+            trimmedMin = min + index;
+            foundMin = true;
+        }
+        if (
+            cumulativeProbability + LEVEL_RANGE_EPSILON >=
+            1 - LEVEL_RANGE_TAIL
+        ) {
+            trimmedMax = min + index;
+            break;
+        }
+    }
+
+    return { min, max, trimmedMin, trimmedMax };
 }

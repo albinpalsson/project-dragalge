@@ -4,6 +4,7 @@ import { ProgressionCardHeader } from './ProgressionCardHeader';
 import type { LocationEncounterDetails } from '../db/pokemon-data/queries';
 import type { LocationEncounterView } from '../db/pokemon-data/queries';
 import { formatEncounterGroupLevelRange } from '../utils/encounter-formatters';
+import { useMemo } from 'react';
 
 interface EncounterHeaderProps {
     location: LocationEncounterDetails['location'];
@@ -18,7 +19,10 @@ export function EncounterHeader({
     canCollapse,
     onCollapse,
 }: EncounterHeaderProps) {
-    const levelRange = formatEncounterGroupLevelRange(encounters);
+    const levelRange = useMemo(
+        () => formatEncounterGroupLevelRange(encounters),
+        [encounters],
+    );
 
     return (
         <ProgressionCardHeader
@@ -55,4 +59,3 @@ const subheading = css`
   color: var(--color-text-muted);
   font-size: var(--font-size-sm);
 `;
-

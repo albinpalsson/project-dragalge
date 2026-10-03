@@ -6,6 +6,7 @@ import { Badge } from './Badge';
 import { CollapsedSummaryRow } from './CollapsedSummaryRow';
 import { PokemonIcon } from './PokemonIcon';
 import { StatusChip } from './StatusChip';
+import { useMemo } from 'react';
 
 interface EncounterCollapsedSummaryProps {
     areaName: string;
@@ -27,7 +28,10 @@ export function EncounterCollapsedSummary({
     zoomedIcon,
     onExpand,
 }: EncounterCollapsedSummaryProps) {
-    const levelRange = formatEncounterGroupLevelRange(encounters);
+    const levelRange = useMemo(
+        () => formatEncounterGroupLevelRange(encounters),
+        [encounters],
+    );
 
     return (
         <CollapsedSummaryRow
