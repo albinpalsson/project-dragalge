@@ -78,8 +78,10 @@ export function BossPokemonCard({
                         >
                             ▦
                         </button>
-                        <Badge>Lv {pokemon.level}</Badge>
                     </div>
+                    <p className={abilityLine}>
+                        <Badge>Lv {pokemon.level}</Badge>
+                    </p>
                     <p className={abilityLine}>
                         <span className={label}>Ability:</span>{' '}
                         <Tooltip content={pokemon.ability.description}>
