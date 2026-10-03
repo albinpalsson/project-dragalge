@@ -16,7 +16,13 @@ interface RollResultProps {
 
 export function RollResult({ encounterRoll, zoomedIcon }: RollResultProps) {
     if (!encounterRoll) {
-        return null;
+        return (
+            <div className={rollBox}>
+                <span className={emptyRollIcon} aria-hidden="true">
+                    ?
+                </span>
+            </div>
+        );
     }
 
     const time = formatTime(encounterRoll);
@@ -50,6 +56,21 @@ const rollBox = css`
   display: flex;
   align-items: center;
   gap: var(--space-3);
+`;
+
+const emptyRollIcon = css`
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        width: 5.6rem;
+        height: 5.6rem;
+        border-radius: var(--radius-sm);
+        background: var(--color-surface-alt);
+        color: var(--color-text-muted);
+        font-size: 3.2rem;
+        font-weight: 600;
+        line-height: 1;
 `;
 
 const rollTitle = css`
