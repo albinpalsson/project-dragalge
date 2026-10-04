@@ -6,6 +6,7 @@ import {
     createGameWithTeraRaids,
     expandCollapsedSummary,
     expectNextStep,
+    showMoreProgression,
     winBossBattle,
 } from './helpers';
 
@@ -34,6 +35,7 @@ test('banned Pokemon are excluded from Tera Raid suggestions', async ({
     await page.getByRole('button', { name: 'Start', exact: true }).click();
     await expect(cardFor(page, 'Starter').first()).toBeVisible();
 
+    await showMoreProgression(page);
     await expandCollapsedSummary(page, 'Tera Raid ★');
     const addInput = page.getByRole('combobox', {
         name: 'Add a 1-star Tera Raid Pokémon',
@@ -48,6 +50,7 @@ test('a Single-mode Tera Raidonly allows one Pokemon', async ({
     await page.goto('/');
     await createGameWithTeraRaids(page, 'raid-single-run', 'single');
 
+    await showMoreProgression(page);
     await expandCollapsedSummary(page, 'Tera Raid ★');
     const addInput = page.getByRole('combobox', {
         name: 'Add a 1-star Tera Raid Pokémon',
@@ -79,6 +82,7 @@ test('Unlimited Tera Raids allow multiple Pokemon and never become a required st
     await catchEncounter(page, 'South Province (Area One)');
     await winBossBattle(page, 'Nemona (Second rival battle)');
 
+    await showMoreProgression(page);
     await expectNextStep(page, 'Pokemon League (Paldea)');
 
     await expandCollapsedSummary(page, 'Tera Raid ★');

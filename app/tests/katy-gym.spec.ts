@@ -3,6 +3,7 @@ import {
     cardFor,
     createGame,
     expandCollapsedSummary,
+    showMoreProgression,
 } from './helpers';
 
 test('Katy shows her Bug specialty badge, gym challenge warning, and ace Tera badge', async ({
@@ -11,6 +12,7 @@ test('Katy shows her Bug specialty badge, gym challenge warning, and ace Tera ba
     await page.goto('/');
     await createGame(page, 'katy-visuals-run');
 
+    await showMoreProgression(page);
     await expandCollapsedSummary(page, 'Katy (Gym)');
     const card = cardFor(page, 'Katy (Gym)').first();
 

@@ -29,7 +29,7 @@ interface ProgressionItemProps {
     isNext?: boolean;
 }
 
-interface ProgressionItemState {
+export interface ProgressionItemState {
     settings: GameSettings;
     encounters: EncounterRollRow[];
 }
@@ -37,6 +37,7 @@ interface ProgressionItemState {
 interface ProgressionBaseItem {
     key: string;
     Component: ComponentType<ProgressionItemProps>;
+    checkpointAfter?: boolean;
     isVisible?: (state: ProgressionItemState) => boolean;
     countsTowardProgress?: (state: ProgressionItemState) => boolean;
 }
@@ -107,6 +108,7 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
     {
         key: 'nemona-south-province',
         kind: 'boss',
+        checkpointAfter: true,
         getBattleName: getStarterBattleName,
         Component: NemonaSouthProvince,
     },
@@ -133,6 +135,7 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
     {
         key: 'katy-bug-gym',
         kind: 'boss',
+        checkpointAfter: true,
         getBattleName: () => 'Katy (Bug Gym)',
         Component: KatyBugGym,
     },
@@ -188,6 +191,14 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
         Component: GiacomoDarkStar,
     },
 ];
+
+export function getVisibleProgressionItems(
+    state: ProgressionItemState,
+): ProgressionItem[] {
+    return PROGRESSION_ITEMS.filter(
+        (item) => item.isVisible?.(state) ?? true,
+    );
+}
 
 export function isRaidResolved(
     encounters: EncounterRollRow[],

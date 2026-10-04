@@ -2,7 +2,7 @@ import { useGame } from '../views/Game/GameContext';
 import { useBossBattleProgressQuery } from '../views/Game/queries';
 import { useStarter } from './useStarter';
 import {
-    PROGRESSION_ITEMS,
+    getVisibleProgressionItems,
     isRaidResolved,
     type ProgressionItem,
 } from '../views/Game/progression/progression-items';
@@ -19,13 +19,10 @@ export function useProgressionTracker(): ProgressionTracker {
     const starter = useStarter();
     const bossProgressQuery = useBossBattleProgressQuery(game.id);
     const bossProgress = bossProgressQuery.data ?? [];
-    const visibleItems = PROGRESSION_ITEMS.filter(
-        (item) =>
-            item.isVisible?.({
-                settings: game.settings,
-                encounters: game.encounters,
-            }) ?? true,
-    );
+    const visibleItems = getVisibleProgressionItems({
+        settings: game.settings,
+        encounters: game.encounters,
+    });
     const countedItems = visibleItems.filter(
         (item) =>
             item.countsTowardProgress?.({

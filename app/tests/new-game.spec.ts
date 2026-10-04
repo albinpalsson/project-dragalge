@@ -1,5 +1,10 @@
 import { test, expect } from '@playwright/test';
-import { cardFor, createGame, waitForPersistence } from './helpers';
+import {
+    cardFor,
+    createGame,
+    showMoreProgression,
+    waitForPersistence,
+} from './helpers';
 
 test('Team Star battle setting updates card visibility and persists', async ({
     page,
@@ -19,10 +24,13 @@ test('Team Star battle setting updates card visibility and persists', async ({
     await expect(checkbox).not.toBeChecked();
     await checkbox.check();
     await page.keyboard.press('Escape');
+    await showMoreProgression(page);
     await expect(giacomoCard.first()).toBeVisible();
 
     await waitForPersistence(page);
     await page.reload();
+    await expect(giacomoCard).toHaveCount(0);
+    await showMoreProgression(page);
     await expect(giacomoCard.first()).toBeVisible();
 
     await settingsButton.click();

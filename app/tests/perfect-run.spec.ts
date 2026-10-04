@@ -6,6 +6,7 @@ import {
     expectNextStep,
     expectProgressionComplete,
     selectStarter,
+    showMoreProgression,
     winBossBattle,
 } from './helpers';
 
@@ -16,6 +17,12 @@ test('plays the canonical perfect run through the current progression', async ({
 }) => {
     await page.goto('/');
     await createGame(page, 'playthrough-run');
+
+    await page
+        .getByRole('button', { name: 'Game settings', exact: true })
+        .click();
+    await page.getByLabel('Include Team Star battles').check();
+    await page.keyboard.press('Escape');
 
     await expectNextStep(page, 'Starter');
     await selectStarter(page, 'Sprigatito');
@@ -31,6 +38,7 @@ test('plays the canonical perfect run through the current progression', async ({
 
     await expectNextStep(page, 'Nemona (Second rival battle)');
     await winBossBattle(page, 'Nemona (Second rival battle)');
+    await showMoreProgression(page);
 
     await expectNextStep(page, 'Pokemon League (Paldea)');
     await catchEncounter(page, 'Pokemon League (Paldea)');

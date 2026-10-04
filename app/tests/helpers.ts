@@ -45,6 +45,16 @@ export async function createGameWithTeraRaids(
     await expect(cardFor(page, 'Starter').first()).toBeVisible();
 }
 
+export async function showMoreProgression(page: Page): Promise<void> {
+    const showMore = page.getByRole('button', {
+        name: 'Show more',
+        exact: true,
+    });
+    if (await showMore.count()) {
+        await showMore.click();
+    }
+}
+
 export async function catchTeraRaid(
     page: Page,
     stars: number,

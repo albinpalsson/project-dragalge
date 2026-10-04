@@ -2,11 +2,11 @@ import { css } from '@pokedb2/css-in-js';
 import { HeaderSlot } from '../../components/HeaderSlot';
 import { Box } from './Box/Box';
 import { GameProvider, useGame } from './GameContext';
-import { useProgressionTracker } from '../../hooks/useProgressionTracker';
 import { useEvolutionGraphQuery } from '../../hooks/useEvolutionGraphQuery';
-import { PROGRESSION_ITEMS } from './progression/progression-items';
+import { ProgressionTimeline } from './progression/ProgressionTimeline';
 import {
     useBanListEntriesQuery,
+    useBossBattleProgressQuery,
     useEncounterRollsQuery,
     useGameRunQuery,
 } from './queries';
@@ -39,6 +39,7 @@ type Game = NonNullable<ReturnType<typeof useGameRunQuery>['data']>;
 
 function LoadedGame({ game }: { game: Game }) {
     const encounterRollsQuery = useEncounterRollsQuery(game.id);
+    const bossBattleProgressQuery = useBossBattleProgressQuery(game.id);
     const banReasonsMap = useBanReasonsMap(game);
 
     if (encounterRollsQuery.isError) {
@@ -53,8 +54,21 @@ function LoadedGame({ game }: { game: Game }) {
     if (banReasonsMap.status === 'error') {
         return <p>Error loading ban list: {banReasonsMap.error.message}</p>;
     }
+    
+    if (bossBattleProgressQuery.isError) {
+        return (
+            <p>
+                Error loading boss battle progress:{' '}
+                {bossBattleProgressQuery.error.message}
+            </p>
+        );
+    }
 
-    if (encounterRollsQuery.isPending || banReasonsMap.status === 'pending') {
+    if (
+        encounterRollsQuery.isPending ||
+        banReasonsMap.status === 'pending' ||
+        bossBattleProgressQuery.isPending
+    ) {
         return <p>Loading game...</p>;
     }
 
@@ -73,7 +87,7 @@ function LoadedGame({ game }: { game: Game }) {
                 banReasons: banReasonsMap.banReasons,
             }}
         >
-            <GameContent />
+            <GameContent key={game.id} />
         </GameProvider>
     );
 }
@@ -130,14 +144,6 @@ function useBanReasonsMap(game: Game): BanReasonsMapResult {
 
 function GameContent() {
     const game = useGame();
-    const progression = useProgressionTracker();
-    const visibleItems = PROGRESSION_ITEMS.filter(
-        (item) =>
-            item.isVisible?.({
-                settings: game.settings,
-                encounters: game.encounters,
-            }) ?? true,
-    );
 
     return (
         <section className={layout}>
@@ -146,18 +152,7 @@ function GameContent() {
                 <Box />
                 <GameSettingsModal />
             </HeaderSlot>
-            <ol className={cardList}>
-                {visibleItems.map((item) => (
-                    <li key={item.key} className={cardItem}>
-                        {progression.nextKey === item.key && (
-                            <p className={nextStepLabel}>→ Next step</p>
-                        )}
-                        <item.Component
-                            isNext={progression.nextKey === item.key}
-                        />
-                    </li>
-                ))}
-            </ol>
+            <ProgressionTimeline />
         </section>
     );
 }
@@ -182,33 +177,3 @@ const gameName = css`
     white-space: nowrap;
 `;
 
-const cardList = css`
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-    list-style: none;
-    width: 100%;
-    min-width: 0;
-    margin: 0;
-    padding: 0;
-`;
-
-const cardItem = css`
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-1);
-    width: 100%;
-    min-width: 0;
-
-    > * {
-        width: 100%;
-        min-width: 0;
-    }
-`;
-
-const nextStepLabel = css`
-    margin: 0;
-    color: var(--color-primary);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-bold);
-`;

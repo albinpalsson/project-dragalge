@@ -5,6 +5,7 @@ import {
     expandCollapsedSummary,
     resolveEncounter,
     rollEncounter,
+    showMoreProgression,
     waitForPersistence,
 } from './helpers';
 
@@ -37,6 +38,7 @@ test('West Province can exclude ocean encounters and remember the setting', asyn
 }) => {
     await page.goto('/');
     await createGame(page, 'west-province-ocean-run');
+    await showMoreProgression(page);
     await expandCollapsedSummary(page, 'West Province (Area One)');
 
     const card = cardFor(page, 'West Province (Area One)').first();
@@ -53,6 +55,7 @@ test('West Province can exclude ocean encounters and remember the setting', asyn
     await waitForPersistence(page);
     await page.reload();
 
+    await showMoreProgression(page);
     await expandCollapsedSummary(page, 'West Province (Area One)');
     const reloadedCard = cardFor(page, 'West Province (Area One)').first();
     await expect(
