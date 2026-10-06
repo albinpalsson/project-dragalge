@@ -1,5 +1,6 @@
 import type { Database } from '@pokedb2/query-builder';
 import type { PokemonDataDb } from '@pokedb2/pokemon-data';
+import { getEncounterGroupKey } from '../../pokemon-species';
 import { getPokemonDb } from './client';
 
 export interface EvolutionGraphEdge {
@@ -53,6 +54,21 @@ async function buildEvolutionGraph(
         }
         from.nextEvolutions.push({ pokemonName: to.pokemonName, method });
         to.previousEvolutions.push({ pokemonName: from.pokemonName, method });
+    }
+
+    // Cosmetic forms without their own edges share their species' evolution line.
+    for (const pokemon of pokemonRows) {
+        const node = nodesById.get(pokemon.id);
+        const species = nodesByName.get(getEncounterGroupKey(pokemon.name));
+        if (
+            node &&
+            species &&
+            node !== species &&
+            node.nextEvolutions.length === 0 &&
+            node.previousEvolutions.length === 0
+        ) {
+            nodesByName.set(pokemon.name, species);
+        }
     }
 
     return {

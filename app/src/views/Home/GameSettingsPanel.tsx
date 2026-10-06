@@ -1,7 +1,10 @@
+import { useState } from 'react';
 import { css } from '@pokedb2/css-in-js';
 import { BadgeButton } from '../../components/Badge';
 import { Checkbox } from '../../components/Checkbox';
+import { Modal } from '../../components/Modal';
 import { PokemonAutocomplete } from '../../components/PokemonAutocomplete';
+import { RandomizerModesGuide } from '../../components/RandomizerModesGuide';
 import { Select } from '../../components/Select';
 import { RANDOMIZER_MODE_OPTIONS } from '../../randomizer';
 import type { FullGameSettingsValue } from '../../utils/game-setting-presets';
@@ -27,6 +30,7 @@ export function GameSettingsPanel({
     presets,
 }: GameSettingsPanelProps) {
     const banListSet = new Set(value.banList);
+    const [isModesGuideOpen, setModesGuideOpen] = useState(false);
 
     const addNames = (names: readonly string[]) => {
         onChange({
@@ -40,18 +44,38 @@ export function GameSettingsPanel({
 
     return (
         <div className={panel}>
-            <Select
-                label="Randomizer"
-                value={value.randomizerMode}
-                onChange={(randomizerMode) =>
-                    onChange({
-                        ...value,
-                        randomizerMode: randomizerMode as
-                            FullGameSettingsValue['randomizerMode'],
-                    })
-                }
-                options={[...RANDOMIZER_MODE_OPTIONS]}
-            />
+            <div className={randomizerField}>
+                <Select
+                    label="Randomizer"
+                    value={value.randomizerMode}
+                    onChange={(randomizerMode) =>
+                        onChange({
+                            ...value,
+                            randomizerMode: randomizerMode as
+                                FullGameSettingsValue['randomizerMode'],
+                        })
+                    }
+                    options={[...RANDOMIZER_MODE_OPTIONS]}
+                />
+                <button
+                    type="button"
+                    className={modesGuideButton}
+                    onClick={() => setModesGuideOpen(true)}
+                    aria-label="How do modes work?"
+                    title="How do modes work?"
+                >
+                    ?
+                </button>
+            </div>
+            {isModesGuideOpen && (
+                <Modal
+                    title="Randomizer modes"
+                    className={guideModal}
+                    onClose={() => setModesGuideOpen(false)}
+                >
+                    <RandomizerModesGuide />
+                </Modal>
+            )}
             <Checkbox
                 label="Dupes clause"
                 checked={value.dupesClauseEnabled}
@@ -162,6 +186,48 @@ const panel = css`
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
+`;
+
+const randomizerField = css`
+    display: flex;
+    align-items: flex-end;
+    gap: var(--space-2);
+
+    & > label {
+        flex: 1;
+    }
+`;
+
+const modesGuideButton = css`
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 2.4rem;
+    height: 2.4rem;
+    padding: 0 0 var(--space-3);
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    cursor: pointer;
+
+    &:hover {
+        color: var(--color-accent);
+    }
+
+    &:focus-visible {
+        outline: 0.2rem solid var(--color-accent);
+        outline-offset: 0.1rem;
+    }
+`;
+
+const guideModal = css`
+    max-width: 64rem;
+    max-height: 90vh;
+    overflow-y: auto;
 `;
 
 const section = css`

@@ -9,8 +9,13 @@
             "encounters": [
                 {
                     "pokemon": "Meowth",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 23,
                         "max": 24
@@ -25,8 +30,13 @@
                 },
                 {
                     "pokemon": "Magnemite",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 23,
                         "max": 24
@@ -41,8 +51,13 @@
                 },
                 {
                     "pokemon": "Murkrow",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 23,
                         "max": 24
@@ -59,8 +74,13 @@
                 },
                 {
                     "pokemon": "Dunsparce",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 23,
                         "max": 24
@@ -75,8 +95,13 @@
                 },
                 {
                     "pokemon": "Rookidee",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 23,
                         "max": 24
@@ -91,8 +116,13 @@
                 },
                 {
                     "pokemon": "Corvisquire",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 23,
                         "max": 24
@@ -109,8 +139,13 @@
                 },
                 {
                     "pokemon": "Pawmo",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 23,
                         "max": 24
@@ -127,8 +162,13 @@
                 },
                 {
                     "pokemon": "Toedscool",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 23,
                         "max": 24
@@ -148,8 +188,13 @@
             "encounters": [
                 {
                     "pokemon": "Meowth",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 24,
                         "max": 28
@@ -164,8 +209,13 @@
                 },
                 {
                     "pokemon": "Magnemite",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 24,
                         "max": 28
@@ -180,8 +230,13 @@
                 },
                 {
                     "pokemon": "Voltorb",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 26,
                         "max": 28
@@ -196,8 +251,13 @@
                 },
                 {
                     "pokemon": "Murkrow",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 24,
                         "max": 28
@@ -214,8 +274,13 @@
                 },
                 {
                     "pokemon": "Shuppet",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 24,
                         "max": 28
@@ -230,8 +295,12 @@
                 },
                 {
                     "pokemon": "Drifloon",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 24,
                         "max": 28
@@ -248,8 +317,12 @@
                 },
                 {
                     "pokemon": "Drifblim",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 28,
                         "max": 28
@@ -266,8 +339,13 @@
                 },
                 {
                     "pokemon": "Gothita",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 24,
                         "max": 28
@@ -282,8 +360,13 @@
                 },
                 {
                     "pokemon": "Rookidee",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 24,
                         "max": 28
@@ -298,8 +381,13 @@
                 },
                 {
                     "pokemon": "Corvisquire",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 24,
                         "max": 28
@@ -316,24 +404,34 @@
                 },
                 {
                     "pokemon": "Sinistea (Phony Form)",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 28,
                         "max": 28
                     },
                     "subArea": "Town",
                     "probabilityByTime": {
-                        "morning": 0,
-                        "day": 0,
+                        "morning": 30,
+                        "day": 30,
                         "evening": 30,
                         "night": 30
                     }
                 },
                 {
                     "pokemon": "Tandemaus",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 24,
                         "max": 28
@@ -348,8 +446,13 @@
                 },
                 {
                     "pokemon": "Dachsbun",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 26,
                         "max": 28
@@ -366,15 +469,20 @@
                 },
                 {
                     "pokemon": "Squawkabilly (Green Plumage)",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 24,
                         "max": 25
                     },
                     "subArea": "Town",
                     "groupRate": "80%",
-                    "groupPokemon": "Squawkabilly Green Plumage",
+                    "groupPokemon": "Squawkabilly",
                     "probabilityByTime": {
                         "morning": 20,
                         "day": 20,
@@ -384,15 +492,20 @@
                 },
                 {
                     "pokemon": "Squawkabilly (Blue Plumage)",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 24,
                         "max": 25
                     },
                     "subArea": "Town",
                     "groupRate": "80%",
-                    "groupPokemon": "Squawkabilly Blue Plumage",
+                    "groupPokemon": "Squawkabilly",
                     "probabilityByTime": {
                         "morning": 15,
                         "day": 15,
@@ -402,15 +515,20 @@
                 },
                 {
                     "pokemon": "Squawkabilly (Yellow Plumage)",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 24,
                         "max": 25
                     },
                     "subArea": "Town",
                     "groupRate": "80%",
-                    "groupPokemon": "Squawkabilly Yellow Plumage",
+                    "groupPokemon": "Squawkabilly",
                     "probabilityByTime": {
                         "morning": 10,
                         "day": 10,
@@ -420,15 +538,20 @@
                 },
                 {
                     "pokemon": "Squawkabilly (White Plumage)",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 24,
                         "max": 25
                     },
                     "subArea": "Town",
                     "groupRate": "80%",
-                    "groupPokemon": "Squawkabilly White Plumage",
+                    "groupPokemon": "Squawkabilly",
                     "probabilityByTime": {
                         "morning": 5,
                         "day": 5,
@@ -438,8 +561,13 @@
                 },
                 {
                     "pokemon": "Varoom",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 27,
                         "max": 28
@@ -459,8 +587,14 @@
             "encounters": [
                 {
                     "pokemon": "Psyduck",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "water-surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 24,
                         "max": 28
@@ -475,8 +609,14 @@
                 },
                 {
                     "pokemon": "Magikarp",
-                    "games": ["S", "V"],
-                    "terrain": ["water-surface", "underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "water_surface",
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 24,
                         "max": 28
@@ -491,8 +631,12 @@
                 },
                 {
                     "pokemon": "Misdreavus",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 24,
                         "max": 28
@@ -507,8 +651,13 @@
                 },
                 {
                     "pokemon": "Barboach",
-                    "games": ["S", "V"],
-                    "terrain": ["underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 24,
                         "max": 28
@@ -523,15 +672,20 @@
                 },
                 {
                     "pokemon": "Basculin (Red-Striped)",
-                    "games": ["S", "V"],
-                    "terrain": ["underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 24,
                         "max": 28
                     },
                     "subArea": "Lake",
                     "groupRate": "70%",
-                    "groupPokemon": "Basculin Red-Striped",
+                    "groupPokemon": "Basculin",
                     "probabilityByTime": {
                         "morning": 60,
                         "day": 60,
@@ -541,15 +695,20 @@
                 },
                 {
                     "pokemon": "Basculin (Blue-Striped)",
-                    "games": ["S", "V"],
-                    "terrain": ["underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 24,
                         "max": 28
                     },
                     "subArea": "Lake",
                     "groupRate": "70%",
-                    "groupPokemon": "Basculin Blue-Striped",
+                    "groupPokemon": "Basculin",
                     "probabilityByTime": {
                         "morning": 60,
                         "day": 60,
@@ -559,8 +718,13 @@
                 },
                 {
                     "pokemon": "Goomy",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 24,
                         "max": 28
@@ -575,8 +739,14 @@
                 },
                 {
                     "pokemon": "Chewtle",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "water-surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 24,
                         "max": 26
@@ -591,8 +761,14 @@
                 },
                 {
                     "pokemon": "Drednaw",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "water-surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 24,
                         "max": 28
@@ -609,24 +785,33 @@
                 },
                 {
                     "pokemon": "Dreepy",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 24,
                         "max": 28
                     },
                     "subArea": "Lake",
                     "probabilityByTime": {
-                        "morning": 0,
-                        "day": 0,
+                        "morning": 15,
+                        "day": 15,
                         "evening": 15,
                         "night": 15
                     }
                 },
                 {
                     "pokemon": "Flamigo",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 24,
                         "max": 28
@@ -641,15 +826,21 @@
                 },
                 {
                     "pokemon": "Clodsire",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "water-surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 24,
                         "max": 28
                     },
                     "subArea": "Lake",
                     "groupRate": "100%",
-                    "groupPokemon": "Wooper Paldean Form",
+                    "groupPokemon": "Wooper",
                     "probabilityByTime": {
                         "morning": 30,
                         "day": 30,
@@ -664,8 +855,14 @@
             "encounters": [
                 {
                     "pokemon": "Psyduck",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "water-surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 23,
                         "max": 29
@@ -680,8 +877,14 @@
                 },
                 {
                     "pokemon": "Magikarp",
-                    "games": ["S", "V"],
-                    "terrain": ["water-surface", "underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "water_surface",
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 23,
                         "max": 29
@@ -696,8 +899,14 @@
                 },
                 {
                     "pokemon": "Buizel",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "water-surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 23,
                         "max": 29
@@ -712,8 +921,14 @@
                 },
                 {
                     "pokemon": "Floatzel",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "water-surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 28,
                         "max": 29
@@ -730,15 +945,20 @@
                 },
                 {
                     "pokemon": "Basculin (Red-Striped)",
-                    "games": ["S", "V"],
-                    "terrain": ["underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 23,
                         "max": 29
                     },
                     "subArea": "Riverside",
                     "groupRate": "70%",
-                    "groupPokemon": "Basculin Red-Striped",
+                    "groupPokemon": "Basculin",
                     "probabilityByTime": {
                         "morning": 60,
                         "day": 60,
@@ -748,15 +968,20 @@
                 },
                 {
                     "pokemon": "Basculin (Blue-Striped)",
-                    "games": ["S", "V"],
-                    "terrain": ["underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 23,
                         "max": 29
                     },
                     "subArea": "Riverside",
                     "groupRate": "70%",
-                    "groupPokemon": "Basculin Blue-Striped",
+                    "groupPokemon": "Basculin",
                     "probabilityByTime": {
                         "morning": 60,
                         "day": 60,
@@ -766,8 +991,13 @@
                 },
                 {
                     "pokemon": "Pawniard",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 23,
                         "max": 29
@@ -784,8 +1014,14 @@
                 },
                 {
                     "pokemon": "Chewtle",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "water-surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 23,
                         "max": 26
@@ -800,8 +1036,14 @@
                 },
                 {
                     "pokemon": "Drednaw",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "water-surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 23,
                         "max": 29
@@ -818,8 +1060,13 @@
                 },
                 {
                     "pokemon": "Arrokuda",
-                    "games": ["S", "V"],
-                    "terrain": ["underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 23,
                         "max": 29
@@ -834,8 +1081,13 @@
                 },
                 {
                     "pokemon": "Barraskewda",
-                    "games": ["S", "V"],
-                    "terrain": ["underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 26,
                         "max": 29
@@ -852,40 +1104,54 @@
                 },
                 {
                     "pokemon": "Dreepy",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 23,
                         "max": 29
                     },
                     "subArea": "Riverside",
                     "probabilityByTime": {
-                        "morning": 0,
-                        "day": 0,
+                        "morning": 5,
+                        "day": 5,
                         "evening": 5,
                         "night": 5
                     }
                 },
                 {
                     "pokemon": "Tadbulb",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 23,
                         "max": 29
                     },
                     "subArea": "Riverside",
                     "probabilityByTime": {
-                        "morning": 0,
-                        "day": 0,
+                        "morning": 50,
+                        "day": 50,
                         "evening": 50,
                         "night": 50
                     }
                 },
                 {
                     "pokemon": "Flamigo",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 24,
                         "max": 29
@@ -905,8 +1171,13 @@
             "encounters": [
                 {
                     "pokemon": "Shellder",
-                    "games": ["S", "V"],
-                    "terrain": ["underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 22,
                         "max": 26
@@ -921,8 +1192,14 @@
                 },
                 {
                     "pokemon": "Magikarp",
-                    "games": ["S", "V"],
-                    "terrain": ["water-surface", "underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "water_surface",
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 22,
                         "max": 26
@@ -937,8 +1214,14 @@
                 },
                 {
                     "pokemon": "Gyarados",
-                    "games": ["S", "V"],
-                    "terrain": ["water-surface", "underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "water_surface",
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 22,
                         "max": 26
@@ -953,8 +1236,13 @@
                 },
                 {
                     "pokemon": "Qwilfish",
-                    "games": ["S", "V"],
-                    "terrain": ["underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 22,
                         "max": 26
@@ -969,8 +1257,13 @@
                 },
                 {
                     "pokemon": "Luvdisc",
-                    "games": ["S", "V"],
-                    "terrain": ["underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 22,
                         "max": 25
@@ -987,8 +1280,14 @@
                 },
                 {
                     "pokemon": "Buizel",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "water-surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 22,
                         "max": 26
@@ -1003,8 +1302,12 @@
                 },
                 {
                     "pokemon": "Clauncher",
-                    "games": ["S", "V"],
-                    "terrain": ["underwater"],
+                    "games": [
+                        "V"
+                    ],
+                    "terrain": [
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 23,
                         "max": 26
@@ -1019,8 +1322,13 @@
                 },
                 {
                     "pokemon": "Arrokuda",
-                    "games": ["S", "V"],
-                    "terrain": ["underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 22,
                         "max": 26
@@ -1035,8 +1343,13 @@
                 },
                 {
                     "pokemon": "Barraskewda",
-                    "games": ["S", "V"],
-                    "terrain": ["underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 26,
                         "max": 26
@@ -1053,8 +1366,13 @@
                 },
                 {
                     "pokemon": "Finizen",
-                    "games": ["S", "V"],
-                    "terrain": ["water-surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 22,
                         "max": 26
@@ -1071,8 +1389,15 @@
                 },
                 {
                     "pokemon": "Wattrel",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "overland", "sky"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "overland",
+                        "sky"
+                    ],
                     "levels": {
                         "min": 22,
                         "max": 26
@@ -1094,8 +1419,13 @@
             "encounters": [
                 {
                     "pokemon": "Diglett",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 17,
                         "max": 24
@@ -1110,13 +1440,19 @@
                 },
                 {
                     "pokemon": "Dugtrio",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 26,
-                        "max": 28
+                        "max": 36
                     },
                     "subArea": "Cave",
+                    "note": "A single spawner in a cave just south of Zapapico will spawn level 36 Pokémon, which is a much higher level than intended.",
                     "probabilityByTime": {
                         "morning": 20,
                         "day": 20,
@@ -1125,12 +1461,38 @@
                     }
                 },
                 {
+                    "pokemon": "Umbreon",
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
+                    "levels": {
+                        "min": 36,
+                        "max": 36
+                    },
+                    "subArea": "Cave",
+                    "probabilityByTime": {
+                        "morning": 0,
+                        "day": 0,
+                        "evening": 0,
+                        "night": 1
+                    }
+                },
+                {
                     "pokemon": "Dunsparce",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 17,
-                        "max": 28
+                        "max": 36
                     },
                     "subArea": "Cave",
                     "probabilityByTime": {
@@ -1142,11 +1504,15 @@
                 },
                 {
                     "pokemon": "Larvitar",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 17,
-                        "max": 28
+                        "max": 36
                     },
                     "subArea": "Cave",
                     "probabilityByTime": {
@@ -1158,8 +1524,13 @@
                 },
                 {
                     "pokemon": "Makuhita",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 17,
                         "max": 25
@@ -1174,11 +1545,16 @@
                 },
                 {
                     "pokemon": "Hariyama",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 27,
-                        "max": 28
+                        "max": 36
                     },
                     "subArea": "Cave",
                     "groupRate": "100%",
@@ -1192,11 +1568,16 @@
                 },
                 {
                     "pokemon": "Sableye",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 17,
-                        "max": 28
+                        "max": 36
                     },
                     "subArea": "Cave",
                     "probabilityByTime": {
@@ -1208,11 +1589,15 @@
                 },
                 {
                     "pokemon": "Bagon",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 17,
-                        "max": 28
+                        "max": 36
                     },
                     "subArea": "Cave",
                     "probabilityByTime": {
@@ -1223,9 +1608,57 @@
                     }
                 },
                 {
+                    "pokemon": "Gabite",
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
+                    "levels": {
+                        "min": 36,
+                        "max": 36
+                    },
+                    "subArea": "Cave",
+                    "groupRate": "100%",
+                    "groupPokemon": "Gible",
+                    "probabilityByTime": {
+                        "morning": 10,
+                        "day": 10,
+                        "evening": 10,
+                        "night": 10
+                    }
+                },
+                {
+                    "pokemon": "Deino",
+                    "games": [
+                        "S"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
+                    "levels": {
+                        "min": 36,
+                        "max": 36
+                    },
+                    "subArea": "Cave",
+                    "probabilityByTime": {
+                        "morning": 30,
+                        "day": 30,
+                        "evening": 30,
+                        "night": 30
+                    }
+                },
+                {
                     "pokemon": "Yungoos",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 17,
                         "max": 24
@@ -1240,11 +1673,16 @@
                 },
                 {
                     "pokemon": "Gumshoos",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 20,
-                        "max": 28
+                        "max": 36
                     },
                     "subArea": "Cave",
                     "groupRate": "100%",
@@ -1258,11 +1696,16 @@
                 },
                 {
                     "pokemon": "Salandit",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 17,
-                        "max": 28
+                        "max": 36
                     },
                     "subArea": "Cave",
                     "groupRate": "40%",
@@ -1275,9 +1718,37 @@
                     }
                 },
                 {
+                    "pokemon": "Salazzle",
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
+                    "levels": {
+                        "min": 36,
+                        "max": 36
+                    },
+                    "subArea": "Cave",
+                    "groupRate": "100%",
+                    "groupPokemon": "Salandit",
+                    "probabilityByTime": {
+                        "morning": 5,
+                        "day": 5,
+                        "evening": 5,
+                        "night": 5
+                    }
+                },
+                {
                     "pokemon": "Rolycoly",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 17,
                         "max": 23
@@ -1292,8 +1763,13 @@
                 },
                 {
                     "pokemon": "Charcadet",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 17,
                         "max": 28
@@ -1308,11 +1784,16 @@
                 },
                 {
                     "pokemon": "Glimmet",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 23,
-                        "max": 28
+                        "max": 36
                     },
                     "subArea": "Cave",
                     "probabilityByTime": {
@@ -1329,8 +1810,13 @@
             "encounters": [
                 {
                     "pokemon": "Diglett",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 22,
                         "max": 24
@@ -1345,8 +1831,13 @@
                 },
                 {
                     "pokemon": "Dugtrio",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 26,
                         "max": 29
@@ -1361,8 +1852,13 @@
                 },
                 {
                     "pokemon": "Meowth",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 22,
                         "max": 29
@@ -1377,8 +1873,13 @@
                 },
                 {
                     "pokemon": "Growlithe",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 22,
                         "max": 23
@@ -1393,8 +1894,13 @@
                 },
                 {
                     "pokemon": "Gastly",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 22,
                         "max": 24
@@ -1409,8 +1915,13 @@
                 },
                 {
                     "pokemon": "Voltorb",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 26,
                         "max": 29
@@ -1425,8 +1936,12 @@
                 },
                 {
                     "pokemon": "Larvitar",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 22,
                         "max": 29
@@ -1441,8 +1956,13 @@
                 },
                 {
                     "pokemon": "Makuhita",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 22,
                         "max": 25
@@ -1457,8 +1977,13 @@
                 },
                 {
                     "pokemon": "Hariyama",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 27,
                         "max": 29
@@ -1475,8 +2000,13 @@
                 },
                 {
                     "pokemon": "Torkoal",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 28,
                         "max": 29
@@ -1491,8 +2021,12 @@
                 },
                 {
                     "pokemon": "Bagon",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 22,
                         "max": 29
@@ -1507,8 +2041,14 @@
                 },
                 {
                     "pokemon": "Rufflet",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "overland"
+                    ],
                     "levels": {
                         "min": 22,
                         "max": 29
@@ -1525,8 +2065,13 @@
                 },
                 {
                     "pokemon": "Rolycoly",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 22,
                         "max": 23
@@ -1541,8 +2086,13 @@
                 },
                 {
                     "pokemon": "Carkol",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 25,
                         "max": 29
@@ -1559,8 +2109,13 @@
                 },
                 {
                     "pokemon": "Silicobra",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 22,
                         "max": 29
@@ -1575,8 +2130,13 @@
                 },
                 {
                     "pokemon": "Cufant",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 22,
                         "max": 28
@@ -1593,8 +2153,13 @@
                 },
                 {
                     "pokemon": "Bramblin",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 25,
                         "max": 29
@@ -1609,8 +2174,13 @@
                 },
                 {
                     "pokemon": "Varoom",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 27,
                         "max": 29
@@ -1625,14 +2195,19 @@
                 },
                 {
                     "pokemon": "Orthworm",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 22,
                         "max": 29
                     },
                     "subArea": "Mine",
-                    "note": "Only appears after defeating Lurking Steel Titan",
+                    "note": "Only appears after defeating the Lurking Steel Titan",
                     "probabilityByTime": {
                         "morning": 30,
                         "day": 30,

@@ -95,9 +95,9 @@ export function WestProvinceAreaOne({ isNext }: WestProvinceAreaOneProps) {
                         <EncounterTable
                             encounters={activeEncounters}
                             disabled={encounterActions.isBusy}
-                            onPick={(encounter) =>
+                            onPick={(pokemonName) =>
                                 encounterActions.rollEncounter(
-                                    encounter.name,
+                                    pokemonName,
                                     LOCATION_NAME,
                                 )
                             }

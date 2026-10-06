@@ -49,7 +49,7 @@
                     },
                     "subArea": "Prairie",
                     "groupRate": "90%",
-                    "groupPokemon": "Tauros Combat Breed",
+                    "groupPokemon": "Tauros",
                     "probabilityByTime": {
                         "morning": 40,
                         "day": 40,
@@ -67,7 +67,7 @@
                     },
                     "subArea": "Prairie",
                     "groupRate": "100%",
-                    "groupPokemon": "Tauros Combat Breed",
+                    "groupPokemon": "Tauros",
                     "probabilityByTime": {
                         "morning": 3,
                         "day": 3,
@@ -85,7 +85,7 @@
                     },
                     "subArea": "Prairie",
                     "groupRate": "100%",
-                    "groupPokemon": "Tauros Combat Breed",
+                    "groupPokemon": "Tauros",
                     "probabilityByTime": {
                         "morning": 3,
                         "day": 3,
@@ -102,7 +102,7 @@
                         "max": 29
                     },
                     "subArea": "Prairie",
-                    "note": "Can appear disguised as other Pok??mon",
+                    "note": "This Pokémon can appear disguised as other Pokémon",
                     "probabilityByTime": {
                         "morning": 10,
                         "day": 10,
@@ -204,7 +204,7 @@
                     },
                     "subArea": "Prairie",
                     "groupRate": "70%",
-                    "groupPokemon": "Starly",
+                    "groupPokemon": "Staravia",
                     "probabilityByTime": {
                         "morning": 30,
                         "day": 30,
@@ -214,7 +214,7 @@
                 },
                 {
                     "pokemon": "Stunky",
-                    "games": ["S", "V"],
+                    "games": ["S"],
                     "terrain": ["land"],
                     "levels": {
                         "min": 22,
@@ -392,7 +392,6 @@
                         "max": 29
                     },
                     "subArea": "Town",
-                    "note": "Can appear disguised as other Pok??mon",
                     "probabilityByTime": {
                         "morning": 30,
                         "day": 30,
@@ -436,7 +435,7 @@
                 },
                 {
                     "pokemon": "Drifloon",
-                    "games": ["S", "V"],
+                    "games": ["S"],
                     "terrain": ["overland"],
                     "levels": {
                         "min": 26,
@@ -454,7 +453,7 @@
                 },
                 {
                     "pokemon": "Drifblim",
-                    "games": ["S", "V"],
+                    "games": ["S"],
                     "terrain": ["overland"],
                     "levels": {
                         "min": 28,
@@ -526,7 +525,7 @@
                 {
                     "pokemon": "Psyduck",
                     "games": ["S", "V"],
-                    "terrain": ["land", "water-surface"],
+                    "terrain": ["land", "water_surface"],
                     "levels": {
                         "min": 22,
                         "max": 29
@@ -542,7 +541,7 @@
                 {
                     "pokemon": "Slowpoke",
                     "games": ["S", "V"],
-                    "terrain": ["land", "water-surface"],
+                    "terrain": ["land", "water_surface"],
                     "levels": {
                         "min": 23,
                         "max": 29
@@ -558,7 +557,7 @@
                 {
                     "pokemon": "Magikarp",
                     "games": ["S", "V"],
-                    "terrain": ["water-surface", "underwater"],
+                    "terrain": ["water_surface", "underwater"],
                     "levels": {
                         "min": 22,
                         "max": 29
@@ -574,7 +573,7 @@
                 {
                     "pokemon": "Marill",
                     "games": ["S", "V"],
-                    "terrain": ["land", "water-surface"],
+                    "terrain": ["land", "water_surface"],
                     "levels": {
                         "min": 22,
                         "max": 22
@@ -590,7 +589,7 @@
                 {
                     "pokemon": "Azumarill",
                     "games": ["S", "V"],
-                    "terrain": ["land", "water-surface"],
+                    "terrain": ["land", "water_surface"],
                     "levels": {
                         "min": 28,
                         "max": 29
@@ -608,7 +607,7 @@
                 {
                     "pokemon": "Buizel",
                     "games": ["S", "V"],
-                    "terrain": ["land", "water-surface"],
+                    "terrain": ["land", "water_surface"],
                     "levels": {
                         "min": 22,
                         "max": 29
@@ -624,7 +623,7 @@
                 {
                     "pokemon": "Floatzel",
                     "games": ["S", "V"],
-                    "terrain": ["land", "water-surface"],
+                    "terrain": ["land", "water_surface"],
                     "levels": {
                         "min": 28,
                         "max": 29
@@ -665,7 +664,7 @@
                     },
                     "subArea": "Riverside",
                     "groupRate": "70%",
-                    "groupPokemon": "Basculin Red-Striped",
+                    "groupPokemon": "Basculin",
                     "probabilityByTime": {
                         "morning": 60,
                         "day": 60,
@@ -683,7 +682,7 @@
                     },
                     "subArea": "Riverside",
                     "groupRate": "70%",
-                    "groupPokemon": "Basculin Blue-Striped",
+                    "groupPokemon": "Basculin",
                     "probabilityByTime": {
                         "morning": 60,
                         "day": 60,
@@ -694,7 +693,7 @@
                 {
                     "pokemon": "Chewtle",
                     "games": ["S", "V"],
-                    "terrain": ["land", "water-surface"],
+                    "terrain": ["land", "water_surface"],
                     "levels": {
                         "min": 22,
                         "max": 26
@@ -710,7 +709,7 @@
                 {
                     "pokemon": "Drednaw",
                     "games": ["S", "V"],
-                    "terrain": ["land", "water-surface"],
+                    "terrain": ["land", "water_surface"],
                     "levels": {
                         "min": 22,
                         "max": 29
@@ -761,7 +760,7 @@
                 },
                 {
                     "pokemon": "Dreepy",
-                    "games": ["S", "V"],
+                    "games": ["V"],
                     "terrain": ["overland"],
                     "levels": {
                         "min": 22,
@@ -769,8 +768,8 @@
                     },
                     "subArea": "Riverside",
                     "probabilityByTime": {
-                        "morning": 0,
-                        "day": 0,
+                        "morning": 5,
+                        "day": 5,
                         "evening": 5,
                         "night": 5
                     }
@@ -785,8 +784,8 @@
                     },
                     "subArea": "Riverside",
                     "probabilityByTime": {
-                        "morning": 0,
-                        "day": 0,
+                        "morning": 50,
+                        "day": 50,
                         "evening": 50,
                         "night": 50
                     }
@@ -847,7 +846,7 @@
                 {
                     "pokemon": "Magikarp",
                     "games": ["S", "V"],
-                    "terrain": ["water-surface", "underwater"],
+                    "terrain": ["water_surface", "underwater"],
                     "levels": {
                         "min": 26,
                         "max": 29
@@ -863,7 +862,7 @@
                 {
                     "pokemon": "Gyarados",
                     "games": ["S", "V"],
-                    "terrain": ["water-surface", "underwater"],
+                    "terrain": ["water_surface", "underwater"],
                     "levels": {
                         "min": 26,
                         "max": 29
@@ -911,7 +910,7 @@
                 {
                     "pokemon": "Buizel",
                     "games": ["S", "V"],
-                    "terrain": ["land", "water-surface"],
+                    "terrain": ["land", "water_surface"],
                     "levels": {
                         "min": 26,
                         "max": 29
@@ -927,7 +926,7 @@
                 {
                     "pokemon": "Floatzel",
                     "games": ["S", "V"],
-                    "terrain": ["land", "water-surface"],
+                    "terrain": ["land", "water_surface"],
                     "levels": {
                         "min": 28,
                         "max": 29
@@ -944,7 +943,7 @@
                 },
                 {
                     "pokemon": "Clauncher",
-                    "games": ["S"],
+                    "games": ["V"],
                     "terrain": ["underwater"],
                     "levels": {
                         "min": 26,
@@ -1020,7 +1019,7 @@
                     },
                     "subArea": "Ocean",
                     "groupRate": "40%",
-                    "groupPokemon": "Wattrel",
+                    "groupPokemon": "Kilowattrel",
                     "probabilityByTime": {
                         "morning": 30,
                         "day": 30,
@@ -1031,7 +1030,7 @@
                 {
                     "pokemon": "Finizen",
                     "games": ["S", "V"],
-                    "terrain": ["water-surface"],
+                    "terrain": ["water_surface"],
                     "levels": {
                         "min": 26,
                         "max": 29
@@ -1193,7 +1192,7 @@
                 {
                     "pokemon": "Slowpoke",
                     "games": ["S", "V"],
-                    "terrain": ["land", "water-surface"],
+                    "terrain": ["land", "water_surface"],
                     "levels": {
                         "min": 26,
                         "max": 29
@@ -1225,7 +1224,7 @@
                 {
                     "pokemon": "Buizel",
                     "games": ["S", "V"],
-                    "terrain": ["land", "water-surface"],
+                    "terrain": ["land", "water_surface"],
                     "levels": {
                         "min": 26,
                         "max": 29
@@ -1241,7 +1240,7 @@
                 {
                     "pokemon": "Floatzel",
                     "games": ["S", "V"],
-                    "terrain": ["land", "water-surface"],
+                    "terrain": ["land", "water_surface"],
                     "levels": {
                         "min": 28,
                         "max": 29
@@ -1348,7 +1347,7 @@
                     },
                     "subArea": "Beach",
                     "groupRate": "40%",
-                    "groupPokemon": "Wattrel",
+                    "groupPokemon": "Kilowattrel",
                     "probabilityByTime": {
                         "morning": 30,
                         "day": 30,
@@ -1459,7 +1458,7 @@
                 },
                 {
                     "pokemon": "Larvitar",
-                    "games": ["S", "V"],
+                    "games": ["S"],
                     "terrain": ["land"],
                     "levels": {
                         "min": 23,
@@ -1541,7 +1540,7 @@
                 },
                 {
                     "pokemon": "Bagon",
-                    "games": ["S", "V"],
+                    "games": ["V"],
                     "terrain": ["land"],
                     "levels": {
                         "min": 23,

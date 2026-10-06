@@ -175,6 +175,7 @@
                         "max": 10
                     },
                     "subArea": "Forest",
+                    "note": "This Pokémon can only spawn at the big tree to the west of the prairie area to the south of the Province.",
                     "probabilityByTime": {
                         "morning": 60,
                         "day": 60,
@@ -331,6 +332,7 @@
                     "subArea": "Mountain",
                     "groupRate": "100%",
                     "groupPokemon": "Skiddo",
+                    "note": "This Pokémon can only be found in the mountains to the north of the Province across the river.",
                     "probabilityByTime": {
                         "morning": 60,
                         "day": 60,
@@ -352,6 +354,22 @@
                         "day": 40,
                         "evening": 40,
                         "night": 40
+                    }
+                },
+                {
+                    "pokemon": "Rockruff (Own Tempo)",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 7,
+                        "max": 12
+                    },
+                    "subArea": "Mountain",
+                    "probabilityByTime": {
+                        "morning": 2,
+                        "day": 2,
+                        "evening": 2,
+                        "night": 2
                     }
                 }
             ]
@@ -580,7 +598,7 @@
                     }
                 },
                 {
-                    "pokemon": "Flabébé",
+                    "pokemon": "Flabébé (Red Flower)",
                     "games": ["S", "V"],
                     "terrain": ["overland"],
                     "levels": {
@@ -588,11 +606,85 @@
                         "max": 10
                     },
                     "subArea": "Flower",
+                    "groupRate": "50%",
+                    "groupPokemon": "Flabébé",
                     "probabilityByTime": {
                         "morning": 60,
                         "day": 60,
                         "evening": 60,
                         "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Flabébé (Yellow Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 10,
+                        "max": 10
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "50%",
+                    "groupPokemon": "Flabébé",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Flabébé (Orange Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 10,
+                        "max": 10
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "50%",
+                    "groupPokemon": "Flabébé",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Flabébé (Blue Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 10,
+                        "max": 10
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "50%",
+                    "groupPokemon": "Flabébé",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Flabébé (White Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 10,
+                        "max": 10
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "50%",
+                    "groupPokemon": "Flabébé",
+                    "probabilityByTime": {
+                        "morning": 6,
+                        "day": 6,
+                        "evening": 6,
+                        "night": 6
                     }
                 }
             ]
@@ -625,6 +717,7 @@
                         "max": 11
                     },
                     "subArea": "Olive",
+                    "note": "Eevee can only be found in the olive field to the west of Cortondo, and in the grass area to the north of the Gym Test \"Olive Roll\" field, as no other area has spawners of a high enough level.",
                     "probabilityByTime": {
                         "morning": 5,
                         "day": 5,

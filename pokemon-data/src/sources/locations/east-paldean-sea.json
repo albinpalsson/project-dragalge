@@ -9,8 +9,13 @@
             "encounters": [
                 {
                     "pokemon": "Shellder",
-                    "games": ["S", "V"],
-                    "terrain": ["underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 15,
                         "max": 36
@@ -25,8 +30,13 @@
                 },
                 {
                     "pokemon": "Cloyster",
-                    "games": ["S", "V"],
-                    "terrain": ["underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 35,
                         "max": 36
@@ -41,8 +51,14 @@
                 },
                 {
                     "pokemon": "Magikarp",
-                    "games": ["S", "V"],
-                    "terrain": ["water-surface", "underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "water_surface",
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 14,
                         "max": 36
@@ -57,8 +73,14 @@
                 },
                 {
                     "pokemon": "Gyarados",
-                    "games": ["S", "V"],
-                    "terrain": ["water-surface", "underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "water_surface",
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 20,
                         "max": 36
@@ -73,8 +95,13 @@
                 },
                 {
                     "pokemon": "Qwilfish",
-                    "games": ["S", "V"],
-                    "terrain": ["underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 15,
                         "max": 36
@@ -89,8 +116,13 @@
                 },
                 {
                     "pokemon": "Luvdisc",
-                    "games": ["S", "V"],
-                    "terrain": ["underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 15,
                         "max": 25
@@ -107,8 +139,14 @@
                 },
                 {
                     "pokemon": "Buizel",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "water-surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 14,
                         "max": 30
@@ -123,8 +161,14 @@
                 },
                 {
                     "pokemon": "Floatzel",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "water-surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 28,
                         "max": 36
@@ -141,8 +185,12 @@
                 },
                 {
                     "pokemon": "Skrelp",
-                    "games": ["S", "V"],
-                    "terrain": ["underwater"],
+                    "games": [
+                        "S"
+                    ],
+                    "terrain": [
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 34,
                         "max": 36
@@ -157,8 +205,12 @@
                 },
                 {
                     "pokemon": "Clauncher",
-                    "games": ["S", "V"],
-                    "terrain": ["underwater"],
+                    "games": [
+                        "V"
+                    ],
+                    "terrain": [
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 23,
                         "max": 36
@@ -173,8 +225,14 @@
                 },
                 {
                     "pokemon": "Mareanie",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 16,
                         "max": 36
@@ -189,8 +247,13 @@
                 },
                 {
                     "pokemon": "Bruxish",
-                    "games": ["S", "V"],
-                    "terrain": ["underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 20,
                         "max": 36
@@ -205,8 +268,13 @@
                 },
                 {
                     "pokemon": "Arrokuda",
-                    "games": ["S", "V"],
-                    "terrain": ["underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 14,
                         "max": 30
@@ -221,8 +289,13 @@
                 },
                 {
                     "pokemon": "Barraskewda",
-                    "games": ["S", "V"],
-                    "terrain": ["underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 26,
                         "max": 36
@@ -239,8 +312,13 @@
                 },
                 {
                     "pokemon": "Finizen",
-                    "games": ["S", "V"],
-                    "terrain": ["water-surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 15,
                         "max": 36
@@ -257,8 +335,15 @@
                 },
                 {
                     "pokemon": "Wattrel",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "overland", "sky"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "overland",
+                        "sky"
+                    ],
                     "levels": {
                         "min": 14,
                         "max": 29
@@ -275,8 +360,15 @@
                 },
                 {
                     "pokemon": "Kilowattrel",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "overland", "sky"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "overland",
+                        "sky"
+                    ],
                     "levels": {
                         "min": 28,
                         "max": 36
@@ -298,8 +390,14 @@
             "encounters": [
                 {
                     "pokemon": "Buizel",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "water-surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 18,
                         "max": 26
@@ -314,8 +412,13 @@
                 },
                 {
                     "pokemon": "Crabrawler",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 18,
                         "max": 26
@@ -330,8 +433,14 @@
                 },
                 {
                     "pokemon": "Mareanie",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 18,
                         "max": 26
@@ -346,8 +455,13 @@
                 },
                 {
                     "pokemon": "Pincurchin",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 20,
                         "max": 26
@@ -362,8 +476,13 @@
                 },
                 {
                     "pokemon": "Wiglett",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 18,
                         "max": 26
@@ -378,8 +497,13 @@
                 },
                 {
                     "pokemon": "Wugtrio",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 26,
                         "max": 26
@@ -394,8 +518,15 @@
                 },
                 {
                     "pokemon": "Wattrel",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "overland", "sky"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "overland",
+                        "sky"
+                    ],
                     "levels": {
                         "min": 18,
                         "max": 26
@@ -412,8 +543,13 @@
                 },
                 {
                     "pokemon": "Nacli",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 18,
                         "max": 26
@@ -433,8 +569,13 @@
             "encounters": [
                 {
                     "pokemon": "Chansey",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 25,
                         "max": 28
@@ -449,8 +590,13 @@
                 },
                 {
                     "pokemon": "Sunflora",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 25,
                         "max": 28
@@ -465,8 +611,13 @@
                 },
                 {
                     "pokemon": "Combee",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 20,
                         "max": 25
@@ -475,213 +626,273 @@
                     "groupRate": "90%",
                     "groupPokemon": "Combee",
                     "probabilityByTime": {
-                        "morning": 0,
-                        "day": 0,
+                        "morning": 40,
+                        "day": 40,
                         "evening": 40,
                         "night": 40
                     }
                 },
                 {
                     "pokemon": "Vivillon (Fancy Pattern)",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 25,
                         "max": 28
                     },
                     "subArea": "Flower",
-                    "note": "Form changes via Pok??mon GO postcards",
+                    "note": "This Pokémon's form can changed by receiving postcards from Pokémon GO",
                     "probabilityByTime": {
-                        "morning": 0,
-                        "day": 0,
-                        "evening": 0,
+                        "morning": 30,
+                        "day": 30,
+                        "evening": 30,
                         "night": 30
                     }
                 },
                 {
                     "pokemon": "Flabébé (Red Flower)",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 20,
                         "max": 23
                     },
                     "subArea": "Flower",
                     "groupRate": "50%",
-                    "groupPokemon": "Flabébé Red Flower",
+                    "groupPokemon": "Flabébé",
                     "probabilityByTime": {
-                        "morning": 0,
-                        "day": 0,
+                        "morning": 60,
+                        "day": 60,
                         "evening": 60,
                         "night": 60
                     }
                 },
                 {
                     "pokemon": "Flabébé (Yellow Flower)",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 20,
                         "max": 23
                     },
                     "subArea": "Flower",
                     "groupRate": "50%",
-                    "groupPokemon": "Flabébé Yellow Flower",
+                    "groupPokemon": "Flabébé",
                     "probabilityByTime": {
-                        "morning": 0,
-                        "day": 0,
+                        "morning": 60,
+                        "day": 60,
                         "evening": 60,
                         "night": 60
                     }
                 },
                 {
                     "pokemon": "Flabébé (Orange Flower)",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 20,
                         "max": 23
                     },
                     "subArea": "Flower",
                     "groupRate": "50%",
-                    "groupPokemon": "Flabébé Orange Flower",
+                    "groupPokemon": "Flabébé",
                     "probabilityByTime": {
-                        "morning": 0,
-                        "day": 0,
+                        "morning": 60,
+                        "day": 60,
                         "evening": 60,
                         "night": 60
                     }
                 },
                 {
                     "pokemon": "Flabébé (Blue Flower)",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 20,
                         "max": 23
                     },
                     "subArea": "Flower",
                     "groupRate": "50%",
-                    "groupPokemon": "Flabébé Blue Flower",
+                    "groupPokemon": "Flabébé",
                     "probabilityByTime": {
-                        "morning": 0,
-                        "day": 0,
+                        "morning": 60,
+                        "day": 60,
                         "evening": 60,
                         "night": 60
                     }
                 },
                 {
                     "pokemon": "Flabébé (White Flower)",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 20,
                         "max": 23
                     },
                     "subArea": "Flower",
                     "groupRate": "50%",
-                    "groupPokemon": "Flabébé White Flower",
+                    "groupPokemon": "Flabébé",
                     "probabilityByTime": {
-                        "morning": 0,
-                        "day": 0,
+                        "morning": 6,
+                        "day": 6,
                         "evening": 6,
                         "night": 6
                     }
                 },
                 {
                     "pokemon": "Floette (Red Flower)",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 20,
                         "max": 28
                     },
                     "subArea": "Flower",
                     "groupRate": "40%",
-                    "groupPokemon": "Floette Red Flower",
+                    "groupPokemon": "Floette",
                     "probabilityByTime": {
-                        "morning": 0,
-                        "day": 0,
+                        "morning": 55,
+                        "day": 55,
                         "evening": 55,
                         "night": 55
                     }
                 },
                 {
                     "pokemon": "Floette (Yellow Flower)",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 20,
                         "max": 28
                     },
                     "subArea": "Flower",
                     "groupRate": "40%",
-                    "groupPokemon": "Floette Yellow Flower",
+                    "groupPokemon": "Floette",
                     "probabilityByTime": {
-                        "morning": 0,
-                        "day": 0,
+                        "morning": 55,
+                        "day": 55,
                         "evening": 55,
                         "night": 55
                     }
                 },
                 {
                     "pokemon": "Floette (Orange Flower)",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 20,
                         "max": 28
                     },
                     "subArea": "Flower",
                     "groupRate": "40%",
-                    "groupPokemon": "Floette Orange Flower",
+                    "groupPokemon": "Floette",
                     "probabilityByTime": {
-                        "morning": 0,
-                        "day": 0,
+                        "morning": 55,
+                        "day": 55,
                         "evening": 55,
                         "night": 55
                     }
                 },
                 {
                     "pokemon": "Floette (Blue Flower)",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 20,
                         "max": 28
                     },
                     "subArea": "Flower",
                     "groupRate": "40%",
-                    "groupPokemon": "Floette Blue Flower",
+                    "groupPokemon": "Floette",
                     "probabilityByTime": {
-                        "morning": 0,
-                        "day": 0,
+                        "morning": 55,
+                        "day": 55,
                         "evening": 55,
                         "night": 55
                     }
                 },
                 {
                     "pokemon": "Floette (White Flower)",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 20,
                         "max": 28
                     },
                     "subArea": "Flower",
                     "groupRate": "40%",
-                    "groupPokemon": "Floette White Flower",
+                    "groupPokemon": "Floette",
                     "probabilityByTime": {
-                        "morning": 0,
-                        "day": 0,
+                        "morning": 3,
+                        "day": 3,
                         "evening": 3,
                         "night": 3
                     }
                 },
                 {
                     "pokemon": "Dolliv",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 25,
                         "max": 28

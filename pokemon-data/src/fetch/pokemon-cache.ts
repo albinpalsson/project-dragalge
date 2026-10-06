@@ -60,16 +60,6 @@ export const POKEMON_CACHE: Record<string, CachedPokemonData | undefined> = {
     },
 
     // All Paldean Tauros forms share the same base stats; only type differs
-    Tauros: {
-        primary_type: 'fighting',
-        secondary_type: '',
-        base_hp: 75,
-        base_attack: 110,
-        base_defense: 105,
-        base_sp_attack: 30,
-        base_sp_defense: 70,
-        base_speed: 100,
-    },
     'Tauros (Combat Breed)': {
         primary_type: 'fighting',
         secondary_type: '',
@@ -113,17 +103,7 @@ export const POKEMON_CACHE: Record<string, CachedPokemonData | undefined> = {
         base_speed: 15,
     },
 
-    // Oinkologne: male is the base/default encounter form
-    Oinkologne: {
-        primary_type: 'normal',
-        secondary_type: '',
-        base_hp: 110,
-        base_attack: 100,
-        base_defense: 75,
-        base_sp_attack: 59,
-        base_sp_defense: 80,
-        base_speed: 65,
-    },
+    // Oinkologne: stats differ by gender
     'Oinkologne (Male)': {
         primary_type: 'normal',
         secondary_type: '',
@@ -134,27 +114,7 @@ export const POKEMON_CACHE: Record<string, CachedPokemonData | undefined> = {
         base_sp_defense: 80,
         base_speed: 65,
     },
-    'Oinkologne Male': {
-        primary_type: 'normal',
-        secondary_type: '',
-        base_hp: 110,
-        base_attack: 100,
-        base_defense: 75,
-        base_sp_attack: 59,
-        base_sp_defense: 80,
-        base_speed: 65,
-    },
     'Oinkologne (Female)': {
-        primary_type: 'normal',
-        secondary_type: '',
-        base_hp: 115,
-        base_attack: 90,
-        base_defense: 70,
-        base_sp_attack: 59,
-        base_sp_defense: 90,
-        base_speed: 65,
-    },
-    'Oinkologne Female': {
         primary_type: 'normal',
         secondary_type: '',
         base_hp: 115,
@@ -178,16 +138,6 @@ export const POKEMON_CACHE: Record<string, CachedPokemonData | undefined> = {
     },
 
     // Lycanroc: three forms with genuinely different stats
-    Lycanroc: {
-        primary_type: 'rock',
-        secondary_type: '',
-        base_hp: 75,
-        base_attack: 115,
-        base_defense: 65,
-        base_sp_attack: 55,
-        base_sp_defense: 65,
-        base_speed: 112,
-    },
     'Lycanroc (Midday Form)': {
         primary_type: 'rock',
         secondary_type: '',

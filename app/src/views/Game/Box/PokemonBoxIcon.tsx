@@ -1,7 +1,6 @@
 import type { PointerEventHandler } from 'react';
 import { css, cx } from '@pokedb2/css-in-js';
 import { pokemonIconSrc, toIconSlug } from '../../../pokemon-icon';
-import { getRandomizerDisplayName } from '../../../randomizer-groups';
 
 export interface PokemonBoxIconDragProps {
     onPointerDown?: PointerEventHandler<HTMLButtonElement>;
@@ -45,7 +44,7 @@ export function PokemonBoxIcon({
             <img
                 className={icon}
                 src={pokemonIconSrc(toIconSlug(pokemonName))}
-                alt={getRandomizerDisplayName(pokemonName)}
+                alt={pokemonName}
                 draggable={false}
                 loading="lazy"
             />

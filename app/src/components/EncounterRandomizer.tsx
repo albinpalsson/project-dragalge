@@ -7,7 +7,7 @@ interface EncounterRandomizerProps {
     randomizerMode: RandomizerMode;
     hasExistingRoll: boolean;
     disabled: boolean;
-    onPick: (encounter: LocationEncounterView) => void;
+    onPick: (pokemonName: string) => void;
 }
 
 export function EncounterRandomizer({
@@ -18,11 +18,11 @@ export function EncounterRandomizer({
     onPick,
 }: EncounterRandomizerProps) {
     const randomize = () => {
-        const encounter = randomizeEncounter(encounters, randomizerMode);
-        if (!encounter) {
+        const pokemonName = randomizeEncounter(encounters, randomizerMode);
+        if (!pokemonName) {
             return;
         }
-        onPick(encounter);
+        onPick(pokemonName);
     };
 
     return (

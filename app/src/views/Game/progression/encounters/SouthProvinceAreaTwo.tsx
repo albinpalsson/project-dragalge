@@ -81,9 +81,9 @@ export function SouthProvinceAreaTwo({ isNext }: SouthProvinceAreaTwoProps) {
                         <EncounterTable
                             encounters={allEncounters}
                             disabled={encounterActions.isBusy}
-                            onPick={(encounter) =>
+                            onPick={(pokemonName) =>
                                 encounterActions.rollEncounter(
-                                    encounter.name,
+                                    pokemonName,
                                     LOCATION_NAME,
                                 )
                             }

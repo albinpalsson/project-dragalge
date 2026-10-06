@@ -4,7 +4,6 @@ import { OverflowMenu, OverflowMenuItem } from '../../components/OverflowMenu';
 import { NO_PARTY_SLOT } from '../../db/game-db/schema';
 import type { EncounterRollRow, GameRun } from '../../db/game-db/queries';
 import { pokemonIconSrc, toIconSlug } from '../../pokemon-icon';
-import { getRandomizerDisplayName } from '../../randomizer-groups';
 import { DeleteGameModal } from './DeleteGameModal';
 import { ExportGameModal } from './ExportGameModal';
 
@@ -61,9 +60,7 @@ export function GameCard({
                                         src={pokemonIconSrc(
                                             toIconSlug(row.pokemon_name),
                                         )}
-                                        alt={getRandomizerDisplayName(
-                                            row.pokemon_name,
-                                        )}
+                                        alt={row.pokemon_name}
                                         loading="lazy"
                                     />
                                 </span>

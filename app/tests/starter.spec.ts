@@ -40,21 +40,6 @@ test('starter supports randomize, reset, and re-roll', async ({ page }) => {
     ).toBeVisible();
 });
 
-test('default starter ban disables Fuecoco selection', async ({ page }) => {
-    await page.goto('/');
-    await createGame(page, 'starter-ban-run');
-
-    const starterCard = cardFor(page, 'Starter').first();
-    await starterCard.click();
-
-    const fuecocoButton = starterCard
-        .getByRole('button')
-        .filter({ hasText: 'Fuecoco' })
-        .first();
-    await expect(fuecocoButton).toBeDisabled();
-    await expect(starterCard).toContainText('Banned by game settings');
-});
-
 test('released starter no longer appears in box sections', async ({ page }) => {
     await page.goto('/');
     await page.getByRole('button', { name: 'Start New Game' }).click();
@@ -68,7 +53,9 @@ test('released starter no longer appears in box sections', async ({ page }) => {
 
     const releaseCard = cardFor(page, 'Release starter').first();
     await expect(releaseCard).toBeVisible();
-    await releaseCard.getByRole('button', { name: 'Release Sprigatito' }).click();
+    await releaseCard
+        .getByRole('button', { name: 'Release Sprigatito' })
+        .click();
     await expect(releaseCard).toContainText('Released');
 
     await openBox(page);

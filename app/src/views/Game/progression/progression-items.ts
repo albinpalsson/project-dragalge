@@ -29,7 +29,7 @@ interface ProgressionItemProps {
     isNext?: boolean;
 }
 
-export interface ProgressionItemState {
+interface ProgressionItemState {
     settings: GameSettings;
     encounters: EncounterRollRow[];
 }
@@ -195,11 +195,8 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
 export function getVisibleProgressionItems(
     state: ProgressionItemState,
 ): ProgressionItem[] {
-    return PROGRESSION_ITEMS.filter(
-        (item) => item.isVisible?.(state) ?? true,
-    );
+    return PROGRESSION_ITEMS.filter((item) => item.isVisible?.(state) ?? true);
 }
-
 export function isRaidResolved(
     encounters: EncounterRollRow[],
     stars: number,

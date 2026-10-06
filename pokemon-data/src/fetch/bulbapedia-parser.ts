@@ -13,20 +13,11 @@ export interface EvolutionEdge {
     method: string;
 }
 
-// Encounter names that don't map directly to a Bulbapedia page name
-const POKEMON_PAGE_NAME: Record<string, string> = {
-    'Deerling Autumn Form': 'Deerling',
-    'Sawsbuck Autumn Form': 'Sawsbuck',
-    'Oinkologne Male': 'Oinkologne',
-    'Oinkologne Female': 'Oinkologne',
-    'Basculin Red': 'Basculin',
-    'Basculin Blue': 'Basculin',
-};
-
 export function buildWikitextUrl(name: string): string {
-    const nfcName = name.normalize('NFC');
-    const override = POKEMON_PAGE_NAME[nfcName];
-    const baseName = override ?? nfcName.replace(/\s*\([^)]+\)$/, '').trim();
+    const baseName = name
+        .normalize('NFC')
+        .replace(/\s*\([^)]+\)$/, '')
+        .trim();
     const pageName = `${baseName.replace(/ /g, '_')}_(Pokémon)`;
     return `https://bulbapedia.bulbagarden.net/w/api.php?action=parse&page=${encodeURIComponent(pageName)}&prop=wikitext&format=json`;
 }
@@ -210,9 +201,6 @@ function resolveEvolutionPokemonName(name: string, form: string): string {
     const cleanedForm = cleanEvolutionPokemonName(form);
     if (!cleanedName || !cleanedForm) {
         return cleanedName;
-    }
-    if (cleanedName === 'Oinkologne' && /^(male|female)$/i.test(cleanedForm)) {
-        return `${cleanedName} ${cleanedForm}`;
     }
     const regionalForm = /^(Alolan|Galarian|Hisuian|Paldean)$/i.test(
         cleanedForm,

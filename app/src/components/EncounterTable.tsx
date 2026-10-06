@@ -11,7 +11,7 @@ import {
 interface EncounterTableProps {
     encounters: LocationEncounterView[];
     disabled: boolean;
-    onPick: (encounter: LocationEncounterView) => void;
+    onPick: (pokemonName: string) => void;
 }
 
 export function EncounterTable({
@@ -70,7 +70,7 @@ export function EncounterTable({
                                     <button
                                         type="button"
                                         className={pickButton}
-                                        onClick={() => onPick(encounter)}
+                                        onClick={() => onPick(encounter.name)}
                                         disabled={isPickDisabled}
                                         aria-label={`Pick ${encounter.name}`}
                                     >
@@ -140,4 +140,3 @@ const exclusionReason = css`
     color: var(--color-text-muted);
     font-size: var(--font-size-sm);
 `;
-

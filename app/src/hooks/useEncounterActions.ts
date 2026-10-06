@@ -1,4 +1,5 @@
 import { NO_PARTY_SLOT } from '../db/game-db/schema';
+import { pickEncounterSpecies } from '../pokemon-species';
 import { useGame } from '../views/Game/GameContext';
 import { nextFreePartySlot } from './party-utils';
 import { useEncounterMutations } from './useEncounterMutations';
@@ -7,16 +8,15 @@ export function useEncounterActions() {
     const game = useGame();
     const mutations = useEncounterMutations();
 
-    const setStatusAndClearPartySlot = async (locationName: string, status: 'eliminated' | 'released') => {
+    const setStatusAndClearPartySlot = async (
+        locationName: string,
+        status: 'eliminated' | 'released',
+    ) => {
         const current = game.encounters.find(
             (row) => row.location_name === locationName,
         );
         if (current && current.party_slot !== NO_PARTY_SLOT) {
-            await mutations.setPartySlot(
-                game.id,
-                locationName,
-                NO_PARTY_SLOT,
-            );
+            await mutations.setPartySlot(game.id, locationName, NO_PARTY_SLOT);
         }
         await mutations.setStatus(game.id, locationName, status);
     };
@@ -24,13 +24,17 @@ export function useEncounterActions() {
     return {
         isBusy: mutations.isBusy,
         rollEncounter(pokemonName: string, locationName: string) {
-            return mutations.addRoll(game.id, locationName, pokemonName);
+            return mutations.addRoll(
+                game.id,
+                locationName,
+                pickEncounterSpecies(pokemonName),
+            );
         },
         async catchEncounter(locationName: string) {
-            await mutations.setStatus(game.id, locationName, 'caught');
             const current = game.encounters.find(
                 (row) => row.location_name === locationName,
             );
+            await mutations.setStatus(game.id, locationName, 'caught');
             if (!current || current.party_slot !== NO_PARTY_SLOT) {
                 return;
             }
@@ -56,7 +60,7 @@ export function useEncounterActions() {
             await mutations.addRoll(
                 game.id,
                 locationName,
-                pokemonName,
+                pickEncounterSpecies(pokemonName),
                 'caught',
             );
             if (slot !== NO_PARTY_SLOT) {

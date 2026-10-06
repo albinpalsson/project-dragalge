@@ -123,7 +123,7 @@
                         "max": 24
                     },
                     "subArea": "Desert",
-                    "note": "East desert only",
+                    "note": "This Pokémon only spawns in the eastern desert",
                     "probabilityByTime": {
                         "morning": 90,
                         "day": 90,
@@ -142,7 +142,7 @@
                     "subArea": "Desert",
                     "groupRate": "40%",
                     "groupPokemon": "Hippopotas",
-                    "note": "West desert only",
+                    "note": "This Pokémon only spawns in the western desert",
                     "probabilityByTime": {
                         "morning": 60,
                         "day": 60,
@@ -161,7 +161,6 @@
                     "subArea": "Desert",
                     "groupRate": "40%",
                     "groupPokemon": "Sandile",
-                    "note": "West desert only",
                     "probabilityByTime": {
                         "morning": 100,
                         "day": 100,
@@ -172,7 +171,7 @@
                 {
                     "pokemon": "Rufflet",
                     "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "terrain": ["land", "overland"],
                     "levels": {
                         "min": 21,
                         "max": 26
@@ -221,7 +220,7 @@
                 },
                 {
                     "pokemon": "Stonjourner",
-                    "games": ["S", "V"],
+                    "games": ["S"],
                     "terrain": ["land"],
                     "levels": {
                         "min": 20,
@@ -308,7 +307,7 @@
                         "max": 26
                     },
                     "subArea": "Desert",
-                    "note": "Only after Lurking Steel Titan defeated",
+                    "note": "Only appears after defeating the Lurking Steel Titan",
                     "probabilityByTime": {
                         "morning": 20,
                         "day": 20,
@@ -405,7 +404,7 @@
                 },
                 {
                     "pokemon": "Dreepy",
-                    "games": ["S", "V"],
+                    "games": ["V"],
                     "terrain": ["overland"],
                     "levels": {
                         "min": 20,
@@ -559,6 +558,209 @@
             ]
         },
         {
+            "name": "Flower",
+            "encounters": [
+                {
+                    "pokemon": "Combee",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 21,
+                        "max": 24
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "90%",
+                    "groupPokemon": "Combee",
+                    "probabilityByTime": {
+                        "morning": 40,
+                        "day": 40,
+                        "evening": 40,
+                        "night": 40
+                    }
+                },
+                {
+                    "pokemon": "Flabébé (Red Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 21,
+                        "max": 23
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "50%",
+                    "groupPokemon": "Flabébé",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Flabébé (Yellow Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 21,
+                        "max": 23
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "50%",
+                    "groupPokemon": "Flabébé",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Flabébé (Orange Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 21,
+                        "max": 23
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "50%",
+                    "groupPokemon": "Flabébé",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Flabébé (Blue Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 21,
+                        "max": 23
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "50%",
+                    "groupPokemon": "Flabébé",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Flabébé (White Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 21,
+                        "max": 23
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "50%",
+                    "groupPokemon": "Flabébé",
+                    "probabilityByTime": {
+                        "morning": 6,
+                        "day": 6,
+                        "evening": 6,
+                        "night": 6
+                    }
+                },
+                {
+                    "pokemon": "Floette (Red Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 21,
+                        "max": 24
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "40%",
+                    "groupPokemon": "Floette",
+                    "probabilityByTime": {
+                        "morning": 55,
+                        "day": 55,
+                        "evening": 55,
+                        "night": 55
+                    }
+                },
+                {
+                    "pokemon": "Floette (Yellow Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 21,
+                        "max": 24
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "40%",
+                    "groupPokemon": "Floette",
+                    "probabilityByTime": {
+                        "morning": 55,
+                        "day": 55,
+                        "evening": 55,
+                        "night": 55
+                    }
+                },
+                {
+                    "pokemon": "Floette (Orange Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 21,
+                        "max": 24
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "40%",
+                    "groupPokemon": "Floette",
+                    "probabilityByTime": {
+                        "morning": 55,
+                        "day": 55,
+                        "evening": 55,
+                        "night": 55
+                    }
+                },
+                {
+                    "pokemon": "Floette (Blue Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 21,
+                        "max": 24
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "40%",
+                    "groupPokemon": "Floette",
+                    "probabilityByTime": {
+                        "morning": 55,
+                        "day": 55,
+                        "evening": 55,
+                        "night": 55
+                    }
+                },
+                {
+                    "pokemon": "Floette (White Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 21,
+                        "max": 24
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "40%",
+                    "groupPokemon": "Floette",
+                    "probabilityByTime": {
+                        "morning": 3,
+                        "day": 3,
+                        "evening": 3,
+                        "night": 3
+                    }
+                }
+            ]
+        },
+        {
             "name": "Ruins",
             "encounters": [
                 {
@@ -613,7 +815,7 @@
                 },
                 {
                     "pokemon": "Stonjourner",
-                    "games": ["S", "V"],
+                    "games": ["S"],
                     "terrain": ["land"],
                     "levels": {
                         "min": 22,

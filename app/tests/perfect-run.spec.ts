@@ -22,6 +22,7 @@ test('plays the canonical perfect run through the current progression', async ({
         .getByRole('button', { name: 'Game settings', exact: true })
         .click();
     await page.getByLabel('Include Team Star battles').check();
+    await page.getByLabel('Dupes clause').uncheck();
     await page.keyboard.press('Escape');
 
     await expectNextStep(page, 'Starter');

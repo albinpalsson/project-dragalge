@@ -11,7 +11,7 @@ import { StatusChip } from '../../../../components/StatusChip';
 import { useBanReasons } from '../../../../hooks/useBanReasons';
 import { useEncounterActions } from '../../../../hooks/useEncounterActions';
 import { usePokemonListQuery } from '../../../../hooks/usePokemonListQuery';
-import { getRandomizerDisplayName } from '../../../../randomizer-groups';
+import { getEncounterGroupKey } from '../../../../pokemon-species';
 import { getBanReason } from '../../../../utils/ban-list';
 import {
     TERA_RAID_CAUGHT_LEVELS,
@@ -122,87 +122,93 @@ export function TeraRaid({ stars, isNext, zoomedIcon }: TeraRaidProps) {
 
                     {rows.length > 0 && (
                         <ul className={rowList}>
-                            {rows.map(({ row }) => (
-                                <li key={row.location_name} className={rowItem}>
-                                    <PokemonIcon
-                                        name={row.rolled_as}
-                                        alt={getRandomizerDisplayName(
-                                            row.rolled_as,
-                                        )}
-                                        size="md"
-                                        zoomed={zoomedIcon}
-                                    />
-                                    <span className={rowName}>
-                                        {getRandomizerDisplayName(
-                                            row.rolled_as,
-                                        )}
-                                    </span>
-                                    <StatusChip status={row.status} />
-                                    <div className={rowActions}>
-                                        <Button
-                                            variant="secondary"
-                                            ariaLabel="Caught"
-                                            title="Caught"
-                                            onClick={() =>
-                                                void encounterActions.catchEncounter(
-                                                    row.location_name,
-                                                )
-                                            }
-                                            disabled={
-                                                encounterActions.isBusy ||
-                                                row.status === 'caught'
-                                            }
-                                        >
-                                            🎯
-                                        </Button>
-                                        <Button
-                                            variant="secondary"
-                                            ariaLabel="Missed"
-                                            title="Missed"
-                                            onClick={() =>
-                                                void encounterActions.missEncounter(
-                                                    row.location_name,
-                                                )
-                                            }
-                                            disabled={
-                                                encounterActions.isBusy ||
-                                                row.status === 'missed'
-                                            }
-                                        >
-                                            🏃
-                                        </Button>
-                                        <Button
-                                            variant="secondary"
-                                            ariaLabel="Eliminated"
-                                            title="Eliminated"
-                                            onClick={() =>
-                                                void encounterActions.eliminateEncounter(
-                                                    row.location_name,
-                                                )
-                                            }
-                                            disabled={
-                                                encounterActions.isBusy ||
-                                                row.status === 'eliminated'
-                                            }
-                                        >
-                                            💀
-                                        </Button>
-                                        <Button
-                                            variant="secondary"
-                                            ariaLabel="Clear"
-                                            title="Clear"
-                                            onClick={() =>
-                                                void encounterActions.clearEncounter(
-                                                    row.location_name,
-                                                )
-                                            }
-                                            disabled={encounterActions.isBusy}
-                                        >
-                                            ✕
-                                        </Button>
-                                    </div>
-                                </li>
-                            ))}
+                            {rows.map(({ row }) => {
+                                const displayName = getEncounterGroupKey(
+                                    row.rolled_as,
+                                );
+                                return (
+                                    <li
+                                        key={row.location_name}
+                                        className={rowItem}
+                                    >
+                                        <PokemonIcon
+                                            name={row.rolled_as}
+                                            alt={displayName}
+                                            size="md"
+                                            zoomed={zoomedIcon}
+                                        />
+                                        <span className={rowName}>
+                                            {displayName}
+                                        </span>
+                                        <StatusChip status={row.status} />
+                                        <div className={rowActions}>
+                                            <Button
+                                                variant="secondary"
+                                                ariaLabel="Caught"
+                                                title="Caught"
+                                                onClick={() =>
+                                                    void encounterActions.catchEncounter(
+                                                        row.location_name,
+                                                    )
+                                                }
+                                                disabled={
+                                                    encounterActions.isBusy ||
+                                                    row.status === 'caught'
+                                                }
+                                            >
+                                                🎯
+                                            </Button>
+                                            <Button
+                                                variant="secondary"
+                                                ariaLabel="Missed"
+                                                title="Missed"
+                                                onClick={() =>
+                                                    void encounterActions.missEncounter(
+                                                        row.location_name,
+                                                    )
+                                                }
+                                                disabled={
+                                                    encounterActions.isBusy ||
+                                                    row.status === 'missed'
+                                                }
+                                            >
+                                                🏃
+                                            </Button>
+                                            <Button
+                                                variant="secondary"
+                                                ariaLabel="Eliminated"
+                                                title="Eliminated"
+                                                onClick={() =>
+                                                    void encounterActions.eliminateEncounter(
+                                                        row.location_name,
+                                                    )
+                                                }
+                                                disabled={
+                                                    encounterActions.isBusy ||
+                                                    row.status === 'eliminated'
+                                                }
+                                            >
+                                                💀
+                                            </Button>
+                                            <Button
+                                                variant="secondary"
+                                                ariaLabel="Clear"
+                                                title="Clear"
+                                                onClick={() =>
+                                                    void encounterActions.clearEncounter(
+                                                        row.location_name,
+                                                    )
+                                                }
+                                                disabled={
+                                                    encounterActions.isBusy
+                                                }
+                                            >
+                                                ✕
+                                            </Button>
+                                        </div>
+                                    </li>
+                                );
+                            })}
                         </ul>
                     )}
 

@@ -1,12 +1,16 @@
 import { test, expect } from '@playwright/test';
 import {
     boxSection,
+    cardFor,
     createGame,
+    createGameWithTeraRaids,
+    expandCollapsedSummary,
     navigateTo,
     openBox,
     resolveEncounter,
     rollEncounter,
     selectBoxPokemon,
+    showMoreProgression,
     waitForPersistence,
 } from './helpers';
 
@@ -51,9 +55,31 @@ test('a game can be exported and imported from its shareable link', async ({
     browser,
 }) => {
     await page.goto('/');
-    await createGame(page, 'shared-run');
-    const caughtPokemon = await rollEncounter(page, 'Poco Path');
-    await resolveEncounter(page, 'Poco Path', 'Caught');
+    await createGameWithTeraRaids(page, 'shared-run', 'unlimited');
+    await showMoreProgression(page);
+    await expandCollapsedSummary(page, 'Tera Raid ★');
+    const raidCard = cardFor(page, 'Tera Raid ★').first();
+    const addPokemon = raidCard.getByRole('combobox', {
+        name: 'Add a 1-star Tera Raid Pokémon',
+    });
+    await addPokemon.fill('Basculin');
+    await raidCard
+        .getByRole('option', { name: 'Basculin', exact: true })
+        .click();
+    await expect(
+        raidCard.getByRole('img', { name: 'Basculin', exact: true }),
+    ).toBeVisible();
+    await raidCard.getByRole('button', { name: 'Caught', exact: true }).click();
+    await openBox(page);
+    const caughtPokemon = await boxSection(page, 'Party')
+        .getByRole('img')
+        .first()
+        .getAttribute('alt');
+    if (!caughtPokemon) {
+        throw new Error('Caught Pokémon is missing alt text');
+    }
+    expect(caughtPokemon).toMatch(/^Basculin \((Red-Striped|Blue-Striped)\)$/);
+    await page.keyboard.press('Escape');
     await navigateTo(page, 'Home');
 
     await page.getByRole('button', { name: 'Game options' }).click();

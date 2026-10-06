@@ -9,44 +9,59 @@
             "encounters": [
                 {
                     "pokemon": "Wigglytuff",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
                     },
                     "subArea": "Mountain",
+                    "groupRate": "100%",
+                    "groupPokemon": "Jigglypuff",
                     "probabilityByTime": {
                         "morning": 5,
                         "day": 5,
                         "evening": 5,
                         "night": 5
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Jigglypuff"
+                    }
                 },
                 {
                     "pokemon": "Haunter",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
                     },
                     "subArea": "Mountain",
+                    "groupRate": "100%",
+                    "groupPokemon": "Gastly",
                     "probabilityByTime": {
                         "morning": 0,
                         "day": 0,
                         "evening": 0,
-                        "night": 0
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Gastly"
+                        "night": 40
+                    }
                 },
                 {
                     "pokemon": "Chansey",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
@@ -61,8 +76,13 @@
                 },
                 {
                     "pokemon": "Flareon",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
@@ -77,222 +97,287 @@
                 },
                 {
                     "pokemon": "Ampharos",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
                     },
                     "subArea": "Mountain",
+                    "groupRate": "100%",
+                    "groupPokemon": "Mareep",
                     "probabilityByTime": {
                         "morning": 10,
                         "day": 10,
                         "evening": 10,
                         "night": 10
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Mareep"
+                    }
                 },
                 {
                     "pokemon": "Ursaring",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
                     },
                     "subArea": "Mountain",
+                    "groupRate": "100%",
+                    "groupPokemon": "Teddiursa",
                     "probabilityByTime": {
                         "morning": 20,
                         "day": 20,
                         "evening": 20,
                         "night": 20
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Teddiursa"
+                    }
                 },
                 {
                     "pokemon": "Grumpig",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 51
                     },
                     "subArea": "Mountain",
+                    "groupRate": "100%",
+                    "groupPokemon": "Spoink",
                     "probabilityByTime": {
                         "morning": 20,
                         "day": 20,
                         "evening": 20,
                         "night": 20
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Spoink"
+                    }
                 },
                 {
                     "pokemon": "Altaria",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
                     },
                     "subArea": "Mountain",
+                    "groupRate": "100%",
+                    "groupPokemon": "Swablu",
                     "probabilityByTime": {
                         "morning": 20,
                         "day": 20,
                         "evening": 20,
                         "night": 20
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Swablu"
+                    }
                 },
                 {
                     "pokemon": "Drifblim",
-                    "games": ["S"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 47
                     },
                     "subArea": "Mountain",
+                    "groupRate": "100%",
+                    "groupPokemon": "Drifloon",
                     "probabilityByTime": {
                         "morning": 0,
                         "day": 0,
-                        "evening": 0,
-                        "night": 0
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Drifloon"
+                        "evening": 30,
+                        "night": 30
+                    }
                 },
                 {
                     "pokemon": "Honchkrow",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
                     },
                     "subArea": "Mountain",
+                    "groupRate": "100%",
+                    "groupPokemon": "Murkrow",
                     "probabilityByTime": {
                         "morning": 0,
                         "day": 0,
-                        "evening": 0,
-                        "night": 0
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Murkrow"
+                        "evening": 20,
+                        "night": 20
+                    }
                 },
                 {
                     "pokemon": "Lucario",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
                     },
                     "subArea": "Mountain",
+                    "groupRate": "100%",
+                    "groupPokemon": "Riolu",
                     "probabilityByTime": {
                         "morning": 3,
                         "day": 3,
                         "evening": 3,
                         "night": 3
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Riolu"
+                    }
                 },
                 {
                     "pokemon": "Gallade",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
                     },
                     "subArea": "Mountain",
                     "probabilityByTime": {
-                        "morning": 0,
-                        "day": 0,
-                        "evening": 0,
+                        "morning": 1,
+                        "day": 1,
+                        "evening": 1,
                         "night": 0
                     }
                 },
                 {
                     "pokemon": "Sawsbuck (Winter Form)",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
                     },
                     "subArea": "Mountain",
+                    "groupRate": "100%",
+                    "groupPokemon": "Deerling",
                     "probabilityByTime": {
                         "morning": 60,
                         "day": 60,
                         "evening": 60,
                         "night": 60
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Deerling"
+                    }
                 },
                 {
                     "pokemon": "Fraxure",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 50
                     },
                     "subArea": "Mountain",
+                    "groupRate": "100%",
+                    "groupPokemon": "Axew",
                     "probabilityByTime": {
                         "morning": 20,
                         "day": 20,
                         "evening": 20,
                         "night": 20
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Axew"
+                    }
                 },
                 {
                     "pokemon": "Rufflet",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "overland"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
                     },
                     "subArea": "Mountain",
+                    "groupRate": "40%",
+                    "groupPokemon": "Rufflet",
                     "probabilityByTime": {
                         "morning": 25,
                         "day": 25,
                         "evening": 25,
                         "night": 25
-                    },
-                    "groupRate": "40%",
-                    "groupPokemon": "Rufflet"
+                    }
                 },
                 {
                     "pokemon": "Gogoat",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
                     },
                     "subArea": "Mountain",
+                    "groupRate": "100%",
+                    "groupPokemon": "Gogoat",
                     "probabilityByTime": {
                         "morning": 40,
                         "day": 40,
                         "evening": 40,
                         "night": 40
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Gogoat"
+                    }
                 },
                 {
                     "pokemon": "Hawlucha",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
@@ -307,24 +392,34 @@
                 },
                 {
                     "pokemon": "Lycanroc (Midday Form)",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
                     },
                     "subArea": "Mountain",
                     "probabilityByTime": {
-                        "morning": 0,
-                        "day": 0,
+                        "morning": 20,
+                        "day": 20,
                         "evening": 0,
                         "night": 0
                     }
                 },
                 {
                     "pokemon": "Lycanroc (Midnight Form)",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
@@ -334,13 +429,18 @@
                         "morning": 0,
                         "day": 0,
                         "evening": 0,
-                        "night": 0
+                        "night": 20
                     }
                 },
                 {
                     "pokemon": "Lycanroc (Dusk Form)",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
@@ -349,32 +449,42 @@
                     "probabilityByTime": {
                         "morning": 0,
                         "day": 0,
-                        "evening": 0,
+                        "evening": 1,
                         "night": 0
                     }
                 },
                 {
                     "pokemon": "Mudsdale",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 49
                     },
                     "subArea": "Mountain",
+                    "groupRate": "100%",
+                    "groupPokemon": "Mudbray",
                     "probabilityByTime": {
                         "morning": 12,
                         "day": 12,
                         "evening": 12,
                         "night": 12
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Mudbray"
+                    }
                 },
                 {
                     "pokemon": "Indeedee (Male)",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 50
@@ -389,8 +499,13 @@
                 },
                 {
                     "pokemon": "Indeedee (Female)",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 50
@@ -405,8 +520,13 @@
                 },
                 {
                     "pokemon": "Lokix",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
@@ -421,26 +541,36 @@
                 },
                 {
                     "pokemon": "Pawmo",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
                     },
                     "subArea": "Mountain",
+                    "groupRate": "100%",
+                    "groupPokemon": "Pawmi",
                     "probabilityByTime": {
                         "morning": 15,
                         "day": 15,
                         "evening": 15,
                         "night": 15
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Pawmi"
+                    }
                 },
                 {
                     "pokemon": "Brambleghast",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 50,
                         "max": 53
@@ -455,8 +585,13 @@
                 },
                 {
                     "pokemon": "Scovillain",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
@@ -471,8 +606,13 @@
                 },
                 {
                     "pokemon": "Espathra",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
@@ -487,8 +627,13 @@
                 },
                 {
                     "pokemon": "Tinkatuff",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
@@ -503,54 +648,69 @@
                 },
                 {
                     "pokemon": "Houndstone",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
                     },
                     "subArea": "Mountain",
+                    "groupRate": "100%",
+                    "groupPokemon": "Greavard",
                     "probabilityByTime": {
                         "morning": 15,
                         "day": 15,
                         "evening": 15,
                         "night": 15
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Greavard"
+                    }
                 }
             ]
         },
         {
-            "name": "Snow",
+            "name": "Snowfield",
             "encounters": [
                 {
                     "pokemon": "Haunter",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 49,
                         "max": 53
                     },
-                    "subArea": "Snow",
+                    "subArea": "Snowfield",
+                    "groupRate": "100%",
+                    "groupPokemon": "Gastly",
                     "probabilityByTime": {
                         "morning": 0,
                         "day": 0,
                         "evening": 0,
-                        "night": 0
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Gastly"
+                        "night": 50
+                    }
                 },
                 {
                     "pokemon": "Glalie",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 49,
                         "max": 53
                     },
-                    "subArea": "Snow",
+                    "subArea": "Snowfield",
                     "probabilityByTime": {
                         "morning": 20,
                         "day": 20,
@@ -560,13 +720,18 @@
                 },
                 {
                     "pokemon": "Bronzong",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 49,
                         "max": 52
                     },
-                    "subArea": "Snow",
+                    "subArea": "Snowfield",
                     "probabilityByTime": {
                         "morning": 20,
                         "day": 20,
@@ -576,31 +741,41 @@
                 },
                 {
                     "pokemon": "Weavile",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 49,
                         "max": 53
                     },
-                    "subArea": "Snow",
+                    "subArea": "Snowfield",
+                    "groupRate": "100%",
+                    "groupPokemon": "Sneasel",
                     "probabilityByTime": {
                         "morning": 15,
                         "day": 15,
                         "evening": 15,
                         "night": 15
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Sneasel"
+                    }
                 },
                 {
                     "pokemon": "Glaceon",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 49,
                         "max": 53
                     },
-                    "subArea": "Snow",
+                    "subArea": "Snowfield",
                     "probabilityByTime": {
                         "morning": 1,
                         "day": 1,
@@ -610,13 +785,18 @@
                 },
                 {
                     "pokemon": "Froslass",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 49,
                         "max": 53
                     },
-                    "subArea": "Snow",
+                    "subArea": "Snowfield",
                     "probabilityByTime": {
                         "morning": 2,
                         "day": 2,
@@ -626,49 +806,64 @@
                 },
                 {
                     "pokemon": "Sawsbuck (Winter Form)",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 49,
                         "max": 53
                     },
-                    "subArea": "Snow",
+                    "subArea": "Snowfield",
+                    "groupRate": "100%",
+                    "groupPokemon": "Deerling",
                     "probabilityByTime": {
                         "morning": 30,
                         "day": 30,
                         "evening": 30,
                         "night": 30
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Deerling"
+                    }
                 },
                 {
                     "pokemon": "Beartic",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 49,
                         "max": 53
                     },
-                    "subArea": "Snow",
+                    "subArea": "Snowfield",
+                    "groupRate": "100%",
+                    "groupPokemon": "Cubchoo",
                     "probabilityByTime": {
                         "morning": 20,
                         "day": 20,
                         "evening": 20,
                         "night": 20
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Cubchoo"
+                    }
                 },
                 {
                     "pokemon": "Frosmoth",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 49,
                         "max": 53
                     },
-                    "subArea": "Snow",
+                    "subArea": "Snowfield",
                     "probabilityByTime": {
                         "morning": 10,
                         "day": 10,
@@ -678,39 +873,49 @@
                 },
                 {
                     "pokemon": "Houndstone",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 49,
                         "max": 53
                     },
-                    "subArea": "Snow",
+                    "subArea": "Snowfield",
+                    "groupRate": "100%",
+                    "groupPokemon": "Greavard",
                     "probabilityByTime": {
                         "morning": 10,
                         "day": 10,
                         "evening": 10,
                         "night": 10
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Greavard"
+                    }
                 },
                 {
                     "pokemon": "Cetitan",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 49,
                         "max": 53
                     },
-                    "subArea": "Snow",
+                    "subArea": "Snowfield",
+                    "groupRate": "100%",
+                    "groupPokemon": "Cetoddle",
                     "probabilityByTime": {
                         "morning": 10,
                         "day": 10,
                         "evening": 10,
                         "night": 10
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Cetoddle"
+                    }
                 }
             ]
         },
@@ -719,8 +924,14 @@
             "encounters": [
                 {
                     "pokemon": "Golduck",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "water_surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 47,
                         "max": 53
@@ -735,8 +946,14 @@
                 },
                 {
                     "pokemon": "Vaporeon",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "water_surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 47,
                         "max": 53
@@ -751,8 +968,14 @@
                 },
                 {
                     "pokemon": "Dratini",
-                    "games": ["S", "V"],
-                    "terrain": ["water_surface", "underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "water_surface",
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 48,
                         "max": 52
@@ -767,80 +990,103 @@
                 },
                 {
                     "pokemon": "Altaria",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 47,
                         "max": 53
                     },
                     "subArea": "Lake",
+                    "groupRate": "100%",
+                    "groupPokemon": "Swablu",
                     "probabilityByTime": {
                         "morning": 20,
                         "day": 20,
                         "evening": 20,
                         "night": 20
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Swablu"
+                    }
                 },
                 {
                     "pokemon": "Whiscash",
-                    "games": ["S", "V"],
-                    "terrain": ["underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 48,
                         "max": 48
                     },
                     "subArea": "Lake",
+                    "groupRate": "100%",
+                    "groupPokemon": "Barboach",
                     "probabilityByTime": {
                         "morning": 10,
                         "day": 10,
                         "evening": 10,
                         "night": 10
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Barboach"
+                    }
                 },
                 {
                     "pokemon": "Mismagius",
-                    "games": ["V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 47,
                         "max": 53
                     },
                     "subArea": "Lake",
+                    "groupRate": "100%",
+                    "groupPokemon": "Misdreavus",
                     "probabilityByTime": {
                         "morning": 0,
                         "day": 0,
                         "evening": 0,
-                        "night": 0
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Misdreavus"
+                        "night": 3
+                    }
                 },
                 {
                     "pokemon": "Drakloak",
-                    "games": ["V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 50,
                         "max": 53
                     },
                     "subArea": "Lake",
+                    "groupRate": "100%",
+                    "groupPokemon": "Dreepy",
                     "probabilityByTime": {
                         "morning": 25,
                         "day": 25,
                         "evening": 25,
                         "night": 25
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Dreepy"
+                    }
                 },
                 {
                     "pokemon": "Flamigo",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 47,
                         "max": 48
@@ -855,21 +1101,27 @@
                 },
                 {
                     "pokemon": "Clodsire",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "water_surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 47,
                         "max": 47
                     },
                     "subArea": "Lake",
+                    "groupRate": "100%",
+                    "groupPokemon": "Wooper",
                     "probabilityByTime": {
                         "morning": 30,
                         "day": 30,
                         "evening": 30,
                         "night": 30
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Wooper"
+                    }
                 }
             ]
         },
@@ -878,8 +1130,14 @@
             "encounters": [
                 {
                     "pokemon": "Golduck",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "water_surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 50,
                         "max": 53
@@ -894,8 +1152,14 @@
                 },
                 {
                     "pokemon": "Vaporeon",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "water_surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 50,
                         "max": 53
@@ -910,75 +1174,95 @@
                 },
                 {
                     "pokemon": "Floatzel",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "water_surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 50,
                         "max": 53
                     },
                     "subArea": "Riverside",
+                    "groupRate": "100%",
+                    "groupPokemon": "Buizel",
                     "probabilityByTime": {
                         "morning": 10,
                         "day": 10,
                         "evening": 10,
                         "night": 10
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Buizel"
+                    }
                 },
                 {
                     "pokemon": "Fraxure",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 50,
                         "max": 50
                     },
                     "subArea": "Riverside",
+                    "groupRate": "100%",
+                    "groupPokemon": "Axew",
                     "probabilityByTime": {
                         "morning": 5,
                         "day": 5,
                         "evening": 5,
                         "night": 5
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Axew"
+                    }
                 },
                 {
                     "pokemon": "Drakloak",
-                    "games": ["V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 50,
                         "max": 53
                     },
                     "subArea": "Riverside",
+                    "groupRate": "100%",
+                    "groupPokemon": "Dreepy",
                     "probabilityByTime": {
                         "morning": 5,
                         "day": 5,
                         "evening": 5,
                         "night": 5
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Dreepy"
+                    }
                 },
                 {
                     "pokemon": "Bellibolt",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 50,
                         "max": 51
                     },
                     "subArea": "Riverside",
+                    "groupRate": "100%",
+                    "groupPokemon": "Tadbulb",
                     "probabilityByTime": {
                         "morning": 5,
                         "day": 5,
                         "evening": 5,
                         "night": 5
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Tadbulb"
+                    }
                 }
             ]
         },
@@ -987,8 +1271,13 @@
             "encounters": [
                 {
                     "pokemon": "Cloyster",
-                    "games": ["S", "V"],
-                    "terrain": ["underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 50,
                         "max": 53
@@ -1003,8 +1292,14 @@
                 },
                 {
                     "pokemon": "Gyarados",
-                    "games": ["S", "V"],
-                    "terrain": ["water_surface", "underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "water_surface",
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 50,
                         "max": 53
@@ -1019,26 +1314,37 @@
                 },
                 {
                     "pokemon": "Floatzel",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "water_surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 50,
                         "max": 53
                     },
                     "subArea": "Ocean",
+                    "groupRate": "100%",
+                    "groupPokemon": "Buizel",
                     "probabilityByTime": {
                         "morning": 40,
                         "day": 40,
                         "evening": 40,
                         "night": 40
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Buizel"
+                    }
                 },
                 {
                     "pokemon": "Alomomola",
-                    "games": ["S", "V"],
-                    "terrain": ["underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 50,
                         "max": 50
@@ -1053,8 +1359,12 @@
                 },
                 {
                     "pokemon": "Skrelp",
-                    "games": ["S"],
-                    "terrain": ["underwater"],
+                    "games": [
+                        "S"
+                    ],
+                    "terrain": [
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 50,
                         "max": 52
@@ -1069,26 +1379,34 @@
                 },
                 {
                     "pokemon": "Dragalge",
-                    "games": ["S"],
-                    "terrain": ["underwater"],
+                    "games": [
+                        "S"
+                    ],
+                    "terrain": [
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 50,
                         "max": 53
                     },
                     "subArea": "Ocean",
+                    "groupRate": "100%",
+                    "groupPokemon": "Skrelp",
                     "probabilityByTime": {
                         "morning": 20,
                         "day": 20,
                         "evening": 20,
                         "night": 20
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Skrelp"
+                    }
                 },
                 {
                     "pokemon": "Clawitzer",
-                    "games": ["V"],
-                    "terrain": ["underwater"],
+                    "games": [
+                        "V"
+                    ],
+                    "terrain": [
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 50,
                         "max": 53
@@ -1103,8 +1421,13 @@
                 },
                 {
                     "pokemon": "Eiscue",
-                    "games": ["V"],
-                    "terrain": ["land", "water_surface"],
+                    "games": [
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 50,
                         "max": 50
@@ -1119,21 +1442,28 @@
                 },
                 {
                     "pokemon": "Kilowattrel",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "overland", "sky"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "overland",
+                        "sky"
+                    ],
                     "levels": {
                         "min": 50,
                         "max": 51
                     },
                     "subArea": "Ocean",
+                    "groupRate": "40%",
+                    "groupPokemon": "Kilowattrel",
                     "probabilityByTime": {
                         "morning": 30,
                         "day": 30,
                         "evening": 30,
                         "night": 30
-                    },
-                    "groupRate": "40%",
-                    "groupPokemon": "Kilowattrel"
+                    }
                 }
             ]
         },
@@ -1142,8 +1472,13 @@
             "encounters": [
                 {
                     "pokemon": "Primeape",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 47
@@ -1158,80 +1493,105 @@
                 },
                 {
                     "pokemon": "Grumpig",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 51
                     },
                     "subArea": "Rocky Area",
+                    "groupRate": "100%",
+                    "groupPokemon": "Spoink",
                     "probabilityByTime": {
                         "morning": 20,
                         "day": 20,
                         "evening": 20,
                         "night": 20
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Spoink"
+                    }
                 },
                 {
                     "pokemon": "Honchkrow",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
                     },
                     "subArea": "Rocky Area",
+                    "groupRate": "100%",
+                    "groupPokemon": "Murkrow",
                     "probabilityByTime": {
                         "morning": 0,
                         "day": 0,
-                        "evening": 0,
-                        "night": 0
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Murkrow"
+                        "evening": 20,
+                        "night": 20
+                    }
                 },
                 {
                     "pokemon": "Lucario",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
                     },
                     "subArea": "Rocky Area",
+                    "groupRate": "100%",
+                    "groupPokemon": "Riolu",
                     "probabilityByTime": {
                         "morning": 3,
                         "day": 3,
                         "evening": 3,
                         "night": 3
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Riolu"
+                    }
                 },
                 {
                     "pokemon": "Gogoat",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
                     },
                     "subArea": "Rocky Area",
+                    "groupRate": "100%",
+                    "groupPokemon": "Gogoat",
                     "probabilityByTime": {
                         "morning": 30,
                         "day": 30,
                         "evening": 30,
                         "night": 30
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Gogoat"
+                    }
                 },
                 {
                     "pokemon": "Hawlucha",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
@@ -1246,8 +1606,13 @@
                 },
                 {
                     "pokemon": "Noibat",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 52
@@ -1262,44 +1627,59 @@
                 },
                 {
                     "pokemon": "Noivern",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 48,
                         "max": 53
                     },
                     "subArea": "Rocky Area",
+                    "groupRate": "100%",
+                    "groupPokemon": "Noibat",
                     "probabilityByTime": {
                         "morning": 20,
                         "day": 20,
                         "evening": 20,
                         "night": 20
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Noibat"
+                    }
                 },
                 {
                     "pokemon": "Copperajah",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
                     },
                     "subArea": "Rocky Area",
+                    "groupRate": "100%",
+                    "groupPokemon": "Cufant",
                     "probabilityByTime": {
                         "morning": 20,
                         "day": 20,
                         "evening": 20,
                         "night": 20
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Cufant"
+                    }
                 },
                 {
                     "pokemon": "Lokix",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
@@ -1314,39 +1694,49 @@
                 },
                 {
                     "pokemon": "Naclstack",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
                     },
                     "subArea": "Rocky Area",
+                    "groupRate": "100%",
+                    "groupPokemon": "Nacli",
                     "probabilityByTime": {
                         "morning": 60,
                         "day": 60,
                         "evening": 60,
                         "night": 60
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Nacli"
+                    }
                 },
                 {
                     "pokemon": "Revavroom",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
                     },
                     "subArea": "Rocky Area",
+                    "groupRate": "100%",
+                    "groupPokemon": "Varoom",
                     "probabilityByTime": {
                         "morning": 20,
                         "day": 20,
                         "evening": 20,
                         "night": 20
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Varoom"
+                    }
                 }
             ]
         },
@@ -1355,8 +1745,13 @@
             "encounters": [
                 {
                     "pokemon": "Dugtrio",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
@@ -1371,8 +1766,13 @@
                 },
                 {
                     "pokemon": "Umbreon",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
@@ -1382,13 +1782,18 @@
                         "morning": 0,
                         "day": 0,
                         "evening": 0,
-                        "night": 0
+                        "night": 1
                     }
                 },
                 {
                     "pokemon": "Sableye",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
@@ -1403,26 +1808,35 @@
                 },
                 {
                     "pokemon": "Gabite",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
                     },
                     "subArea": "Cave",
+                    "groupRate": "100%",
+                    "groupPokemon": "Gible",
                     "probabilityByTime": {
                         "morning": 10,
                         "day": 10,
                         "evening": 10,
                         "night": 10
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Gible"
+                    }
                 },
                 {
                     "pokemon": "Deino",
-                    "games": ["S"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
@@ -1437,8 +1851,12 @@
                 },
                 {
                     "pokemon": "Zweilous",
-                    "games": ["S"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 50,
                         "max": 53
@@ -1453,8 +1871,13 @@
                 },
                 {
                     "pokemon": "Noibat",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 52
@@ -1469,44 +1892,59 @@
                 },
                 {
                     "pokemon": "Noivern",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 48,
                         "max": 53
                     },
                     "subArea": "Cave",
+                    "groupRate": "100%",
+                    "groupPokemon": "Noibat",
                     "probabilityByTime": {
                         "morning": 30,
                         "day": 30,
                         "evening": 30,
                         "night": 30
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Noibat"
+                    }
                 },
                 {
                     "pokemon": "Salazzle",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 52
                     },
                     "subArea": "Cave",
+                    "groupRate": "100%",
+                    "groupPokemon": "Salandit",
                     "probabilityByTime": {
                         "morning": 5,
                         "day": 5,
                         "evening": 5,
                         "night": 5
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Salandit"
+                    }
                 },
                 {
                     "pokemon": "Glimmet",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
@@ -1526,26 +1964,37 @@
             "encounters": [
                 {
                     "pokemon": "Floatzel",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "water_surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 50,
                         "max": 53
                     },
                     "subArea": "Beach",
+                    "groupRate": "100%",
+                    "groupPokemon": "Buizel",
                     "probabilityByTime": {
                         "morning": 10,
                         "day": 10,
                         "evening": 10,
                         "night": 10
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Buizel"
+                    }
                 },
                 {
                     "pokemon": "Pincurchin",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 50,
                         "max": 50
@@ -1560,8 +2009,13 @@
                 },
                 {
                     "pokemon": "Eiscue",
-                    "games": ["V"],
-                    "terrain": ["land", "water_surface"],
+                    "games": [
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 50,
                         "max": 50
@@ -1576,44 +2030,61 @@
                 },
                 {
                     "pokemon": "Naclstack",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 50,
                         "max": 53
                     },
                     "subArea": "Beach",
+                    "groupRate": "100%",
+                    "groupPokemon": "Nacli",
                     "probabilityByTime": {
                         "morning": 20,
                         "day": 20,
                         "evening": 20,
                         "night": 20
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Nacli"
+                    }
                 },
                 {
                     "pokemon": "Kilowattrel",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "overland", "sky"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "overland",
+                        "sky"
+                    ],
                     "levels": {
                         "min": 50,
                         "max": 51
                     },
                     "subArea": "Beach",
+                    "groupRate": "40%",
+                    "groupPokemon": "Kilowattrel",
                     "probabilityByTime": {
                         "morning": 30,
                         "day": 30,
                         "evening": 30,
                         "night": 30
-                    },
-                    "groupRate": "40%",
-                    "groupPokemon": "Kilowattrel"
+                    }
                 },
                 {
                     "pokemon": "Wugtrio",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 50,
                         "max": 53
@@ -1633,8 +2104,13 @@
             "encounters": [
                 {
                     "pokemon": "Chansey",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
@@ -1649,42 +2125,57 @@
                 },
                 {
                     "pokemon": "Jumpluff",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 50
                     },
                     "subArea": "Flower",
+                    "groupRate": "100%",
+                    "groupPokemon": "Hoppip",
                     "probabilityByTime": {
                         "morning": 20,
                         "day": 20,
                         "evening": 20,
                         "night": 20
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Hoppip"
+                    }
                 },
                 {
                     "pokemon": "Sunflora",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 47
                     },
                     "subArea": "Flower",
                     "probabilityByTime": {
-                        "morning": 0,
-                        "day": 0,
-                        "evening": 0,
+                        "morning": 30,
+                        "day": 30,
+                        "evening": 30,
                         "night": 0
                     }
                 },
                 {
                     "pokemon": "Blissey",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
@@ -1699,31 +2190,42 @@
                 },
                 {
                     "pokemon": "Vespiquen",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 50
                     },
                     "subArea": "Flower",
+                    "groupRate": "100%",
+                    "groupPokemon": "Combee",
                     "probabilityByTime": {
                         "morning": 20,
                         "day": 20,
                         "evening": 20,
                         "night": 20
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Combee"
+                    }
                 },
                 {
                     "pokemon": "Vivillon (Fancy Pattern)",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 50
                     },
                     "subArea": "Flower",
+                    "note": "This Pokémon's form can be changed by receiving postcards from Pokémon GO",
                     "probabilityByTime": {
                         "morning": 30,
                         "day": 30,
@@ -1733,111 +2235,141 @@
                 },
                 {
                     "pokemon": "Floette (Red Flower)",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
                     },
                     "subArea": "Flower",
+                    "groupRate": "40%",
+                    "groupPokemon": "Floette",
                     "probabilityByTime": {
                         "morning": 55,
                         "day": 55,
                         "evening": 55,
                         "night": 55
-                    },
-                    "groupRate": "40%",
-                    "groupPokemon": "Floette"
+                    }
                 },
                 {
                     "pokemon": "Floette (Yellow Flower)",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
                     },
                     "subArea": "Flower",
+                    "groupRate": "40%",
+                    "groupPokemon": "Floette",
                     "probabilityByTime": {
                         "morning": 55,
                         "day": 55,
                         "evening": 55,
                         "night": 55
-                    },
-                    "groupRate": "40%",
-                    "groupPokemon": "Floette"
+                    }
                 },
                 {
                     "pokemon": "Floette (Orange Flower)",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
                     },
                     "subArea": "Flower",
+                    "groupRate": "40%",
+                    "groupPokemon": "Floette",
                     "probabilityByTime": {
                         "morning": 55,
                         "day": 55,
                         "evening": 55,
                         "night": 55
-                    },
-                    "groupRate": "40%",
-                    "groupPokemon": "Floette"
+                    }
                 },
                 {
                     "pokemon": "Floette (Blue Flower)",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
                     },
                     "subArea": "Flower",
+                    "groupRate": "40%",
+                    "groupPokemon": "Floette",
                     "probabilityByTime": {
                         "morning": 55,
                         "day": 55,
                         "evening": 55,
                         "night": 55
-                    },
-                    "groupRate": "40%",
-                    "groupPokemon": "Floette"
+                    }
                 },
                 {
                     "pokemon": "Floette (White Flower)",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
                     },
                     "subArea": "Flower",
+                    "groupRate": "40%",
+                    "groupPokemon": "Floette",
                     "probabilityByTime": {
                         "morning": 3,
                         "day": 3,
                         "evening": 3,
                         "night": 3
-                    },
-                    "groupRate": "40%",
-                    "groupPokemon": "Floette"
+                    }
                 },
                 {
                     "pokemon": "Lurantis",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 46,
                         "max": 53
                     },
                     "subArea": "Flower",
+                    "groupRate": "100%",
+                    "groupPokemon": "Fomantis",
                     "probabilityByTime": {
                         "morning": 30,
                         "day": 30,
                         "evening": 30,
                         "night": 30
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Fomantis"
+                    }
                 }
             ]
         },
@@ -1846,26 +2378,36 @@
             "encounters": [
                 {
                     "pokemon": "Haunter",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 48,
                         "max": 50
                     },
                     "subArea": "Ruins",
+                    "groupRate": "100%",
+                    "groupPokemon": "Gastly",
                     "probabilityByTime": {
                         "morning": 0,
                         "day": 0,
                         "evening": 0,
-                        "night": 0
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Gastly"
+                        "night": 50
+                    }
                 },
                 {
                     "pokemon": "Bronzong",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 48,
                         "max": 50
@@ -1880,21 +2422,26 @@
                 },
                 {
                     "pokemon": "Houndstone",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 48,
                         "max": 50
                     },
                     "subArea": "Ruins",
+                    "groupRate": "100%",
+                    "groupPokemon": "Greavard",
                     "probabilityByTime": {
                         "morning": 5,
                         "day": 5,
                         "evening": 5,
                         "night": 5
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Greavard"
+                    }
                 }
             ]
         }

@@ -93,9 +93,9 @@ export function InletGrotto({ isNext }: InletGrottoProps) {
                         <EncounterTable
                             encounters={allEncounters}
                             disabled={encounterActions.isBusy}
-                            onPick={(encounter) =>
+                            onPick={(pokemonName) =>
                                 encounterActions.rollEncounter(
-                                    encounter.name,
+                                    pokemonName,
                                     LOCATION_NAME,
                                 )
                             }

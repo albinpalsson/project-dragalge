@@ -10,7 +10,6 @@ import { TypeBadge } from '../../../components/TypeBadge';
 import { NO_PARTY_SLOT } from '../../../db/game-db/schema';
 import type { EncounterRollRow } from '../../../db/game-db/queries';
 import { usePartyManager } from '../../../hooks/usePartyManager';
-import { getRandomizerDisplayName } from '../../../randomizer-groups';
 import { usePokemonEvolutionQuery, usePokemonQuery } from './queries';
 import { PokemonEvolutionSection } from './PokemonEvolutionSection';
 import { TypeDefenses } from './TypeDefenses';
@@ -23,7 +22,6 @@ interface PokemonDetailPaneProps {
 
 export function PokemonDetailPane({ row, party }: PokemonDetailPaneProps) {
     const [isReplacing, setIsReplacing] = useState(false);
-    const displayName = getRandomizerDisplayName(row.pokemon_name);
     const pokemonQuery = usePokemonQuery(row.pokemon_name);
     const evolutionQuery = usePokemonEvolutionQuery(row.pokemon_name);
     const defensiveEntries = useTypeDefenses(
@@ -37,10 +35,10 @@ export function PokemonDetailPane({ row, party }: PokemonDetailPaneProps) {
     const isPartyFull = actions.freeSlot === NO_PARTY_SLOT;
 
     return (
-        <section className={pane} aria-label={`${displayName} details`}>
+        <section className={pane} aria-label={`${row.pokemon_name} details`}>
             <div className={headerRow}>
                 <div className={identity}>
-                    <h4 className={heading}>{displayName}</h4>
+                    <h4 className={heading}>{row.pokemon_name}</h4>
                     {pokemonQuery.data && (
                         <span className={types}>
                             <TypeBadge type={pokemonQuery.data.primaryType} />
@@ -181,7 +179,7 @@ export function PokemonDetailPane({ row, party }: PokemonDetailPaneProps) {
                                 );
                             }}
                         >
-                            {getRandomizerDisplayName(member.pokemon_name)}
+                            {member.pokemon_name}
                         </Button>
                     ))}
                 </div>

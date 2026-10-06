@@ -1,8 +1,8 @@
+import { getEncounterGroupKey } from '../pokemon-species';
 import { useGame } from '../views/Game/GameContext';
 import { useLocationEncountersQuery } from '../views/Game/queries';
 import type { EncounterStatus } from '../db/game-db/queries';
 import type { LocationEncounterView } from '../db/pokemon-data/queries';
-import { getRandomizerDisplayName } from '../randomizer-groups';
 
 export interface EncounterRollDetails extends LocationEncounterView {
     status: EncounterStatus;
@@ -17,20 +17,22 @@ export function useEncounterRoll(locationName: string) {
     const roll = game.encounters.find(
         (encounter) => encounter.location_name === locationName,
     );
-    const selectedEncounter = encounterRows.find(
-        (encounter) => encounter.name === roll?.rolled_as,
-    );
-
+    const originGroup = roll ? getEncounterGroupKey(roll.rolled_as) : undefined;
     const matchingEncounters = roll
-        ? encounterRows.filter((encounter) => encounter.name === roll.rolled_as)
+        ? encounterRows.filter(
+              (encounter) =>
+                  getEncounterGroupKey(encounter.name) === originGroup,
+          )
         : [];
+    const selectedEncounter = matchingEncounters[0];
 
     const encounterRoll =
         roll && selectedEncounter
             ? {
                   ...selectedEncounter,
+                  name: roll.pokemon_name,
                   status: roll.status,
-                  displayName: getRandomizerDisplayName(roll.rolled_as),
+                  displayName: getEncounterGroupKey(roll.pokemon_name),
                   subAreaTerrains: matchingEncounters.map((encounter) => ({
                       subArea: encounter.subArea,
                       terrain: encounter.terrain,

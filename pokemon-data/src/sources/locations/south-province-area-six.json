@@ -16,14 +16,14 @@
                         "max": 40
                     },
                     "subArea": "Town",
+                    "groupRate": "60%",
+                    "groupPokemon": "Murkrow",
                     "probabilityByTime": {
                         "morning": 0,
                         "day": 0,
-                        "evening": 0,
-                        "night": 0
-                    },
-                    "groupRate": "60%",
-                    "groupPokemon": "Murkrow"
+                        "evening": 60,
+                        "night": 60
+                    }
                 },
                 {
                     "pokemon": "Banette",
@@ -38,7 +38,7 @@
                         "morning": 0,
                         "day": 0,
                         "evening": 0,
-                        "night": 0
+                        "night": 70
                     }
                 },
                 {
@@ -50,14 +50,14 @@
                         "max": 43
                     },
                     "subArea": "Town",
+                    "groupRate": "100%",
+                    "groupPokemon": "Drifloon",
                     "probabilityByTime": {
                         "morning": 0,
                         "day": 0,
-                        "evening": 0,
-                        "night": 0
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Drifloon"
+                        "evening": 20,
+                        "night": 20
+                    }
                 },
                 {
                     "pokemon": "Gothorita",
@@ -84,14 +84,14 @@
                         "max": 43
                     },
                     "subArea": "Town",
+                    "groupRate": "100%",
+                    "groupPokemon": "Gothita",
                     "probabilityByTime": {
                         "morning": 1,
                         "day": 1,
                         "evening": 1,
                         "night": 1
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Gothita"
+                    }
                 },
                 {
                     "pokemon": "Sylveon",
@@ -166,14 +166,14 @@
                         "max": 43
                     },
                     "subArea": "Town",
+                    "groupRate": "100%",
+                    "groupPokemon": "Fidough",
                     "probabilityByTime": {
                         "morning": 30,
                         "day": 30,
                         "evening": 30,
                         "night": 30
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Fidough"
+                    }
                 },
                 {
                     "pokemon": "Bombirdier",
@@ -253,14 +253,14 @@
                         "max": 43
                     },
                     "subArea": "Mountain",
+                    "groupRate": "100%",
+                    "groupPokemon": "Mareep",
                     "probabilityByTime": {
                         "morning": 10,
                         "day": 10,
                         "evening": 10,
                         "night": 10
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Mareep"
+                    }
                 },
                 {
                     "pokemon": "Misdreavus",
@@ -275,7 +275,7 @@
                         "morning": 0,
                         "day": 0,
                         "evening": 0,
-                        "night": 0
+                        "night": 15
                     }
                 },
                 {
@@ -287,14 +287,14 @@
                         "max": 43
                     },
                     "subArea": "Mountain",
+                    "groupRate": "100%",
+                    "groupPokemon": "Phanpy",
                     "probabilityByTime": {
                         "morning": 10,
                         "day": 10,
                         "evening": 10,
                         "night": 10
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Phanpy"
+                    }
                 },
                 {
                     "pokemon": "Meditite",
@@ -321,14 +321,14 @@
                         "max": 43
                     },
                     "subArea": "Mountain",
+                    "groupRate": "100%",
+                    "groupPokemon": "Meditite",
                     "probabilityByTime": {
                         "morning": 20,
                         "day": 20,
                         "evening": 20,
                         "night": 20
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Meditite"
+                    }
                 },
                 {
                     "pokemon": "Altaria",
@@ -339,14 +339,14 @@
                         "max": 43
                     },
                     "subArea": "Mountain",
+                    "groupRate": "100%",
+                    "groupPokemon": "Swablu",
                     "probabilityByTime": {
                         "morning": 20,
                         "day": 20,
                         "evening": 20,
                         "night": 20
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Swablu"
+                    }
                 },
                 {
                     "pokemon": "Drifblim",
@@ -357,14 +357,14 @@
                         "max": 43
                     },
                     "subArea": "Mountain",
+                    "groupRate": "100%",
+                    "groupPokemon": "Drifloon",
                     "probabilityByTime": {
                         "morning": 0,
                         "day": 0,
-                        "evening": 0,
-                        "night": 0
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Drifloon"
+                        "evening": 30,
+                        "night": 30
+                    }
                 },
                 {
                     "pokemon": "Honchkrow",
@@ -375,14 +375,14 @@
                         "max": 43
                     },
                     "subArea": "Mountain",
+                    "groupRate": "100%",
+                    "groupPokemon": "Murkrow",
                     "probabilityByTime": {
                         "morning": 0,
                         "day": 0,
-                        "evening": 0,
-                        "night": 0
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Murkrow"
+                        "evening": 20,
+                        "night": 20
+                    }
                 },
                 {
                     "pokemon": "Gallade",
@@ -394,9 +394,9 @@
                     },
                     "subArea": "Mountain",
                     "probabilityByTime": {
-                        "morning": 0,
-                        "day": 0,
-                        "evening": 0,
+                        "morning": 1,
+                        "day": 1,
+                        "evening": 1,
                         "night": 0
                     }
                 },
@@ -409,14 +409,14 @@
                         "max": 43
                     },
                     "subArea": "Mountain",
+                    "groupRate": "40%",
+                    "groupPokemon": "Rufflet",
                     "probabilityByTime": {
                         "morning": 25,
                         "day": 25,
                         "evening": 25,
                         "night": 25
-                    },
-                    "groupRate": "40%",
-                    "groupPokemon": "Rufflet"
+                    }
                 },
                 {
                     "pokemon": "Gogoat",
@@ -427,14 +427,14 @@
                         "max": 43
                     },
                     "subArea": "Mountain",
+                    "groupRate": "100%",
+                    "groupPokemon": "Gogoat",
                     "probabilityByTime": {
                         "morning": 40,
                         "day": 40,
                         "evening": 40,
                         "night": 40
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Gogoat"
+                    }
                 },
                 {
                     "pokemon": "Lycanroc (Midday Form)",
@@ -446,8 +446,8 @@
                     },
                     "subArea": "Mountain",
                     "probabilityByTime": {
-                        "morning": 0,
-                        "day": 0,
+                        "morning": 20,
+                        "day": 20,
                         "evening": 0,
                         "night": 0
                     }
@@ -465,7 +465,7 @@
                         "morning": 0,
                         "day": 0,
                         "evening": 0,
-                        "night": 0
+                        "night": 20
                     }
                 },
                 {
@@ -477,14 +477,14 @@
                         "max": 43
                     },
                     "subArea": "Mountain",
+                    "groupRate": "100%",
+                    "groupPokemon": "Mudbray",
                     "probabilityByTime": {
                         "morning": 12,
                         "day": 12,
                         "evening": 12,
                         "night": 12
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Mudbray"
+                    }
                 },
                 {
                     "pokemon": "Greedent",
@@ -495,14 +495,14 @@
                         "max": 43
                     },
                     "subArea": "Mountain",
+                    "groupRate": "100%",
+                    "groupPokemon": "Skwovet",
                     "probabilityByTime": {
                         "morning": 20,
                         "day": 20,
                         "evening": 20,
                         "night": 20
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Skwovet"
+                    }
                 },
                 {
                     "pokemon": "Toxtricity (Amped Form)",
@@ -561,14 +561,14 @@
                         "max": 43
                     },
                     "subArea": "Mountain",
+                    "groupRate": "100%",
+                    "groupPokemon": "Greavard",
                     "probabilityByTime": {
                         "morning": 15,
                         "day": 15,
                         "evening": 15,
                         "night": 15
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Greavard"
+                    }
                 },
                 {
                     "pokemon": "Flittle",
@@ -627,14 +627,14 @@
                         "max": 43
                     },
                     "subArea": "Mountain",
+                    "groupRate": "100%",
+                    "groupPokemon": "Pawmi",
                     "probabilityByTime": {
                         "morning": 15,
                         "day": 15,
                         "evening": 15,
                         "night": 15
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Pawmi"
+                    }
                 },
                 {
                     "pokemon": "Bombirdier",
@@ -734,7 +734,7 @@
                         "morning": 0,
                         "day": 0,
                         "evening": 0,
-                        "night": 0
+                        "night": 60
                     }
                 },
                 {
@@ -746,14 +746,14 @@
                         "max": 40
                     },
                     "subArea": "Lake",
+                    "groupRate": "100%",
+                    "groupPokemon": "Barboach",
                     "probabilityByTime": {
                         "morning": 10,
                         "day": 10,
                         "evening": 10,
                         "night": 10
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Barboach"
+                    }
                 },
                 {
                     "pokemon": "Mismagius",
@@ -764,14 +764,14 @@
                         "max": 40
                     },
                     "subArea": "Lake",
+                    "groupRate": "100%",
+                    "groupPokemon": "Misdreavus",
                     "probabilityByTime": {
                         "morning": 0,
                         "day": 0,
                         "evening": 0,
-                        "night": 0
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Misdreavus"
+                        "night": 3
+                    }
                 },
                 {
                     "pokemon": "Basculin (Red-Striped)",
@@ -782,14 +782,14 @@
                         "max": 40
                     },
                     "subArea": "Lake",
+                    "groupRate": "70%",
+                    "groupPokemon": "Basculin",
                     "probabilityByTime": {
                         "morning": 60,
                         "day": 60,
                         "evening": 60,
                         "night": 60
-                    },
-                    "groupRate": "70%",
-                    "groupPokemon": "Basculin"
+                    }
                 },
                 {
                     "pokemon": "Basculin (Blue-Striped)",
@@ -800,14 +800,14 @@
                         "max": 40
                     },
                     "subArea": "Lake",
+                    "groupRate": "70%",
+                    "groupPokemon": "Basculin",
                     "probabilityByTime": {
                         "morning": 60,
                         "day": 60,
                         "evening": 60,
                         "night": 60
-                    },
-                    "groupRate": "70%",
-                    "groupPokemon": "Basculin"
+                    }
                 },
                 {
                     "pokemon": "Drednaw",
@@ -818,14 +818,14 @@
                         "max": 40
                     },
                     "subArea": "Lake",
+                    "groupRate": "100%",
+                    "groupPokemon": "Chewtle",
                     "probabilityByTime": {
                         "morning": 10,
                         "day": 10,
                         "evening": 10,
                         "night": 10
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Chewtle"
+                    }
                 },
                 {
                     "pokemon": "Dreepy",
@@ -852,14 +852,14 @@
                         "max": 40
                     },
                     "subArea": "Lake",
+                    "groupRate": "100%",
+                    "groupPokemon": "Wooper",
                     "probabilityByTime": {
                         "morning": 30,
                         "day": 30,
                         "evening": 30,
                         "night": 30
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Wooper"
+                    }
                 }
             ]
         },
@@ -955,14 +955,14 @@
                         "max": 40
                     },
                     "subArea": "Riverside",
+                    "groupRate": "100%",
+                    "groupPokemon": "Buizel",
                     "probabilityByTime": {
                         "morning": 10,
                         "day": 10,
                         "evening": 10,
                         "night": 10
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Buizel"
+                    }
                 },
                 {
                     "pokemon": "Basculin (Red-Striped)",
@@ -973,14 +973,14 @@
                         "max": 40
                     },
                     "subArea": "Riverside",
+                    "groupRate": "70%",
+                    "groupPokemon": "Basculin",
                     "probabilityByTime": {
                         "morning": 60,
                         "day": 60,
                         "evening": 60,
                         "night": 60
-                    },
-                    "groupRate": "70%",
-                    "groupPokemon": "Basculin"
+                    }
                 },
                 {
                     "pokemon": "Basculin (Blue-Striped)",
@@ -991,14 +991,14 @@
                         "max": 40
                     },
                     "subArea": "Riverside",
+                    "groupRate": "70%",
+                    "groupPokemon": "Basculin",
                     "probabilityByTime": {
                         "morning": 60,
                         "day": 60,
                         "evening": 60,
                         "night": 60
-                    },
-                    "groupRate": "70%",
-                    "groupPokemon": "Basculin"
+                    }
                 },
                 {
                     "pokemon": "Tynamo",
@@ -1009,14 +1009,14 @@
                         "max": 40
                     },
                     "subArea": "Riverside",
+                    "groupRate": "50%",
+                    "groupPokemon": "Tynamo",
                     "probabilityByTime": {
                         "morning": 60,
                         "day": 60,
                         "evening": 60,
                         "night": 60
-                    },
-                    "groupRate": "50%",
-                    "groupPokemon": "Tynamo"
+                    }
                 },
                 {
                     "pokemon": "Eelektrik",
@@ -1027,14 +1027,14 @@
                         "max": 40
                     },
                     "subArea": "Riverside",
+                    "groupRate": "100%",
+                    "groupPokemon": "Tynamo",
                     "probabilityByTime": {
                         "morning": 30,
                         "day": 30,
                         "evening": 30,
                         "night": 30
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Tynamo"
+                    }
                 },
                 {
                     "pokemon": "Drednaw",
@@ -1045,14 +1045,14 @@
                         "max": 40
                     },
                     "subArea": "Riverside",
+                    "groupRate": "100%",
+                    "groupPokemon": "Chewtle",
                     "probabilityByTime": {
                         "morning": 10,
                         "day": 10,
                         "evening": 10,
                         "night": 10
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Chewtle"
+                    }
                 },
                 {
                     "pokemon": "Barraskewda",
@@ -1063,14 +1063,14 @@
                         "max": 40
                     },
                     "subArea": "Riverside",
+                    "groupRate": "100%",
+                    "groupPokemon": "Arrokuda",
                     "probabilityByTime": {
                         "morning": 20,
                         "day": 20,
                         "evening": 20,
                         "night": 20
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Arrokuda"
+                    }
                 },
                 {
                     "pokemon": "Dreepy",
@@ -1097,14 +1097,14 @@
                         "max": 40
                     },
                     "subArea": "Riverside",
+                    "groupRate": "100%",
+                    "groupPokemon": "Tadbulb",
                     "probabilityByTime": {
                         "morning": 5,
                         "day": 5,
                         "evening": 5,
                         "night": 5
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Tadbulb"
+                    }
                 },
                 {
                     "pokemon": "Flamigo",
@@ -1216,14 +1216,14 @@
                         "max": 44
                     },
                     "subArea": "Ocean",
+                    "groupRate": "100%",
+                    "groupPokemon": "Buizel",
                     "probabilityByTime": {
                         "morning": 40,
                         "day": 40,
                         "evening": 40,
                         "night": 40
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Buizel"
+                    }
                 },
                 {
                     "pokemon": "Tynamo",
@@ -1234,14 +1234,14 @@
                         "max": 43
                     },
                     "subArea": "Ocean",
+                    "groupRate": "50%",
+                    "groupPokemon": "Tynamo",
                     "probabilityByTime": {
                         "morning": 60,
                         "day": 60,
                         "evening": 60,
                         "night": 60
-                    },
-                    "groupRate": "50%",
-                    "groupPokemon": "Tynamo"
+                    }
                 },
                 {
                     "pokemon": "Eelektrik",
@@ -1252,14 +1252,14 @@
                         "max": 44
                     },
                     "subArea": "Ocean",
+                    "groupRate": "100%",
+                    "groupPokemon": "Tynamo",
                     "probabilityByTime": {
                         "morning": 30,
                         "day": 30,
                         "evening": 30,
                         "night": 30
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Tynamo"
+                    }
                 },
                 {
                     "pokemon": "Skrelp",
@@ -1318,14 +1318,14 @@
                         "max": 44
                     },
                     "subArea": "Ocean",
+                    "groupRate": "100%",
+                    "groupPokemon": "Arrokuda",
                     "probabilityByTime": {
                         "morning": 20,
                         "day": 20,
                         "evening": 20,
                         "night": 20
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Arrokuda"
+                    }
                 },
                 {
                     "pokemon": "Kilowattrel",
@@ -1336,14 +1336,14 @@
                         "max": 44
                     },
                     "subArea": "Ocean",
+                    "groupRate": "40%",
+                    "groupPokemon": "Kilowattrel",
                     "probabilityByTime": {
                         "morning": 30,
                         "day": 30,
                         "evening": 30,
                         "night": 30
-                    },
-                    "groupRate": "40%",
-                    "groupPokemon": "Kilowattrel"
+                    }
                 },
                 {
                     "pokemon": "Bombirdier",
@@ -1370,14 +1370,14 @@
                         "max": 42
                     },
                     "subArea": "Ocean",
+                    "groupRate": "30%",
+                    "groupPokemon": "Finizen",
                     "probabilityByTime": {
                         "morning": 30,
                         "day": 30,
                         "evening": 30,
                         "night": 30
-                    },
-                    "groupRate": "30%",
-                    "groupPokemon": "Finizen"
+                    }
                 }
             ]
         },
@@ -1393,14 +1393,14 @@
                         "max": 42
                     },
                     "subArea": "Rocky Area",
+                    "groupRate": "100%",
+                    "groupPokemon": "Makuhita",
                     "probabilityByTime": {
                         "morning": 15,
                         "day": 15,
                         "evening": 15,
                         "night": 15
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Makuhita"
+                    }
                 },
                 {
                     "pokemon": "Honchkrow",
@@ -1411,14 +1411,14 @@
                         "max": 42
                     },
                     "subArea": "Rocky Area",
+                    "groupRate": "100%",
+                    "groupPokemon": "Murkrow",
                     "probabilityByTime": {
                         "morning": 0,
                         "day": 0,
-                        "evening": 0,
-                        "night": 0
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Murkrow"
+                        "evening": 20,
+                        "night": 20
+                    }
                 },
                 {
                     "pokemon": "Gogoat",
@@ -1429,14 +1429,14 @@
                         "max": 42
                     },
                     "subArea": "Rocky Area",
+                    "groupRate": "100%",
+                    "groupPokemon": "Gogoat",
                     "probabilityByTime": {
                         "morning": 30,
                         "day": 30,
                         "evening": 30,
                         "night": 30
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Gogoat"
+                    }
                 },
                 {
                     "pokemon": "Gumshoos",
@@ -1447,14 +1447,14 @@
                         "max": 39
                     },
                     "subArea": "Rocky Area",
+                    "groupRate": "100%",
+                    "groupPokemon": "Yungoos",
                     "probabilityByTime": {
                         "morning": 30,
                         "day": 30,
                         "evening": 30,
                         "night": 30
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Yungoos"
+                    }
                 },
                 {
                     "pokemon": "Copperajah",
@@ -1465,14 +1465,14 @@
                         "max": 42
                     },
                     "subArea": "Rocky Area",
+                    "groupRate": "100%",
+                    "groupPokemon": "Cufant",
                     "probabilityByTime": {
                         "morning": 20,
                         "day": 20,
                         "evening": 20,
                         "night": 20
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Cufant"
+                    }
                 },
                 {
                     "pokemon": "Lokix",
@@ -1499,14 +1499,14 @@
                         "max": 42
                     },
                     "subArea": "Rocky Area",
+                    "groupRate": "100%",
+                    "groupPokemon": "Nacli",
                     "probabilityByTime": {
                         "morning": 60,
                         "day": 60,
                         "evening": 60,
                         "night": 60
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Nacli"
+                    }
                 }
             ]
         },
@@ -1539,9 +1539,9 @@
                     },
                     "subArea": "Cave",
                     "probabilityByTime": {
-                        "morning": 1,
-                        "day": 1,
-                        "evening": 1,
+                        "morning": 0,
+                        "day": 0,
+                        "evening": 0,
                         "night": 1
                     }
                 },
@@ -1586,14 +1586,14 @@
                         "max": 43
                     },
                     "subArea": "Cave",
+                    "groupRate": "100%",
+                    "groupPokemon": "Makuhita",
                     "probabilityByTime": {
                         "morning": 10,
                         "day": 10,
                         "evening": 10,
                         "night": 10
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Makuhita"
+                    }
                 },
                 {
                     "pokemon": "Sableye",
@@ -1620,14 +1620,14 @@
                         "max": 44
                     },
                     "subArea": "Cave",
+                    "groupRate": "100%",
+                    "groupPokemon": "Meditite",
                     "probabilityByTime": {
                         "morning": 20,
                         "day": 20,
                         "evening": 20,
                         "night": 20
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Meditite"
+                    }
                 },
                 {
                     "pokemon": "Shelgon",
@@ -1654,14 +1654,14 @@
                         "max": 44
                     },
                     "subArea": "Cave",
+                    "groupRate": "100%",
+                    "groupPokemon": "Gible",
                     "probabilityByTime": {
                         "morning": 10,
                         "day": 10,
                         "evening": 10,
                         "night": 10
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Gible"
+                    }
                 },
                 {
                     "pokemon": "Deino",
@@ -1688,14 +1688,14 @@
                         "max": 40
                     },
                     "subArea": "Cave",
+                    "groupRate": "40%",
+                    "groupPokemon": "Salandit",
                     "probabilityByTime": {
                         "morning": 60,
                         "day": 60,
                         "evening": 60,
                         "night": 60
-                    },
-                    "groupRate": "40%",
-                    "groupPokemon": "Salandit"
+                    }
                 },
                 {
                     "pokemon": "Salazzle",
@@ -1706,14 +1706,14 @@
                         "max": 44
                     },
                     "subArea": "Cave",
+                    "groupRate": "100%",
+                    "groupPokemon": "Salandit",
                     "probabilityByTime": {
                         "morning": 5,
                         "day": 5,
                         "evening": 5,
                         "night": 5
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Salandit"
+                    }
                 },
                 {
                     "pokemon": "Toxtricity (Amped Form)",
@@ -1793,14 +1793,14 @@
                         "max": 43
                     },
                     "subArea": "Flower",
+                    "groupRate": "100%",
+                    "groupPokemon": "Hoppip",
                     "probabilityByTime": {
                         "morning": 20,
                         "day": 20,
                         "evening": 20,
                         "night": 20
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Hoppip"
+                    }
                 },
                 {
                     "pokemon": "Sunflora",
@@ -1812,9 +1812,9 @@
                     },
                     "subArea": "Flower",
                     "probabilityByTime": {
-                        "morning": 0,
-                        "day": 0,
-                        "evening": 0,
+                        "morning": 30,
+                        "day": 30,
+                        "evening": 30,
                         "night": 0
                     }
                 },
@@ -1827,14 +1827,14 @@
                         "max": 43
                     },
                     "subArea": "Flower",
+                    "groupRate": "100%",
+                    "groupPokemon": "Combee",
                     "probabilityByTime": {
                         "morning": 20,
                         "day": 20,
                         "evening": 20,
                         "night": 20
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Combee"
+                    }
                 },
                 {
                     "pokemon": "Lilligant",
@@ -1845,14 +1845,14 @@
                         "max": 43
                     },
                     "subArea": "Flower",
+                    "groupRate": "100%",
+                    "groupPokemon": "Petilil",
                     "probabilityByTime": {
                         "morning": 5,
                         "day": 5,
                         "evening": 5,
                         "night": 5
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Petilil"
+                    }
                 },
                 {
                     "pokemon": "Vivillon (Fancy Pattern)",
@@ -1879,14 +1879,14 @@
                         "max": 43
                     },
                     "subArea": "Flower",
+                    "groupRate": "40%",
+                    "groupPokemon": "Floette",
                     "probabilityByTime": {
                         "morning": 55,
                         "day": 55,
                         "evening": 55,
                         "night": 55
-                    },
-                    "groupRate": "40%",
-                    "groupPokemon": "Floette"
+                    }
                 },
                 {
                     "pokemon": "Floette (Yellow Flower)",
@@ -1897,14 +1897,14 @@
                         "max": 43
                     },
                     "subArea": "Flower",
+                    "groupRate": "40%",
+                    "groupPokemon": "Floette",
                     "probabilityByTime": {
                         "morning": 55,
                         "day": 55,
                         "evening": 55,
                         "night": 55
-                    },
-                    "groupRate": "40%",
-                    "groupPokemon": "Floette"
+                    }
                 },
                 {
                     "pokemon": "Floette (Orange Flower)",
@@ -1915,14 +1915,14 @@
                         "max": 43
                     },
                     "subArea": "Flower",
+                    "groupRate": "40%",
+                    "groupPokemon": "Floette",
                     "probabilityByTime": {
                         "morning": 55,
                         "day": 55,
                         "evening": 55,
                         "night": 55
-                    },
-                    "groupRate": "40%",
-                    "groupPokemon": "Floette"
+                    }
                 },
                 {
                     "pokemon": "Floette (Blue Flower)",
@@ -1933,14 +1933,14 @@
                         "max": 43
                     },
                     "subArea": "Flower",
+                    "groupRate": "40%",
+                    "groupPokemon": "Floette",
                     "probabilityByTime": {
                         "morning": 55,
                         "day": 55,
                         "evening": 55,
                         "night": 55
-                    },
-                    "groupRate": "40%",
-                    "groupPokemon": "Floette"
+                    }
                 },
                 {
                     "pokemon": "Floette (White Flower)",
@@ -1951,14 +1951,14 @@
                         "max": 43
                     },
                     "subArea": "Flower",
+                    "groupRate": "40%",
+                    "groupPokemon": "Floette",
                     "probabilityByTime": {
                         "morning": 3,
                         "day": 3,
                         "evening": 3,
                         "night": 3
-                    },
-                    "groupRate": "40%",
-                    "groupPokemon": "Floette"
+                    }
                 },
                 {
                     "pokemon": "Dolliv",
@@ -1969,14 +1969,14 @@
                         "max": 39
                     },
                     "subArea": "Flower",
+                    "groupRate": "100%",
+                    "groupPokemon": "Smoliv",
                     "probabilityByTime": {
                         "morning": 10,
                         "day": 10,
                         "evening": 10,
                         "night": 10
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Smoliv"
+                    }
                 }
             ]
         },

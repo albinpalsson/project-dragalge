@@ -9,6 +9,9 @@ interface ModalProps {
     dismissMode?: 'any' | 'closeButton' | 'none';
 }
 
+// Open modals in mount order; only the last one reacts to Escape.
+const openModalIds: string[] = [];
+
 export function Modal({
     title,
     onClose,
@@ -17,18 +20,25 @@ export function Modal({
     dismissMode = 'any',
 }: ModalProps) {
     const titleId = useId();
+    const modalId = useId();
+    useEffect(() => {
+        openModalIds.push(modalId);
+        return () => {
+            openModalIds.splice(openModalIds.indexOf(modalId), 1);
+        };
+    }, [modalId]);
     useEffect(() => {
         if (dismissMode !== 'any' || !onClose) {
             return;
         }
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') {
+            if (e.key === 'Escape' && openModalIds.at(-1) === modalId) {
                 onClose();
             }
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [onClose, dismissMode]);
+    }, [onClose, dismissMode, modalId]);
 
     const handleOverlayClick = (e: React.MouseEvent) => {
         if (e.target === e.currentTarget) {
@@ -106,7 +116,7 @@ const panel = css`
 
 const header = css`
     position: sticky;
-    top: 0;
+    top: calc(-1 * var(--space-4));
     z-index: 1;
     display: flex;
     justify-content: space-between;

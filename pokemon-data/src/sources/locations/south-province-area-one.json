@@ -9,8 +9,13 @@
             "encounters": [
                 {
                     "pokemon": "Hoppip",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 2,
                         "max": 8
@@ -27,8 +32,13 @@
                 },
                 {
                     "pokemon": "Happiny",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 5,
                         "max": 8
@@ -43,8 +53,13 @@
                 },
                 {
                     "pokemon": "Fletchling",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 2,
                         "max": 8
@@ -61,8 +76,13 @@
                 },
                 {
                     "pokemon": "Scatterbug",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 4,
                         "max": 6
@@ -77,8 +97,13 @@
                 },
                 {
                     "pokemon": "Lechonk",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 2,
                         "max": 8
@@ -93,8 +118,13 @@
                 },
                 {
                     "pokemon": "Tarountula",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 2,
                         "max": 8
@@ -109,8 +139,13 @@
                 },
                 {
                     "pokemon": "Pawmi",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 2,
                         "max": 8
@@ -127,8 +162,13 @@
                 },
                 {
                     "pokemon": "Pachirisu",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 5,
                         "max": 5
@@ -148,8 +188,13 @@
             "encounters": [
                 {
                     "pokemon": "Pichu",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 5,
                         "max": 8
@@ -164,8 +209,13 @@
                 },
                 {
                     "pokemon": "Bonsly",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 5,
                         "max": 8
@@ -180,8 +230,13 @@
                 },
                 {
                     "pokemon": "Bounsweet",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 5,
                         "max": 8
@@ -196,8 +251,13 @@
                 },
                 {
                     "pokemon": "Skwovet",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 5,
                         "max": 8
@@ -212,8 +272,13 @@
                 },
                 {
                     "pokemon": "Lechonk",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 5,
                         "max": 8
@@ -228,8 +293,13 @@
                 },
                 {
                     "pokemon": "Tarountula",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 5,
                         "max": 8
@@ -244,8 +314,13 @@
                 },
                 {
                     "pokemon": "Shroodle",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 5,
                         "max": 8
@@ -265,8 +340,13 @@
             "encounters": [
                 {
                     "pokemon": "Igglybuff",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 5,
                         "max": 8
@@ -281,8 +361,13 @@
                 },
                 {
                     "pokemon": "Ralts",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 5,
                         "max": 8
@@ -297,8 +382,13 @@
                 },
                 {
                     "pokemon": "Fidough",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 5,
                         "max": 8
@@ -318,8 +408,14 @@
             "encounters": [
                 {
                     "pokemon": "Psyduck",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "water_surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 6,
                         "max": 8
@@ -334,8 +430,14 @@
                 },
                 {
                     "pokemon": "Magikarp",
-                    "games": ["S", "V"],
-                    "terrain": ["water_surface", "underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "water_surface",
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 6,
                         "max": 8
@@ -350,8 +452,14 @@
                 },
                 {
                     "pokemon": "Wooper (Paldean Form)",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "water_surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 6,
                         "max": 8
@@ -366,8 +474,13 @@
                 },
                 {
                     "pokemon": "Surskit",
-                    "games": ["S", "V"],
-                    "terrain": ["water_surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 8,
                         "max": 8
@@ -382,8 +495,14 @@
                 },
                 {
                     "pokemon": "Azurill",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "water_surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 6,
                         "max": 8
@@ -398,8 +517,14 @@
                 },
                 {
                     "pokemon": "Chewtle",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "water_surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 6,
                         "max": 8
@@ -419,8 +544,14 @@
             "encounters": [
                 {
                     "pokemon": "Psyduck",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "water_surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 5,
                         "max": 8
@@ -435,8 +566,14 @@
                 },
                 {
                     "pokemon": "Magikarp",
-                    "games": ["S", "V"],
-                    "terrain": ["water_surface", "underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "water_surface",
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 2,
                         "max": 8
@@ -451,8 +588,13 @@
                 },
                 {
                     "pokemon": "Surskit",
-                    "games": ["S", "V"],
-                    "terrain": ["water_surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 8,
                         "max": 8
@@ -467,8 +609,14 @@
                 },
                 {
                     "pokemon": "Azurill",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "water_surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 5,
                         "max": 8
@@ -483,8 +631,14 @@
                 },
                 {
                     "pokemon": "Buizel",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "water_surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 2,
                         "max": 8
@@ -499,8 +653,13 @@
                 },
                 {
                     "pokemon": "Arrokuda",
-                    "games": ["S", "V"],
-                    "terrain": ["underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 2,
                         "max": 8
@@ -520,8 +679,14 @@
             "encounters": [
                 {
                     "pokemon": "Magikarp",
-                    "games": ["S", "V"],
-                    "terrain": ["water_surface", "underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "water_surface",
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 3,
                         "max": 7
@@ -536,8 +701,15 @@
                 },
                 {
                     "pokemon": "Wingull",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "overland", "sky"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "overland",
+                        "sky"
+                    ],
                     "levels": {
                         "min": 3,
                         "max": 7
@@ -552,8 +724,14 @@
                 },
                 {
                     "pokemon": "Buizel",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "water_surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 3,
                         "max": 7
@@ -568,8 +746,13 @@
                 },
                 {
                     "pokemon": "Arrokuda",
-                    "games": ["S", "V"],
-                    "terrain": ["underwater"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "underwater"
+                    ],
                     "levels": {
                         "min": 3,
                         "max": 7
@@ -589,8 +772,15 @@
             "encounters": [
                 {
                     "pokemon": "Wingull",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "overland", "sky"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "overland",
+                        "sky"
+                    ],
                     "levels": {
                         "min": 3,
                         "max": 6
@@ -605,8 +795,14 @@
                 },
                 {
                     "pokemon": "Buizel",
-                    "games": ["S", "V"],
-                    "terrain": ["land", "water_surface"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land",
+                        "water_surface"
+                    ],
                     "levels": {
                         "min": 3,
                         "max": 6
@@ -626,8 +822,13 @@
             "encounters": [
                 {
                     "pokemon": "Sunkern",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 5,
                         "max": 8
@@ -642,8 +843,13 @@
                 },
                 {
                     "pokemon": "Combee",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 5,
                         "max": 8
@@ -660,8 +866,13 @@
                 },
                 {
                     "pokemon": "Happiny",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 5,
                         "max": 8
@@ -676,8 +887,13 @@
                 },
                 {
                     "pokemon": "Spewpa",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 8,
                         "max": 8
@@ -691,9 +907,14 @@
                     }
                 },
                 {
-                    "pokemon": "Oricorio",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "pokemon": "Oricorio (Pom&#8209;Pom Style)",
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 5,
                         "max": 8
@@ -713,8 +934,13 @@
             "encounters": [
                 {
                     "pokemon": "Gastly",
-                    "games": ["S", "V"],
-                    "terrain": ["overland"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "overland"
+                    ],
                     "levels": {
                         "min": 4,
                         "max": 7
@@ -731,8 +957,13 @@
                 },
                 {
                     "pokemon": "Drowzee",
-                    "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "games": [
+                        "S",
+                        "V"
+                    ],
+                    "terrain": [
+                        "land"
+                    ],
                     "levels": {
                         "min": 4,
                         "max": 7

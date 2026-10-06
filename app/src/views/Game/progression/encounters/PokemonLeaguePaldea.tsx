@@ -88,9 +88,9 @@ export function PokemonLeaguePaldea({ isNext }: PokemonLeaguePaldeaProps) {
                         <EncounterTable
                             encounters={allEncounters}
                             disabled={encounterActions.isBusy}
-                            onPick={(encounter) =>
+                            onPick={(pokemonName) =>
                                 encounterActions.rollEncounter(
-                                    encounter.name,
+                                    pokemonName,
                                     LOCATION_NAME,
                                 )
                             }

@@ -1,11 +1,9 @@
-import { getRandomizerGroupKey } from '../randomizer-groups';
-
 export const DEFAULT_BAN_PRESET = [
     'Chansey',
     'Gyarados',
     'Annihilape',
     'Fuecoco',
-    'Palafin'
+    'Palafin',
 ] as const;
 export const PSEUDO_LEGENDARY_PRESET = [
     'Baxcalibur',
@@ -34,18 +32,13 @@ interface BuildBanReasonMapInput {
     getEvolutionFamily: (name: string) => readonly string[];
 }
 
-export function buildBanReasonMap(
-    input: BuildBanReasonMapInput,
-): BanReasonMap {
+export function buildBanReasonMap(input: BuildBanReasonMapInput): BanReasonMap {
     const result = new Map<string, BanReason>();
 
     if (input.dupesClauseEnabled) {
         for (const name of input.usedEncounterNames) {
             for (const familyName of input.getEvolutionFamily(name)) {
-                result.set(
-                    getRandomizerGroupKey(familyName),
-                    BAN_REASON.DupesClause,
-                );
+                result.set(toSpeciesName(familyName), BAN_REASON.DupesClause);
             }
         }
     }
@@ -55,10 +48,7 @@ export function buildBanReasonMap(
             ? input.getEvolutionFamily(name)
             : [name];
         for (const familyName of names) {
-            result.set(
-                getRandomizerGroupKey(familyName),
-                BAN_REASON.Settings,
-            );
+            result.set(toSpeciesName(familyName), BAN_REASON.Settings);
         }
     }
 
@@ -69,5 +59,10 @@ export function getBanReason(
     banReasons: BanReasonMap,
     pokemonName: string,
 ): string | undefined {
-    return banReasons.get(getRandomizerGroupKey(pokemonName));
+    return banReasons.get(toSpeciesName(pokemonName));
+}
+
+/** "Oinkologne (Female)" -> "Oinkologne"; every form of a species shares bans and the dupes clause. */
+export function toSpeciesName(pokemonName: string): string {
+    return pokemonName.replace(/\s*\([^)]*\)$/, '');
 }

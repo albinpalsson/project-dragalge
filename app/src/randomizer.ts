@@ -1,17 +1,25 @@
-import { getRandomizerGroupKey } from './randomizer-groups';
+import { getEncounterGroupKey, pickEncounterSpecies } from './pokemon-species';
 
 export type RandomizerMode = 'weighted' | 'normalized' | 'equal';
 
-export interface RandomizableEncounter {
-    name: string;
+export interface EncounterRates {
     morningRate: number;
     dayRate: number;
     eveningRate: number;
     nightRate: number;
 }
 
+export interface RandomizableEncounter extends EncounterRates {
+    name: string;
+}
+
+export interface EncounterOdds {
+    pokemonName: string;
+    chance: number;
+}
+
 /** A row's chance to appear, averaged across the four times of day. */
-export function getEffectiveWeight(encounter: RandomizableEncounter): number {
+export function getEffectiveWeight(encounter: EncounterRates): number {
     return (
         (encounter.morningRate +
             encounter.dayRate +
@@ -22,26 +30,38 @@ export function getEffectiveWeight(encounter: RandomizableEncounter): number {
 }
 
 /**
- * Rolls one species-group from a location's active encounter list. Rows
- * with no chance to appear (see `getEffectiveWeight`) are dropped first,
- * so every mode only ever has to weigh eligible rows.
- *
- * If the rolled group has multiple rows (forms or sub-areas), the first
- * concrete row is used as the resolved encounter.
+ * Every possible roll result with its chance (0-1). Rows with no chance
+ * to appear are dropped and rows in the same species group are one entry.
  */
-export function randomizeEncounter<T extends RandomizableEncounter>(
-    encounters: readonly T[],
+export function getEncounterOdds(
+    encounters: readonly RandomizableEncounter[],
+    mode: RandomizerMode,
+): EncounterOdds[] {
+    const groups = groupEncountersByKey(
+        encounters.filter((encounter) => getEffectiveWeight(encounter) > 0),
+    );
+    const weights = RANDOMIZER_MODES[mode].shapeGroupWeights(
+        groups.map((group) => getGroupWeight(group, mode)),
+    );
+    const total = weights.reduce((sum, weight) => sum + weight, 0);
+    return groups.map((group, index) => ({
+        pokemonName: group.groupKey,
+        chance: weights[index] / total,
+    }));
+}
+
+export function randomizeEncounter(
+    encounters: readonly RandomizableEncounter[],
     mode: RandomizerMode,
     random: () => number = Math.random,
-): T | undefined {
-    const eligible = encounters.filter(
-        (encounter) => getEffectiveWeight(encounter) > 0,
+): string | undefined {
+    const odds = getEncounterOdds(encounters, mode);
+    const group = pickWeighted(
+        odds,
+        odds.map((entry) => entry.chance),
+        random,
     );
-    const groups = groupEncountersByKey(eligible);
-    const shapedWeights = RANDOMIZER_MODES[mode].shapeGroupWeights(
-        groups.map(getGroupWeight),
-    );
-    return pickWeighted(groups, shapedWeights, random)?.members[0];
+    return group ? pickEncounterSpecies(group.pokemonName, random) : undefined;
 }
 
 interface EncounterGroup<T> {
@@ -49,21 +69,12 @@ interface EncounterGroup<T> {
     members: T[];
 }
 
-/**
- * Collapses encounter rows into one entry per species/merge-group, so a
- * Pokemon with several rows is rolled as a single option.
- *
- * Example:
- *   Input:  [Basculin@Prairie, Basculin (Red-Striped)@Lake, Fletchling@Prairie]
- *   Output: [{ groupKey: 'basculin', members: [...2 rows] },
- *            { groupKey: 'fletchling', members: [...1 row] }]
- */
 function groupEncountersByKey<T extends RandomizableEncounter>(
     encounters: readonly T[],
 ): EncounterGroup<T>[] {
     const groups = new Map<string, T[]>();
     for (const encounter of encounters) {
-        const groupKey = getRandomizerGroupKey(encounter.name);
+        const groupKey = getEncounterGroupKey(encounter.name);
         const members = groups.get(groupKey);
         if (members) {
             members.push(encounter);
@@ -77,23 +88,46 @@ function groupEncountersByKey<T extends RandomizableEncounter>(
     }));
 }
 
-/**
- * A group's weight rewards extra members, but with diminishing returns:
- * each row after the strongest counts at half the multiplier of the one
- * before it, so a species spread across many sub-areas doesn't drown out
- * a species that only has one.
- *
- * Example: a group of 3 rows each weighing 0.5 sums to
- * 0.5*1 + 0.5*0.5 + 0.5*0.25 = 0.875, not the naive 1.5.
- */
 function getGroupWeight<T extends RandomizableEncounter>(
     group: EncounterGroup<T>,
+    mode: RandomizerMode,
 ): number {
-    const weights = group.members.map(getEffectiveWeight).sort((a, b) => b - a);
-    return weights.reduce(
-        (sum, weight, index) => sum + weight * 0.5 ** index,
+    if (mode === 'weighted') {
+        return group.members.reduce(
+            (sum, encounter) => sum + getEffectiveWeight(encounter),
+            0,
+        );
+    }
+    if (mode === 'equal') {
+        return 1;
+    }
+
+    const weightsByName = new Map<string, number[]>();
+    for (const encounter of group.members) {
+        weightsByName.set(encounter.name, [
+            ...(weightsByName.get(encounter.name) ?? []),
+            getEffectiveWeight(encounter),
+        ]);
+    }
+    return [...weightsByName.values()].reduce(
+        (sum, weights) => sum + getDiminishingSum(weights),
         0,
     );
+}
+
+/**
+ * Rewards extra rows with diminishing returns: each row after the
+ * strongest counts at half the multiplier of the one before it, so a
+ * species spread across many sub-areas or forms doesn't drown out a
+ * species that only has one.
+ *
+ * Example: 3 rows each weighing 0.5 sum to
+ * 0.5*1 + 0.5*0.5 + 0.5*0.25 = 0.875, not the naive 1.5.
+ */
+function getDiminishingSum(weights: readonly number[]): number {
+    return [...weights]
+        .sort((a, b) => b - a)
+        .reduce((sum, weight, index) => sum + weight * 0.5 ** index, 0);
 }
 
 type WeightShaper = (groupWeights: readonly number[]) => number[];
@@ -117,7 +151,7 @@ function shapeNormalized(groupWeights: readonly number[]): number[] {
         if (weight < 5) {
             return weight;
         }
-        if (weight < 20) {
+        if (weight < 25) {
             return 25;
         }
         return 50;
@@ -126,45 +160,61 @@ function shapeNormalized(groupWeights: readonly number[]): number[] {
 
 const RANDOMIZER_MODES: Record<
     RandomizerMode,
-    { value: RandomizerMode; label: string; shapeGroupWeights: WeightShaper }
+    {
+        value: RandomizerMode;
+        label: string;
+        shortLabel: string;
+        description: string;
+        shapeGroupWeights: WeightShaper;
+    }
 > = {
     weighted: {
         value: 'weighted',
-        label: 'Weighted (realistic)',
+        label: 'Weighted',
+        shortLabel: 'Weighted',
+        description: "The randomizer uses the game's encounter rates as-is.",
         shapeGroupWeights: shapeWeighted,
     },
     normalized: {
         value: 'normalized',
-        label: 'Normalized (flattened)',
+        label: 'Normalized',
+        shortLabel: 'Normalized',
+        description:
+            'Rare Pokémon stay rare, but common Pokémon odds are evened out, so no single Pokémon shows up nearly every time. A Pokémon found in several sub-areas gets a small bonus, not a full extra share.',
         shapeGroupWeights: shapeNormalized,
     },
     equal: {
         value: 'equal',
         label: 'Equal chance',
+        shortLabel: 'Equal chance',
+        description:
+            'Every Pokémon that can appear in the area has the same chance, no matter how rare it is in the game.',
         shapeGroupWeights: shapeEqual,
     },
 };
 
-export const DEFAULT_RANDOMIZER_MODE: RandomizerMode = 'normalized';
-
 export const RANDOMIZER_MODE_OPTIONS: readonly {
     value: RandomizerMode;
     label: string;
-}[] = Object.values(RANDOMIZER_MODES).map(({ value, label }) => ({
-    value,
-    label,
-}));
+    shortLabel: string;
+    description: string;
+}[] = Object.values(RANDOMIZER_MODES).map(
+    ({ value, label, shortLabel, description }) => ({
+        value,
+        label,
+        shortLabel,
+        description,
+    }),
+);
 
 export function toRandomizerMode(value: string): RandomizerMode {
-    return value in RANDOMIZER_MODES
-        ? (value as RandomizerMode)
-        : DEFAULT_RANDOMIZER_MODE;
+    return value in RANDOMIZER_MODES ? (value as RandomizerMode) : 'normalized';
 }
 
 /**
  * Weighted random selection (roulette wheel): each item's chance is its
  * share of the total weight. Callers must only pass items with weight > 0
- * (see the zero-weight filter in `randomizeEncounter`).
+ * (see the zero-weight filter in `getEncounterOdds`).
  */
 function pickWeighted<T>(
     items: readonly T[],

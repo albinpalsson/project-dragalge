@@ -16,7 +16,9 @@ interface SouthProvinceAreaThreeProps {
     isNext?: boolean;
 }
 
-export function SouthProvinceAreaThree({ isNext }: SouthProvinceAreaThreeProps) {
+export function SouthProvinceAreaThree({
+    isNext,
+}: SouthProvinceAreaThreeProps) {
     const encountersQuery = useLocationEncounterCandidates(LOCATION_NAME);
     const encounterRoll = useEncounterRoll(LOCATION_NAME);
     const [isTableExpanded, setTableExpanded] = useState(false);
@@ -77,9 +79,9 @@ export function SouthProvinceAreaThree({ isNext }: SouthProvinceAreaThreeProps) 
                         <EncounterTable
                             encounters={allEncounters}
                             disabled={encounterActions.isBusy}
-                            onPick={(encounter) =>
+                            onPick={(pokemonName) =>
                                 encounterActions.rollEncounter(
-                                    encounter.name,
+                                    pokemonName,
                                     LOCATION_NAME,
                                 )
                             }

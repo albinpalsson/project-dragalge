@@ -36,8 +36,8 @@ export function RollActions({ locationName, encounters }: RollActionsProps) {
                 randomizerMode={game.randomizerMode}
                 hasExistingRoll={Boolean(encounterRoll)}
                 disabled={encounterActions.isBusy}
-                onPick={(encounter) =>
-                    encounterActions.rollEncounter(encounter.name, locationName)
+                onPick={(pokemonName) =>
+                    encounterActions.rollEncounter(pokemonName, locationName)
                 }
             />
             {encounterRoll && (

@@ -22,7 +22,7 @@
                         "morning": 20,
                         "day": 20,
                         "evening": 20,
-                        "night": 0
+                        "night": 20
                     }
                 },
                 {
@@ -43,7 +43,7 @@
                 },
                 {
                     "pokemon": "Misdreavus",
-                    "games": ["S", "V"],
+                    "games": ["V"],
                     "terrain": ["overland"],
                     "levels": {
                         "min": 13,
@@ -92,7 +92,7 @@
                 {
                     "pokemon": "Swablu",
                     "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "terrain": ["land", "overland"],
                     "levels": {
                         "min": 18,
                         "max": 20
@@ -107,7 +107,7 @@
                 },
                 {
                     "pokemon": "Drifloon",
-                    "games": ["S", "V"],
+                    "games": ["S"],
                     "terrain": ["overland"],
                     "levels": {
                         "min": 14,
@@ -155,6 +155,22 @@
                         "day": 40,
                         "evening": 40,
                         "night": 40
+                    }
+                },
+                {
+                    "pokemon": "Rockruff (Own Tempo)",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 13,
+                        "max": 17
+                    },
+                    "subArea": "Mountain",
+                    "probabilityByTime": {
+                        "morning": 2,
+                        "day": 2,
+                        "evening": 2,
+                        "night": 2
                     }
                 },
                 {
@@ -258,7 +274,7 @@
                 {
                     "pokemon": "Bombirdier",
                     "games": ["S", "V"],
-                    "terrain": ["land"],
+                    "terrain": ["land", "overland", "sky"],
                     "levels": {
                         "min": 19,
                         "max": 20
@@ -325,7 +341,7 @@
                     }
                 },
                 {
-                    "pokemon": "Basculin",
+                    "pokemon": "Basculin (Red-Striped)",
                     "games": ["S", "V"],
                     "terrain": ["underwater"],
                     "levels": {
@@ -336,10 +352,28 @@
                     "groupRate": "70%",
                     "groupPokemon": "Basculin",
                     "probabilityByTime": {
-                        "morning": 10,
-                        "day": 10,
-                        "evening": 10,
-                        "night": 10
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Basculin (Blue-Striped)",
+                    "games": ["S", "V"],
+                    "terrain": ["underwater"],
+                    "levels": {
+                        "min": 15,
+                        "max": 17
+                    },
+                    "subArea": "Riverside",
+                    "groupRate": "70%",
+                    "groupPokemon": "Basculin",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
                     }
                 },
                 {
@@ -721,7 +755,7 @@
                 },
                 {
                     "pokemon": "Larvitar",
-                    "games": ["S", "V"],
+                    "games": ["S"],
                     "terrain": ["land"],
                     "levels": {
                         "min": 16,
@@ -769,7 +803,7 @@
                 },
                 {
                     "pokemon": "Bagon",
-                    "games": ["S", "V"],
+                    "games": ["V"],
                     "terrain": ["land"],
                     "levels": {
                         "min": 16,
@@ -813,6 +847,24 @@
                         "day": 60,
                         "evening": 60,
                         "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Gumshoos",
+                    "games": ["S", "V"],
+                    "terrain": ["land"],
+                    "levels": {
+                        "min": 20,
+                        "max": 20
+                    },
+                    "subArea": "Cave",
+                    "groupRate": "100%",
+                    "groupPokemon": "Yungoos",
+                    "probabilityByTime": {
+                        "morning": 30,
+                        "day": 30,
+                        "evening": 30,
+                        "night": 30
                     }
                 },
                 {
@@ -1010,7 +1062,7 @@
                     }
                 },
                 {
-                    "pokemon": "Flabébé",
+                    "pokemon": "Flabébé (Red Flower)",
                     "games": ["S", "V"],
                     "terrain": ["overland"],
                     "levels": {
@@ -1028,7 +1080,79 @@
                     }
                 },
                 {
-                    "pokemon": "Floette",
+                    "pokemon": "Flabébé (Yellow Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 14,
+                        "max": 20
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "50%",
+                    "groupPokemon": "Flabébé",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Flabébé (Orange Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 14,
+                        "max": 20
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "50%",
+                    "groupPokemon": "Flabébé",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Flabébé (Blue Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 14,
+                        "max": 20
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "50%",
+                    "groupPokemon": "Flabébé",
+                    "probabilityByTime": {
+                        "morning": 60,
+                        "day": 60,
+                        "evening": 60,
+                        "night": 60
+                    }
+                },
+                {
+                    "pokemon": "Flabébé (White Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 14,
+                        "max": 20
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "50%",
+                    "groupPokemon": "Flabébé",
+                    "probabilityByTime": {
+                        "morning": 6,
+                        "day": 6,
+                        "evening": 6,
+                        "night": 6
+                    }
+                },
+                {
+                    "pokemon": "Floette (Red Flower)",
                     "games": ["S", "V"],
                     "terrain": ["overland"],
                     "levels": {
@@ -1043,6 +1167,78 @@
                         "day": 55,
                         "evening": 55,
                         "night": 55
+                    }
+                },
+                {
+                    "pokemon": "Floette (Yellow Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 19,
+                        "max": 20
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "40%",
+                    "groupPokemon": "Floette",
+                    "probabilityByTime": {
+                        "morning": 55,
+                        "day": 55,
+                        "evening": 55,
+                        "night": 55
+                    }
+                },
+                {
+                    "pokemon": "Floette (Orange Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 19,
+                        "max": 20
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "40%",
+                    "groupPokemon": "Floette",
+                    "probabilityByTime": {
+                        "morning": 55,
+                        "day": 55,
+                        "evening": 55,
+                        "night": 55
+                    }
+                },
+                {
+                    "pokemon": "Floette (Blue Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 19,
+                        "max": 20
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "40%",
+                    "groupPokemon": "Floette",
+                    "probabilityByTime": {
+                        "morning": 55,
+                        "day": 55,
+                        "evening": 55,
+                        "night": 55
+                    }
+                },
+                {
+                    "pokemon": "Floette (White Flower)",
+                    "games": ["S", "V"],
+                    "terrain": ["overland"],
+                    "levels": {
+                        "min": 19,
+                        "max": 20
+                    },
+                    "subArea": "Flower",
+                    "groupRate": "40%",
+                    "groupPokemon": "Floette",
+                    "probabilityByTime": {
+                        "morning": 3,
+                        "day": 3,
+                        "evening": 3,
+                        "night": 3
                     }
                 }
             ]

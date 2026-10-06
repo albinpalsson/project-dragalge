@@ -23,6 +23,7 @@ Add to `app/src/index.css`, mirrored in both the default (dark) `:root` block an
 | `--color-success` / `--color-success-bg` | Caught status — saturated text/icon color plus a subtle tinted background for chips. |
 | `--color-warning` / `--color-warning-bg` | Missed status. |
 | `--color-danger-bg` | Tinted background companion to the existing `--color-danger`, for Eliminated status chips (reuses `--color-danger` as the text/icon color). |
+| `--color-info` / `--color-info-bg` | Blue "very likely" hint in the randomizer-modes odds table (alongside the danger/warning/success `-bg` tints for rare/a bit rare/common). |
 | `--color-surface-alt` | Slightly offset from `--color-surface`/`--color-bg`, for zebra-striped table rows. |
 
 Guidance for choosing values: status colors should be legible on both dark and light themes, and the `-bg` variants should be subtle tints (low saturation/low opacity), not full solid fills — this matches the pill/chip look from the POC rather than painting whole cards or buttons in solid status colors.

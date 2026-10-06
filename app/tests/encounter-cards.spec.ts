@@ -1,8 +1,10 @@
 import { test, expect } from '@playwright/test';
 import {
+    boxSection,
     cardFor,
     createGame,
     expandCollapsedSummary,
+    openBox,
     resolveEncounter,
     rollEncounter,
     showMoreProgression,
@@ -48,7 +50,9 @@ test('West Province can exclude ocean encounters and remember the setting', asyn
     await expect(includeOcean).not.toBeChecked();
     await includeOcean.check();
     await card.getByRole('button', { name: 'Show encounters' }).click();
-    await expect(card.locator('tr', { hasText: 'Ocean' }).first()).toBeVisible();
+    await expect(
+        card.locator('tr', { hasText: 'Ocean' }).first(),
+    ).toBeVisible();
 
     await includeOcean.uncheck();
     await expect(card.locator('tr', { hasText: 'Ocean' })).toHaveCount(0);
@@ -64,7 +68,9 @@ test('West Province can exclude ocean encounters and remember the setting', asyn
         }),
     ).not.toBeChecked();
     await reloadedCard.getByRole('button', { name: 'Show encounters' }).click();
-    await expect(reloadedCard.locator('tr', { hasText: 'Ocean' })).toHaveCount(0);
+    await expect(reloadedCard.locator('tr', { hasText: 'Ocean' })).toHaveCount(
+        0,
+    );
 });
 
 test('a manual ban blocks the full evolution line when enabled', async ({
@@ -85,9 +91,14 @@ test('a manual ban blocks the full evolution line when enabled', async ({
     await addBanInput.press('Enter');
     await page.getByRole('button', { name: 'Start', exact: true }).click();
 
-    const southProvinceCard = cardFor(page, 'South Province (Area One)').first();
+    const southProvinceCard = cardFor(
+        page,
+        'South Province (Area One)',
+    ).first();
     await southProvinceCard.click();
-    await southProvinceCard.getByRole('button', { name: 'Show encounters' }).click();
+    await southProvinceCard
+        .getByRole('button', { name: 'Show encounters' })
+        .click();
 
     const hoppipRow = southProvinceCard
         .locator('tr', { hasText: 'Hoppip' })
@@ -118,7 +129,10 @@ test('catching Hoppip in Poco Path blocks it by dupes in South Province (Area On
         .click();
     await resolveEncounter(page, 'Poco Path', 'Caught');
 
-    const southProvinceCard = cardFor(page, 'South Province (Area One)').first();
+    const southProvinceCard = cardFor(
+        page,
+        'South Province (Area One)',
+    ).first();
     await southProvinceCard.click();
     await southProvinceCard
         .getByRole('button', { name: 'Show encounters' })
@@ -131,4 +145,33 @@ test('catching Hoppip in Poco Path blocks it by dupes in South Province (Area On
     await expect(
         hoppipRow.getByRole('button', { name: 'Pick Hoppip' }),
     ).toBeDisabled();
+});
+
+test('a manually picked form displays its group and remains concrete when caught', async ({
+    page,
+}) => {
+    await page.goto('/');
+    await createGame(page, 'manual-form-run');
+    await showMoreProgression(page);
+    await expandCollapsedSummary(page, 'West Province (Area One)');
+
+    const card = cardFor(page, 'West Province (Area One)').first();
+    await card.getByRole('button', { name: 'Show encounters' }).click();
+    await card
+        .locator('tr', { hasText: 'Basculin (Red-Striped)' })
+        .first()
+        .getByRole('button', { name: 'Pick Basculin (Red-Striped)' })
+        .click();
+
+    await expect(
+        card.getByRole('img', { name: 'Basculin', exact: true }),
+    ).toBeVisible();
+    await resolveEncounter(page, 'West Province (Area One)', 'Caught');
+    await openBox(page);
+    await expect(
+        boxSection(page, 'Party').getByRole('img', {
+            name: 'Basculin (Red-Striped)',
+            exact: true,
+        }),
+    ).toBeVisible();
 });

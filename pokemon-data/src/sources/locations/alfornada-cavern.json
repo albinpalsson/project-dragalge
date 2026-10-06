@@ -33,9 +33,9 @@
                     },
                     "subArea": "Cave",
                     "probabilityByTime": {
-                        "morning": 1,
-                        "day": 1,
-                        "evening": 1,
+                        "morning": 0,
+                        "day": 0,
+                        "evening": 0,
                         "night": 1
                     }
                 },
@@ -96,14 +96,14 @@
                         "max": 43
                     },
                     "subArea": "Cave",
+                    "groupRate": "100%",
+                    "groupPokemon": "Makuhita",
                     "probabilityByTime": {
                         "morning": 10,
                         "day": 10,
                         "evening": 10,
                         "night": 10
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Makuhita"
+                    }
                 },
                 {
                     "pokemon": "Sableye",
@@ -146,14 +146,14 @@
                         "max": 44
                     },
                     "subArea": "Cave",
+                    "groupRate": "100%",
+                    "groupPokemon": "Meditite",
                     "probabilityByTime": {
                         "morning": 20,
                         "day": 20,
                         "evening": 20,
                         "night": 20
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Meditite"
+                    }
                 },
                 {
                     "pokemon": "Bagon",
@@ -196,14 +196,14 @@
                         "max": 44
                     },
                     "subArea": "Cave",
+                    "groupRate": "100%",
+                    "groupPokemon": "Gible",
                     "probabilityByTime": {
                         "morning": 10,
                         "day": 10,
                         "evening": 10,
                         "night": 10
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Gible"
+                    }
                 },
                 {
                     "pokemon": "Deino",
@@ -230,14 +230,14 @@
                         "max": 39
                     },
                     "subArea": "Cave",
+                    "groupRate": "100%",
+                    "groupPokemon": "Yungoos",
                     "probabilityByTime": {
                         "morning": 30,
                         "day": 30,
                         "evening": 30,
                         "night": 30
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Yungoos"
+                    }
                 },
                 {
                     "pokemon": "Salandit",
@@ -248,14 +248,14 @@
                         "max": 40
                     },
                     "subArea": "Cave",
+                    "groupRate": "40%",
+                    "groupPokemon": "Salandit",
                     "probabilityByTime": {
                         "morning": 60,
                         "day": 60,
                         "evening": 60,
                         "night": 60
-                    },
-                    "groupRate": "40%",
-                    "groupPokemon": "Salandit"
+                    }
                 },
                 {
                     "pokemon": "Salazzle",
@@ -266,14 +266,14 @@
                         "max": 44
                     },
                     "subArea": "Cave",
+                    "groupRate": "100%",
+                    "groupPokemon": "Salandit",
                     "probabilityByTime": {
                         "morning": 5,
                         "day": 5,
                         "evening": 5,
                         "night": 5
-                    },
-                    "groupRate": "100%",
-                    "groupPokemon": "Salandit"
+                    }
                 },
                 {
                     "pokemon": "Toxtricity (Amped Form)",
