@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Checkbox } from '../../../../components/Checkbox';
 import { EncounterCollapsedSummary } from '../../../../components/EncounterCollapsedSummary';
 import { EncounterHeader } from '../../../../components/EncounterHeader';
 import { EncounterTable } from '../../../../components/EncounterTable';
@@ -8,6 +9,9 @@ import { RollActions } from '../../../../components/RollActions';
 import { RollResult } from '../../../../components/RollResult';
 import { useEncounterRoll } from '../../../../hooks/useEncounterRoll';
 import { useEncounterActions } from '../../../../hooks/useEncounterActions';
+import { usePersistentGameState } from '../../../../hooks/usePersistentGameState';
+import type { LocationEncounterView } from '../../../../db/pokemon-data/queries';
+import { useGame } from '../../GameContext';
 import { useLocationEncounterCandidates } from '../../queries';
 
 const LOCATION_NAME = 'South Province (Area One)';
@@ -17,8 +21,14 @@ interface SouthProvinceAreaOneProps {
 }
 
 export function SouthProvinceAreaOne({ isNext }: SouthProvinceAreaOneProps) {
+    const game = useGame();
     const encountersQuery = useLocationEncounterCandidates(LOCATION_NAME);
     const encounterRoll = useEncounterRoll(LOCATION_NAME);
+    const [includeOcean, setIncludeOcean] = usePersistentGameState(
+        game.id,
+        'SPA1-include-ocean-underwater',
+        false,
+    );
     const [isTableExpanded, setTableExpanded] = useState(false);
     const encounterActions = useEncounterActions();
 
@@ -36,6 +46,8 @@ export function SouthProvinceAreaOne({ isNext }: SouthProvinceAreaOneProps) {
     }
 
     const { allEncounters, rollableEncounters } = encountersQuery.data;
+    const activeEncounters = filter(allEncounters, includeOcean);
+    const activeRollableEncounters = filter(rollableEncounters, includeOcean);
 
     return (
         <ProgressionCard
@@ -48,7 +60,7 @@ export function SouthProvinceAreaOne({ isNext }: SouthProvinceAreaOneProps) {
                     areaName={encountersQuery.data.location.province}
                     locationName={LOCATION_NAME}
                     encounterRoll={encounterRoll}
-                    encounters={allEncounters}
+                    encounters={activeEncounters}
                     isNext={isNext}
                     zoomedIcon
                     onExpand={expand}
@@ -59,27 +71,34 @@ export function SouthProvinceAreaOne({ isNext }: SouthProvinceAreaOneProps) {
                 <>
                     <EncounterHeader
                         location={encountersQuery.data.location}
-                        encounters={allEncounters}
+                        encounters={activeEncounters}
                         canCollapse
                         onCollapse={collapse}
+                    />
+
+                    <Checkbox
+                        label="Include ocean/underwater encounters"
+                        checked={includeOcean}
+                        title="Ocean and underwater-only encounters are first accessible after defeating the Open Sky titan."
+                        onChange={setIncludeOcean}
                     />
 
                     <RollResult encounterRoll={encounterRoll} zoomedIcon />
 
                     <RollActions
                         locationName={LOCATION_NAME}
-                        encounters={rollableEncounters}
+                        encounters={activeRollableEncounters}
                     />
 
                     <EncounterTableToggle
                         expanded={isTableExpanded}
-                        count={allEncounters.length}
+                        count={activeEncounters.length}
                         onToggle={() => setTableExpanded((value) => !value)}
                     />
 
                     {isTableExpanded && (
                         <EncounterTable
-                            encounters={allEncounters}
+                            encounters={activeEncounters}
                             disabled={encounterActions.isBusy}
                             onPick={(pokemonName) =>
                                 encounterActions.rollEncounter(
@@ -93,4 +112,17 @@ export function SouthProvinceAreaOne({ isNext }: SouthProvinceAreaOneProps) {
             )}
         </ProgressionCard>
     );
+}
+
+function filter(
+    encounters: LocationEncounterView[],
+    includeOcean: boolean,
+): LocationEncounterView[] {
+    return includeOcean
+        ? encounters
+        : encounters.filter(
+              (encounter) =>
+                  encounter.subArea !== 'Ocean' &&
+                  encounter.terrain !== 'underwater',
+          );
 }
