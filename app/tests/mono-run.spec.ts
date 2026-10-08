@@ -139,7 +139,9 @@ test('mono lookup updates encounter reasons and rollable pools when settings cha
     await page.getByRole('button', { name: 'Close dialog' }).click();
     await expect(hoppipRow).not.toContainText('Not allowed in mono run');
     await expect(lechonkRow.getByRole('button')).toBeDisabled();
-    await expect(card.getByRole('button', { name: 'Randomize', exact: true })).toBeEnabled();
+    await expect(
+        card.getByRole('button', { name: 'Randomize', exact: true }),
+    ).toBeEnabled();
     await expect(card.getByRole('button', { name: 'Confirm' })).toHaveCount(0);
 
     await page.getByRole('button', { name: 'Game settings' }).click();
@@ -154,7 +156,9 @@ test('starters ignore mono exclusion but still honor manual bans when picked or 
 }) => {
     await createMonoGame(page, 'mono-starter-manual-ban-run', 'fire');
     await page.getByRole('button', { name: 'Game settings' }).click();
-    const banInput = page.getByRole('combobox', { name: 'Add a Pok\u00e9mon ban' });
+    const banInput = page.getByRole('combobox', {
+        name: 'Add a Pok\u00e9mon ban',
+    });
     for (const name of ['Fuecoco', 'Quaxly']) {
         await banInput.fill(name);
         await banInput.press('Enter');
@@ -165,12 +169,20 @@ test('starters ignore mono exclusion but still honor manual bans when picked or 
     await page.getByRole('button', { name: 'Close dialog' }).click();
 
     const options = starterOptions(page);
-    await expect(options.filter({ hasText: 'Fuecoco' })).toContainText('Banned by game settings');
-    await expect(options.filter({ hasText: 'Quaxly' })).toContainText('Banned by game settings');
-    await expect(options.filter({ hasText: 'Sprigatito' }).getByRole('button')).toBeEnabled();
+    await expect(options.filter({ hasText: 'Fuecoco' })).toContainText(
+        'Banned by game settings',
+    );
+    await expect(options.filter({ hasText: 'Quaxly' })).toContainText(
+        'Banned by game settings',
+    );
+    await expect(
+        options.filter({ hasText: 'Sprigatito' }).getByRole('button'),
+    ).toBeEnabled();
     const card = cardFor(page, 'Starter').first();
     await card.getByRole('button', { name: 'Randomize', exact: true }).click();
-    await expect(card.getByRole('img', { name: 'Sprigatito', exact: true })).toBeVisible();
+    await expect(
+        card.getByRole('img', { name: 'Sprigatito', exact: true }),
+    ).toBeVisible();
 });
 
 test('raid lookup preserves exact-form typing and forward-only future evolution eligibility', async ({
@@ -183,9 +195,18 @@ test('raid lookup preserves exact-form typing and forward-only future evolution 
         name: 'Add a 1-star Tera Raid Pok\u00e9mon',
     });
     await picker.fill('Tauros');
-    await expect(page.getByRole('option', { name: 'Tauros (Blaze Breed)', exact: true })).toBeVisible();
-    await expect(page.getByRole('option', { name: 'Tauros (Aqua Breed)', exact: true })).toHaveCount(0);
-    await expect(page.getByRole('option', { name: 'Tauros (Combat Breed)', exact: true })).toHaveCount(0);
+    await expect(
+        page.getByRole('option', { name: 'Tauros (Blaze Breed)', exact: true }),
+    ).toBeVisible();
+    await expect(
+        page.getByRole('option', { name: 'Tauros (Aqua Breed)', exact: true }),
+    ).toHaveCount(0);
+    await expect(
+        page.getByRole('option', {
+            name: 'Tauros (Combat Breed)',
+            exact: true,
+        }),
+    ).toHaveCount(0);
 
     await page.getByRole('button', { name: 'Game settings' }).click();
     await page.getByLabel('Mono type').selectOption('ghost');
@@ -193,19 +214,29 @@ test('raid lookup preserves exact-form typing and forward-only future evolution 
     await expect(page.getByText('Saving...', { exact: true })).toHaveCount(0);
     await page.getByRole('button', { name: 'Close dialog' }).click();
     await picker.fill('Fuecoco');
-    await expect(page.getByRole('option', { name: 'Fuecoco', exact: true })).toHaveCount(0);
+    await expect(
+        page.getByRole('option', { name: 'Fuecoco', exact: true }),
+    ).toHaveCount(0);
 
     await page.getByRole('button', { name: 'Game settings' }).click();
     await page.getByLabel('Allow future evolutions').check();
-    await expect(page.getByRole('option', { name: 'Fuecoco', exact: true })).toBeVisible();
+    await expect(
+        page.getByRole('option', { name: 'Fuecoco', exact: true }),
+    ).toBeVisible();
     await page.getByRole('button', { name: 'Close dialog' }).click();
 
     await page.getByRole('button', { name: 'Game settings' }).click();
     await page.getByLabel('Mono type').selectOption('normal');
-    await expect(page.getByRole('option', { name: 'Fuecoco', exact: true })).toHaveCount(0);
+    await expect(
+        page.getByRole('option', { name: 'Fuecoco', exact: true }),
+    ).toHaveCount(0);
     await page.getByRole('button', { name: 'Close dialog' }).click();
     await picker.fill('Eevee');
-    await expect(page.getByRole('option', { name: 'Eevee', exact: true })).toBeVisible();
+    await expect(
+        page.getByRole('option', { name: 'Eevee', exact: true }),
+    ).toBeVisible();
     await picker.fill('Espeon');
-    await expect(page.getByRole('option', { name: 'Espeon', exact: true })).toHaveCount(0);
+    await expect(
+        page.getByRole('option', { name: 'Espeon', exact: true }),
+    ).toHaveCount(0);
 });
