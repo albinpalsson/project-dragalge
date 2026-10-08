@@ -4,6 +4,7 @@ export const GAME_RUN_SNAPSHOTS_QUERY_KEY = ['game-run-snapshots'];
 export const STARTERS_QUERY_KEY = ['starters'];
 export const TYPE_CHART_QUERY_KEY = ['type-chart'];
 export const EVOLUTION_GRAPH_QUERY_KEY = ['evolution-graph'];
+export const POKEMON_TYPE_CATALOG_QUERY_KEY = ['pokemon-type-catalog'];
 
 export const gameRunQueryKey = (gameRunName: string) => [
     'game-run',

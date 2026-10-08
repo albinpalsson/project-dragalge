@@ -23,10 +23,8 @@ export function ProgressionTimeline() {
     );
     const [showPrevious, setShowPrevious] = useState(false);
     const [showMore, setShowMore] = useState(false);
-    const { previousItems, windowItems, futureItems } = partitionProgressionItems(
-        visibleItems,
-        windowBounds,
-    );
+    const { previousItems, windowItems, futureItems } =
+        partitionProgressionItems(visibleItems, windowBounds);
     const itemsToRender = [
         ...(showPrevious ? previousItems : []),
         ...windowItems,
@@ -134,11 +132,9 @@ function calculateProgressionWindow(
     const matchedNextIndex = visibleItems.findIndex(
         ({ item }) => item.key === nextKey,
     );
-    const nextIndex = matchedNextIndex < 0 ? visibleItems.length : matchedNextIndex;
-    const startVisibleIndex = Math.max(
-        0,
-        nextIndex - ITEMS_BEFORE_NEXT_STEP,
-    );
+    const nextIndex =
+        matchedNextIndex < 0 ? visibleItems.length : matchedNextIndex;
+    const startVisibleIndex = Math.max(0, nextIndex - ITEMS_BEFORE_NEXT_STEP);
     const checkpointIndices: number[] = [];
 
     for (

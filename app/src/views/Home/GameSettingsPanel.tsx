@@ -7,6 +7,7 @@ import { PokemonAutocomplete } from '../../components/PokemonAutocomplete';
 import { RandomizerModesGuide } from '../../components/RandomizerModesGuide';
 import { Select } from '../../components/Select';
 import { RANDOMIZER_MODE_OPTIONS } from '../../randomizer';
+import { POKEMON_TYPES } from '../../utils/pokemon-types';
 import type { FullGameSettingsValue } from '../../utils/game-setting-presets';
 
 interface Preset {
@@ -31,7 +32,10 @@ export function GameSettingsPanel({
 }: GameSettingsPanelProps) {
     const banListSet = new Set(value.banList);
     const [isModesGuideOpen, setModesGuideOpen] = useState(false);
-
+    const monoRunTypeOptions = POKEMON_TYPES.map((type) => ({
+        value: type,
+        label: `${type.charAt(0).toUpperCase()}${type.slice(1)}`,
+    }));
     const addNames = (names: readonly string[]) => {
         onChange({
             ...value,
@@ -51,8 +55,8 @@ export function GameSettingsPanel({
                     onChange={(randomizerMode) =>
                         onChange({
                             ...value,
-                            randomizerMode: randomizerMode as
-                                FullGameSettingsValue['randomizerMode'],
+                            randomizerMode:
+                                randomizerMode as FullGameSettingsValue['randomizerMode'],
                         })
                     }
                     options={[...RANDOMIZER_MODE_OPTIONS]}
@@ -77,6 +81,37 @@ export function GameSettingsPanel({
                 </Modal>
             )}
             <Checkbox
+                label="Mono run"
+                checked={value.monoRunEnabled}
+                title="Only Pokémon of a single type can be used."
+                onChange={(monoRunEnabled) =>
+                    onChange({ ...value, monoRunEnabled })
+                }
+            />
+            {value.monoRunEnabled && (
+                <>
+                    <Select
+                        label="Mono type"
+                        value={value.monoRunType}
+                        onChange={(monoRunType) =>
+                            onChange({ ...value, monoRunType })
+                        }
+                        options={monoRunTypeOptions}
+                    />
+                    <Checkbox
+                        label="Allow future evolutions"
+                        checked={value.monoRunFutureEvolutions}
+                        title="Also allow Pokémon that can later evolve into the mono type."
+                        onChange={(monoRunFutureEvolutions) =>
+                            onChange({
+                                ...value,
+                                monoRunFutureEvolutions,
+                            })
+                        }
+                    />
+                </>
+            )}
+            <Checkbox
                 label="Dupes clause"
                 checked={value.dupesClauseEnabled}
                 title="Prevents using multiple Pokémon from the same evolution line."
@@ -84,28 +119,36 @@ export function GameSettingsPanel({
                     onChange({ ...value, dupesClauseEnabled })
                 }
             />
-            <Checkbox
-                label="Release starter"
-                checked={value.releaseStarterEnabled}
-                onChange={(releaseStarterEnabled) =>
-                    onChange({ ...value, releaseStarterEnabled })
-                }
-            />
-            <Select
-                label="Tera raids"
-                value={value.teraRaids}
-                onChange={(teraRaids) =>
-                    onChange({
-                        ...value,
-                        teraRaids: teraRaids as FullGameSettingsValue['teraRaids'],
-                    })
-                }
-                options={[
-                    { value: 'none', label: 'None' },
-                    { value: 'single', label: 'Single encounter per ★ rating' },
-                    { value: 'unlimited', label: 'Unlimited' },
-                ]}
-            />
+            {!value.monoRunEnabled && (
+                <Checkbox
+                    label="Release starter"
+                    checked={value.releaseStarterEnabled}
+                    onChange={(releaseStarterEnabled) =>
+                        onChange({ ...value, releaseStarterEnabled })
+                    }
+                />
+            )}
+            {!value.monoRunEnabled && (
+                <Select
+                    label="Tera raids"
+                    value={value.teraRaids}
+                    onChange={(teraRaids) =>
+                        onChange({
+                            ...value,
+                            teraRaids:
+                                teraRaids as FullGameSettingsValue['teraRaids'],
+                        })
+                    }
+                    options={[
+                        { value: 'none', label: 'None' },
+                        {
+                            value: 'single',
+                            label: 'Single encounter per ★ rating',
+                        },
+                        { value: 'unlimited', label: 'Unlimited' },
+                    ]}
+                />
+            )}
             <Checkbox
                 label="Show helpful support milestones"
                 checked={value.showHelpfulTips}
@@ -136,7 +179,9 @@ export function GameSettingsPanel({
                         const addsNoNewNames =
                             preset.names.length > 0 &&
                             preset.names.every((name) => banListSet.has(name));
-                        const isDisabled = Boolean(preset.disabled || addsNoNewNames);
+                        const isDisabled = Boolean(
+                            preset.disabled || addsNoNewNames,
+                        );
                         const title = preset.title
                             ? preset.title
                             : addsNoNewNames
@@ -167,7 +212,9 @@ export function GameSettingsPanel({
                             onClick={() =>
                                 onChange({
                                     ...value,
-                                    banList: value.banList.filter((item) => item !== name),
+                                    banList: value.banList.filter(
+                                        (item) => item !== name,
+                                    ),
                                 })
                             }
                             ariaLabel={`Remove ${name} from ban list`}

@@ -2,6 +2,7 @@ import { invalidateQueries } from '@pokedb2/server-query';
 import { useClient, useMutation, useQuery } from '../../server-query';
 import {
     addEncounterRoll,
+    skipEncounter,
     type UpdateGameRunSettingsInput,
     clearEncounterRoll,
     getGameRun,
@@ -32,9 +33,7 @@ import {
     bossBattleProgressQueryKey,
     TYPE_CHART_QUERY_KEY,
 } from '../../query-keys';
-import { getBanReason } from '../../utils/ban-list';
 import { filterEncountersForVariant } from '../../utils/game-variant';
-import { useBanReasons } from '../../hooks/useBanReasons';
 import { useGame } from './GameContext';
 
 export function useGameRunQuery(gameRunName: string) {
@@ -69,7 +68,6 @@ export function useLocationEncountersQuery(locationName: string) {
 export function useLocationEncounterCandidates(locationName: string) {
     const query = useLocationEncountersQuery(locationName);
     const game = useGame();
-    const banReasons = useBanReasons();
 
     if (!query.isSuccess) {
         return query;
@@ -81,7 +79,7 @@ export function useLocationEncounterCandidates(locationName: string) {
         game.run.variant,
     );
     const rollableEncounters = allEncounters.filter(
-        (encounter) => !getBanReason(banReasons, encounter.name),
+        (encounter) => !game.getBanReason(encounter.name),
     );
 
     return {
@@ -138,6 +136,10 @@ function useRollMutation<TInput extends { gameRunId: number }, TResult>(
 
 export function useAddEncounterRollMutation() {
     return useRollMutation(addEncounterRoll);
+}
+
+export function useSkipEncounterMutation() {
+    return useRollMutation(skipEncounter);
 }
 
 export function useSetEncounterRollStatusMutation() {

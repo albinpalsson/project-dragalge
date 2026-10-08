@@ -19,16 +19,13 @@ export function useProgressionTracker(): ProgressionTracker {
     const starter = useStarter();
     const bossProgressQuery = useBossBattleProgressQuery(game.id);
     const bossProgress = bossProgressQuery.data ?? [];
-    const visibleItems = getVisibleProgressionItems({
+    const state = {
         settings: game.settings,
         encounters: game.encounters,
-    });
+    };
+    const visibleItems = getVisibleProgressionItems(state);
     const countedItems = visibleItems.filter(
-        (item) =>
-            item.countsTowardProgress?.({
-                settings: game.settings,
-                encounters: game.encounters,
-            }) ?? true,
+        (item) => item.countsTowardProgress?.(state) ?? true,
     );
 
     const isResolved = (item: ProgressionItem): boolean => {
@@ -40,10 +37,7 @@ export function useProgressionTracker(): ProgressionTracker {
             );
         }
         if (item.kind === 'action') {
-            return item.isResolved({
-                settings: game.settings,
-                encounters: game.encounters,
-            });
+            return item.isResolved(state);
         }
         if (item.kind === 'raid') {
             return isRaidResolved(game.encounters, item.stars);

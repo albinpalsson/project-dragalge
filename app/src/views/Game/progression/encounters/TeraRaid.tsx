@@ -8,11 +8,9 @@ import { PokemonIcon } from '../../../../components/PokemonIcon';
 import { ProgressionCard } from '../../../../components/ProgressionCard';
 import { ProgressionDescription } from '../../../../components/ProgressionDescription';
 import { StatusChip } from '../../../../components/StatusChip';
-import { useBanReasons } from '../../../../hooks/useBanReasons';
 import { useEncounterActions } from '../../../../hooks/useEncounterActions';
 import { usePokemonListQuery } from '../../../../hooks/usePokemonListQuery';
 import { getEncounterGroupKey } from '../../../../pokemon-species';
-import { getBanReason } from '../../../../utils/ban-list';
 import {
     TERA_RAID_CAUGHT_LEVELS,
     formatTeraRaidDisplayName,
@@ -31,7 +29,6 @@ interface TeraRaidProps {
 export function TeraRaid({ stars, isNext, zoomedIcon }: TeraRaidProps) {
     const game = useGame();
     const pokemonQuery = usePokemonListQuery();
-    const banReasons = useBanReasons();
     const encounterActions = useEncounterActions();
 
     const caughtLevel = TERA_RAID_CAUGHT_LEVELS[stars];
@@ -58,9 +55,8 @@ export function TeraRaid({ stars, isNext, zoomedIcon }: TeraRaidProps) {
             ? rows[0].row.status
             : undefined;
     const suggestions = (pokemonQuery.data ?? []).filter(
-        (name) => !getBanReason(banReasons, name),
+        (name) => !game.getBanReason(name),
     );
-
     const addPokemon = (pokemonName: string) => {
         const sequence = nextTeraRaidSequence(
             rows.map(({ row }) => row.location_name),

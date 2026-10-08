@@ -1,7 +1,6 @@
 import { css } from '@pokedb2/css-in-js';
 import type { LocationEncounterView } from '../db/pokemon-data/queries';
-import { useBanReasons } from '../hooks/useBanReasons';
-import { getBanReason } from '../utils/ban-list';
+import { useGame } from '../views/Game/GameContext';
 import {
     formatLevelRange,
     formatTime,
@@ -19,7 +18,7 @@ export function EncounterTable({
     disabled,
     onPick,
 }: EncounterTableProps) {
-    const banReasons = useBanReasons();
+    const { getBanReason } = useGame();
     return (
         <div className={tableWrap}>
             <table className={table}>
@@ -36,10 +35,7 @@ export function EncounterTable({
                 </thead>
                 <tbody>
                     {encounters.map((encounter) => {
-                        const banReason = getBanReason(
-                            banReasons,
-                            encounter.name,
-                        );
+                        const banReason = getBanReason(encounter.name);
                         const isPickDisabled = disabled || !!banReason;
 
                         return (

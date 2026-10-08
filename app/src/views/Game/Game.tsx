@@ -3,6 +3,7 @@ import { HeaderSlot } from '../../components/HeaderSlot';
 import { Box } from './Box/Box';
 import { GameProvider, useGame } from './GameContext';
 import { useEvolutionGraphQuery } from '../../hooks/useEvolutionGraphQuery';
+import { usePokemonTypeCatalogQuery } from '../../hooks/usePokemonTypeCatalogQuery';
 import { ProgressionTimeline } from './progression/ProgressionTimeline';
 import {
     useBanListEntriesQuery,
@@ -11,7 +12,13 @@ import {
     useGameRunQuery,
 } from './queries';
 import { GameSettingsModal } from './GameSettingsModal';
-import { buildBanReasonMap } from '../../utils/ban-list';
+import {
+    BAN_REASON,
+    buildSpeciesBans,
+    type GetBanReason,
+    toSpeciesName,
+} from '../../utils/ban-list';
+import { getMonoRunEligibleNames } from '../../utils/mono-run';
 
 interface GameProps {
     gameRunId: string;
@@ -40,7 +47,7 @@ type Game = NonNullable<ReturnType<typeof useGameRunQuery>['data']>;
 function LoadedGame({ game }: { game: Game }) {
     const encounterRollsQuery = useEncounterRollsQuery(game.id);
     const bossBattleProgressQuery = useBossBattleProgressQuery(game.id);
-    const banReasonsMap = useBanReasonsMap(game);
+    const banReasonResult = useGameBanReason(game);
 
     if (encounterRollsQuery.isError) {
         return (
@@ -51,10 +58,10 @@ function LoadedGame({ game }: { game: Game }) {
         );
     }
 
-    if (banReasonsMap.status === 'error') {
-        return <p>Error loading ban list: {banReasonsMap.error.message}</p>;
+    if (banReasonResult.status === 'error') {
+        return <p>Error loading ban list: {banReasonResult.error.message}</p>;
     }
-    
+
     if (bossBattleProgressQuery.isError) {
         return (
             <p>
@@ -66,13 +73,13 @@ function LoadedGame({ game }: { game: Game }) {
 
     if (
         encounterRollsQuery.isPending ||
-        banReasonsMap.status === 'pending' ||
+        banReasonResult.status === 'pending' ||
         bossBattleProgressQuery.isPending
     ) {
         return <p>Loading game...</p>;
     }
 
-    if (banReasonsMap.status !== 'ready') {
+    if (banReasonResult.status !== 'ready') {
         return <p>Loading game...</p>;
     }
 
@@ -84,7 +91,7 @@ function LoadedGame({ game }: { game: Game }) {
                 settings: game.settings,
                 randomizerMode: game.settings.randomizerMode,
                 encounters: encounterRollsQuery.data,
-                banReasons: banReasonsMap.banReasons,
+                getBanReason: banReasonResult.getBanReason,
             }}
         >
             <GameContent key={game.id} />
@@ -92,20 +99,25 @@ function LoadedGame({ game }: { game: Game }) {
     );
 }
 
-type BanReasonsMapResult =
+type GameBanReasonResult =
     | { status: 'pending' }
     | { status: 'error'; error: Error }
-    | { status: 'ready'; banReasons: ReturnType<typeof buildBanReasonMap> };
+    | {
+          status: 'ready';
+          getBanReason: GetBanReason;
+      };
 
-function useBanReasonsMap(game: Game): BanReasonsMapResult {
+function useGameBanReason(game: Game): GameBanReasonResult {
     const encounterRollsQuery = useEncounterRollsQuery(game.id);
     const banListEntriesQuery = useBanListEntriesQuery(game.id);
     const evolutionGraphQuery = useEvolutionGraphQuery();
+    const typeCatalogQuery = usePokemonTypeCatalogQuery();
 
     if (
         encounterRollsQuery.isPending ||
         banListEntriesQuery.isPending ||
-        evolutionGraphQuery.isPending
+        evolutionGraphQuery.isPending ||
+        typeCatalogQuery.isPending
     ) {
         return { status: 'pending' };
     }
@@ -119,7 +131,9 @@ function useBanReasonsMap(game: Game): BanReasonsMapResult {
     if (evolutionGraphQuery.isError) {
         return { status: 'error', error: evolutionGraphQuery.error };
     }
-
+    if (typeCatalogQuery.isError) {
+        return { status: 'error', error: typeCatalogQuery.error };
+    }
     const usedEncounterNames = encounterRollsQuery.data
         .filter(
             (encounter) =>
@@ -128,17 +142,38 @@ function useBanReasonsMap(game: Game): BanReasonsMapResult {
         )
         .map((encounter) => encounter.pokemon_name);
 
+    const monoRunEligibleNames = getMonoRunEligibleNames(
+        game.settings,
+        typeCatalogQuery.data,
+        evolutionGraphQuery.data,
+    );
+
+    const speciesBans = buildSpeciesBans({
+        manualBanNames: banListEntriesQuery.data.map(
+            (entry) => entry.pokemon_name,
+        ),
+        getEvolutionFamily: evolutionGraphQuery.data.getEvolutionFamily,
+        banFullEvolutionLines: game.settings.banFullEvolutionLines,
+        dupesClauseEnabled: game.settings.dupesClauseEnabled,
+        usedEncounterNames,
+    });
+
     return {
         status: 'ready',
-        banReasons: buildBanReasonMap({
-            manualBanNames: banListEntriesQuery.data.map(
-                (entry) => entry.pokemon_name,
-            ),
-            getEvolutionFamily: evolutionGraphQuery.data.getEvolutionFamily,
-            banFullEvolutionLines: game.settings.banFullEvolutionLines,
-            dupesClauseEnabled: game.settings.dupesClauseEnabled,
-            usedEncounterNames,
-        }),
+        getBanReason(pokemonName, options) {
+            const speciesBan = speciesBans.get(toSpeciesName(pokemonName));
+            if (speciesBan) {
+                return speciesBan;
+            }
+            if (
+                !options?.ignoreMonoRun &&
+                monoRunEligibleNames &&
+                !monoRunEligibleNames.has(pokemonName)
+            ) {
+                return BAN_REASON.MonoRun;
+            }
+            return undefined;
+        },
     };
 }
 
@@ -176,4 +211,3 @@ const gameName = css`
     text-overflow: ellipsis;
     white-space: nowrap;
 `;
-

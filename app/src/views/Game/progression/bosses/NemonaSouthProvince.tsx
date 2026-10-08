@@ -6,7 +6,7 @@ import { ProgressionCard } from '../../../../components/ProgressionCard';
 import { useBossActions } from '../../../../hooks/useBossActions';
 import { useStarter } from '../../../../hooks/useStarter';
 import { getStarterBattleName } from '../../../../db/pokemon-data/starter-battles';
-import { STARTER_NAMES } from '../../../Game/StarterCard';
+import { STARTER_NAMES } from '../../../../utils/starter-choices';
 import { useBossBattleRosterQuery } from '../../queries';
 import type { CSSProperties } from 'react';
 import { progressionCardPattern } from './progression-card-pattern';

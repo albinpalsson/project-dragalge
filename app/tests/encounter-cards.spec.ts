@@ -109,7 +109,7 @@ test('a manual ban blocks the full evolution line when enabled', async ({
     ).toBeDisabled();
 });
 
-test('catching Hoppip in Poco Path blocks it by dupes in South Province (Area One)', async ({
+test('caught encounters update dupes and preserve manual, dupes, and mono reason precedence', async ({
     page,
 }) => {
     await page.goto('/');
@@ -145,6 +145,39 @@ test('catching Hoppip in Poco Path blocks it by dupes in South Province (Area On
     await expect(
         hoppipRow.getByRole('button', { name: 'Pick Hoppip' }),
     ).toBeDisabled();
+
+    await resolveEncounter(page, 'Poco Path', 'Eliminated');
+    await expect(hoppipRow).toContainText('Dupes clause');
+
+    await page.getByRole('button', { name: 'Game settings' }).click();
+    await page.getByLabel('Mono run').check();
+    await expect(page.getByLabel('Mono type')).toHaveValue('normal');
+    await expect(page.getByText('Saving...', { exact: true })).toHaveCount(0);
+    await expect(hoppipRow).toContainText('Dupes clause');
+    const banInput = page.getByRole('combobox', {
+        name: 'Add a Pok\u00e9mon ban',
+    });
+    await banInput.fill('Hoppip');
+    await banInput.press('Enter');
+    await expect(hoppipRow).toContainText('Banned by game settings');
+    await expect(hoppipRow).not.toContainText('Dupes clause');
+    await page
+        .getByRole('button', { name: 'Remove Hoppip from ban list' })
+        .click();
+    await expect(hoppipRow).toContainText('Dupes clause');
+    await expect(hoppipRow).not.toContainText('Not allowed in mono run');
+    await page.getByRole('button', { name: 'Close dialog' }).click();
+
+    await resolveEncounter(page, 'Poco Path', 'Missed');
+    await expect(hoppipRow).toContainText('Not allowed in mono run');
+    await expect(hoppipRow).not.toContainText('Dupes clause');
+    await resolveEncounter(page, 'Poco Path', 'Caught');
+    await expect(hoppipRow).toContainText('Dupes clause');
+
+    await page.getByRole('button', { name: 'Game settings' }).click();
+    await page.getByLabel('Dupes clause').uncheck();
+    await expect(hoppipRow).toContainText('Not allowed in mono run');
+    await page.getByRole('button', { name: 'Close dialog' }).click();
 });
 
 test('a manually picked form displays its group and remains concrete when caught', async ({

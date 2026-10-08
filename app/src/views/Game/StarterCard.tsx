@@ -10,9 +10,8 @@ import { getPokemonTypeColor } from '../../utils/pokemon-type-colors';
 
 import { STARTER_LOCATION_NAME } from '../../db/game-db/queries';
 import { useEncounterActions } from '../../hooks/useEncounterActions';
-import { useBanReasons } from '../../hooks/useBanReasons';
 import { useStarter } from '../../hooks/useStarter';
-import { getBanReason } from '../../utils/ban-list';
+import { STARTER_CHOICES } from '../../utils/starter-choices';
 import { useGame } from './GameContext';
 import { useClearEncounterRollMutation } from './queries';
 
@@ -24,12 +23,11 @@ export function StarterCard({ isNext }: StarterCardProps) {
     const game = useGame();
     const encounterActions = useEncounterActions();
     const clearStarterMutation = useClearEncounterRollMutation();
-    const banReasons = useBanReasons();
     const starter = useStarter();
     const isBusy = encounterActions.isBusy || clearStarterMutation.isPending;
 
     const availableStarterChoices = STARTER_CHOICES.filter(
-        (choice) => !getBanReason(banReasons, choice.name),
+        (choice) => !game.getBanReason(choice.name, { ignoreMonoRun: true }),
     );
 
     const randomizeStarter = () => {
@@ -171,9 +169,9 @@ export function StarterCard({ isNext }: StarterCardProps) {
                             <p className={hint}>Choose your starter Pokémon.</p>
                             <ul className={options}>
                                 {STARTER_CHOICES.map((starterChoice) => {
-                                    const banReason = getBanReason(
-                                        banReasons,
+                                    const banReason = game.getBanReason(
                                         starterChoice.name,
+                                        { ignoreMonoRun: true },
                                     );
                                     return (
                                         <li key={starterChoice.name}>
@@ -227,9 +225,6 @@ export function StarterCard({ isNext }: StarterCardProps) {
                                     );
                                 })}
                             </ul>
-                            {availableStarterChoices.length === 0 && (
-                                <p className={hint}>No available starters.</p>
-                            )}
                             <div className={actionRow}>
                                 <RandomizeButton
                                     label="Randomize"
@@ -250,20 +245,6 @@ export function StarterCard({ isNext }: StarterCardProps) {
         </ProgressionCard>
     );
 }
-
-const STARTER_CHOICES = [
-    { name: 'Sprigatito', type: 'Grass' },
-    { name: 'Fuecoco', type: 'Fire' },
-    { name: 'Quaxly', type: 'Water' },
-] as const;
-
-export const STARTER_NAMES = STARTER_CHOICES.map(
-    (starterChoice) => starterChoice.name,
-) as [
-    (typeof STARTER_CHOICES)[0]['name'],
-    (typeof STARTER_CHOICES)[1]['name'],
-    (typeof STARTER_CHOICES)[2]['name'],
-];
 
 function starterChoiceForName(name: string) {
     return STARTER_CHOICES.find((starterChoice) => starterChoice.name === name);

@@ -43,6 +43,9 @@ export function useEncounterActions() {
                 await mutations.setPartySlot(game.id, locationName, slot);
             }
         },
+        skipEncounter(locationName: string) {
+            return mutations.skip(game.id, locationName);
+        },
         missEncounter(locationName: string) {
             return mutations.setStatus(game.id, locationName, 'missed');
         },

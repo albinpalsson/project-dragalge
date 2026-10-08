@@ -1,6 +1,6 @@
 import { css } from '@pokedb2/css-in-js';
 import type { LocationEncounterView } from '../db/pokemon-data/queries';
-import type { EncounterRollDetails } from '../hooks/useEncounterRoll';
+import type { EncounterRoll } from '../hooks/useEncounterRoll';
 import { formatEncounterGroupLevelRange } from '../utils/encounter-formatters';
 import { Badge } from './Badge';
 import { CollapsedSummaryRow } from './CollapsedSummaryRow';
@@ -11,7 +11,7 @@ import { useMemo } from 'react';
 interface EncounterCollapsedSummaryProps {
     areaName: string;
     locationName: string;
-    encounterRoll: EncounterRollDetails | undefined;
+    encounterRoll: EncounterRoll | undefined;
     encounters: LocationEncounterView[];
     isNext?: boolean;
     zoomedIcon?: boolean;
@@ -32,11 +32,13 @@ export function EncounterCollapsedSummary({
         () => formatEncounterGroupLevelRange(encounters),
         [encounters],
     );
+    const isSkipped = encounterRoll?.status === 'skipped';
+    const hasRoll = encounterRoll !== undefined && 'name' in encounterRoll;
 
     return (
         <CollapsedSummaryRow
             icon={
-                encounterRoll ? (
+                hasRoll ? (
                     <PokemonIcon
                         name={encounterRoll.name}
                         alt={encounterRoll.displayName}
@@ -45,16 +47,22 @@ export function EncounterCollapsedSummary({
                     />
                 ) : (
                     <span className={placeholderIcon} aria-hidden="true">
-                        ?
+                        {isSkipped ? '–' : '?'}
                     </span>
                 )
             }
             title={locationName}
-            detail={encounterRoll ? encounterRoll.displayName : undefined}
+            detail={
+                hasRoll
+                    ? encounterRoll.displayName
+                    : isSkipped
+                      ? 'No encounter available'
+                      : undefined
+            }
             leftBadges={
-                encounterRoll ? (
+                (hasRoll || isSkipped) && (
                     <StatusChip status={encounterRoll.status} />
-                ) : undefined
+                )
             }
             rightBadges={
                 <>

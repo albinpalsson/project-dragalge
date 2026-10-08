@@ -7,6 +7,24 @@ export interface FullGameSettingsValue extends GameSettings {
     banList: string[];
 }
 
+export function applyMonoRunRules(
+    settings: FullGameSettingsValue,
+): FullGameSettingsValue {
+    if (!settings.monoRunEnabled) {
+        return settings;
+    }
+    const hasStarterTypeMatch =
+        ['fire', 'grass', 'water'].includes(settings.monoRunType) ||
+        (settings.monoRunFutureEvolutions &&
+            ['dark', 'ghost', 'fighting'].includes(settings.monoRunType));
+
+    return {
+        ...settings,
+        teraRaids: 'unlimited',
+        releaseStarterEnabled: !hasStarterTypeMatch,
+    };
+}
+
 export interface GameSettingsPreset {
     key: SettingsPresetKey;
     label: string;
@@ -23,6 +41,9 @@ const CLEAN_FULL_SETTINGS: FullGameSettingsValue = {
     teraRaids: 'unlimited',
     showHelpfulTips: false,
     includeTeamStarBattles: false,
+    monoRunEnabled: false,
+    monoRunType: 'normal',
+    monoRunFutureEvolutions: false,
 };
 
 export const SETTINGS_PRESETS: readonly GameSettingsPreset[] = [
@@ -36,7 +57,7 @@ export const SETTINGS_PRESETS: readonly GameSettingsPreset[] = [
             dupesClauseEnabled: true,
             banFullEvolutionLines: true,
             teraRaids: 'single',
-            includeTeamStarBattles: false,
+            includeTeamStarBattles: true,
             showHelpfulTips: true,
         },
     },
@@ -53,7 +74,7 @@ export const SETTINGS_PRESETS: readonly GameSettingsPreset[] = [
             showHelpfulTips: true,
             dupesClauseEnabled: true,
             teraRaids: 'none',
-            includeTeamStarBattles: false,
+            includeTeamStarBattles: true,
         },
     },
     {

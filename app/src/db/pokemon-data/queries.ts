@@ -245,6 +245,34 @@ export async function listAllPokemon(): Promise<string[]> {
     return rows.map((row) => row.name);
 }
 
+export interface PokemonTypeCatalog {
+    pokemon: PokemonTypeEntry[];
+}
+
+export interface PokemonTypeEntry {
+    name: string;
+    primaryType: string;
+    // Empty when single-typed.
+    secondaryType: string;
+}
+
+export async function getPokemonTypeCatalog(): Promise<PokemonTypeCatalog> {
+    const db = await getPokemonDb();
+    const [types, pokemon] = await Promise.all([
+        db.selectFrom('pokemon_types').selectAll().execute(),
+        db.selectFrom('pokemon').selectAll().execute(),
+    ]);
+    const typeById = new Map(types.map((type) => [type.id, type.name]));
+
+    return {
+        pokemon: pokemon.map((row) => ({
+            name: row.name,
+            primaryType: typeById.get(row.primary_type_id) ?? '',
+            secondaryType: typeById.get(row.secondary_type_id) ?? '',
+        })),
+    };
+}
+
 export async function getPokemonEvolutionDetails(
     pokemonName: string,
 ): Promise<PokemonEvolutionDetails | undefined> {

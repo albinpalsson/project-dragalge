@@ -5,6 +5,7 @@ import { IconButton } from '../../components/IconButton';
 import { useBanListPresetOptions } from '../../hooks/useBanListPresetOptions';
 import { usePokemonListQuery } from '../../hooks/usePokemonListQuery';
 import {
+    applyMonoRunRules,
     cloneSettings,
     type FullGameSettingsValue,
 } from '../../utils/game-setting-presets';
@@ -25,16 +26,10 @@ export function GameSettingsModal() {
 
     const initialValue = useMemo<FullGameSettingsValue>(
         () => ({
-            randomizerMode: game.settings.randomizerMode,
-            dupesClauseEnabled: game.settings.dupesClauseEnabled,
-            banFullEvolutionLines: game.settings.banFullEvolutionLines,
+            ...game.settings,
             banList: (banListEntriesQuery.data ?? []).map(
                 (entry) => entry.pokemon_name,
             ),
-            releaseStarterEnabled: game.settings.releaseStarterEnabled,
-            teraRaids: game.settings.teraRaids,
-            showHelpfulTips: game.settings.showHelpfulTips,
-            includeTeamStarBattles: game.settings.includeTeamStarBattles,
         }),
         [game.settings, banListEntriesQuery.data],
     );
@@ -50,8 +45,9 @@ export function GameSettingsModal() {
     }, [initialValue, isOpen]);
 
     const handleChange = (value: FullGameSettingsValue) => {
-        setDraft(value);
-        const { banList, ...settings } = value;
+        const committedValue = applyMonoRunRules(value);
+        setDraft(committedValue);
+        const { banList, ...settings } = committedValue;
         void updateSettingsMutation.mutateAsync({
             gameRunId: game.id,
             gameRunName: game.run.name,

@@ -19,12 +19,17 @@ export const PSEUDO_LEGENDARY_PRESET = [
 export const BAN_REASON = {
     Settings: 'Banned by game settings',
     DupesClause: 'Dupes clause',
+    MonoRun: 'Not allowed in mono run',
 } as const;
 
 export type BanReason = (typeof BAN_REASON)[keyof typeof BAN_REASON];
-export type BanReasonMap = ReadonlyMap<string, BanReason>;
 
-interface BuildBanReasonMapInput {
+export type GetBanReason = (
+    pokemonName: string,
+    options?: { ignoreMonoRun?: boolean },
+) => BanReason | undefined;
+
+interface BuildSpeciesBansInput {
     manualBanNames: readonly string[];
     banFullEvolutionLines: boolean;
     dupesClauseEnabled: boolean;
@@ -32,13 +37,18 @@ interface BuildBanReasonMapInput {
     getEvolutionFamily: (name: string) => readonly string[];
 }
 
-export function buildBanReasonMap(input: BuildBanReasonMapInput): BanReasonMap {
-    const result = new Map<string, BanReason>();
+export function buildSpeciesBans(
+    input: BuildSpeciesBansInput,
+): ReadonlyMap<string, BanReason> {
+    const speciesBans = new Map<string, BanReason>();
 
     if (input.dupesClauseEnabled) {
         for (const name of input.usedEncounterNames) {
             for (const familyName of input.getEvolutionFamily(name)) {
-                result.set(toSpeciesName(familyName), BAN_REASON.DupesClause);
+                speciesBans.set(
+                    toSpeciesName(familyName),
+                    BAN_REASON.DupesClause,
+                );
             }
         }
     }
@@ -48,18 +58,11 @@ export function buildBanReasonMap(input: BuildBanReasonMapInput): BanReasonMap {
             ? input.getEvolutionFamily(name)
             : [name];
         for (const familyName of names) {
-            result.set(toSpeciesName(familyName), BAN_REASON.Settings);
+            speciesBans.set(toSpeciesName(familyName), BAN_REASON.Settings);
         }
     }
 
-    return result;
-}
-
-export function getBanReason(
-    banReasons: BanReasonMap,
-    pokemonName: string,
-): string | undefined {
-    return banReasons.get(toSpeciesName(pokemonName));
+    return speciesBans;
 }
 
 /** "Oinkologne (Female)" -> "Oinkologne"; every form of a species shares bans and the dupes clause. */

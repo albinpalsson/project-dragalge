@@ -1,5 +1,4 @@
-import type { LocationEncounterView } from '../db/pokemon-data/queries';
-import { getEffectiveWeight } from '../randomizer';
+import { type EncounterRates, getEffectiveWeight } from '../randomizer';
 
 const LEVEL_RANGE_TAIL = 0.025;
 const LEVEL_RANGE_EPSILON = 1e-12;
@@ -11,7 +10,10 @@ interface EncounterGroupLevelRange {
     trimmedMax: number;
 }
 
-export function formatLevelRange(encounter: LocationEncounterView): string {
+export function formatLevelRange(encounter: {
+    minLevel: number;
+    maxLevel: number;
+}): string {
     return formatLevelBounds(encounter.minLevel, encounter.maxLevel);
 }
 
@@ -19,13 +21,13 @@ export function formatLevelBounds(min: number, max: number): string {
     return min === max ? String(min) : `${min}-${max}`;
 }
 
-export function formatWeight(encounter: LocationEncounterView): string {
+export function formatWeight(encounter: EncounterRates): string {
     const weight = getEffectiveWeight(encounter);
     return Number.isInteger(weight) ? String(weight) : weight.toFixed(1);
 }
 
 export function formatRareWeight(
-    encounter: LocationEncounterView,
+    encounter: EncounterRates,
 ): string | undefined {
     const weight = getEffectiveWeight(encounter);
     if (weight >= 10) {
@@ -60,7 +62,7 @@ export function formatSubAreaTerrain(
         .join(' or ');
 }
 
-export function formatTime(encounter: LocationEncounterView): string {
+export function formatTime(encounter: EncounterRates): string {
     const times = [
         ['morning', encounter.morningRate],
         ['day', encounter.dayRate],
@@ -77,7 +79,7 @@ export function formatGames(games: string): string {
 }
 
 export function formatEncounterGroupLevelRange(
-    encounters: LocationEncounterView[],
+    encounters: { minLevel: number; maxLevel: number }[],
 ): string | undefined {
     const range = getEncounterGroupLevelRange(encounters);
     return range
@@ -86,7 +88,7 @@ export function formatEncounterGroupLevelRange(
 }
 
 function getEncounterGroupLevelRange(
-    encounters: LocationEncounterView[],
+    encounters: { minLevel: number; maxLevel: number }[],
 ): EncounterGroupLevelRange | undefined {
     if (encounters.length === 0) {
         return undefined;

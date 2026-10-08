@@ -147,6 +147,7 @@ export function useCompletedGameChampionPresets() {
                 bossProgress: progress,
             } = snapshot;
             const settings = game.settings;
+            const state = { settings, encounters: rolls };
             const starter = rolls.find(
                 (roll) => roll.location_name === 'Starter',
             );
@@ -154,15 +155,12 @@ export function useCompletedGameChampionPresets() {
                 ? graphQuery.data.getFirstStage(starter.pokemon_name)
                 : undefined;
             const complete = PROGRESSION_ITEMS.every((item) => {
-                if (
-                    item.isVisible &&
-                    !item.isVisible({ settings, encounters: rolls })
-                ) {
+                if (item.isVisible && !item.isVisible(state)) {
                     return true;
                 }
                 if (
                     item.countsTowardProgress &&
-                    !item.countsTowardProgress({ settings, encounters: rolls })
+                    !item.countsTowardProgress(state)
                 ) {
                     return true;
                 }
@@ -174,10 +172,7 @@ export function useCompletedGameChampionPresets() {
                     );
                 }
                 if (item.kind === 'action') {
-                    return item.isResolved({
-                        settings,
-                        encounters: rolls,
-                    });
+                    return item.isResolved(state);
                 }
                 if (item.kind === 'raid') {
                     return isRaidResolved(rolls, item.stars);

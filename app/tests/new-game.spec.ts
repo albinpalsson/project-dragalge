@@ -13,6 +13,11 @@ test('Team Star battle setting updates card visibility and persists', async ({
     });
     const giacomoCard = cardFor(page, 'Giacomo (Team Star)');
 
+    await settingsButton.click();
+    await page.getByLabel('Include Team Star battles').uncheck();
+    await expect(page.getByText('Saving...', { exact: true })).toHaveCount(0);
+    await page.keyboard.press('Escape');
+
     await expect(giacomoCard).toHaveCount(0);
     await settingsButton.click();
     const checkbox = page.getByLabel('Include Team Star battles');

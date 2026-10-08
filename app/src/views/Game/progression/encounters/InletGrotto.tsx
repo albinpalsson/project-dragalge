@@ -24,7 +24,7 @@ export function InletGrotto({ isNext }: InletGrottoProps) {
     const [isTableExpanded, setTableExpanded] = useState(false);
     const encounterActions = useEncounterActions();
 
-    if (encountersQuery.isPending) {
+    if (encountersQuery.isPending || encounterRoll === undefined) {
         return <p>Loading Inlet Grotto encounters...</p>;
     }
 
@@ -37,7 +37,10 @@ export function InletGrotto({ isNext }: InletGrottoProps) {
         );
     }
 
-    const showHoundourWarning = encounterRoll?.name === 'Houndour';
+    const showHoundourWarning =
+        encounterRoll.status !== 'notRolled' &&
+        encounterRoll.status !== 'skipped' &&
+        encounterRoll.name === 'Houndour';
     const { allEncounters, rollableEncounters } = encountersQuery.data;
 
     return (

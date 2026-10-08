@@ -1,5 +1,5 @@
 import { css } from '@pokedb2/css-in-js';
-import type { EncounterRollDetails } from '../hooks/useEncounterRoll';
+import type { EncounterRoll } from '../hooks/useEncounterRoll';
 import { PokemonIcon } from './PokemonIcon';
 import { StatusChip } from './StatusChip';
 import {
@@ -10,12 +10,16 @@ import {
 } from '../utils/encounter-formatters';
 
 interface RollResultProps {
-    encounterRoll: EncounterRollDetails | undefined;
+    encounterRoll: EncounterRoll | undefined;
     zoomedIcon?: boolean;
 }
 
 export function RollResult({ encounterRoll, zoomedIcon }: RollResultProps) {
-    if (!encounterRoll) {
+    if (
+        !encounterRoll ||
+        encounterRoll.status === 'notRolled' ||
+        encounterRoll.status === 'skipped'
+    ) {
         return (
             <div className={rollBox}>
                 <span className={emptyRollIcon} aria-hidden="true">

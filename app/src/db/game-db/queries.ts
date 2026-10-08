@@ -17,7 +17,8 @@ export type EncounterStatus =
     | 'caught'
     | 'missed'
     | 'eliminated'
-    | 'released';
+    | 'released'
+    | 'skipped';
 export type TeraRaidsSetting = 'none' | 'single' | 'unlimited';
 export type BossBattleResult = 'won' | 'lost';
 export const GAME_NAME_MAX_BYTES = 128;
@@ -30,6 +31,9 @@ export interface GameSettings {
     teraRaids: TeraRaidsSetting;
     showHelpfulTips: boolean;
     includeTeamStarBattles: boolean;
+    monoRunEnabled: boolean;
+    monoRunType: string;
+    monoRunFutureEvolutions: boolean;
 }
 
 // The encoded storage columns for GameSettings: every game_runs column except identity.
@@ -314,6 +318,37 @@ export async function addEncounterRoll(
     return { ...row, status: decodeEncounterStatus(row.status) };
 }
 
+export interface SkipEncounterInput {
+    gameRunId: number;
+    locationName: string;
+}
+
+// A skipped row is the only one with empty Pokemon names; it resolves the step without a species.
+export async function skipEncounter(
+    input: SkipEncounterInput,
+): Promise<EncounterRollRow> {
+    const db = await getGameDb();
+    const existing = await db
+        .selectFrom('encounter_rolls')
+        .selectAll()
+        .where('game_run_id', '=', input.gameRunId)
+        .where('location_name', '=', input.locationName)
+        .executeTakeFirst();
+    if (existing) {
+        throw new Error(`Encounter already recorded: ${input.locationName}`);
+    }
+    const row = {
+        game_run_id: input.gameRunId,
+        location_name: input.locationName,
+        pokemon_name: '',
+        rolled_as: '',
+        status: encodeEncounterStatus('skipped'),
+        party_slot: NO_PARTY_SLOT,
+    };
+    await db.insertInto('encounter_rolls').values(row).execute();
+    return { ...row, status: 'skipped' };
+}
+
 export interface SetEncounterRollStatusInput {
     gameRunId: number;
     locationName: string;
@@ -421,6 +456,9 @@ export async function updateGameRunSettings(
             tera_raids: encodeTeraRaids(s.teraRaids),
             show_helpful_tips: encodeFlag(s.showHelpfulTips),
             include_team_star_battles: encodeFlag(s.includeTeamStarBattles),
+            mono_run_enabled: encodeFlag(s.monoRunEnabled),
+            mono_run_type: s.monoRunType,
+            mono_run_future_evolutions: encodeFlag(s.monoRunFutureEvolutions),
         })
         .where('id', '=', input.gameRunId)
         .execute();
@@ -519,6 +557,7 @@ const ENCOUNTER_STATUS_CODES: Record<EncounterStatus, EncounterStatusCode> = {
     missed: 'm',
     eliminated: 'e',
     released: 'r',
+    skipped: 's',
 };
 
 const TERA_RAIDS_CODES: Record<TeraRaidsSetting, TeraRaidsCode> = {
@@ -593,6 +632,11 @@ function encodeGameSettings(settings: GameSettings): EncodedGameSettings {
         tera_raids: encodeTeraRaids(settings.teraRaids),
         show_helpful_tips: encodeFlag(settings.showHelpfulTips),
         include_team_star_battles: encodeFlag(settings.includeTeamStarBattles),
+        mono_run_enabled: encodeFlag(settings.monoRunEnabled),
+        mono_run_type: settings.monoRunType,
+        mono_run_future_evolutions: encodeFlag(
+            settings.monoRunFutureEvolutions,
+        ),
     };
 }
 
@@ -605,6 +649,9 @@ function decodeGameSettings(row: EncodedGameSettings): GameSettings {
         teraRaids: decodeTeraRaids(row.tera_raids),
         showHelpfulTips: decodeFlag(row.show_helpful_tips),
         includeTeamStarBattles: decodeFlag(row.include_team_star_battles),
+        monoRunEnabled: decodeFlag(row.mono_run_enabled),
+        monoRunType: row.mono_run_type,
+        monoRunFutureEvolutions: decodeFlag(row.mono_run_future_evolutions),
     };
 }
 

@@ -13,6 +13,7 @@ import {
     type GameVariant,
 } from '../../db/game-db/queries';
 import {
+    applyMonoRunRules,
     cloneSettings,
     getSettingsPreset,
     SETTINGS_PRESETS,
@@ -28,9 +29,7 @@ interface NewGameModalProps {
 
 export function NewGameModal({ onOpenGame }: NewGameModalProps) {
     const [isStartModalOpen, setStartModalOpen] = useState(false);
-    const [startStep, setStartStep] = useState<'basics' | 'settings'>(
-        'basics',
-    );
+    const [startStep, setStartStep] = useState<'basics' | 'settings'>('basics');
     const [variant, setVariant] = useState<GameVariant>('s');
     const [presetKey, setPresetKey] = useState<SettingsPresetKey>('fun');
     const [name, setName] = useState('');
@@ -65,11 +64,13 @@ export function NewGameModal({ onOpenGame }: NewGameModalProps) {
 
     const selectPreset = (nextPresetKey: SettingsPresetKey) => {
         setPresetKey(nextPresetKey);
-        setGameSettings(cloneSettings(getSettingsPreset(nextPresetKey).defaults));
+        setGameSettings(
+            cloneSettings(getSettingsPreset(nextPresetKey).defaults),
+        );
     };
 
     const handleStart = async () => {
-        const { banList, ...settings } = gameSettings;
+        const { banList, ...settings } = applyMonoRunRules(gameSettings);
         const game = await createGame.mutateAsync({
             name: name || defaultName,
             variant,
@@ -82,18 +83,12 @@ export function NewGameModal({ onOpenGame }: NewGameModalProps) {
 
     return (
         <>
-            <Button
-                className={startButton}
-                onClick={openStartModal}
-            >
+            <Button className={startButton} onClick={openStartModal}>
                 Start New Game
             </Button>
 
             {isStartModalOpen && (
-                <Modal
-                    title="Start New Game"
-                    onClose={closeStartModal}
-                >
+                <Modal title="Start New Game" onClose={closeStartModal}>
                     <div className={form}>
                         {startStep === 'basics' ? (
                             <BasicsStep
