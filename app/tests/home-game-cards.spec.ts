@@ -15,6 +15,36 @@ import {
     waitForPersistence,
 } from './helpers';
 
+test('Home lists the newest game first after reload', async ({ page }) => {
+    await page.goto('/');
+
+    await createGame(page, 'first-run');
+    await navigateTo(page, 'Home');
+    await createGame(page, 'second-run');
+    await navigateTo(page, 'Home');
+    await createGame(page, 'third-run');
+    await navigateTo(page, 'Home');
+
+    const gameList = page
+        .getByRole('heading', { name: 'Games' })
+        .locator('..')
+        .getByRole('list');
+    await expect(gameList.getByRole('listitem')).toHaveText([
+        /third-run/,
+        /second-run/,
+        /first-run/,
+    ]);
+
+    await waitForPersistence(page);
+    await page.reload();
+    await expect(page.getByRole('heading', { name: 'Games' })).toBeVisible();
+    await expect(gameList.getByRole('listitem')).toHaveText([
+        /third-run/,
+        /second-run/,
+        /first-run/,
+    ]);
+});
+
 test('Home supports sharing, duplicate imports and persisted deletion', async ({
     page,
     browser,

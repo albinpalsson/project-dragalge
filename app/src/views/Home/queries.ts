@@ -72,21 +72,24 @@ export function useGameCards() {
     const snapshotsQuery = useGameRunSnapshotsQuery();
     const data = useMemo<GameCardState[] | undefined>(
         () =>
-            snapshotsQuery.data?.map((snapshot) => {
-                const obtained = snapshot.encounterRolls.filter(
-                    (row) =>
-                        row.status === 'caught' || row.status === 'eliminated',
-                );
-                const isLost = snapshot.bossProgress.some(
-                    (battle) => battle.result === 'lost',
-                );
-                return {
-                    game: snapshot.game,
-                    obtained,
-                    bossProgress: snapshot.bossProgress,
-                    isLost,
-                };
-            }),
+            snapshotsQuery.data
+                ?.map((snapshot) => {
+                    const obtained = snapshot.encounterRolls.filter(
+                        (row) =>
+                            row.status === 'caught' ||
+                            row.status === 'eliminated',
+                    );
+                    const isLost = snapshot.bossProgress.some(
+                        (battle) => battle.result === 'lost',
+                    );
+                    return {
+                        game: snapshot.game,
+                        obtained,
+                        bossProgress: snapshot.bossProgress,
+                        isLost,
+                    };
+                })
+                .reverse(),
         [snapshotsQuery.data],
     );
 
