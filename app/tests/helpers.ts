@@ -24,6 +24,17 @@ async function ensureCardExpanded(page: Page, cardName: string) {
     }
 }
 
+export async function chooseAnalyticsConsentIfPrompted(page: Page) {
+    const prompt = page.getByRole('heading', {
+        name: 'Allow optional usage analytics?',
+    });
+    if (await prompt.isVisible()) {
+        await page
+            .getByRole('button', { name: 'Decline', exact: true })
+            .click();
+    }
+}
+
 export async function createGame(
     page: Page,
     name: string,
@@ -36,6 +47,7 @@ export async function createGame(
     await page.getByRole('button', { name: 'Next', exact: true }).click();
     await configure?.(page);
     await page.getByRole('button', { name: 'Start', exact: true }).click();
+    await chooseAnalyticsConsentIfPrompted(page);
     await expect(cardFor(page, 'Starter').first()).toBeVisible();
 }
 
@@ -49,6 +61,7 @@ export async function createGameWithTeraRaids(
     await page.getByRole('button', { name: 'Next', exact: true }).click();
     await page.getByLabel('Tera raids').selectOption(mode);
     await page.getByRole('button', { name: 'Start', exact: true }).click();
+    await chooseAnalyticsConsentIfPrompted(page);
     await expect(cardFor(page, 'Starter').first()).toBeVisible();
 }
 

@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import {
     boxSection,
     cardFor,
+    chooseAnalyticsConsentIfPrompted,
     createGame,
     createGameWithTeraRaids,
     expandCollapsedSummary,
@@ -77,6 +78,7 @@ test('Home supports sharing, duplicate imports and persisted deletion', async ({
             'shared-run',
         );
         await importPage.getByRole('button', { name: 'Import' }).click();
+        await chooseAnalyticsConsentIfPrompted(importPage);
         await expect(
             importPage.getByRole('heading', { name: 'Games' }),
         ).toBeVisible();

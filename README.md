@@ -79,6 +79,23 @@ User -> Views -> Stores -> Query Builder -> Database
 - **Mobile Responsive**: Works on 320px+ screens
 - **Persistent State**: Auto-saves to localStorage
 
+## Optional Analytics
+
+Analytics is opt-in and asks at the first game creation or import. Without a saved
+choice, no analytics events are emitted. Game names and save contents stay in the
+browser; the event payloads contain only app views, game settings categories, and
+progression labels.
+
+The build accepts a public GA4 measurement ID through `GA4_MEASUREMENT_ID`, but the
+GA4 transport is not enabled yet. Setting the variable only injects the ID into the
+bundle; it does not load Google scripts or send network requests. Measurement IDs are
+public identifiers, not secrets.
+
+```powershell
+$env:GA4_MEASUREMENT_ID = 'G-XXXXXXXXXX'
+npm run build --prefix app
+```
+
 ## Scope (V1)
 
 **In Scope:**

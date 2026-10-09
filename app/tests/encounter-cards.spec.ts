@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import {
     boxSection,
     cardFor,
+    chooseAnalyticsConsentIfPrompted,
     createGame,
     expandCollapsedSummary,
     openBox,
@@ -57,6 +58,7 @@ test('caught encounters update dupes and preserve manual, dupes, and mono reason
     await page.getByRole('button', { name: 'Next', exact: true }).click();
     await page.getByRole('checkbox', { name: 'Dupes clause' }).check();
     await page.getByRole('button', { name: 'Start', exact: true }).click();
+    await chooseAnalyticsConsentIfPrompted(page);
 
     const pocoPathCard = cardFor(page, 'Poco Path').first();
     await pocoPathCard.click();

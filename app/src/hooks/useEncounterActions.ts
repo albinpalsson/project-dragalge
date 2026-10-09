@@ -3,6 +3,11 @@ import { pickEncounterSpecies } from '../pokemon-species';
 import { useGame } from '../views/Game/GameContext';
 import { nextFreePartySlot } from './party-utils';
 import { useEncounterMutations } from './useEncounterMutations';
+import { track } from '../analytics/analytics';
+
+function trackProgression(locationName: string, outcome: string): void {
+    track({ name: 'progression_milestone', milestone: locationName, outcome });
+}
 
 export function useEncounterActions() {
     const game = useGame();
@@ -19,6 +24,7 @@ export function useEncounterActions() {
             await mutations.setPartySlot(game.id, locationName, NO_PARTY_SLOT);
         }
         await mutations.setStatus(game.id, locationName, status);
+        trackProgression(locationName, status);
     };
 
     return {
@@ -35,6 +41,7 @@ export function useEncounterActions() {
                 (row) => row.location_name === locationName,
             );
             await mutations.setStatus(game.id, locationName, 'caught');
+            trackProgression(locationName, 'caught');
             if (!current || current.party_slot !== NO_PARTY_SLOT) {
                 return;
             }
@@ -43,11 +50,13 @@ export function useEncounterActions() {
                 await mutations.setPartySlot(game.id, locationName, slot);
             }
         },
-        skipEncounter(locationName: string) {
-            return mutations.skip(game.id, locationName);
+        async skipEncounter(locationName: string) {
+            await mutations.skip(game.id, locationName);
+            trackProgression(locationName, 'skipped');
         },
-        missEncounter(locationName: string) {
-            return mutations.setStatus(game.id, locationName, 'missed');
+        async missEncounter(locationName: string) {
+            await mutations.setStatus(game.id, locationName, 'missed');
+            trackProgression(locationName, 'missed');
         },
         async eliminateEncounter(locationName: string) {
             await setStatusAndClearPartySlot(locationName, 'eliminated');
@@ -66,6 +75,7 @@ export function useEncounterActions() {
                 pickEncounterSpecies(pokemonName),
                 'caught',
             );
+            trackProgression('Starter', 'chosen');
             if (slot !== NO_PARTY_SLOT) {
                 await mutations.setPartySlot(game.id, locationName, slot);
             }

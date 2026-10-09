@@ -22,6 +22,13 @@ import {
 } from '../../utils/game-setting-presets';
 import { GameSettingsPanel } from './GameSettingsPanel';
 import { useCreateGame } from './queries';
+import {
+    getAnalyticsConsent,
+    setAnalyticsConsent,
+    track,
+} from '../../analytics/analytics';
+import type { AnalyticsConsent } from '../../analytics/consent';
+import { ConsentStep } from '../../analytics/ConsentStep';
 
 interface NewGameModalProps {
     onOpenGame: (gameRunId: string) => void;
@@ -29,7 +36,9 @@ interface NewGameModalProps {
 
 export function NewGameModal({ onOpenGame }: NewGameModalProps) {
     const [isStartModalOpen, setStartModalOpen] = useState(false);
-    const [startStep, setStartStep] = useState<'basics' | 'settings'>('basics');
+    const [startStep, setStartStep] = useState<
+        'basics' | 'settings' | 'consent'
+    >('basics');
     const [variant, setVariant] = useState<GameVariant>('s');
     const [presetKey, setPresetKey] = useState<SettingsPresetKey>('fun');
     const [name, setName] = useState('');
@@ -69,16 +78,41 @@ export function NewGameModal({ onOpenGame }: NewGameModalProps) {
         );
     };
 
-    const handleStart = async () => {
+    const createRun = async () => {
         const { banList, ...settings } = applyMonoRunRules(gameSettings);
-        const game = await createGame.mutateAsync({
-            name: name || defaultName,
-            variant,
-            settings,
-            banListNames: banList,
-        });
-        closeStartModal();
-        onOpenGame(game.name);
+        try {
+            const game = await createGame.mutateAsync({
+                name: name || defaultName,
+                variant,
+                settings,
+                banListNames: banList,
+            });
+            track({
+                name: 'game_created',
+                variant,
+                randomizerMode: settings.randomizerMode,
+            });
+            closeStartModal();
+            onOpenGame(game.name);
+        } catch {
+            setStartStep('settings');
+        }
+    };
+
+    const handleStart = () => {
+        if (getAnalyticsConsent() === null) {
+            setStartStep('consent');
+            return;
+        }
+        void createRun();
+    };
+
+    const handleConsentChoice = (consent: AnalyticsConsent) => {
+        setAnalyticsConsent(consent);
+        if (consent === 'granted') {
+            track({ name: 'page_view', view: 'home' });
+        }
+        void createRun();
     };
 
     return (
@@ -102,14 +136,21 @@ export function NewGameModal({ onOpenGame }: NewGameModalProps) {
                                 onNext={() => setStartStep('settings')}
                                 onCancel={closeStartModal}
                             />
-                        ) : (
+                        ) : startStep === 'settings' ? (
                             <SettingsStep
                                 value={gameSettings}
                                 onChange={setGameSettings}
                                 suggestions={pokemon}
                                 presets={presets}
+                                error={createGame.error?.message}
+                                disabled={createGame.isPending}
                                 onBack={() => setStartStep('basics')}
                                 onStart={handleStart}
+                            />
+                        ) : (
+                            <ConsentStep
+                                disabled={createGame.isPending}
+                                onChoice={handleConsentChoice}
                             />
                         )}
                     </div>
@@ -201,6 +242,8 @@ interface SettingsStepProps {
     onChange: (value: FullGameSettingsValue) => void;
     suggestions: readonly string[];
     presets: ComponentProps<typeof GameSettingsPanel>['presets'];
+    error?: string;
+    disabled: boolean;
     onBack: () => void;
     onStart: () => void;
 }
@@ -210,6 +253,8 @@ function SettingsStep({
     onChange,
     suggestions,
     presets,
+    error,
+    disabled,
     onBack,
     onStart,
 }: SettingsStepProps) {
@@ -221,11 +266,14 @@ function SettingsStep({
                 suggestions={suggestions}
                 presets={presets}
             />
+            {error && <p className={errorText}>{error}</p>}
             <div className={formActions}>
                 <Button variant="secondary" onClick={onBack}>
                     Back
                 </Button>
-                <Button onClick={onStart}>Start</Button>
+                <Button disabled={disabled} onClick={onStart}>
+                    Start
+                </Button>
             </div>
         </>
     );
@@ -275,4 +323,8 @@ const presetDescription = css`
 
 const mutedText = css`
     color: var(--color-text-muted);
+`;
+
+const errorText = css`
+    color: var(--color-danger);
 `;

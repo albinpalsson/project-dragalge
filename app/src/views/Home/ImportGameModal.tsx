@@ -7,6 +7,13 @@ import type { ParsedImport } from '../../db/game-db/export-import';
 import { GAME_NAME_MAX_BYTES } from '../../db/game-db/queries';
 import { useImportDataFromHash } from '../../hooks/useImportDataFromHash';
 import { useImportGame, useParsedGameImport } from './queries';
+import {
+    getAnalyticsConsent,
+    setAnalyticsConsent,
+    track,
+} from '../../analytics/analytics';
+import type { AnalyticsConsent } from '../../analytics/consent';
+import { ConsentStep } from '../../analytics/ConsentStep';
 
 export function ImportGameModal() {
     const { importData, dismissImport } = useImportDataFromHash();
@@ -14,12 +21,7 @@ export function ImportGameModal() {
         return null;
     }
 
-    return (
-        <ImportGameDialog
-            importData={importData}
-            onClose={dismissImport}
-        />
-    );
+    return <ImportGameDialog importData={importData} onClose={dismissImport} />;
 }
 
 function ImportGameDialog({
@@ -33,7 +35,11 @@ function ImportGameDialog({
 
     if (parsedImport.isPending) {
         return (
-            <Modal title="Import game" onClose={onClose} dismissMode="closeButton">
+            <Modal
+                title="Import game"
+                onClose={onClose}
+                dismissMode="closeButton"
+            >
                 <p>Preparing import...</p>
             </Modal>
         );
@@ -41,7 +47,11 @@ function ImportGameDialog({
 
     if (parsedImport.isError) {
         return (
-            <Modal title="Import game" onClose={onClose} dismissMode="closeButton">
+            <Modal
+                title="Import game"
+                onClose={onClose}
+                dismissMode="closeButton"
+            >
                 <div className={content}>
                     <p className={errorText}>Unable to read this import.</p>
                 </div>
@@ -52,7 +62,11 @@ function ImportGameDialog({
     const parsed = parsedImport.data;
     if (parsed.status === 'error') {
         return (
-            <Modal title="Import game" onClose={onClose} dismissMode="closeButton">
+            <Modal
+                title="Import game"
+                onClose={onClose}
+                dismissMode="closeButton"
+            >
                 <div className={content}>
                     <p className={errorText}>{parsed.message}</p>
                 </div>
@@ -71,34 +85,70 @@ function ImportForm({
     onClose: () => void;
 }) {
     const [name, setName] = useState(parsed.game.name);
+    const [showConsentStep, setShowConsentStep] = useState(false);
     const importGame = useImportGame();
 
     const importRun = async () => {
-        await importGame.mutateAsync({ parsed, name });
-        onClose();
+        try {
+            await importGame.mutateAsync({ parsed, name });
+            onClose();
+        } catch {
+            setShowConsentStep(false);
+        }
+    };
+
+    const handleImport = () => {
+        if (getAnalyticsConsent() === null) {
+            setShowConsentStep(true);
+            return;
+        }
+        void importRun();
+    };
+
+    const handleConsentChoice = (consent: AnalyticsConsent) => {
+        setAnalyticsConsent(consent);
+        if (consent === 'granted') {
+            track({ name: 'page_view', view: 'home' });
+        }
+        void importRun();
     };
 
     return (
         <Modal title="Import game" onClose={onClose} dismissMode="closeButton">
             <div className={content}>
-                <p>A copy of this game will be added to your tracker.</p>
-                <TextField
-                    label="Name this game"
-                    value={name}
-                    onChange={setName}
-                    maxLength={GAME_NAME_MAX_BYTES}
-                />
+                {showConsentStep ? (
+                    <ConsentStep
+                        disabled={importGame.isPending}
+                        onChoice={handleConsentChoice}
+                    />
+                ) : (
+                    <>
+                        <p>
+                            A copy of this game will be added to your tracker.
+                        </p>
+                        <TextField
+                            label="Name this game"
+                            value={name}
+                            onChange={setName}
+                            maxLength={GAME_NAME_MAX_BYTES}
+                        />
+                    </>
+                )}
                 {importGame.isError && (
                     <p className={errorText}>{importGame.error.message}</p>
                 )}
-                <div className={actions}>
-                    <Button
-                        onClick={() => void importRun()}
-                        disabled={importGame.isPending || name.trim().length === 0}
-                    >
-                        Import
-                    </Button>
-                </div>
+                {!showConsentStep && (
+                    <div className={actions}>
+                        <Button
+                            onClick={handleImport}
+                            disabled={
+                                importGame.isPending || name.trim().length === 0
+                            }
+                        >
+                            Import
+                        </Button>
+                    </div>
+                )}
             </div>
         </Modal>
     );

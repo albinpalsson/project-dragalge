@@ -5,8 +5,10 @@ import { UnexpectedErrorBoundary } from './components/UnexpectedErrorBoundary';
 import { App } from './views/App';
 import { QueryClientProvider } from './server-query';
 import { initTheme } from './theme';
+import { initAnalytics } from './analytics/analytics';
 
 initTheme();
+initAnalytics();
 
 const rootElement = document.getElementById('app');
 

@@ -4,6 +4,7 @@ import {
     useSetBossBattleResultMutation,
     useClearBossBattleResultMutation,
 } from '../views/Game/queries';
+import { track } from '../analytics/analytics';
 
 export interface UseBossActionsResult {
     resolveBattle: (
@@ -35,6 +36,11 @@ export function useBossActions(): UseBossActionsResult {
                 gameRunId: game.id,
                 battleName,
                 result,
+            });
+            track({
+                name: 'progression_milestone',
+                milestone: battleName,
+                outcome: result,
             });
         },
         clearBattle: async (battleName: string) => {

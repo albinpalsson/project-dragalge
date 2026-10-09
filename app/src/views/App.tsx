@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { css } from '@pokedb2/css-in-js';
 import { Drawer } from '../components/Drawer';
 import { HeaderSlotContext } from '../components/HeaderSlot';
@@ -9,6 +9,7 @@ import { Home } from './Home/Home';
 import { ThemeToggle } from './ThemeToggle';
 import { useImportDataFromHash } from '../hooks/useImportDataFromHash';
 import { useViewNavigation } from '../hooks/useViewNavigation';
+import { track } from '../analytics/analytics';
 
 export function App() {
     const { importData } = useImportDataFromHash();
@@ -18,6 +19,9 @@ export function App() {
         onViewChange: () => setMenuOpen(false),
         startAtHome: importData !== undefined,
     });
+    useEffect(() => {
+        track({ name: 'page_view', view: activeView.view });
+    }, [activeView.view]);
 
     return (
         <>

@@ -1,6 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 import {
     cardFor,
+    chooseAnalyticsConsentIfPrompted,
     expandCollapsedSummary,
     showMoreProgression,
     waitForPersistence,
@@ -22,6 +23,7 @@ async function createMonoGame(
         .getByLabel('Allow future evolutions')
         .setChecked(futureEvolutions);
     await page.getByRole('button', { name: 'Start', exact: true }).click();
+    await chooseAnalyticsConsentIfPrompted(page);
     await expect(cardFor(page, 'Starter').first()).toBeVisible();
 }
 

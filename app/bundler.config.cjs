@@ -8,5 +8,8 @@ module.exports = configure({
     outputDir: 'dist',
     target: 'es6',
     cacheDir: '.cache',
+    env: {
+        GA4_MEASUREMENT_ID: process.env.GA4_MEASUREMENT_ID,
+    },
     transforms: [cssInJsTransform()],
 });
