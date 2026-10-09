@@ -22,12 +22,14 @@ export function Home({ onOpenGame }: HomeProps) {
                 {gameCards.isSuccess && (
                     <ul className={gamesList}>
                         {(gameCards.data ?? []).map((card) => (
-                            <li key={card.game.id}>
+                            <li className={gameListItem} key={card.game.id}>
                                 <GameCard
                                     game={card.game}
                                     obtained={card.obtained}
                                     isLost={card.isLost}
-                                    onOpenGame={() => onOpenGame(card.game.name)}
+                                    onOpenGame={() =>
+                                        onOpenGame(card.game.name)
+                                    }
                                 />
                             </li>
                         ))}
@@ -59,4 +61,10 @@ const gamesList = css`
   list-style: none;
   margin: 0;
   padding: 0;
+`;
+
+const gameListItem = css`
+    flex: 0 1 36rem;
+    min-width: 0;
+    max-width: 100%;
 `;

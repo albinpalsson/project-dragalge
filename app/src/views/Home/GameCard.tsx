@@ -40,21 +40,17 @@ export function GameCard({
                             backgroundImage: `repeating-linear-gradient(45deg, color-mix(in srgb, ${variantColor} 35%, transparent), color-mix(in srgb, ${variantColor} 35%, transparent) 0.6rem, color-mix(in srgb, ${variantColor} 20%, transparent) 0.6rem, color-mix(in srgb, ${variantColor} 20%, transparent) 1.2rem)`,
                         }}
                     />
-                    <span className={name}>{game.name}</span>
-                    {isLost && <span className={lostBadge}>Run Lost</span>}
+                    <span className={header}>
+                        <span className={name}>{game.name}</span>
+                        {isLost && <span className={lostBadge}>Run Lost</span>}
+                    </span>
                     {sorted.length > 0 ? (
                         <span className={icons}>
-                            {sorted.slice(0, 6).map((row, index, shown) => (
+                            {sorted.slice(0, 15).map((row) => (
                                 <span
                                     className={iconSlot}
                                     key={row.location_name}
                                 >
-                                    {index > 0 &&
-                                        shown[index - 1].party_slot !==
-                                            NO_PARTY_SLOT &&
-                                        row.party_slot === NO_PARTY_SLOT && (
-                                            <span className={divider} />
-                                        )}
                                     <img
                                         className={icon}
                                         src={pokemonIconSrc(
@@ -111,6 +107,8 @@ const container = css`
 
 const cardButton = css`
   display: block;
+    width: 100%;
+    max-width: 36rem;
   padding: 0;
   border: none;
   background: transparent;
@@ -119,8 +117,12 @@ const cardButton = css`
 const card = css`
   position: relative;
   overflow: hidden;
-  width: 36rem;
-  aspect-ratio: 3 / 2;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    width: 100%;
+    min-height: 24rem;
+    padding: var(--space-2);
   background: var(--color-surface);
   border: 0.1rem solid var(--color-border);
   border-radius: var(--radius-md);
@@ -134,23 +136,30 @@ const lostCard = css`
 const fill = css`
   position: absolute;
   inset: 0 auto 0 0;
+    z-index: 0;
+`;
+
+const header = css`
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    padding-right: 4rem;
+        direction: ltr;
 `;
 
 const name = css`
-  position: absolute;
-  top: var(--space-2);
-  left: var(--space-2);
+    flex: 1;
   font-size: var(--font-size-sm);
   color: var(--color-text-muted);
-  max-width: calc(50% - var(--space-2));
+    min-width: 0;
+        text-align: left;
   overflow-wrap: anywhere;
 `;
 
 const lostBadge = css`
-  position: absolute;
-  top: var(--space-2);
-  left: 50%;
-  transform: translateX(-50%);
+    flex: 0 0 auto;
   padding: 0.25rem 0.75rem;
   border-radius: 0.25rem;
   font-size: var(--font-size-sm);
@@ -160,36 +169,39 @@ const lostBadge = css`
 `;
 
 const icons = css`
-  position: absolute;
-  right: var(--space-2);
-  bottom: var(--space-2);
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    align-items: center;
+        align-self: center;
+    width: min(100%, 29.6rem);
+    margin-top: auto;
+        direction: rtl;
   gap: var(--space-1);
 `;
 
 const iconSlot = css`
-  display: flex;
-  align-items: center;
-  gap: var(--space-1);
-`;
-
-const divider = css`
-  width: 0.1rem;
-  height: 4rem;
-  background: var(--color-border);
+    display: grid;
+    place-items: center;
+    min-width: 0;
+    aspect-ratio: 1;
+        direction: ltr;
 `;
 
 const icon = css`
-  width: 5.6rem;
-  height: 5.6rem;
+    display: block;
+    width: 100%;
+    max-width: 5.6rem;
+    aspect-ratio: 1;
+    object-fit: contain;
 `;
 
 const emptyText = css`
-  position: absolute;
-  right: var(--space-2);
-  bottom: var(--space-2);
+    position: relative;
+    z-index: 1;
+    align-self: flex-end;
+    margin-top: auto;
   color: var(--color-text-muted);
   font-size: var(--font-size-sm);
 `;
@@ -198,4 +210,5 @@ const menuSlot = css`
   position: absolute;
   top: var(--space-2);
   right: var(--space-2);
+    z-index: 2;
 `;
