@@ -18,6 +18,7 @@ startDevServer({
     cwd,
     host,
     port,
+    watch: !argv.includes('--no-watch'),
     configOverrides,
 })
     .then(() => {})

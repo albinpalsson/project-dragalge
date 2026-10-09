@@ -60,6 +60,7 @@ Notes:
 interface DevServerConfig {
   port?: number; // Default: 3000
   host?: string; // Default: 'localhost'
+  watch?: boolean; // Default: true; false disables automatic file watching/rebuilds
   srcDir?: string; // Source directory to watch (default: 'src')
   buildDir?: string; // Build output directory (default: 'dist')
   watchPaths?: string[]; // Additional paths to watch
@@ -74,7 +75,13 @@ interface DevServerConfig {
 npm run dev
 # Or
 npx ts-node src/core/dev-server/cli.ts --port 3000
+# Build once and serve without watching for changes
+pokedb2-dev-server --port 0 --no-watch
 ```
+
+With `--no-watch`, the server still completes its initial build before reporting
+ready, then serves that output without automatically rebuilding when source or
+public files change. Restart the server to pick up those changes.
 
 ---
 

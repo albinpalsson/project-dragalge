@@ -13,6 +13,7 @@ export interface DevServerConfig {
     cwd?: string;
     host?: string;
     port?: number;
+    watch?: boolean;
     configOverrides?: Partial<BundlerConfig>;
     debounceMs?: number;
 }
@@ -48,6 +49,7 @@ export class DevServer {
     private readonly cwd: string;
     private readonly host: string;
     private readonly port: number;
+    private readonly watchEnabled: boolean;
     private readonly configOverrides: Partial<BundlerConfig>;
     private readonly debounceMs: number;
 
@@ -75,6 +77,7 @@ export class DevServer {
         this.cwd = path.resolve(config.cwd ?? process.cwd());
         this.host = config.host ?? '127.0.0.1';
         this.port = config.port ?? 3000;
+        this.watchEnabled = config.watch ?? true;
         this.debounceMs = config.debounceMs ?? 250;
         this.configOverrides = {
             ...(config.configOverrides ?? {}),
@@ -125,9 +128,10 @@ export class DevServer {
             `[dev] rebuild #${initialRebuildId} done ${formatMs(initialBuild.buildTime)} (modules: ${initialBuild.moduleCount ?? 0}, v: ${shortVersion(initialBuild.version)})`,
         );
 
-        this.log(
-            `[dev] ready ${this.getBaseUrl()} (watching ${this.fileWatchers.size} files)`,
-        );
+        const watchStatus = this.watchEnabled
+            ? `watching ${this.fileWatchers.size} files`
+            : 'watch disabled';
+        this.log(`[dev] ready ${this.getBaseUrl()} (${watchStatus})`);
     }
 
     async stop(): Promise<void> {
@@ -223,7 +227,9 @@ export class DevServer {
                 result.outputPath,
                 result.cssOutputPaths,
             );
-            this.syncWatchers(result.watchedFilePaths);
+            if (this.watchEnabled) {
+                this.syncWatchers(result.watchedFilePaths);
+            }
 
             this.outputDirPath = path.resolve(
                 this.cwd,
