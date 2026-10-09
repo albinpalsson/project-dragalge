@@ -2,7 +2,7 @@ export const DEFAULT_BAN_PRESET = [
     'Chansey',
     'Gyarados',
     'Annihilape',
-    'Fuecoco',
+    'Skeledirge',
     'Palafin',
 ] as const;
 export const PSEUDO_LEGENDARY_PRESET = [

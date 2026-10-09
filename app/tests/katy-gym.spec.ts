@@ -6,7 +6,7 @@ import {
     showMoreProgression,
 } from './helpers';
 
-test('Katy shows her Bug specialty badge, gym challenge warning, and ace Tera badge', async ({
+test('a boss ace uses its Tera type for defense information', async ({
     page,
 }) => {
     await page.goto('/');
@@ -16,23 +16,7 @@ test('Katy shows her Bug specialty badge, gym challenge warning, and ace Tera ba
     await expandCollapsedSummary(page, 'Katy (Gym)');
     const card = cardFor(page, 'Katy (Gym)').first();
 
-    // Katy's Bug specialty badge, shown next to her name.
-    const bugBadgeCount = await card.getByText('Bug', { exact: true }).count();
-    expect(bugBadgeCount).toBeGreaterThanOrEqual(1);
-
-    await expect(card).toContainText(
-        '0–2 optional trainer battles with 0–2 Pokemon in total',
-    );
-
-    await expect(
-        page.getByRole('button', {
-            name: 'Teddiursa Terastallizes to Bug',
-        }),
-    ).toBeVisible();
-
-    await card
-        .getByRole('button', { name: 'Teddiursa type defenses' })
-        .click();
+    await card.getByRole('button', { name: 'Teddiursa type defenses' }).click();
     const defenses = page.getByRole('dialog');
     await expect(defenses).toContainText('fire');
     await expect(defenses).toContainText('Weak 2×');

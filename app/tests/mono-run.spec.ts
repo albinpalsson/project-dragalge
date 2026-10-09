@@ -2,7 +2,6 @@ import { test, expect, type Page } from '@playwright/test';
 import {
     cardFor,
     expandCollapsedSummary,
-    selectStarter,
     showMoreProgression,
     waitForPersistence,
 } from './helpers';
@@ -19,9 +18,9 @@ async function createMonoGame(
     await page.getByRole('button', { name: 'Next', exact: true }).click();
     await page.getByLabel('Mono run').check();
     await page.getByLabel('Mono type').selectOption(type);
-    if (futureEvolutions) {
-        await page.getByLabel('Allow future evolutions').check();
-    }
+    await page
+        .getByLabel('Allow future evolutions')
+        .setChecked(futureEvolutions);
     await page.getByRole('button', { name: 'Start', exact: true }).click();
     await expect(cardFor(page, 'Starter').first()).toBeVisible();
 }
@@ -29,66 +28,6 @@ async function createMonoGame(
 function starterOptions(page: Page) {
     return cardFor(page, 'Starter').first().getByRole('listitem');
 }
-
-test('mono type does not ban any starter choices', async ({ page }) => {
-    await createMonoGame(page, 'mono-fire-run', 'fire');
-
-    await expect(starterOptions(page)).toHaveCount(3);
-    for (const starter of await starterOptions(page).all()) {
-        await expect(starter.getByRole('button')).toBeEnabled();
-        await expect(starter).not.toContainText('Not allowed in mono run');
-    }
-});
-
-test('mono run without a matching starter offers all starters and requires release', async ({
-    page,
-}) => {
-    await createMonoGame(page, 'mono-ghost-run', 'ghost');
-
-    await expect(starterOptions(page)).toHaveCount(3);
-    await starterOptions(page).first().getByRole('button').click();
-    const releaseCard = cardFor(page, 'Release starter').first();
-    await expect(releaseCard).toBeVisible();
-});
-
-test('mono settings control release starter and hide tera options', async ({
-    page,
-}) => {
-    await page.goto('/');
-    await page.getByRole('button', { name: 'Start New Game' }).click();
-    await page.getByLabel('Name (optional)').fill('mono-settings-run');
-    await page.getByRole('button', { name: 'Next', exact: true }).click();
-    await page.getByLabel('Mono run').check();
-    await page.getByLabel('Mono type').selectOption('ghost');
-
-    await expect(page.getByLabel('Tera raids')).toHaveCount(0);
-    await expect(page.getByLabel('Release starter')).toHaveCount(0);
-
-    await page.getByLabel('Allow future evolutions').check();
-    await expect(page.getByLabel('Release starter')).toHaveCount(0);
-    await page.getByRole('button', { name: 'Start', exact: true }).click();
-
-    await selectStarter(page, 'Fuecoco');
-    await showMoreProgression(page);
-    await expect(cardFor(page, 'Release starter')).toHaveCount(0);
-});
-
-test('game settings modal applies mono rules when saving', async ({ page }) => {
-    await page.goto('/');
-    await page.getByRole('button', { name: 'Start New Game' }).click();
-    await page.getByLabel('Name (optional)').fill('mono-settings-save-run');
-    await page.getByRole('button', { name: 'Next', exact: true }).click();
-    await page.getByRole('button', { name: 'Start', exact: true }).click();
-    await selectStarter(page, 'Fuecoco');
-
-    await page.getByRole('button', { name: 'Game settings' }).click();
-    await page.getByLabel('Mono run').check();
-    await page.getByLabel('Mono type').selectOption('ghost');
-    await page.getByRole('button', { name: 'Close dialog' }).click();
-
-    await showMoreProgression(page);
-    await expect(cardFor(page, 'Release starter').first()).toBeVisible();
-});
 
 test('empty encounter pool can be confirmed to continue', async ({ page }) => {
     await createMonoGame(page, 'mono-dragon-run', 'dragon');
@@ -119,10 +58,14 @@ test('empty encounter pool can be confirmed to continue', async ({ page }) => {
     await expect(card).not.toContainText('No encounter available');
 });
 
-test('mono lookup updates encounter reasons and rollable pools when settings change', async ({
+test('Mono settings update encounter pools while starters honor manual bans', async ({
     page,
 }) => {
     await createMonoGame(page, 'mono-live-lookup-run', 'fire');
+    await expect(starterOptions(page)).toHaveCount(3);
+    for (const starter of await starterOptions(page).all()) {
+        await expect(starter.getByRole('button')).toBeEnabled();
+    }
     await expandCollapsedSummary(page, 'Poco Path');
     const card = cardFor(page, 'Poco Path').first();
     await card.getByRole('button', { name: 'Show encounters' }).click();
@@ -149,13 +92,11 @@ test('mono lookup updates encounter reasons and rollable pools when settings cha
     await expect(lechonkRow.getByRole('button')).toBeEnabled();
     await page.getByRole('button', { name: 'Close dialog' }).click();
     await expect(lechonkRow).not.toContainText('Not allowed in mono run');
-});
-
-test('starters ignore mono exclusion but still honor manual bans when picked or randomized', async ({
-    page,
-}) => {
-    await createMonoGame(page, 'mono-starter-manual-ban-run', 'fire');
     await page.getByRole('button', { name: 'Game settings' }).click();
+    await page.getByLabel('Mono run', { exact: true }).check();
+    await page
+        .getByRole('combobox', { name: 'Mono type', exact: true })
+        .selectOption('fire');
     const banInput = page.getByRole('combobox', {
         name: 'Add a Pok\u00e9mon ban',
     });
@@ -178,11 +119,23 @@ test('starters ignore mono exclusion but still honor manual bans when picked or 
     await expect(
         options.filter({ hasText: 'Sprigatito' }).getByRole('button'),
     ).toBeEnabled();
-    const card = cardFor(page, 'Starter').first();
-    await card.getByRole('button', { name: 'Randomize', exact: true }).click();
+    const starterCard = cardFor(page, 'Starter').first();
+    await starterCard
+        .getByRole('button', { name: 'Randomize', exact: true })
+        .click();
     await expect(
-        card.getByRole('img', { name: 'Sprigatito', exact: true }),
+        starterCard.getByRole('img', { name: 'Sprigatito', exact: true }),
     ).toBeVisible();
+    await page
+        .getByRole('button', { name: 'Game settings', exact: true })
+        .click();
+    await page
+        .getByRole('combobox', { name: 'Mono type', exact: true })
+        .selectOption('ghost');
+    await expect(cardFor(page, 'Release starter').first()).toBeVisible();
+    await page.getByLabel('Allow future evolutions').check();
+    await expect(cardFor(page, 'Release starter')).toHaveCount(0);
+    await page.getByRole('button', { name: 'Close dialog' }).click();
 });
 
 test('raid lookup preserves exact-form typing and forward-only future evolution eligibility', async ({

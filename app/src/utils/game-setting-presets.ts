@@ -1,5 +1,5 @@
 import type { GameSettings } from '../db/game-db/queries';
-import { DEFAULT_BAN_PRESET, PSEUDO_LEGENDARY_PRESET } from './ban-list';
+import { DEFAULT_BAN_PRESET } from './ban-list';
 
 export type SettingsPresetKey = 'fun' | 'challenging' | 'clean';
 
@@ -42,8 +42,8 @@ const CLEAN_FULL_SETTINGS: FullGameSettingsValue = {
     showHelpfulTips: false,
     includeTeamStarBattles: false,
     monoRunEnabled: false,
-    monoRunType: 'normal',
-    monoRunFutureEvolutions: false,
+    monoRunType: 'grass',
+    monoRunFutureEvolutions: true,
 };
 
 export const SETTINGS_PRESETS: readonly GameSettingsPreset[] = [
@@ -68,7 +68,9 @@ export const SETTINGS_PRESETS: readonly GameSettingsPreset[] = [
         defaults: {
             ...CLEAN_FULL_SETTINGS,
             randomizerMode: 'weighted',
-            banList: [...DEFAULT_BAN_PRESET, ...PSEUDO_LEGENDARY_PRESET],
+            banList: [...DEFAULT_BAN_PRESET, 'Garchomp', 'Salamance'].filter(
+                (b) => b !== 'Skeledirge',
+            ),
             banFullEvolutionLines: true,
             releaseStarterEnabled: true,
             showHelpfulTips: true,

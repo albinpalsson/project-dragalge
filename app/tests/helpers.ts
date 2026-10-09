@@ -24,10 +24,17 @@ async function ensureCardExpanded(page: Page, cardName: string) {
     }
 }
 
-export async function createGame(page: Page, name: string) {
+export async function createGame(
+    page: Page,
+    name: string,
+    preset: 'Fun' | 'Challenging' | 'Clean' = 'Fun',
+    configure?: (page: Page) => Promise<void>,
+) {
     await page.getByRole('button', { name: 'Start New Game' }).click();
     await page.getByLabel('Name (optional)').fill(name);
+    await page.getByRole('button', { name: preset, exact: true }).click();
     await page.getByRole('button', { name: 'Next', exact: true }).click();
+    await configure?.(page);
     await page.getByRole('button', { name: 'Start', exact: true }).click();
     await expect(cardFor(page, 'Starter').first()).toBeVisible();
 }
@@ -58,7 +65,7 @@ export async function showMoreProgression(page: Page): Promise<void> {
 export async function catchTeraRaid(
     page: Page,
     stars: number,
-    pokemonName: string,
+    search = 'a',
 ): Promise<void> {
     const cardName = `Tera Raid ${'★'.repeat(stars)}`;
     await ensureCardExpanded(page, cardName);
@@ -66,8 +73,8 @@ export async function catchTeraRaid(
     const picker = card.getByRole('combobox', {
         name: `Add a ${stars}-star Tera Raid Pokémon`,
     });
-    await picker.fill(pokemonName);
-    await picker.press('Enter');
+    await picker.fill(search);
+    await card.getByRole('option').first().click();
     await card.getByRole('button', { name: 'Caught', exact: true }).click();
     await expect(card).toContainText('Caught');
 }

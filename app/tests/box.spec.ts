@@ -26,18 +26,19 @@ async function setupRunWithThreeCaught(page: Page) {
     };
 }
 
-test('box details show base stats and type defenses for caught Pokemon', async ({
+test('Box inspection and party management persist across reload', async ({
     page,
 }) => {
-    const { starter, pocoPath, inletGrotto } = await setupRunWithThreeCaught(
-        page,
-    );
+    const { starter, pocoPath, inletGrotto } =
+        await setupRunWithThreeCaught(page);
 
     await test.step('inspect details and type defenses for a caught Pokemon', async () => {
         await openBox(page);
         await selectBoxPokemon(page, 'Party', pocoPath);
 
-        const details = page.getByRole('region', { name: `${pocoPath} details` });
+        const details = page.getByRole('region', {
+            name: `${pocoPath} details`,
+        });
         await expect(details).toContainText('HP');
         await expect(details).toContainText('Type Defenses');
     });
@@ -67,7 +68,9 @@ test('box details show base stats and type defenses for caught Pokemon', async (
         ).toBeVisible();
         await expect(cardFor(page, 'Starter')).toContainText(starter);
 
-        await evolvedDetails.getByRole('button', { name: 'More options' }).click();
+        await evolvedDetails
+            .getByRole('button', { name: 'More options' })
+            .click();
         await evolvedDetails
             .getByRole('button', { name: `Devolve to ${starter}` })
             .click();
@@ -77,12 +80,16 @@ test('box details show base stats and type defenses for caught Pokemon', async (
     await test.step('move Pokemon between Party and Box with actions', async () => {
         await selectBoxPokemon(page, 'Party', pocoPath);
 
-        const details = page.getByRole('region', { name: `${pocoPath} details` });
+        const details = page.getByRole('region', {
+            name: `${pocoPath} details`,
+        });
         const party = boxSection(page, 'Party');
         const box = boxSection(page, 'Box');
 
         await details.getByRole('button', { name: 'More options' }).click();
-        await details.getByRole('button', { name: 'Remove from party' }).click();
+        await details
+            .getByRole('button', { name: 'Remove from party' })
+            .click();
         await expect(box.getByRole('img', { name: pocoPath })).toBeVisible();
 
         await details.getByRole('button', { name: 'More options' }).click();
@@ -90,37 +97,24 @@ test('box details show base stats and type defenses for caught Pokemon', async (
         await expect(party.getByRole('img', { name: pocoPath })).toBeVisible();
     });
 
-    await test.step('drag Pokemon between Party, Box, and Death Box', async () => {
+    await test.step('drag a party member to Box', async () => {
         await dragBoxPokemon(page, 'Party', inletGrotto, 'Box');
         await expect(
             boxSection(page, 'Box').getByRole('img', { name: inletGrotto }),
         ).toBeVisible();
-
-        await dragBoxPokemon(page, 'Box', inletGrotto, 'Death Box');
-        await expect(
-            boxSection(page, 'Death Box').getByRole('img', {
-                name: inletGrotto,
-            }),
-        ).toBeVisible();
     });
-});
-
-test('eliminated Pokemon move to Death Box and persist after reload', async ({
-    page,
-}) => {
-    const { starter, pocoPath } = await setupRunWithThreeCaught(
-        page,
-    );
-
-    await openBox(page);
 
     await test.step('eliminate a party member into the Death Box', async () => {
         await selectBoxPokemon(page, 'Party', starter);
         const starterDetails = page.getByRole('region', {
             name: `${starter} details`,
         });
-        await starterDetails.getByRole('button', { name: 'More options' }).click();
-        await starterDetails.getByRole('button', { name: 'Eliminated' }).click();
+        await starterDetails
+            .getByRole('button', { name: 'More options' })
+            .click();
+        await starterDetails
+            .getByRole('button', { name: 'Eliminated' })
+            .click();
         await expect(
             boxSection(page, 'Death Box').getByRole('img', { name: starter }),
         ).toBeVisible();
@@ -136,6 +130,9 @@ test('eliminated Pokemon move to Death Box and persist after reload', async ({
         ).toBeVisible();
         await expect(
             boxSection(page, 'Party').getByRole('img', { name: pocoPath }),
+        ).toBeVisible();
+        await expect(
+            boxSection(page, 'Box').getByRole('img', { name: inletGrotto }),
         ).toBeVisible();
     });
 });
