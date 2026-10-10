@@ -1,4 +1,4 @@
-import { css } from '@pokedb2/css-in-js';
+import { css, cx } from '@pokedb2/css-in-js';
 import { GameCard } from './GameCard';
 import { ImportGameModal } from './ImportGameModal';
 import { NewGameModal } from './NewGameModal';
@@ -38,7 +38,7 @@ export function Home({ onOpenGame, onOpenAbout, onOpenLicenses }: HomeProps) {
             <ImportGameModal />
 
             <section>
-                <h2>Games</h2>
+                <h2>Stored games</h2>
                 {gameCards.isPending && <p className={mutedText}>Loading...</p>}
                 {gameCards.isSuccess && (
                     <ul className={gamesList}>
@@ -54,6 +54,20 @@ export function Home({ onOpenGame, onOpenAbout, onOpenLicenses }: HomeProps) {
                                 />
                             </li>
                         ))}
+                        {ghostCardSlots
+                            .slice(gameCards.data?.length ?? 0)
+                            .map((slot) => (
+                                <li
+                                    className={cx(
+                                        gameListItem,
+                                        slot.hideOnSmall && hideOnSmallGhost,
+                                    )}
+                                    key={slot.id}
+                                    aria-hidden="true"
+                                >
+                                    <div className={ghostCard} />
+                                </li>
+                            ))}
                     </ul>
                 )}
             </section>
@@ -135,4 +149,29 @@ const gameListItem = css`
     flex: 0 1 36rem;
     min-width: 0;
     max-width: 100%;
+`;
+
+const ghostCardSlots = [
+    { id: 'ghost-0', hideOnSmall: false },
+    { id: 'ghost-1', hideOnSmall: true },
+    { id: 'ghost-2', hideOnSmall: true },
+    { id: 'ghost-3', hideOnSmall: true },
+    { id: 'ghost-4', hideOnSmall: true },
+    { id: 'ghost-5', hideOnSmall: true },
+] as const;
+
+const hideOnSmallGhost = css`
+    @media (max-width: 34rem) {
+        display: none;
+    }
+`;
+
+const ghostCard = css`
+    width: 100%;
+    max-width: 36rem;
+    min-height: 24rem;
+    background: color-mix(in srgb, var(--color-surface) 45%, transparent);
+    border: 0.1rem solid color-mix(in srgb, var(--color-border) 55%, transparent);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
 `;
