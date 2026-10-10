@@ -53,6 +53,10 @@ export function RollResult({ encounterRoll, zoomedIcon }: RollResultProps) {
                 {metaParts.length > 0 && (
                     <p className={rollMeta}>{metaParts.join(' · ')}</p>
                 )}
+                {(encounterRoll.name === 'Applin' ||
+                    encounterRoll.name === 'Pineco') && (
+                    <p className={rollMeta}>Only found hanging in trees.</p>
+                )}
             </div>
         </div>
     );
