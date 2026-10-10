@@ -25,6 +25,7 @@ import {
     fetchBossFightSeeds,
     fetchLocationSeeds,
     fetchTeraRaidSeeds,
+    tradeOnlyPokemonNames,
 } from './sources/index.ts';
 
 async function main(): Promise<void> {
@@ -63,6 +64,7 @@ async function main(): Promise<void> {
         locations,
         rawRosters,
         teraRaidPokemonNames,
+        tradeOnlyPokemonNames,
     );
 
     const pokemonRows = await fetchAllPokemonRows(pokemonIds);

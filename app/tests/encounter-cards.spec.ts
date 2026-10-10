@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { getPokemonTradeOffer } from '../src/pokemon-trades';
 import {
     boxSection,
     cardFor,
@@ -187,7 +188,7 @@ test('evolution preserves the original grouped encounter name and icon', async (
         }),
     ).toBeVisible();
     await page.getByRole('button', { name: 'Close dialog' }).click();
-    await expect(card.locator('p').filter({ hasText: group })).toHaveText(
+    await expect(card.getByText(`${group} Caught`, { exact: true })).toHaveText(
         `${group} Caught`,
     );
     await expect(icon).toHaveAttribute('src', originalSource);
@@ -198,7 +199,7 @@ test('evolution preserves the original grouped encounter name and icon', async (
     await expect(card.getByText(group, { exact: true })).toBeVisible();
     await expect(icon).toHaveAttribute('src', originalSource);
     await expandCollapsedSummary(page, location);
-    await expect(card.locator('p').filter({ hasText: group })).toHaveText(
+    await expect(card.getByText(`${group} Caught`, { exact: true })).toHaveText(
         `${group} Caught`,
     );
     await expect(icon).toHaveAttribute('src', originalSource);
@@ -206,6 +207,142 @@ test('evolution preserves the original grouped encounter name and icon', async (
     await expect(
         boxSection(page, 'Party').getByRole('img', {
             name: evolved,
+            exact: true,
+        }),
+    ).toBeVisible();
+});
+
+test('available Paldea trade offers replace and restore the current encounter Pokemon', async ({
+    page,
+}) => {
+    await page.goto('/');
+    await createGame(page, 'trade-run', 'Clean');
+
+    const openEncounter = async (locationName: string) => {
+        for (let attempt = 0; attempt < 20; attempt += 1) {
+            const target = cardFor(page, locationName).first();
+            if (await target.isVisible()) {
+                break;
+            }
+            const showMore = page.getByRole('button', {
+                name: 'Show more',
+                exact: true,
+            });
+            if ((await showMore.count()) === 0) {
+                throw new Error(`Could not reveal ${locationName}`);
+            }
+            await showMore.click();
+        }
+
+        let card = cardFor(page, locationName).first();
+        await expect(card).toBeVisible();
+        if (
+            (await card
+                .getByRole('button', { name: 'Show encounters' })
+                .count()) === 0 &&
+            (await card
+                .getByRole('button', { name: 'Hide encounters' })
+                .count()) === 0
+        ) {
+            await card.click();
+            card = cardFor(page, locationName).first();
+        }
+        const showEncounters = card.getByRole('button', {
+            name: 'Show encounters',
+        });
+        if ((await showEncounters.count()) > 0) {
+            await showEncounters.click();
+        }
+        return cardFor(page, locationName).first();
+    };
+
+    const pickEncounter = async (locationName: string, pokemonName: string) => {
+        const card = await openEncounter(locationName);
+        await card
+            .getByRole('button', { name: `Pick ${pokemonName}`, exact: true })
+            .first()
+            .click();
+        return cardFor(page, locationName).first();
+    };
+
+    const flabebeLocation = 'South Province (Area Two)';
+    const flabebe = 'Flab\u00e9b\u00e9 (Blue Flower)';
+    let card = await pickEncounter(flabebeLocation, flabebe);
+    await expect(card).toContainText(
+        'Flab\u00e9b\u00e9 can be traded for a Snom (Lv. 10) in Cortondo from a girl on the main path of the city. Mark trade here to change the species in your box.',
+    );
+    await resolveEncounter(page, flabebeLocation, 'Caught');
+    await card.getByRole('button', { name: 'Trade', exact: true }).click();
+    await expect(
+        card.getByRole('img', { name: 'Flab\u00e9b\u00e9', exact: true }),
+    ).toBeVisible();
+    await expect(card).toContainText('Caught');
+    await expect(card).toContainText('Found in');
+
+    await openBox(page);
+    await expect(
+        boxSection(page, 'Party').getByRole('img', {
+            name: 'Snom',
+            exact: true,
+        }),
+    ).toBeVisible();
+
+    await selectBoxPokemon(page, 'Party', 'Snom');
+    const evolution = page.getByRole('region', {
+        name: 'Evolution',
+        exact: true,
+    });
+    const evolvedPokemon = await evolution
+        .locator('strong')
+        .first()
+        .innerText();
+    await evolution
+        .getByRole('button', { name: 'Evolve', exact: true })
+        .click();
+    await expect(
+        boxSection(page, 'Party').getByRole('img', {
+            name: evolvedPokemon,
+            exact: true,
+        }),
+    ).toBeVisible();
+    await page.getByRole('button', { name: 'Close dialog' }).click();
+    await expect(
+        card.getByRole('button', { name: 'Undo trade', exact: true }),
+    ).toBeVisible();
+
+    await waitForPersistence(page);
+    await page.reload();
+    card = await openEncounter(flabebeLocation);
+    await expect(
+        card.getByRole('img', { name: 'Flab\u00e9b\u00e9', exact: true }),
+    ).toBeVisible();
+    await expect(
+        card.getByRole('button', { name: 'Undo trade', exact: true }),
+    ).toBeVisible();
+    await card.getByRole('button', { name: 'Undo trade', exact: true }).click();
+    await expect(
+        card.getByRole('img', { name: 'Flab\u00e9b\u00e9', exact: true }),
+    ).toBeVisible();
+    await expect(card).toContainText('Caught');
+
+    card = await pickEncounter(
+        'South Province (Area One)',
+        'Wooper (Paldean Form)',
+    );
+    await expect(card).toContainText(
+        'Paldean Wooper can be traded for a Johtonian Wooper (Lv. 18) in Cascarrafa from a trainer next to the center fountain. Mark trade here to change the species in your box.',
+    );
+    await card.getByRole('button', { name: 'Trade', exact: true }).click();
+    await expect(
+        card.getByRole('img', {
+            name: 'Wooper (Paldean Form)',
+            exact: true,
+        }),
+    ).toBeVisible();
+    await card.getByRole('button', { name: 'Undo trade', exact: true }).click();
+    await expect(
+        card.getByRole('img', {
+            name: 'Wooper (Paldean Form)',
             exact: true,
         }),
     ).toBeVisible();

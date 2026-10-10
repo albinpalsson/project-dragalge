@@ -64,6 +64,9 @@ export function useEncounterActions() {
         async releaseStarter(locationName: string) {
             await setStatusAndClearPartySlot(locationName, 'released');
         },
+        async trade(locationName: string, pokemonName: string) {
+            await mutations.setPokemon(game.id, locationName, pokemonName);
+        },
         async chooseStarter(
             pokemonName: string,
             locationName: string = '__starter__',

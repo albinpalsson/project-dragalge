@@ -8,6 +8,7 @@ export interface EncounterRollDetails {
     displayName: string;
     subAreaTerrains: { subArea: string; terrain: string }[];
     name: string;
+    activeName: string;
     minLevel: number;
     maxLevel: number;
     morningRate: number;
@@ -48,9 +49,9 @@ export function useEncounterRoll(
     const matchingEncounters = encounterRows.filter(
         (encounter) => getEncounterGroupKey(encounter.name) === originGroup,
     );
-
     return {
         name: roll.rolled_as,
+        activeName: roll.pokemon_name,
         status: roll.status,
         displayName: getEncounterGroupKey(roll.rolled_as),
         subAreaTerrains: matchingEncounters.map((encounter) => ({

@@ -2,6 +2,7 @@ import { css } from '@pokedb2/css-in-js';
 import { Button } from './Button';
 import { EncounterRandomizer } from './EncounterRandomizer';
 import { StatusChip } from './StatusChip';
+import { EncounterTrade } from './EncounterTrade';
 import type { LocationEncounterView } from '../db/pokemon-data/queries';
 import { useEncounterRoll } from '../hooks/useEncounterRoll';
 import { useEncounterActions } from '../hooks/useEncounterActions';
@@ -52,65 +53,79 @@ export function RollActions({ locationName, encounters }: RollActionsProps) {
     };
 
     return (
-        <div className={actionRow}>
-            <EncounterRandomizer
-                encounters={encounters}
-                randomizerMode={game.randomizerMode}
-                hasExistingRoll={rolled}
-                disabled={encounterActions.isBusy}
-                onPick={(pokemonName) =>
-                    encounterActions.rollEncounter(pokemonName, locationName)
-                }
-            />
+        <div className={actions}>
+            <div className={actionRow}>
+                <EncounterRandomizer
+                    encounters={encounters}
+                    randomizerMode={game.randomizerMode}
+                    hasExistingRoll={rolled}
+                    disabled={encounterActions.isBusy}
+                    onPick={(pokemonName) =>
+                        encounterActions.rollEncounter(
+                            pokemonName,
+                            locationName,
+                        )
+                    }
+                />
+                {rolled && (
+                    <>
+                        <Button
+                            variant="secondary"
+                            className={
+                                highlightResolutionActions
+                                    ? pendingActionHighlight
+                                    : undefined
+                            }
+                            ariaLabel="Caught"
+                            title="Caught"
+                            onClick={() => void setStatus('caught')}
+                            disabled={
+                                encounterActions.isBusy ||
+                                encounterRoll.status === 'caught'
+                            }
+                        >
+                            🎯
+                        </Button>
+                        <Button
+                            variant="secondary"
+                            className={
+                                highlightResolutionActions
+                                    ? pendingActionHighlight
+                                    : undefined
+                            }
+                            ariaLabel="Missed"
+                            title="Missed"
+                            onClick={() => void setStatus('missed')}
+                            disabled={
+                                encounterActions.isBusy ||
+                                encounterRoll.status === 'missed'
+                            }
+                        >
+                            🏃
+                        </Button>
+                        <Button
+                            variant="secondary"
+                            ariaLabel="Eliminated"
+                            title="Eliminated"
+                            onClick={() => void setStatus('eliminated')}
+                            disabled={
+                                encounterActions.isBusy ||
+                                encounterRoll.status === 'eliminated'
+                            }
+                        >
+                            💀
+                        </Button>
+                    </>
+                )}
+            </div>
             {rolled && (
-                <>
-                    <Button
-                        variant="secondary"
-                        className={
-                            highlightResolutionActions
-                                ? pendingActionHighlight
-                                : undefined
-                        }
-                        ariaLabel="Caught"
-                        title="Caught"
-                        onClick={() => void setStatus('caught')}
-                        disabled={
-                            encounterActions.isBusy ||
-                            encounterRoll.status === 'caught'
-                        }
-                    >
-                        🎯
-                    </Button>
-                    <Button
-                        variant="secondary"
-                        className={
-                            highlightResolutionActions
-                                ? pendingActionHighlight
-                                : undefined
-                        }
-                        ariaLabel="Missed"
-                        title="Missed"
-                        onClick={() => void setStatus('missed')}
-                        disabled={
-                            encounterActions.isBusy ||
-                            encounterRoll.status === 'missed'
-                        }
-                    >
-                        🏃
-                    </Button>
-                    <Button
-                        variant="secondary"
-                        ariaLabel="Eliminated"
-                        title="Eliminated"
-                        onClick={() => void setStatus('eliminated')}
-                        disabled={
-                            encounterActions.isBusy ||
-                            encounterRoll.status === 'eliminated'
-                        }
-                    >
-                        💀
-                    </Button>
-                </>
+                <EncounterTrade
+                    encounterRoll={encounterRoll}
+                    disabled={encounterActions.isBusy}
+                    onTradePokemon={(pokemonName) =>
+                        void encounterActions.trade(locationName, pokemonName)
+                    }
+                />
             )}
         </div>
     );
@@ -173,6 +188,13 @@ const actionRow = css`
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-2);
+`;
+
+const actions = css`
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-2);
 `;
 
 const emptyPoolText = css`

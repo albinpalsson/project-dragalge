@@ -50,7 +50,9 @@ export function RollResult({ encounterRoll, zoomedIcon }: RollResultProps) {
                     {encounterRoll.displayName}{' '}
                     <StatusChip status={encounterRoll.status} />
                 </p>
-                <p className={rollMeta}>{metaParts.join(' · ')}</p>
+                {metaParts.length > 0 && (
+                    <p className={rollMeta}>{metaParts.join(' · ')}</p>
+                )}
             </div>
         </div>
     );
