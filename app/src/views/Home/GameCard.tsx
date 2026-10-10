@@ -172,10 +172,10 @@ const icons = css`
     position: relative;
     z-index: 1;
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
     align-items: center;
         align-self: center;
-    width: min(100%, 29.6rem);
+    width: min(100%, 34rem);
     margin-top: auto;
         direction: rtl;
   gap: var(--space-1);
@@ -192,7 +192,7 @@ const iconSlot = css`
 const icon = css`
     display: block;
     width: 100%;
-    max-width: 5.6rem;
+    max-width: 5.2rem;
     aspect-ratio: 1;
     object-fit: contain;
 `;
