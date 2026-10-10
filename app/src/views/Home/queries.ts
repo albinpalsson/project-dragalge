@@ -33,13 +33,6 @@ import {
 } from '../../db/game-db/queries';
 import { useEvolutionGraphQuery } from '../../hooks/useEvolutionGraphQuery';
 
-export interface GameCardState {
-    game: GameRun;
-    obtained: EncounterRollRow[];
-    bossProgress: BossBattleProgressRow[];
-    isLost: boolean;
-}
-
 export interface GameRunSnapshot {
     game: GameRun;
     encounterRolls: EncounterRollRow[];
@@ -70,7 +63,7 @@ export function useGameRunSnapshotsQuery() {
 
 export function useGameCards() {
     const snapshotsQuery = useGameRunSnapshotsQuery();
-    const data = useMemo<GameCardState[] | undefined>(
+    const data = useMemo(
         () =>
             snapshotsQuery.data
                 ?.map((snapshot) => {
@@ -82,11 +75,16 @@ export function useGameCards() {
                     const isLost = snapshot.bossProgress.some(
                         (battle) => battle.result === 'lost',
                     );
+                    const isWon = snapshot.bossProgress.some(
+                        (battle) =>
+                            battle.battle_name === 'Geeta (Top Champion)' &&
+                            battle.result === 'won',
+                    );
                     return {
                         game: snapshot.game,
                         obtained,
                         bossProgress: snapshot.bossProgress,
-                        isLost,
+                        status: isLost ? 'lost' : isWon ? 'won' : 'in-progress',
                     };
                 })
                 .reverse(),

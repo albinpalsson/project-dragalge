@@ -10,24 +10,27 @@ import { ExportGameModal } from './ExportGameModal';
 interface GameCardProps {
     game: GameRun;
     obtained: EncounterRollRow[];
-    isLost: boolean;
+    status: 'in-progress' | 'lost' | 'won';
     onOpenGame: () => void;
 }
 
 export function GameCard({
     game,
     obtained,
-    isLost,
+    status,
     onOpenGame,
 }: GameCardProps) {
     const [isExportOpen, setExportOpen] = useState(false);
     const [isDeleteOpen, setDeleteOpen] = useState(false);
     const sorted = partyFirst(obtained);
     const progress = Math.min(sorted.length * 8, 100);
-    const variantColor =
-        game.variant === 'v'
-            ? 'var(--color-game-violet)'
-            : 'var(--color-game-scarlet)';
+    const isLost = status === 'lost';
+    const statusColor =
+        status === 'lost'
+            ? 'var(--color-game-scarlet)'
+            : status === 'won'
+              ? 'var(--color-success)'
+              : 'var(--color-primary)';
 
     return (
         <div className={container}>
@@ -37,7 +40,7 @@ export function GameCard({
                         className={fill}
                         style={{
                             width: `${progress}%`,
-                            backgroundImage: `repeating-linear-gradient(45deg, color-mix(in srgb, ${variantColor} 35%, transparent), color-mix(in srgb, ${variantColor} 35%, transparent) 0.6rem, color-mix(in srgb, ${variantColor} 20%, transparent) 0.6rem, color-mix(in srgb, ${variantColor} 20%, transparent) 1.2rem)`,
+                            backgroundImage: `repeating-linear-gradient(45deg, color-mix(in srgb, ${statusColor} 35%, transparent), color-mix(in srgb, ${statusColor} 35%, transparent) 0.6rem, color-mix(in srgb, ${statusColor} 20%, transparent) 0.6rem, color-mix(in srgb, ${statusColor} 20%, transparent) 1.2rem)`,
                         }}
                     />
                     <span className={header}>

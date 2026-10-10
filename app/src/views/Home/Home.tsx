@@ -47,7 +47,7 @@ export function Home({ onOpenGame, onOpenAbout, onOpenLicenses }: HomeProps) {
                                 <GameCard
                                     game={card.game}
                                     obtained={card.obtained}
-                                    isLost={card.isLost}
+                                    status={card.status}
                                     onOpenGame={() =>
                                         onOpenGame(card.game.name)
                                     }
