@@ -84,3 +84,71 @@ test('progression windows, Home resume and browser history preserve the run', as
         ).toBeVisible();
     });
 });
+
+test('Licenses & Notices is reachable and restored by browser history', async ({
+    page,
+}) => {
+    await page.goto('/');
+    await navigateTo(page, 'Licenses & Notices');
+
+    await expect(
+        page.getByRole('heading', { name: 'Licenses & Notices' }),
+    ).toBeVisible();
+    await expect(
+        page.getByRole('heading', { name: 'Bulbapedia data' }),
+    ).toBeVisible();
+    await expect(
+        page.getByRole('link', { name: 'CC BY-NC-SA 2.5 license' }),
+    ).toHaveAttribute(
+        'href',
+        'https://creativecommons.org/licenses/by-nc-sa/2.5/',
+    );
+
+    for (const [path, phrase, internalPhrase] of [
+        [
+            '/notices/bulbapedia-data.txt',
+            'License terms can vary by page or revision',
+            'importing at scale',
+        ],
+        [
+            '/notices/pokemondb-sprites.txt',
+            'not a license or permission from the rights holders',
+            'fetches are queued',
+        ],
+        [
+            '/assets/ATTRIBUTION.txt',
+            'not a license or permission from the rights holders',
+            'free to reuse',
+        ],
+        [
+            '/notices/third-party.txt',
+            'react-dom 19.2.7 (MIT)',
+            'installed package distributions',
+        ],
+    ]) {
+        const response = await page.request.get(path);
+        expect(response.ok()).toBeTruthy();
+        const notice = await response.text();
+        expect(notice).toContain(phrase);
+        expect(notice).not.toContain(internalPhrase);
+    }
+
+    await page.goBack();
+    await expect(page.getByRole('heading', { name: 'Games' })).toBeVisible();
+    await page.goForward();
+    await expect(
+        page.getByRole('heading', { name: 'Licenses & Notices' }),
+    ).toBeVisible();
+
+    await page.getByRole('button', { name: 'Open menu' }).click();
+    await page.getByRole('button', { name: 'About', exact: true }).click();
+    await expect(page.getByRole('heading', { name: 'About' })).toBeVisible();
+    await page.getByRole('button', { name: 'Licenses & Notices' }).click();
+    await expect(
+        page.getByRole('heading', { name: 'Licenses & Notices' }),
+    ).toBeVisible();
+    await page.reload();
+    await expect(
+        page.getByRole('heading', { name: 'Licenses & Notices' }),
+    ).toBeVisible();
+});

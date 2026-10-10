@@ -74,7 +74,11 @@ function activeViewFromHistoryState(state: unknown): ActiveView | undefined {
     }
 
     const candidate = state as { view?: unknown; gameRunId?: unknown };
-    if (candidate.view === 'home' || candidate.view === 'about') {
+    if (
+        candidate.view === 'home' ||
+        candidate.view === 'about' ||
+        candidate.view === 'licenses'
+    ) {
         return { view: candidate.view };
     }
     if (candidate.view === 'game' && typeof candidate.gameRunId === 'string') {

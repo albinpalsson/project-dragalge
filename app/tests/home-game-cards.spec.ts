@@ -45,6 +45,36 @@ test('Home lists the newest game first after reload', async ({ page }) => {
     ]);
 });
 
+test('Home welcome follows whether any games are saved', async ({ page }) => {
+    await page.goto('/');
+
+    await expect(
+        page.getByRole('heading', { name: 'Welcome to PokéDB' }),
+    ).toBeVisible();
+    await expect(
+        page.getByRole('button', { name: 'Start New Game' }),
+    ).toBeVisible();
+    await expect(
+        page.getByRole('button', { name: 'Licenses & Notices' }),
+    ).toBeVisible();
+
+    await createGame(page, 'welcome-state-run');
+    await navigateTo(page, 'Home');
+    await expect(
+        page.getByRole('heading', { name: 'Welcome to PokéDB' }),
+    ).toHaveCount(0);
+    await expect(
+        page.getByRole('button', { name: 'Licenses & Notices' }),
+    ).toBeVisible();
+
+    await page.getByRole('button', { name: 'Game options' }).click();
+    await page.getByRole('button', { name: 'Delete game' }).click();
+    await page.getByRole('button', { name: 'Delete', exact: true }).click();
+    await expect(
+        page.getByRole('heading', { name: 'Welcome to PokéDB' }),
+    ).toBeVisible();
+});
+
 test('Home supports sharing, duplicate imports and persisted deletion', async ({
     page,
     browser,
@@ -109,6 +139,9 @@ test('Home supports sharing, duplicate imports and persisted deletion', async ({
         );
         await importPage.getByRole('button', { name: 'Import' }).click();
         await chooseAnalyticsConsentIfPrompted(importPage);
+        await expect(
+            importPage.getByRole('heading', { name: 'Welcome to PokéDB' }),
+        ).toHaveCount(0);
         await expect(
             importPage.getByRole('heading', { name: 'Games' }),
         ).toBeVisible();

@@ -6,6 +6,7 @@ import { About } from './About';
 import { AppHeader } from './AppHeader';
 import { Game } from './Game/Game';
 import { Home } from './Home/Home';
+import { Licenses } from './Licenses';
 import { ThemeToggle } from './ThemeToggle';
 import { useImportDataFromHash } from '../hooks/useImportDataFromHash';
 import { useViewNavigation } from '../hooks/useViewNavigation';
@@ -57,6 +58,13 @@ export function App() {
                         >
                             About
                         </button>
+                        <button
+                            type="button"
+                            className={menuLink}
+                            onClick={() => navigate({ view: 'licenses' })}
+                        >
+                            Licenses &amp; Notices
+                        </button>
                     </nav>
                 </Drawer>
             )}
@@ -68,12 +76,23 @@ export function App() {
                             onOpenGame={(gameRunId) =>
                                 navigate({ view: 'game', gameRunId })
                             }
+                            onOpenAbout={() => navigate({ view: 'about' })}
+                            onOpenLicenses={() =>
+                                navigate({ view: 'licenses' })
+                            }
                         />
                     )}
                     {activeView.view === 'game' && (
                         <Game gameRunId={activeView.gameRunId} />
                     )}
-                    {activeView.view === 'about' && <About />}
+                    {activeView.view === 'about' && (
+                        <About
+                            onOpenLicenses={() =>
+                                navigate({ view: 'licenses' })
+                            }
+                        />
+                    )}
+                    {activeView.view === 'licenses' && <Licenses />}
                 </main>
             </HeaderSlotContext.Provider>
         </>

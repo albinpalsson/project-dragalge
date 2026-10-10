@@ -1,6 +1,10 @@
 import { css } from '@pokedb2/css-in-js';
 
-export function About() {
+interface AboutProps {
+    onOpenLicenses: () => void;
+}
+
+export function About({ onOpenLicenses }: AboutProps) {
     return (
         <section>
             <h2>About</h2>
@@ -9,10 +13,27 @@ export function About() {
                 keeps your encounters, boss battles and caught Pokémon in your
                 browser, with no account and no server.
             </p>
+            <button
+                className={textButton}
+                type="button"
+                onClick={onOpenLicenses}
+            >
+                Licenses &amp; Notices
+            </button>
         </section>
     );
 }
 
 const body = css`
   color: var(--color-text-secondary);
+`;
+
+const textButton = css`
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--color-info);
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
 `;

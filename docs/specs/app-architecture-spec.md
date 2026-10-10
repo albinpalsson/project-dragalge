@@ -17,10 +17,11 @@ This spec defines the overall structure of the Paldea Nuzlocke tracker app, inte
 
 ### Core Views
 
-Three top-level pages:
-1. **Home Screen**: List of all started game runs, each shown as a progress card (caught Pokémon icons + completion %); start new run, load/select a run, delete a run
+Four top-level pages:
+1. **Home Screen**: List of all started game runs, each shown as a progress card (caught Pokémon icons + completion %); start new run, load/select a run, delete a run. When no games are saved, show a short welcome and About link; keep a compact attribution link visible on Home.
 2. **Main Player Page**: For the active game run — a single combined vertical list of Locations and Boss Battles, ordered by game progression
 3. **About**: Static page explaining why the app exists and what it solves
+4. **Licenses & Notices**: Static page with data attribution and license terms, sprite notices, third-party software notices, and factual storage/privacy information. The shared menu links to it, and Home shows a short attribution link.
 
 ### Overlay Views
 
@@ -36,14 +37,17 @@ Not overlays — plain inline expand/collapse rows within the Main Player Page's
 - **Box**: On the Main Player Page the Game title, settings cog and a compact `Box <party>/6 | <box> | <fallen>` button are merged into the app header (no separate sticky row) through a header slot portal; this portal is used only for the header slot, overlays stay CSS-positioned. Opening the Box uses the app's CSS modal pattern and shows three sections — the chosen party (max 6, alive), the remaining caught Pokémon, and a death box of eliminated ones. Selecting an icon opens an inline detail pane inside the modal with the Pokémon's base stats, type effectiveness/defenses (showing all 18 attack types and their multipliers against the Pokémon's types), and allows party management actions (add/remove/replace party member, mark eliminated, revive). Drag/drop may be added as a progressive enhancement, but button actions remain the accessibility fallback.
 
 ### Legal Attribution (When Using Bulbapedia-Derived Seed Data)
-- The app must expose a visible legal notice in Settings/About linking to:
+- The app must expose a visible Licenses & Notices page linking to:
   - Bulbapedia source page(s)
   - Bulbapedia copyright/license page
   - CC BY-NC-SA 2.5 license text
-- The legal notice must state that Bulbapedia-derived data is used under
-  CC BY-NC-SA 2.5 and is non-commercial/share-alike.
+- The notice must scope CC BY-NC-SA 2.5 terms to material confirmed to be
+  covered by that license and clarify that terms can vary by page or revision.
+- Where CC BY-NC-SA 2.5 applies, the notice must explain attribution,
+  non-commercial use, and share-alike requirements.
 - This requirement applies even when data is bundled inline in app assets.
-- TODO, POKEMONDB sprites also has legal attribution constraints for us
+- Sprite files have separate attribution and rights constraints; the notice must distinguish Pokémon Database's stated fair-use policy from permission by the rights holders.
+- A short attribution link appears on Home. Full notices are app-owned static files under `app/public/notices/` and are included in production output.
 
 
 ### Key Features
@@ -78,17 +82,18 @@ Not overlays — plain inline expand/collapse rows within the Main Player Page's
 ## Design & Architecture
 ....
 
-### Router (In-Memory State-Based)
+### Router (In-Memory State with Browser History)
 
-No URL or browser history integration. A single `activeView` value is held in React state at the app root and passed down (via props or context). Navigation is just calling the setter — there is no back/forward support.
+A single `activeView` value is held in React state at the app root and passed down (via props or context). Navigation updates state and browser history state, so back/forward and reload restore visited views. The pathname is not used for routing.
 
-The active view is a discriminated union covering only the three top-level pages:
+The active view is a discriminated union covering the four top-level pages:
 
 ```ts
 type ActiveView =
     | { view: 'home' }
     | { view: 'game'; gameRunId: string }
-    | { view: 'about' };
+    | { view: 'about' }
+    | { view: 'licenses' };
 ```
 
 Overlays and expandable sections are **not** part of the router — they're local component state (e.g. `isOpen`, or the id of what's expanded/popped-open) held near where they're rendered, since they never replace the underlying page.

@@ -6,13 +6,34 @@ import { useGameCards } from './queries';
 
 interface HomeProps {
     onOpenGame: (gameRunId: string) => void;
+    onOpenAbout: () => void;
+    onOpenLicenses: () => void;
 }
 
-export function Home({ onOpenGame }: HomeProps) {
+export function Home({ onOpenGame, onOpenAbout, onOpenLicenses }: HomeProps) {
     const gameCards = useGameCards();
+    const hasNoGames = gameCards.isSuccess && gameCards.data?.length === 0;
 
     return (
         <div className={content}>
+            {hasNoGames && (
+                <section className={welcome} aria-labelledby="welcome-title">
+                    <h2 id="welcome-title">Welcome to PokéDB</h2>
+                    <p>
+                        Track encounters, boss battles, and caught Pokémon in
+                        your Paldea Nuzlocke runs. Your runs are saved in this
+                        browser, with no account or cross-device sync.
+                    </p>
+                    <button
+                        className={textButton}
+                        type="button"
+                        onClick={onOpenAbout}
+                    >
+                        About PokéDB
+                    </button>
+                </section>
+            )}
+
             <NewGameModal onOpenGame={onOpenGame} />
             <ImportGameModal />
 
@@ -36,6 +57,18 @@ export function Home({ onOpenGame }: HomeProps) {
                     </ul>
                 )}
             </section>
+
+            <p className={notice}>
+                Some data is derived from Bulbapedia; license terms can vary by
+                source page. Pokémon icons are sourced from Pokémon Database.{' '}
+                <button
+                    className={textButton}
+                    type="button"
+                    onClick={onOpenLicenses}
+                >
+                    Licenses &amp; Notices
+                </button>
+            </p>
         </div>
     );
 }
@@ -51,6 +84,41 @@ const content = css`
 
 const mutedText = css`
     color: var(--color-text-muted);
+`;
+
+const welcome = css`
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-2);
+    padding-bottom: var(--space-3);
+    border-bottom: 0.1rem solid var(--color-border);
+
+    h2,
+    p {
+        margin: 0;
+    }
+
+    p {
+        max-width: 70rem;
+        color: var(--color-text-secondary);
+    }
+`;
+
+const notice = css`
+    margin: 0;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+`;
+
+const textButton = css`
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--color-info);
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
 `;
 
 const gamesList = css`

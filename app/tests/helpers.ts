@@ -200,9 +200,15 @@ export async function resolveEncounter(
     await expect(card).toContainText(status);
 }
 
-export async function navigateTo(page: Page, destination: 'Home' | 'About') {
+export async function navigateTo(
+    page: Page,
+    destination: 'Home' | 'About' | 'Licenses & Notices',
+) {
     await page.getByRole('button', { name: 'Open menu' }).click();
-    await page.getByRole('button', { name: destination, exact: true }).click();
+    await page
+        .getByRole('navigation')
+        .getByRole('button', { name: destination, exact: true })
+        .click();
 }
 
 export async function expectNextStep(page: Page, stepName: string) {

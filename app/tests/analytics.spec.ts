@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
-import { cardFor, chooseStarter } from './helpers';
+import { cardFor, chooseStarter, navigateTo } from './helpers';
 
 interface TrackedEvent {
     name: string;
