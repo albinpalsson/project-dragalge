@@ -111,7 +111,9 @@ function parsePokemonBlock(block: string): TrainerPartyEntry | null {
 
     const moves: string[] = [];
     for (let i = 1; i <= 4; i++) {
-        const move = stripWikiMarkup(params[`move${i}`] ?? '').trim();
+        const move = stripWikiMarkup(params[`move${i}`] ?? '')
+            .replace(/&nbsp;/g, ' ')
+            .trim();
         if (move) {
             moves.push(move);
         }

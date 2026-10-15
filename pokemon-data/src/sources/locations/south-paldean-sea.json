@@ -9,13 +9,8 @@
             "encounters": [
                 {
                     "pokemon": "Shellder",
-                    "games": [
-                        "S",
-                        "V"
-                    ],
-                    "terrain": [
-                        "underwater"
-                    ],
+                    "games": ["S", "V"],
+                    "terrain": ["underwater"],
                     "levels": {
                         "min": 15,
                         "max": 23
@@ -30,14 +25,8 @@
                 },
                 {
                     "pokemon": "Magikarp",
-                    "games": [
-                        "S",
-                        "V"
-                    ],
-                    "terrain": [
-                        "water_surface",
-                        "underwater"
-                    ],
+                    "games": ["S", "V"],
+                    "terrain": ["water_surface", "underwater"],
                     "levels": {
                         "min": 8,
                         "max": 23
@@ -52,14 +41,8 @@
                 },
                 {
                     "pokemon": "Gyarados",
-                    "games": [
-                        "S",
-                        "V"
-                    ],
-                    "terrain": [
-                        "water_surface",
-                        "underwater"
-                    ],
+                    "games": ["S", "V"],
+                    "terrain": ["water_surface", "underwater"],
                     "levels": {
                         "min": 20,
                         "max": 23
@@ -74,13 +57,8 @@
                 },
                 {
                     "pokemon": "Qwilfish",
-                    "games": [
-                        "S",
-                        "V"
-                    ],
-                    "terrain": [
-                        "underwater"
-                    ],
+                    "games": ["S", "V"],
+                    "terrain": ["underwater"],
                     "levels": {
                         "min": 15,
                         "max": 23
@@ -95,15 +73,8 @@
                 },
                 {
                     "pokemon": "Wingull",
-                    "games": [
-                        "S",
-                        "V"
-                    ],
-                    "terrain": [
-                        "land",
-                        "overland",
-                        "sky"
-                    ],
+                    "games": ["S", "V"],
+                    "terrain": ["land", "overland", "sky"],
                     "levels": {
                         "min": 8,
                         "max": 23
@@ -118,13 +89,8 @@
                 },
                 {
                     "pokemon": "Luvdisc",
-                    "games": [
-                        "S",
-                        "V"
-                    ],
-                    "terrain": [
-                        "underwater"
-                    ],
+                    "games": ["S", "V"],
+                    "terrain": ["underwater"],
                     "levels": {
                         "min": 15,
                         "max": 23
@@ -141,14 +107,8 @@
                 },
                 {
                     "pokemon": "Buizel",
-                    "games": [
-                        "S",
-                        "V"
-                    ],
-                    "terrain": [
-                        "land",
-                        "water_surface"
-                    ],
+                    "games": ["S", "V"],
+                    "terrain": ["land", "water_surface"],
                     "levels": {
                         "min": 8,
                         "max": 23
@@ -163,12 +123,8 @@
                 },
                 {
                     "pokemon": "Clauncher",
-                    "games": [
-                        "V"
-                    ],
-                    "terrain": [
-                        "underwater"
-                    ],
+                    "games": ["V"],
+                    "terrain": ["underwater"],
                     "levels": {
                         "min": 23,
                         "max": 23
@@ -183,13 +139,8 @@
                 },
                 {
                     "pokemon": "Bruxish",
-                    "games": [
-                        "S",
-                        "V"
-                    ],
-                    "terrain": [
-                        "underwater"
-                    ],
+                    "games": ["S", "V"],
+                    "terrain": ["underwater"],
                     "levels": {
                         "min": 20,
                         "max": 23
@@ -204,13 +155,8 @@
                 },
                 {
                     "pokemon": "Arrokuda",
-                    "games": [
-                        "S",
-                        "V"
-                    ],
-                    "terrain": [
-                        "underwater"
-                    ],
+                    "games": ["S", "V"],
+                    "terrain": ["underwater"],
                     "levels": {
                         "min": 8,
                         "max": 23
@@ -225,15 +171,8 @@
                 },
                 {
                     "pokemon": "Wattrel",
-                    "games": [
-                        "S",
-                        "V"
-                    ],
-                    "terrain": [
-                        "land",
-                        "overland",
-                        "sky"
-                    ],
+                    "games": ["S", "V"],
+                    "terrain": ["land", "overland", "sky"],
                     "levels": {
                         "min": 14,
                         "max": 23
@@ -250,13 +189,8 @@
                 },
                 {
                     "pokemon": "Finizen",
-                    "games": [
-                        "S",
-                        "V"
-                    ],
-                    "terrain": [
-                        "water_surface"
-                    ],
+                    "games": ["S", "V"],
+                    "terrain": ["water_surface"],
                     "levels": {
                         "min": 15,
                         "max": 23

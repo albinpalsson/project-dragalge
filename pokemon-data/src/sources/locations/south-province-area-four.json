@@ -615,7 +615,7 @@
                     }
                 },
                 {
-                    "pokemon": "Rockruff",
+                    "pokemon": "Rockruff (Standard)",
                     "games": ["S", "V"],
                     "terrain": ["land"],
                     "levels": {
