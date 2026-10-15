@@ -31,16 +31,19 @@ export default defineConfig({
          * use the dev server concurrently without port collisions. */
         baseURL: `http://localhost:${process.env.DEV_SERVER_PORT ?? 3000}`,
 
-        reducedMotion: 'reduce',
-
         /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
         trace: 'on-first-retry',
+
+        contextOptions: {
+            reducedMotion: 'reduce',
+        },
     },
 
     /* Configure projects for major browsers */
     projects: [
         {
-            name: 'chromium', use: { ...devices['Desktop Chrome'] } 
+            name: 'chromium',
+            use: { ...devices['Desktop Chrome'] },
         },
 
         /* Test against mobile viewports. */
