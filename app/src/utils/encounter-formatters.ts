@@ -1,7 +1,6 @@
 import { type EncounterRates, getEffectiveWeight } from '../randomizer';
 
-const LEVEL_RANGE_TAIL = 0.025;
-const LEVEL_RANGE_EPSILON = 1e-12;
+const PEAK_DENSITY_THRESHOLD_RATIO = 0.2;
 
 interface EncounterGroupLevelRange {
     min: number;
@@ -109,24 +108,21 @@ function getEncounterGroupLevelRange(
         }
     }
 
-    let cumulativeProbability = 0;
+    const maxDensity = Math.max(...levelProbabilities);
+    const threshold = maxDensity * PEAK_DENSITY_THRESHOLD_RATIO;
+
     let trimmedMin = min;
     let trimmedMax = max;
-    let foundMin = false;
 
     for (let index = 0; index < levelProbabilities.length; index++) {
-        cumulativeProbability += levelProbabilities[index];
-        if (
-            !foundMin &&
-            cumulativeProbability + LEVEL_RANGE_EPSILON >= LEVEL_RANGE_TAIL
-        ) {
+        if (levelProbabilities[index] >= threshold) {
             trimmedMin = min + index;
-            foundMin = true;
+            break;
         }
-        if (
-            cumulativeProbability + LEVEL_RANGE_EPSILON >=
-            1 - LEVEL_RANGE_TAIL
-        ) {
+    }
+
+    for (let index = levelProbabilities.length - 1; index >= 0; index--) {
+        if (levelProbabilities[index] >= threshold) {
             trimmedMax = min + index;
             break;
         }

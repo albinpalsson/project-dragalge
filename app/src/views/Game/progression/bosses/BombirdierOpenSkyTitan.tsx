@@ -86,9 +86,10 @@ export function BombirdierOpenSkyTitan({
                     <ProgressionDescription>
                         The Titan battle has two phases. First, you will face
                         Bombirdier alone at its base strength. After you defeat
-                        it, you will face it again with twice as much HP. Arven
-                        will join you for the second phase with his Nacli. Your
-                        Tera Orb will recharge,{' '}
+                        it, you will face it again with{' '}
+                        <strong>twice as much HP</strong>. Arven will join you
+                        for the second phase with his Nacli. Your Tera Orb will
+                        recharge,{' '}
                         <b>but you will not be able to heal between phases.</b>
                     </ProgressionDescription>
                     <BossResultControls

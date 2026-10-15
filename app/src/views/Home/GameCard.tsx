@@ -25,6 +25,7 @@ export function GameCard({
     const sorted = partyFirst(obtained);
     const progress = Math.min(sorted.length * 8, 100);
     const isLost = status === 'lost';
+    const isWon = status === 'won';
     const statusColor =
         status === 'lost'
             ? 'var(--color-game-scarlet)'
@@ -46,10 +47,13 @@ export function GameCard({
                     <span className={header}>
                         <span className={name}>{game.name}</span>
                         {isLost && <span className={lostBadge}>Run Lost</span>}
+                        {isWon && (
+                            <span className={wonBadge}>Run Complete</span>
+                        )}
                     </span>
                     {sorted.length > 0 ? (
                         <span className={icons}>
-                            {sorted.slice(0, 15).map((row) => (
+                            {sorted.slice(0, 18).map((row) => (
                                 <span
                                     className={iconSlot}
                                     key={row.location_name}
@@ -169,6 +173,16 @@ const lostBadge = css`
   font-weight: 600;
   color: var(--color-danger);
   background-color: var(--color-danger-bg);
+`;
+
+const wonBadge = css`
+    flex: 0 0 auto;
+    padding: 0.25rem 0.75rem;
+    border-radius: 0.25rem;
+    font-size: var(--font-size-sm);
+    font-weight: 600;
+    color: var(--color-success);
+    background-color: var(--color-success-bg);
 `;
 
 const icons = css`

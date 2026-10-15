@@ -53,7 +53,3 @@ const actions = css`
   flex-wrap: wrap;
   gap: var(--space-2);
 `;
-
-const backButton = css`
-  align-self: flex-start;
-`;

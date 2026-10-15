@@ -13,7 +13,6 @@ import { progressionCardPattern } from './progression-card-pattern';
 const LOCATION_NAME = 'Cortondo';
 const DISPLAY_BATTLE_NAME = 'Katy (Gym)';
 const BATTLE_NAME = 'Katy (Bug Gym)';
-const TERA_ACE = { pokemonName: 'Teddiursa', teraType: 'Bug' };
 
 interface KatyBugGymProps {
     isNext?: boolean;
@@ -85,7 +84,7 @@ export function KatyBugGym({ isNext }: KatyBugGymProps) {
                     />
                     <ProgressionDescription>
                         The Olive Roll gym challenge contains 0–2 optional
-                        trainer battles with 0–2 Pokemon in total before you can
+                        trainer battles with 0–2 Pokémon in total before you can
                         face Katy.
                     </ProgressionDescription>
                     <BossResultControls
@@ -98,7 +97,7 @@ export function KatyBugGym({ isNext }: KatyBugGymProps) {
                     />
                     <BossRoster
                         roster={rosterData}
-                        teraAce={TERA_ACE}
+                        teraType="Bug"
                         iconSize="lg"
                         zoomedIcon
                     />

@@ -30,14 +30,9 @@ interface BossHeaderProps {
     specialtyType?: string;
 }
 
-export interface TeraAce {
-    pokemonName: string;
-    teraType: string;
-}
-
 interface BossRosterProps {
     roster: BossRosterView;
-    teraAce?: TeraAce;
+    teraType?: string;
     iconSize: PokemonIconSize;
     zoomedIcon?: boolean;
 }
@@ -74,8 +69,10 @@ export function BossHeader({
                         {icon}
                     </span>
                     <h3 className={titleClass}>{displayBattleName}</h3>
-                    {specialtyType && <TypeBadge type={specialtyType} />}
-                    {currentResult && <StatusChip status={currentResult} />}
+                    <span className={badgeGroup}>
+                        {specialtyType && <TypeBadge type={specialtyType} />}
+                        {currentResult && <StatusChip status={currentResult} />}
+                    </span>
                 </div>
                 <p className={subtitle}>{locationName}</p>
             </div>
@@ -85,23 +82,24 @@ export function BossHeader({
 
 export function BossRoster({
     roster,
-    teraAce,
+    teraType,
     iconSize,
     zoomedIcon,
 }: BossRosterProps) {
+    const orderedPokemon = [...roster.pokemon].sort(
+        (first, second) => first.slot - second.slot,
+    );
+    const aceSlot = orderedPokemon.at(-1)?.slot;
+
     return (
         <div className={pokemonList}>
-            {roster.pokemon.map((pokemon) => (
+            {orderedPokemon.map((pokemon) => (
                 <BossPokemonCard
                     key={pokemon.slot}
                     pokemon={pokemon}
                     iconSize={iconSize}
                     zoomedIcon={zoomedIcon}
-                    teraType={
-                        teraAce?.pokemonName === pokemon.pokemonName
-                            ? teraAce.teraType
-                            : undefined
-                    }
+                    teraType={pokemon.slot === aceSlot ? teraType : undefined}
                 />
             ))}
         </div>
@@ -119,6 +117,12 @@ const titleRow = css`
     flex-wrap: wrap;
     align-items: center;
     gap: var(--space-1);
+`;
+
+const badgeGroup = css`
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
 `;
 
 const battleIcon = css`

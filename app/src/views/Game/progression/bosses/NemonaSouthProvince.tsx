@@ -1,19 +1,18 @@
-import { BossCollapsedSummary } from './BossCollapsedSummary';
-import { BossHeader, BossRoster } from './BossRoster';
-import { BossResultControls } from './BossResultControls';
-import { ProgressionDescription } from '../../../../components/ProgressionDescription';
+import type { CSSProperties } from 'react';
 import { ProgressionCard } from '../../../../components/ProgressionCard';
+import { ProgressionDescription } from '../../../../components/ProgressionDescription';
+import { getNemonaBattleName } from '../../../../db/pokemon-data/starter-battles';
 import { useBossActions } from '../../../../hooks/useBossActions';
 import { useStarter } from '../../../../hooks/useStarter';
-import { getStarterBattleName } from '../../../../db/pokemon-data/starter-battles';
 import { STARTER_NAMES } from '../../../../utils/starter-choices';
 import { useBossBattleRosterQuery } from '../../queries';
-import type { CSSProperties } from 'react';
+import { BossCollapsedSummary } from './BossCollapsedSummary';
+import { BossResultControls } from './BossResultControls';
+import { BossHeader, BossRoster } from './BossRoster';
 import { progressionCardPattern } from './progression-card-pattern';
 
 const LOCATION_NAME = 'South Province (Area One)';
 const DISPLAY_BATTLE_NAME = 'Nemona (Second rival battle)';
-const TERA_ACE = { pokemonName: 'Pawmi', teraType: 'Electric' };
 
 interface NemonaSouthProvinceProps {
     isNext?: boolean;
@@ -23,7 +22,7 @@ export function NemonaSouthProvince({ isNext }: NemonaSouthProvinceProps) {
     const bossActions = useBossActions();
     const starter = useStarter();
     const displayStarter = starter ?? STARTER_NAMES[0];
-    const battleName = getStarterBattleName(displayStarter);
+    const battleName = getNemonaBattleName(displayStarter, 'Second');
     const rosterQuery = useBossBattleRosterQuery(battleName);
     const currentResult = bossActions.getBattleResult(battleName);
 
@@ -83,9 +82,9 @@ export function NemonaSouthProvince({ isNext }: NemonaSouthProvinceProps) {
                         currentResult={currentResult}
                     />
                     <ProgressionDescription>
-                        This battle begins at the large door between South
-                        Province (Area One) and Mesagoza, beside the Pokemon
-                        Center.
+                        This battle begins when you reach the large door between
+                        South Province (Area One) and Mesagoza, beside the
+                        Pokemon Center.
                     </ProgressionDescription>
                     <BossResultControls
                         currentResult={currentResult}
@@ -97,7 +96,7 @@ export function NemonaSouthProvince({ isNext }: NemonaSouthProvinceProps) {
                     />
                     <BossRoster
                         roster={rosterData}
-                        teraAce={TERA_ACE}
+                        teraType="Electric"
                         iconSize="lg"
                         zoomedIcon
                     />

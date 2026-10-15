@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import { css } from '@pokedb2/css-in-js';
+import { useState } from 'react';
 import { useProgressionTracker } from '../../../hooks/useProgressionTracker';
 import { useGame } from '../GameContext';
 import {
@@ -135,26 +135,27 @@ function calculateProgressionWindow(
     const nextIndex =
         matchedNextIndex < 0 ? visibleItems.length : matchedNextIndex;
     const startVisibleIndex = Math.max(0, nextIndex - ITEMS_BEFORE_NEXT_STEP);
-    const checkpointIndices: number[] = [];
+    const checkpointEndIndices: number[] = [];
 
     for (
-        let index = nextIndex;
-        index < visibleItems.length && checkpointIndices.length < 2;
+        let index = nextIndex + 1;
+        index < visibleItems.length && checkpointEndIndices.length < 2;
         index += 1
     ) {
-        if (visibleItems[index].item.checkpointAfter) {
-            checkpointIndices.push(index);
+        if (visibleItems[index].item.checkpointBefore) {
+            checkpointEndIndices.push(index - 1);
         }
     }
 
-    const [firstCheckpointIndex, secondCheckpointIndex] = checkpointIndices;
+    const [firstCheckpointEndIndex, secondCheckpointEndIndex] =
+        checkpointEndIndices;
     const lastVisibleIndex = visibleItems.length - 1;
     const endVisibleIndex =
-        firstCheckpointIndex === undefined
+        firstCheckpointEndIndex === undefined
             ? lastVisibleIndex
-            : firstCheckpointIndex - nextIndex + 1 >= MINIMUM_WINDOW_SIZE
-              ? firstCheckpointIndex
-              : (secondCheckpointIndex ?? lastVisibleIndex);
+            : firstCheckpointEndIndex - nextIndex + 1 >= MINIMUM_WINDOW_SIZE
+              ? firstCheckpointEndIndex
+              : (secondCheckpointEndIndex ?? lastVisibleIndex);
 
     return {
         startIndex: visibleItems[startVisibleIndex].canonicalIndex,

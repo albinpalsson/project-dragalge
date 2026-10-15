@@ -12,8 +12,11 @@ test('starter can be rerolled, reset and released from Box', async ({
     page,
 }) => {
     await page.goto('/');
-    await createGame(page, 'starter-controls-run', 'Fun', async (settings) => {
-        await settings.getByLabel('Release starter').check();
+    await createGame(page, 'starter-controls-run', {
+        preset: 'Fun',
+        custom: async (settings) => {
+            await settings.getByLabel('Release starter').check();
+        },
     });
 
     const firstStarter = await chooseStarter(page);

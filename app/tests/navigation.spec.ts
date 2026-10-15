@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import {
     cardFor,
     catchEncounter,
@@ -44,6 +44,15 @@ test('progression windows, Home resume and browser history preserve the run', as
     await page.reload();
 
     await expect(cardFor(page, 'Pokemon League (Paldea)')).toBeVisible();
+    await expect(cardFor(page, 'Katy (Gym)')).toBeVisible();
+    await expect(cardFor(page, 'Brassius (Gym)')).toHaveCount(0);
+    const nextShowMore = page.getByRole('button', {
+        name: 'Show more',
+        exact: true,
+    });
+    await expect(nextShowMore).toBeVisible();
+    await nextShowMore.click();
+    await expect(cardFor(page, 'Brassius (Gym)')).toBeVisible();
     await expect(cardFor(page, 'Starter')).toHaveCount(0);
     const showPrevious = page.getByRole('button', {
         name: 'Show previous steps',

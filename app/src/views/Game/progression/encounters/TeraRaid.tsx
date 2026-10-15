@@ -26,7 +26,7 @@ interface TeraRaidProps {
     zoomedIcon?: boolean;
 }
 
-export function TeraRaid({ stars, isNext, zoomedIcon }: TeraRaidProps) {
+export function TeraRaid({ stars, isNext, zoomedIcon = true }: TeraRaidProps) {
     const game = useGame();
     const pokemonQuery = usePokemonListQuery();
     const encounterActions = useEncounterActions();

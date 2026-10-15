@@ -7,7 +7,7 @@ interface PokemonIconProps {
     name: string;
     alt?: string;
     size: PokemonIconSize;
-    /** Crops the sprite's transparent margin inside a bordered frame so the Pokémon looks bigger. */
+    /** Crops the sprite's transparent margin so the Pokémon looks bigger. */
     zoomed?: boolean;
     borderColor?: string;
 }
@@ -34,7 +34,7 @@ export function PokemonIcon({
 
     return (
         <span
-            className={cx(frame, sizeClasses[size])}
+            className={cx(frame, sizeClasses[size], borderColor && bordered)}
             style={borderColor ? { borderColor } : undefined}
         >
             {img(zoomedImage)}
@@ -103,13 +103,16 @@ const sizeClasses: Record<PokemonIconSize, string> = {
 const frame = css`
     padding: var(--pokemon-icon-pad-top) var(--pokemon-icon-pad-x)
         var(--pokemon-icon-pad-bottom) var(--pokemon-icon-pad-x);
-    border: 0.1rem solid var(--color-border);
     border-radius: var(--radius-sm);
     overflow: hidden;
     display: inline-flex;
     align-items: flex-end;
     justify-content: center;
     flex-shrink: 0;
+`;
+
+const bordered = css`
+    border: 0.1rem solid;
 `;
 
 const zoomedImage = css`

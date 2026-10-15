@@ -30,11 +30,14 @@ export function ReleaseStarter({ isNext }: ReleaseStarterProps) {
         <ProgressionCard isNext={isNext} compact>
             <div className={headingRow}>
                 <h3 className={heading}>Release starter</h3>
-                {starterStatus === 'released' && <StatusChip status="released" />}
+                {starterStatus === 'released' && (
+                    <StatusChip status="released" />
+                )}
             </div>
             {starterStatus === 'caught' && (
                 <ProgressionDescription>
-                    Press Release to mark starter released, which move it out of your team and box.
+                    Press Release to mark starter released, which move it out of
+                    your team and box.
                 </ProgressionDescription>
             )}
             {starterStatus !== 'released' && (

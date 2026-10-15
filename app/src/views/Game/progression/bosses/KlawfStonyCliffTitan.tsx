@@ -84,10 +84,11 @@ export function KlawfStonyCliffTitan({ isNext }: KlawfStonyCliffTitanProps) {
                     <ProgressionDescription>
                         The Titan battle has two phases. First, you will face
                         Klawf alone at its base strength. After defeating it,
-                        you will face it again with twice as much HP. Arven will
-                        join you for the second phase with his Shellder. Your
-                        Tera Orb will recharge, and you can heal your Pokemon
-                        between phases.
+                        you will face it again with{' '}
+                        <strong>twice as much HP</strong>. Arven will join you
+                        for the second phase with his Shellder. Your Tera Orb
+                        will recharge, and you can heal your Pokemon between
+                        phases.
                     </ProgressionDescription>
                     <BossResultControls
                         currentResult={currentResult}

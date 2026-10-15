@@ -1,5 +1,4 @@
 import { test, expect } from '@playwright/test';
-import { getPokemonTradeOffer } from '../src/pokemon-trades';
 import {
     boxSection,
     cardFor,
@@ -149,7 +148,7 @@ test('evolution preserves the original grouped encounter name and icon', async (
     page,
 }) => {
     await page.goto('/');
-    await createGame(page, 'original-form-run', 'Clean');
+    await createGame(page, 'original-form-run', { preset: 'Clean' });
     await showMoreProgression(page);
     const location = 'South Province (Area Two)';
     const original = 'Flab\u00e9b\u00e9 (Red Flower)';
@@ -216,7 +215,7 @@ test('available Paldea trade offers replace and restore the current encounter Po
     page,
 }) => {
     await page.goto('/');
-    await createGame(page, 'trade-run', 'Clean');
+    await createGame(page, 'trade-run', { preset: 'Clean' });
 
     const openEncounter = async (locationName: string) => {
         for (let attempt = 0; attempt < 20; attempt += 1) {

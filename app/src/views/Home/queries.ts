@@ -84,7 +84,11 @@ export function useGameCards() {
                         game: snapshot.game,
                         obtained,
                         bossProgress: snapshot.bossProgress,
-                        status: isLost ? 'lost' : isWon ? 'won' : 'in-progress',
+                        status: isLost
+                            ? ('lost' as const)
+                            : isWon
+                              ? ('won' as const)
+                              : ('in-progress' as const),
                     };
                 })
                 .reverse(),

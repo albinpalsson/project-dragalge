@@ -14,7 +14,10 @@ interface RollResultProps {
     zoomedIcon?: boolean;
 }
 
-export function RollResult({ encounterRoll, zoomedIcon }: RollResultProps) {
+export function RollResult({
+    encounterRoll,
+    zoomedIcon = true,
+}: RollResultProps) {
     if (
         !encounterRoll ||
         encounterRoll.status === 'notRolled' ||

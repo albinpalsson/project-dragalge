@@ -12,6 +12,7 @@ import {
     applyStarmobileOverride,
     STARMOBILE_OVERRIDES,
 } from './starmobile-overrides';
+import { ProgressionDescription } from '../../../../components/ProgressionDescription';
 
 const LOCATION_NAME = 'West Province (Area One)';
 const DISPLAY_BATTLE_NAME = 'Giacomo (Team Star)';
@@ -87,6 +88,11 @@ export function GiacomoDarkStar({ isNext }: GiacomoDarkStarProps) {
                         icon={STARFALL_BOSS_ICON}
                         specialtyType={SPECIALTY_TYPE}
                     />
+                    <ProgressionDescription>
+                        Before facing Giacomo, you must defeat the trainer
+                        guarding the Team Star base, who uses a level 19
+                        Murkrow.
+                    </ProgressionDescription>
                     <BossResultControls
                         currentResult={currentResult}
                         onResolve={(result) =>

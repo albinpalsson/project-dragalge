@@ -14,7 +14,6 @@ const LOCATION_NAME = 'Artazon';
 const DISPLAY_BATTLE_NAME = 'Brassius (Gym)';
 const BATTLE_NAME = 'Brassius (Grass Gym)';
 const SPECIALTY_TYPE = 'Grass';
-const PLACEHOLDER_TERA_ACE = { pokemonName: 'Sudowoodo', teraType: 'Grass' };
 
 interface BrassiusGrassGymProps {
     isNext?: boolean;
@@ -97,7 +96,7 @@ export function BrassiusGrassGym({ isNext }: BrassiusGrassGymProps) {
                     />
                     <BossRoster
                         roster={rosterData}
-                        teraAce={PLACEHOLDER_TERA_ACE}
+                        teraType="Grass"
                         iconSize="lg"
                         zoomedIcon
                     />

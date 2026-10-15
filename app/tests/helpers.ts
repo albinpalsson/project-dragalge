@@ -35,17 +35,25 @@ export async function chooseAnalyticsConsentIfPrompted(page: Page) {
     }
 }
 
+interface CreateGameSettings {
+    preset?: 'Fun' | 'Challenging' | 'Clean';
+    variant?: 's' | 'v';
+    custom?: (page: Page) => Promise<void>;
+}
+
 export async function createGame(
     page: Page,
     name: string,
-    preset: 'Fun' | 'Challenging' | 'Clean' = 'Fun',
-    configure?: (page: Page) => Promise<void>,
+    { preset = 'Fun', variant = 's', custom }: CreateGameSettings = {},
 ) {
     await page.getByRole('button', { name: 'Start New Game' }).click();
+    if (variant === 'v') {
+        await page.getByLabel('Version').selectOption('v');
+    }
     await page.getByLabel('Name (optional)').fill(name);
     await page.getByRole('button', { name: preset, exact: true }).click();
     await page.getByRole('button', { name: 'Next', exact: true }).click();
-    await configure?.(page);
+    await custom?.(page);
     await page.getByRole('button', { name: 'Start', exact: true }).click();
     await chooseAnalyticsConsentIfPrompted(page);
     await expect(cardFor(page, 'Starter').first()).toBeVisible();
@@ -215,13 +223,11 @@ export async function expectNextStep(page: Page, stepName: string) {
     const nextStepLabel = page.getByText('→ Next step', { exact: true });
     await expect(nextStepLabel).toHaveCount(1);
 
-    const stepCard = cardFor(page, stepName).first();
-    await expect(stepCard).toBeVisible();
-
     const stepItem = page
         .locator('li', { hasText: stepName })
         .filter({ has: page.getByText('→ Next step', { exact: true }) });
     await expect(stepItem).toHaveCount(1);
+    await expect(stepItem).toBeVisible();
 }
 
 export async function winBossBattle(page: Page, battleName: string) {

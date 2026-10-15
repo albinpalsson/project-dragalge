@@ -25,7 +25,7 @@ export function EncounterCollapsedSummary({
     encounterRoll,
     encounters,
     isNext,
-    zoomedIcon,
+    zoomedIcon = true,
     onExpand,
 }: EncounterCollapsedSummaryProps) {
     const levelRange = useMemo(
