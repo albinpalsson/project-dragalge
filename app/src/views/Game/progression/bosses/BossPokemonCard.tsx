@@ -12,7 +12,6 @@ import { TypeBadge } from '../../../../components/TypeBadge';
 import { Tooltip } from '../../../../components/Tooltip';
 import type { BossRosterPokemon } from './BossRoster';
 import { TypeDefenses } from '../../Box/TypeDefenses';
-import { useTypeDefenses } from '../../useTypeDefenses';
 
 interface BossPokemonCardProps {
     pokemon: BossRosterPokemon;
@@ -29,10 +28,8 @@ export function BossPokemonCard({
 }: BossPokemonCardProps) {
     const [isTypeDefensesOpen, setIsTypeDefensesOpen] = useState(false);
     const displayName = pokemon.displayName ?? pokemon.pokemonName;
-    const defensiveEntries = useTypeDefenses(
-        teraType?.toLowerCase() ?? pokemon.primaryType,
-        teraType ? undefined : pokemon.secondaryType,
-    );
+    const defensivePrimaryType = teraType?.toLowerCase() ?? pokemon.primaryType;
+    const defensiveSecondaryType = teraType ? undefined : pokemon.secondaryType;
 
     return (
         <article className={card}>
@@ -121,7 +118,10 @@ export function BossPokemonCard({
                     title={`${displayName} ${teraType ? `(${teraType} Tera)` : ''}`}
                     onClose={() => setIsTypeDefensesOpen(false)}
                 >
-                    <TypeDefenses entries={defensiveEntries} />
+                    <TypeDefenses
+                        primaryType={defensivePrimaryType}
+                        secondaryType={defensiveSecondaryType}
+                    />
                 </Modal>
             )}
         </article>

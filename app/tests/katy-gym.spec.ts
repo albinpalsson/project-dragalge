@@ -18,6 +18,9 @@ test('a boss ace uses its Tera type for defense information', async ({
 
     await card.getByRole('button', { name: 'Teddiursa type defenses' }).click();
     const defenses = page.getByRole('dialog');
+    await expect(
+        defenses.getByRole('heading', { name: 'Type defenses (bug)' }),
+    ).toBeVisible();
     await expect(defenses).toContainText('fire');
     await expect(defenses).toContainText('Weak 2×');
     await expect(defenses).toContainText('fighting');

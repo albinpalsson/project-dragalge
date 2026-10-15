@@ -1,9 +1,10 @@
 import { css, cx } from '@pokedb2/css-in-js';
 import { TypeBadge } from '../../../components/TypeBadge';
-import type { DefensiveEffectivenessEntry } from '../../../utils/type-effectiveness';
+import { useTypeDefenses } from '../useTypeDefenses';
 
 interface TypeDefensesProps {
-    entries: DefensiveEffectivenessEntry[];
+    primaryType: string;
+    secondaryType?: string;
     variant?: 'tooltip';
 }
 
@@ -24,16 +25,26 @@ function getCanonicalName(multiplier: number): string {
     }
 }
 
-export function TypeDefenses({ entries, variant }: TypeDefensesProps) {
+export function TypeDefenses({
+    primaryType,
+    secondaryType,
+    variant,
+}: TypeDefensesProps) {
+    const entries = useTypeDefenses(primaryType, secondaryType);
+
     if (entries.length === 0) {
         return null;
     }
+
+    const defensiveTypes = secondaryType
+        ? `${primaryType}/${secondaryType}`.toLowerCase()
+        : primaryType.toLowerCase();
 
     return (
         <div
             className={cx(container, variant === 'tooltip' && tooltipContainer)}
         >
-            <h5 className={title}>Type Defenses</h5>
+            <h5 className={title}>Type defenses ({defensiveTypes})</h5>
             <div className={list}>
                 {entries.map((entry) => (
                     <div
@@ -65,8 +76,16 @@ const tooltipContainer = css`
 `;
 
 const title = css`
-  margin: 0;
-  font-size: var(--font-size-base);
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: var(--space-2);
+        margin: 0;
+        padding-bottom: var(--space-1);
+        border-bottom: 0.1rem solid var(--color-border);
+        font-size: var(--font-size-sm);
+        font-weight: 600;
+        color: var(--color-text-muted);
 `;
 
 const list = css`

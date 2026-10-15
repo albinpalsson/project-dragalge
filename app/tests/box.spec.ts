@@ -40,7 +40,11 @@ test('Box inspection and party management persist across reload', async ({
             name: `${pocoPath} details`,
         });
         await expect(details).toContainText('HP');
-        await expect(details).toContainText('Type Defenses');
+        await expect(
+            details.getByRole('heading', {
+                name: /^Type defenses \([a-z]+(?:\/[a-z]+)?\)$/,
+            }),
+        ).toBeVisible();
     });
 
     await test.step('evolve and devolve the starter while summary keeps starter identity', async () => {

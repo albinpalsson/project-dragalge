@@ -456,7 +456,7 @@ async function inspectBossAndOwnedPokemon(page: Page, battle: string) {
             page.getByRole('region', {
                 name: `${ownedPokemon} details`,
             }),
-        ).toContainText('Type Defenses');
+        ).toContainText('Type defenses (water/poison)');
         await page.keyboard.press('Escape');
     });
 }
