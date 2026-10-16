@@ -19,7 +19,11 @@ export function ProgressionTimeline() {
     );
     // Keep canonical bounds stable for this visit as settings change visibility.
     const [windowBounds] = useState(() =>
-        calculateProgressionWindow(visibleItems, progression.nextKey),
+        calculateProgressionWindow(
+            visibleItems,
+            progression.nextKey,
+            progression.firstUnresolvedKey,
+        ),
     );
     const [showPrevious, setShowPrevious] = useState(false);
     const [showMore, setShowMore] = useState(false);
@@ -124,6 +128,7 @@ function indexProgressionItems(
 function calculateProgressionWindow(
     visibleItems: IndexedProgressionItem[],
     nextKey: string | undefined,
+    firstUnresolvedKey: string | undefined,
 ): ProgressionWindowBounds {
     if (visibleItems.length === 0) {
         return { startIndex: undefined, endIndex: undefined };
@@ -134,7 +139,14 @@ function calculateProgressionWindow(
     );
     const nextIndex =
         matchedNextIndex < 0 ? visibleItems.length : matchedNextIndex;
-    const startVisibleIndex = Math.max(0, nextIndex - ITEMS_BEFORE_NEXT_STEP);
+    const firstUnresolvedIndex = visibleItems.findIndex(
+        ({ item }) => item.key === firstUnresolvedKey,
+    );
+    const startVisibleIndex = Math.max(
+        0,
+        (firstUnresolvedIndex < 0 ? nextIndex : firstUnresolvedIndex) -
+            ITEMS_BEFORE_NEXT_STEP,
+    );
     const checkpointEndIndices: number[] = [];
 
     for (

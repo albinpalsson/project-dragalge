@@ -3,6 +3,7 @@ import {
     cardFor,
     catchEncounter,
     createGame,
+    expectNextStep,
     navigateTo,
     selectStarter,
     waitForPersistence,
@@ -92,6 +93,24 @@ test('progression windows, Home resume and browser history preserve the run', as
             page.getByRole('heading', { name: 'Games' }),
         ).toBeVisible();
     });
+});
+
+test('a resolved boss advances next step without hiding skipped encounters', async ({
+    page,
+}) => {
+    await page.goto('/');
+    await createGame(page, 'skipped-encounter-run');
+    await selectStarter(page, 'Sprigatito');
+
+    await winBossBattle(page, 'Nemona (Second rival battle)');
+    await waitForPersistence(page);
+    await page.reload();
+
+    await expectNextStep(page, 'Pokemon League (Paldea)');
+    await expect(cardFor(page, 'Poco Path')).toBeVisible();
+    await expect(
+        page.getByRole('button', { name: 'Show previous steps', exact: true }),
+    ).toHaveCount(0);
 });
 
 test('Licenses & Notices is reachable and restored by browser history', async ({

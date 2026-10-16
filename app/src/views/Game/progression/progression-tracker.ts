@@ -11,6 +11,7 @@ export interface ProgressionTracker {
     total: number;
     percent: number;
     nextKey: string | undefined;
+    firstUnresolvedKey: string | undefined;
 }
 
 export function calculateProgression(
@@ -44,17 +45,25 @@ export function calculateProgression(
         return bossProgress.some((battle) => battle.battle_name === battleName);
     };
 
-    let completed = 0;
-    let nextKey: string | undefined;
-    for (const item of countedItems) {
-        if (isResolved(item)) {
-            completed += 1;
-            continue;
-        }
-        if (!nextKey) {
-            nextKey = item.key;
+    const resolvedItems = countedItems.map(isResolved);
+    const completed = resolvedItems.filter(Boolean).length;
+    const firstUnresolvedIndex = resolvedItems.findIndex(
+        (resolved) => !resolved,
+    );
+    const firstUnresolvedKey =
+        firstUnresolvedIndex < 0
+            ? undefined
+            : countedItems[firstUnresolvedIndex].key;
+    let latestResolvedBossIndex = -1;
+    for (let index = 0; index < countedItems.length; index += 1) {
+        if (countedItems[index].kind === 'boss' && resolvedItems[index]) {
+            latestResolvedBossIndex = index;
         }
     }
+    const nextIndex = resolvedItems.findIndex(
+        (resolved, index) => index > latestResolvedBossIndex && !resolved,
+    );
+    const nextKey = nextIndex < 0 ? undefined : countedItems[nextIndex].key;
 
     const total = countedItems.length;
     const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
@@ -64,5 +73,6 @@ export function calculateProgression(
         total,
         percent,
         nextKey,
+        firstUnresolvedKey,
     };
 }
