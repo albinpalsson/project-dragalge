@@ -76,6 +76,13 @@ Legend: **Boss type** — Rival / Gym / Titan / Starfall / Elite Four. "Implemen
 | 58 | Boss | Geeta (Top Champion) | Elite Four | 62 | Pokemon League | ✅ |
 | 59 | Boss | Nemona (Final Battle) | Rival | 66 | Mesagoza | ✅ |
 
+## Helpful Tips
+
+Helpful tips are optional `info` progression items. They are visible when
+"Show helpful support milestones" is enabled and never count toward run
+completion, progress percentage, or the next-step marker. Each tip starts as a
+collapsed info summary; expanding it reveals the full text.
+
 ## Tera Raids
 
 Tera Raids are optional side content, not part of the main story route. The "Tera raids" game setting controls their behavior: `None` hides every raid card; `Single` shows one raid slot per star tier and counts it toward progression completion (the player must resolve it — Caught, Missed, or Eliminated — before the tracker considers it done); `Unlimited` shows the same cards but lets the player log any number of Pokemon per tier, and those cards never block completion since they have no natural endpoint.

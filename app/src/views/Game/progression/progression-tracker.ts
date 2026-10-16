@@ -24,6 +24,9 @@ export function calculateProgression(
     );
 
     const isResolved = (item: ProgressionItem): boolean => {
+        if (item.kind === 'info') {
+            return true;
+        }
         if (item.kind === 'encounter') {
             return state.encounters.some(
                 (encounter) =>

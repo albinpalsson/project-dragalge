@@ -96,6 +96,13 @@ test('Fun preset plays through the available progression', async ({ page }) => {
     await completeBossBattle(page, 'Nemona (Third rival battle)');
     await completeEncounter(page, 'South Province (Area Five)');
     await completeEncounter(page, 'East Province (Area Two)');
+    await test.step('the Iono milestone includes the Eviolite tip', async () => {
+        const title = 'South Province (Area Five) trainer reward';
+        const tipSummary = cardFor(page, title).first();
+        await tipSummary.click();
+        const tipCard = page.locator('li > article').filter({ hasText: title });
+        await expect(tipCard).toContainText('Defeat 7 trainers');
+    });
     await completeBossBattle(page, 'Iono (Gym)');
     await completeEncounter(page, 'Asado Desert');
     await completeEncounter(page, 'East Paldean Sea');

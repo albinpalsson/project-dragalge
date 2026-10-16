@@ -192,6 +192,9 @@ export function useCompletedGameChampionPresets() {
                 ? graphQuery.data.getFirstStage(starter.pokemon_name)
                 : undefined;
             const complete = PROGRESSION_ITEMS.every((item) => {
+                if (item.kind === 'info') {
+                    return true;
+                }
                 if (item.isVisible && !item.isVisible(state)) {
                     return true;
                 }

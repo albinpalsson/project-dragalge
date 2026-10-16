@@ -28,6 +28,16 @@ export function KebabIcon() {
     );
 }
 
+export function InfoIcon() {
+    return (
+        <svg viewBox="0 0 16 16" className={icon} aria-hidden="true">
+            <circle cx="8" cy="8" r="6.25" />
+            <path d="M8 7.25v4" />
+            <circle cx="8" cy="5" r="0.55" fill="currentColor" stroke="none" />
+        </svg>
+    );
+}
+
 const icon = css`
   width: 1.8rem;
   height: 1.8rem;

@@ -14,6 +14,7 @@ interface BadgeButtonProps {
     ariaLabel?: string;
     title?: string;
     disabled?: boolean;
+    ariaExpanded?: boolean;
 }
 
 export function Badge({ children, className, uppercase }: BadgeProps) {
@@ -31,6 +32,7 @@ export function BadgeButton({
     ariaLabel,
     title,
     disabled,
+    ariaExpanded,
 }: BadgeButtonProps) {
     return (
         <button
@@ -40,6 +42,7 @@ export function BadgeButton({
             aria-label={ariaLabel}
             title={title}
             disabled={disabled}
+            aria-expanded={ariaExpanded}
         >
             {children}
         </button>

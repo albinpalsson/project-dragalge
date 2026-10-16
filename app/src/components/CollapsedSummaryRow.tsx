@@ -12,6 +12,7 @@ interface CollapsedSummaryRowProps {
     rightBadges?: ReactNode;
     onExpand: () => void;
     isNext?: boolean;
+    ariaExpanded?: boolean;
 }
 
 export function CollapsedSummaryRow({
@@ -24,12 +25,14 @@ export function CollapsedSummaryRow({
     rightBadges,
     onExpand,
     isNext,
+    ariaExpanded,
 }: CollapsedSummaryRowProps) {
     return (
         <button
             type="button"
             className={cx(row, className, isNext && nextHighlight)}
             onClick={onExpand}
+            aria-expanded={ariaExpanded}
         >
             {icon}
             <span className={summaryText}>

@@ -69,6 +69,12 @@ import { WestProvinceAreaOne } from './encounters/WestProvinceAreaOne';
 import { WestProvinceAreaThree } from './encounters/WestProvinceAreaThree';
 import { WestProvinceAreaTwo } from './encounters/WestProvinceAreaTwo';
 import { ReleaseStarter } from './ReleaseStarter';
+import { ChanseyLevelingTip } from './ChanseyLevelingTip';
+import { FourthBadgeShoppingTip, MintsTip } from './ShoppingTips';
+import {
+    AsadoDesertTrainerTip,
+    SouthProvinceAreaFiveTrainerTip,
+} from './TrainerRewardTips';
 
 interface ProgressionItemProps {
     isNext?: boolean;
@@ -107,11 +113,17 @@ interface RaidProgressionItem extends ProgressionBaseItem {
     stars: number;
 }
 
+interface InfoProgressionItem extends ProgressionBaseItem {
+    kind: 'info';
+    countsTowardProgress: () => false;
+}
+
 export type ProgressionItem =
     | EncounterProgressionItem
     | BossProgressionItem
     | ActionProgressionItem
-    | RaidProgressionItem;
+    | RaidProgressionItem
+    | InfoProgressionItem;
 
 export const PROGRESSION_ITEMS: ProgressionItem[] = [
     {
@@ -264,6 +276,13 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
         Component: SouthProvinceAreaFive,
     },
     {
+        key: 'south-province-area-five-trainer-tip',
+        kind: 'info',
+        isVisible: ({ settings }) => settings.showHelpfulTips,
+        countsTowardProgress: () => false,
+        Component: SouthProvinceAreaFiveTrainerTip,
+    },
+    {
         key: 'east-province-area-two',
         kind: 'encounter',
         locationName: 'East Province (Area Two)',
@@ -281,6 +300,13 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
         checkpointBefore: true,
         locationName: 'Asado Desert',
         Component: AsadoDesert,
+    },
+    {
+        key: 'asado-desert-trainer-tip',
+        kind: 'info',
+        isVisible: ({ settings }) => settings.showHelpfulTips,
+        countsTowardProgress: () => false,
+        Component: AsadoDesertTrainerTip,
     },
     {
         key: 'east-paldean-sea',
@@ -318,6 +344,13 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
         kind: 'boss',
         getBattleName: () => 'Kofu (Water Gym)',
         Component: KofuWaterGym,
+    },
+    {
+        key: 'fourth-badge-shopping-tip',
+        kind: 'info',
+        isVisible: ({ settings }) => settings.showHelpfulTips,
+        countsTowardProgress: () => false,
+        Component: FourthBadgeShoppingTip,
     },
     {
         key: 'west-province-area-three',
@@ -384,6 +417,13 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
         kind: 'boss',
         getBattleName: () => 'Ryme (Ghost Gym)',
         Component: RymeGhostGym,
+    },
+    {
+        key: 'mints-tip',
+        kind: 'info',
+        isVisible: ({ settings }) => settings.showHelpfulTips,
+        countsTowardProgress: () => false,
+        Component: MintsTip,
     },
     {
         key: 'alfornada-cavern',
@@ -475,6 +515,13 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
         kind: 'encounter',
         locationName: 'Socarrat Trail',
         Component: SocarratTrail,
+    },
+    {
+        key: 'chansey-leveling-tip',
+        kind: 'info',
+        isVisible: ({ settings }) => settings.showHelpfulTips,
+        countsTowardProgress: () => false,
+        Component: ChanseyLevelingTip,
     },
     {
         key: 'eri-fighting-star',
