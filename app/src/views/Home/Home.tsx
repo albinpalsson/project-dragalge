@@ -77,15 +77,16 @@ export function Home({ onOpenGame, onOpenAbout, onOpenLicenses }: HomeProps) {
             </section>
 
             <p className={notice}>
-                Some data is derived from Bulbapedia; license terms can vary by
-                source page. Pokémon icons are sourced from Pokémon Database.{' '}
+                Pokémon icons are sourced from Pokémon Database. Some Pokémon
+                data is derived from Bulbapedia. See{' '}
                 <button
                     className={textButton}
                     type="button"
                     onClick={onOpenLicenses}
                 >
                     Licenses &amp; Notices
-                </button>
+                </button>{' '}
+                for details.
             </p>
         </div>
     );

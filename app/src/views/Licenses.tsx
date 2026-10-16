@@ -19,8 +19,8 @@ export function Licenses() {
                     License terms can vary by page or revision. Where CC
                     BY-NC-SA 2.5 applies, attribution is required, commercial
                     use is not permitted, and adaptations must be shared under
-                    the same license. See Bulbapedia&apos;s copyright information
-                    and the source pages for applicable terms.
+                    the same license. See Bulbapedia&apos;s copyright
+                    information and the source pages for applicable terms.
                 </p>
                 <p>
                     <a
@@ -150,12 +150,10 @@ export function Licenses() {
                     action you choose.
                 </p>
                 <p>
-                    The app asks for optional analytics consent after a run is
-                    created. The event types include page views, game variant
-                    and randomizer mode, and progression milestones; they do not
-                    include game names or save contents. The remote GA4
-                    transport is currently not implemented. In development,
-                    consented events use a local debug sink instead.
+                    If you opt in, the app sends usage analytics to Google
+                    Analytics. These may reflect activity and progress in the
+                    app, but do not include your game names or a complete copy
+                    of your saved runs.
                 </p>
             </section>
         </article>
@@ -202,4 +200,3 @@ const section = css`
     color: var(--color-text-secondary);
   }
 `;
-
