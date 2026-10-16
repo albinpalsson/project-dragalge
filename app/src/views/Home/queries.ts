@@ -4,6 +4,7 @@ import { invalidateQueries } from '@pokedb2/server-query';
 import {
     createGame,
     deleteGame,
+    STARTER_LOCATION_NAME,
     type CreateGameInput,
 } from '../../db/game-db/queries';
 import {
@@ -32,6 +33,7 @@ import {
     listGames,
 } from '../../db/game-db/queries';
 import { useEvolutionGraphQuery } from '../../hooks/useEvolutionGraphQuery';
+import { calculateProgression } from '../Game/progression/progression-tracker';
 
 export interface GameRunSnapshot {
     game: GameRun;
@@ -63,41 +65,71 @@ export function useGameRunSnapshotsQuery() {
 
 export function useGameCards() {
     const snapshotsQuery = useGameRunSnapshotsQuery();
-    const data = useMemo(
-        () =>
-            snapshotsQuery.data
-                ?.map((snapshot) => {
-                    const obtained = snapshot.encounterRolls.filter(
-                        (row) =>
-                            row.status === 'caught' ||
-                            row.status === 'eliminated',
-                    );
-                    const isLost = snapshot.bossProgress.some(
-                        (battle) => battle.result === 'lost',
-                    );
-                    const isWon = snapshot.bossProgress.some(
-                        (battle) =>
-                            battle.battle_name === 'Geeta (Top Champion)' &&
-                            battle.result === 'won',
-                    );
-                    return {
-                        game: snapshot.game,
-                        obtained,
-                        bossProgress: snapshot.bossProgress,
-                        status: isLost
-                            ? ('lost' as const)
-                            : isWon
-                              ? ('won' as const)
-                              : ('in-progress' as const),
-                    };
-                })
-                .reverse(),
-        [snapshotsQuery.data],
-    );
+    const graphQuery = useEvolutionGraphQuery();
+    const data = useMemo(() => {
+        const evolutionGraph = graphQuery.data;
+        if (!snapshotsQuery.data || !evolutionGraph) {
+            return undefined;
+        }
+
+        return snapshotsQuery.data
+            .map((snapshot) => {
+                const obtained = snapshot.encounterRolls.filter(
+                    (row) =>
+                        row.status === 'caught' || row.status === 'eliminated',
+                );
+                const starterName = snapshot.encounterRolls.find(
+                    (row) => row.location_name === STARTER_LOCATION_NAME,
+                )?.pokemon_name;
+                const starter = starterName
+                    ? (evolutionGraph.getFirstStage(starterName) ?? starterName)
+                    : null;
+                const progression = calculateProgression(
+                    {
+                        settings: snapshot.game.settings,
+                        encounters: snapshot.encounterRolls,
+                    },
+                    snapshot.bossProgress,
+                    starter,
+                );
+                const isLost = snapshot.bossProgress.some(
+                    (battle) => battle.result === 'lost',
+                );
+                const isWon = snapshot.bossProgress.some(
+                    (battle) =>
+                        battle.battle_name === 'Geeta (Top Champion)' &&
+                        battle.result === 'won',
+                );
+                return {
+                    game: snapshot.game,
+                    obtained,
+                    bossProgress: snapshot.bossProgress,
+                    progressPercent: progression.percent,
+                    status: isLost
+                        ? ('lost' as const)
+                        : isWon
+                          ? ('won' as const)
+                          : ('in-progress' as const),
+                };
+            })
+            .reverse();
+    }, [snapshotsQuery.data, graphQuery.data]);
+
+    const isError = snapshotsQuery.isError || graphQuery.isError;
+    const isPending =
+        !isError && (snapshotsQuery.isPending || graphQuery.isPending);
+    const error = snapshotsQuery.isError
+        ? snapshotsQuery.error
+        : graphQuery.isError
+          ? graphQuery.error
+          : null;
 
     return {
-        ...snapshotsQuery,
         data,
+        isPending,
+        isError,
+        isSuccess: !isPending && !isError,
+        error,
     };
 }
 

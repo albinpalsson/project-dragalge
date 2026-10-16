@@ -40,6 +40,9 @@ export function Home({ onOpenGame, onOpenAbout, onOpenLicenses }: HomeProps) {
             <section>
                 <h2>Stored games</h2>
                 {gameCards.isPending && <p className={mutedText}>Loading...</p>}
+                {gameCards.isError && (
+                    <p>Error loading games: {gameCards.error?.message}</p>
+                )}
                 {gameCards.isSuccess && (
                     <ul className={gamesList}>
                         {(gameCards.data ?? []).map((card) => (
@@ -48,6 +51,7 @@ export function Home({ onOpenGame, onOpenAbout, onOpenLicenses }: HomeProps) {
                                     game={card.game}
                                     obtained={card.obtained}
                                     status={card.status}
+                                    progressPercent={card.progressPercent}
                                     onOpenGame={() =>
                                         onOpenGame(card.game.name)
                                     }

@@ -11,6 +11,7 @@ interface GameCardProps {
     game: GameRun;
     obtained: EncounterRollRow[];
     status: 'in-progress' | 'lost' | 'won';
+    progressPercent: number;
     onOpenGame: () => void;
 }
 
@@ -18,12 +19,13 @@ export function GameCard({
     game,
     obtained,
     status,
+    progressPercent,
     onOpenGame,
 }: GameCardProps) {
     const [isExportOpen, setExportOpen] = useState(false);
     const [isDeleteOpen, setDeleteOpen] = useState(false);
-    const sorted = partyFirst(obtained);
-    const progress = Math.min(sorted.length * 8, 100);
+    const displayed = selectSummaryPokemon(obtained, status);
+    const hasPokemon = displayed.some((row) => row !== undefined);
     const isLost = status === 'lost';
     const isWon = status === 'won';
     const statusColor =
@@ -40,7 +42,7 @@ export function GameCard({
                     <div
                         className={fill}
                         style={{
-                            width: `${progress}%`,
+                            width: `${progressPercent}%`,
                             backgroundImage: `repeating-linear-gradient(45deg, color-mix(in srgb, ${statusColor} 35%, transparent), color-mix(in srgb, ${statusColor} 35%, transparent) 0.6rem, color-mix(in srgb, ${statusColor} 20%, transparent) 0.6rem, color-mix(in srgb, ${statusColor} 20%, transparent) 1.2rem)`,
                         }}
                     />
@@ -51,26 +53,39 @@ export function GameCard({
                             <span className={wonBadge}>Run Complete</span>
                         )}
                     </span>
-                    {sorted.length > 0 ? (
-                        <span className={icons}>
-                            {sorted.slice(0, 18).map((row) => (
+                    {(isWon || hasPokemon) && (
+                        <span className={cx(icons, isWon && partyIcons)}>
+                            {displayed.map((row, index) => (
                                 <span
                                     className={iconSlot}
-                                    key={row.location_name}
+                                    key={
+                                        row?.location_name ??
+                                        `party-${index + 1}`
+                                    }
+                                    aria-hidden={row ? undefined : true}
                                 >
-                                    <img
-                                        className={icon}
-                                        src={pokemonIconSrc(
-                                            toIconSlug(row.pokemon_name),
-                                        )}
-                                        alt={row.pokemon_name}
-                                        loading="lazy"
-                                    />
+                                    {row && (
+                                        <img
+                                            className={cx(
+                                                icon,
+                                                row.status === 'eliminated' &&
+                                                    eliminatedIcon,
+                                            )}
+                                            src={pokemonIconSrc(
+                                                toIconSlug(row.pokemon_name),
+                                            )}
+                                            alt={row.pokemon_name}
+                                            loading="lazy"
+                                        />
+                                    )}
                                 </span>
                             ))}
                         </span>
-                    ) : (
-                        <span className={emptyText}>No caught Pokémon</span>
+                    )}
+                    {!hasPokemon && (
+                        <span className={emptyText}>
+                            {isWon ? 'No party Pokémon' : 'No caught Pokémon'}
+                        </span>
                     )}
                 </div>
             </button>
@@ -101,12 +116,22 @@ export function GameCard({
     );
 }
 
-function partyFirst(rows: EncounterRollRow[]) {
-    const party = rows
+function selectSummaryPokemon(
+    rows: EncounterRollRow[],
+    status: GameCardProps['status'],
+): (EncounterRollRow | undefined)[] {
+    const living = rows.filter((row) => row.status === 'caught');
+    const party = living
         .filter((row) => row.party_slot !== NO_PARTY_SLOT)
-        .sort((a, b) => a.party_slot - b.party_slot);
-    const rest = rows.filter((row) => row.party_slot === NO_PARTY_SLOT);
-    return [...party, ...rest];
+        .sort((first, second) => first.party_slot - second.party_slot);
+    if (status === 'won') {
+        return Array.from({ length: 6 }, (_, index) =>
+            party.find((row) => row.party_slot === index + 1),
+        );
+    }
+    const boxed = living.filter((row) => row.party_slot === NO_PARTY_SLOT);
+    const eliminated = rows.filter((row) => row.status === 'eliminated');
+    return [...party, ...boxed, ...eliminated].slice(0, 18).reverse();
 }
 const container = css`
   position: relative;
@@ -198,6 +223,13 @@ const icons = css`
   gap: var(--space-1);
 `;
 
+const partyIcons = css`
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    width: min(100%, 17rem);
+    margin-bottom: auto;
+`;
+
 const iconSlot = css`
     display: grid;
     place-items: center;
@@ -212,6 +244,10 @@ const icon = css`
     max-width: 5.2rem;
     aspect-ratio: 1;
     object-fit: contain;
+`;
+
+const eliminatedIcon = css`
+    filter: grayscale(1);
 `;
 
 const emptyText = css`

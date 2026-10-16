@@ -74,7 +74,7 @@ interface ProgressionItemProps {
     isNext?: boolean;
 }
 
-interface ProgressionItemState {
+export interface ProgressionItemState {
     settings: GameSettings;
     encounters: EncounterRollRow[];
 }
