@@ -75,6 +75,13 @@ import {
     AsadoDesertTrainerTip,
     SouthProvinceAreaFiveTrainerTip,
 } from './TrainerRewardTips';
+import { CandinaStrongTrainer } from './trainers/CandinaStrongTrainer';
+import { EliasStrongTrainer } from './trainers/EliasStrongTrainer';
+import { IgnacioStrongTrainer } from './trainers/IgnacioStrongTrainer';
+import { NereaStrongTrainer } from './trainers/NereaStrongTrainer';
+import { SeverinoStrongTrainer } from './trainers/SeverinoStrongTrainer';
+import { SofiaStrongTrainer } from './trainers/SofiaStrongTrainer';
+import { XavierStrongTrainer } from './trainers/XavierStrongTrainer';
 
 interface ProgressionItemProps {
     isNext?: boolean;
@@ -204,6 +211,14 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
         Component: SouthProvinceAreaThree,
     },
     {
+        key: 'strong-trainer-severino',
+        kind: 'boss',
+        isVisible: ({ settings }) => settings.showStrongTrainers,
+        countsTowardProgress: () => false,
+        getBattleName: () => 'Businessman Severino',
+        Component: SeverinoStrongTrainer,
+    },
+    {
         key: 'klawf-stony-cliff-titan',
         kind: 'boss',
         getBattleName: () => 'Klawf (Stony Cliff Titan)',
@@ -235,6 +250,14 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
         kind: 'encounter',
         locationName: 'West Province (Area One)',
         Component: WestProvinceAreaOne,
+    },
+    {
+        key: 'strong-trainer-candina',
+        kind: 'boss',
+        isVisible: ({ settings }) => settings.showStrongTrainers,
+        countsTowardProgress: () => false,
+        getBattleName: () => 'Model Candina',
+        Component: CandinaStrongTrainer,
     },
     {
         key: 'bombirdier-open-sky-titan',
@@ -283,10 +306,34 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
         Component: SouthProvinceAreaFiveTrainerTip,
     },
     {
+        key: 'strong-trainer-nerea',
+        kind: 'boss',
+        isVisible: ({ settings }) => settings.showStrongTrainers,
+        countsTowardProgress: () => false,
+        getBattleName: () => 'Hiker Nerea',
+        Component: NereaStrongTrainer,
+    },
+    {
+        key: 'strong-trainer-sofia',
+        kind: 'boss',
+        isVisible: ({ settings }) => settings.showStrongTrainers,
+        countsTowardProgress: () => false,
+        getBattleName: () => 'Waitress Sofia',
+        Component: SofiaStrongTrainer,
+    },
+    {
         key: 'east-province-area-two',
         kind: 'encounter',
         locationName: 'East Province (Area Two)',
         Component: EastProvinceAreaTwo,
+    },
+    {
+        key: 'strong-trainer-xavier',
+        kind: 'boss',
+        isVisible: ({ settings }) => settings.showStrongTrainers,
+        countsTowardProgress: () => false,
+        getBattleName: () => 'Student Xavier',
+        Component: XavierStrongTrainer,
     },
     {
         key: 'iono-electric-gym',
@@ -307,6 +354,14 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
         isVisible: ({ settings }) => settings.showHelpfulTips,
         countsTowardProgress: () => false,
         Component: AsadoDesertTrainerTip,
+    },
+    {
+        key: 'strong-trainer-elias',
+        kind: 'boss',
+        isVisible: ({ settings }) => settings.showStrongTrainers,
+        countsTowardProgress: () => false,
+        getBattleName: () => 'Elias the Black Belt',
+        Component: EliasStrongTrainer,
     },
     {
         key: 'east-paldean-sea',
@@ -411,6 +466,14 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
         checkpointBefore: true,
         locationName: 'Glaseado Mountain',
         Component: GlaseadoMountain,
+    },
+    {
+        key: 'strong-trainer-ignacio',
+        kind: 'boss',
+        isVisible: ({ settings }) => settings.showStrongTrainers,
+        countsTowardProgress: () => false,
+        getBattleName: () => 'Researcher Ignacio',
+        Component: IgnacioStrongTrainer,
     },
     {
         key: 'ryme-ghost-gym',

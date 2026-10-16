@@ -72,6 +72,11 @@ export interface BossAbilityView {
     description: string;
 }
 
+export interface BossItemView {
+    name: string;
+    description: string;
+}
+
 export interface BossPokemonView {
     slot: number;
     pokemonName: string;
@@ -80,6 +85,8 @@ export interface BossPokemonView {
     secondaryType: string;
     baseStats: PokemonBaseStats;
     ability: BossAbilityView;
+    secondaryAbility?: BossAbilityView;
+    item?: BossItemView;
     moves: BossMoveView[];
 }
 
@@ -125,7 +132,16 @@ export async function getBossBattleRoster(
     ]);
 
     const abilityIds = Array.from(
-        new Set(rosterRows.map((row) => row.ability_id)),
+        new Set(
+            rosterRows.flatMap((row) =>
+                [row.ability_id, row.secondary_ability_id].filter(
+                    (id) => id > 0,
+                ),
+            ),
+        ),
+    );
+    const itemIds = Array.from(
+        new Set(rosterRows.map((row) => row.item_id).filter((id) => id > 0)),
     );
     const typeIds = Array.from(
         new Set([
@@ -135,7 +151,7 @@ export async function getBossBattleRoster(
         ]),
     );
 
-    const [abilities, types] = await Promise.all([
+    const [abilities, types, items] = await Promise.all([
         db
             .selectFrom('abilities')
             .selectAll()
@@ -146,18 +162,30 @@ export async function getBossBattleRoster(
             .selectAll()
             .where('id', 'in', typeIds)
             .execute(),
+        itemIds.length === 0
+            ? Promise.resolve([])
+            : db
+                  .selectFrom('items')
+                  .selectAll()
+                  .where('id', 'in', itemIds)
+                  .execute(),
     ]);
 
     const typeById = new Map(types.map((type) => [type.id, type.name]));
     const abilityById = new Map(
         abilities.map((ability) => [ability.id, ability]),
     );
+    const itemById = new Map(items.map((item) => [item.id, item]));
 
     const roster: BossPokemonView[] = rosterRows.flatMap((rosterRow) => {
         const ability = abilityById.get(rosterRow.ability_id);
         if (!ability) {
             return [];
         }
+        const secondaryAbility = abilityById.get(
+            rosterRow.secondary_ability_id,
+        );
+        const item = itemById.get(rosterRow.item_id);
 
         const pokemonMoves: BossMoveView[] = moveRows.flatMap((moveRow) => {
             if (moveRow.pokemon_slot !== rosterRow.slot) {
@@ -195,6 +223,22 @@ export async function getBossBattleRoster(
                     name: ability.name,
                     description: ability.description,
                 },
+                ...(secondaryAbility
+                    ? {
+                          secondaryAbility: {
+                              name: secondaryAbility.name,
+                              description: secondaryAbility.description,
+                          },
+                      }
+                    : {}),
+                ...(item
+                    ? {
+                          item: {
+                              name: item.name,
+                              description: item.description,
+                          },
+                      }
+                    : {}),
                 moves: pokemonMoves,
             },
         ];

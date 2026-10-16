@@ -31,6 +31,7 @@ export interface GameSettings {
     teraRaids: TeraRaidsSetting;
     showHelpfulTips: boolean;
     includeTeamStarBattles: boolean;
+    showStrongTrainers: boolean;
     monoRunEnabled: boolean;
     monoRunType: string;
     monoRunFutureEvolutions: boolean;
@@ -456,6 +457,7 @@ export async function updateGameRunSettings(
             tera_raids: encodeTeraRaids(s.teraRaids),
             show_helpful_tips: encodeFlag(s.showHelpfulTips),
             include_team_star_battles: encodeFlag(s.includeTeamStarBattles),
+            show_strong_trainers: encodeFlag(s.showStrongTrainers),
             mono_run_enabled: encodeFlag(s.monoRunEnabled),
             mono_run_type: s.monoRunType,
             mono_run_future_evolutions: encodeFlag(s.monoRunFutureEvolutions),
@@ -632,6 +634,7 @@ function encodeGameSettings(settings: GameSettings): EncodedGameSettings {
         tera_raids: encodeTeraRaids(settings.teraRaids),
         show_helpful_tips: encodeFlag(settings.showHelpfulTips),
         include_team_star_battles: encodeFlag(settings.includeTeamStarBattles),
+        show_strong_trainers: encodeFlag(settings.showStrongTrainers),
         mono_run_enabled: encodeFlag(settings.monoRunEnabled),
         mono_run_type: settings.monoRunType,
         mono_run_future_evolutions: encodeFlag(
@@ -649,6 +652,7 @@ function decodeGameSettings(row: EncodedGameSettings): GameSettings {
         teraRaids: decodeTeraRaids(row.tera_raids),
         showHelpfulTips: decodeFlag(row.show_helpful_tips),
         includeTeamStarBattles: decodeFlag(row.include_team_star_battles),
+        showStrongTrainers: decodeFlag(row.show_strong_trainers),
         monoRunEnabled: decodeFlag(row.mono_run_enabled),
         monoRunType: row.mono_run_type,
         monoRunFutureEvolutions: decodeFlag(row.mono_run_future_evolutions),

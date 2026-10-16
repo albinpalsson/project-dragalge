@@ -3,6 +3,7 @@ import type { DB } from '@pokedb2/db';
 import type { Database, DbClient } from '@pokedb2/query-builder';
 import { toCanonicalPokemonName } from './pokemon-names.ts';
 import { fetchAbilityData } from './fetch/fetch-ability-data.ts';
+import { fetchItemData } from './fetch/fetch-item-data.ts';
 import { fetchMoveData } from './fetch/fetch-move-data.ts';
 import {
     fetchPokemonData,
@@ -17,6 +18,7 @@ import type {
     AbilityRow,
     BossBattlePokemonMoveRow,
     BossBattlePokemonRow,
+    ItemRow,
     MoveRow,
     PokemonDataDb,
     TypeEffectivenessRow,
@@ -38,8 +40,9 @@ export const PROVISIONAL_SCHEMA_SQL: readonly string[] = [
     'CREATE TABLE evolution_transitions (from_pokemon_id INT, to_pokemon_id INT, method_id TINYINT)',
     'CREATE TABLE locations (id CHAR(32), name CHAR(27), region CHAR(6), province CHAR(14))',
     `CREATE TABLE abilities (id TINYINT, name CHAR(24), description CHAR(${ABILITY_DESCRIPTION_MAX_LENGTH}))`,
+    'CREATE TABLE items (id TINYINT, name CHAR(64), description CHAR(256))',
     'CREATE TABLE boss_battles (id TINYINT, name CHAR(44), battle_type CHAR(8))',
-    'CREATE TABLE boss_battle_pokemon (boss_battle_id TINYINT, slot TINYINT, pokemon_id INT, level TINYINT, ability_id TINYINT)',
+    'CREATE TABLE boss_battle_pokemon (boss_battle_id TINYINT, slot TINYINT, pokemon_id INT, level TINYINT, ability_id TINYINT, secondary_ability_id TINYINT, item_id TINYINT)',
     'CREATE TABLE moves (id INT, name CHAR(32), type_id TINYINT, category CHAR(8), power TINYINT, accuracy TINYINT, effect CHAR(154))',
     'CREATE TABLE boss_battle_pokemon_moves (boss_battle_id TINYINT, pokemon_slot TINYINT, move_slot TINYINT, move_id INT)',
 ];
@@ -443,7 +446,10 @@ export async function fetchAllBossRosters(
 ): Promise<RawBossRoster[]> {
     const results = await Promise.allSettled(
         bossSeeds.map(async (seed, index) => {
-            const party = await fetchTrainerParty(seed);
+            const party =
+                seed.source === 'local-trainer'
+                    ? seed.party
+                    : await fetchTrainerParty(seed);
             return { bossIndex: index, party };
         }),
     );
@@ -530,10 +536,50 @@ export async function buildAbilityRows(
     return { abilityRows, abilityIds };
 }
 
+export async function buildItemRows(
+    itemNames: ReadonlySet<string>,
+): Promise<{ itemRows: ItemRow[]; itemIds: Map<string, number> }> {
+    const results = await Promise.allSettled(
+        [...itemNames].map(async (name) => ({
+            name,
+            data: await fetchItemData(name),
+        })),
+    );
+    const itemRows: ItemRow[] = [];
+    const itemIds = new Map<string, number>();
+    let failed = false;
+
+    for (const result of results) {
+        if (result.status === 'rejected') {
+            failed = true;
+            process.stderr.write(
+                `${result.reason instanceof Error ? result.reason.message : String(result.reason)}\n`,
+            );
+            continue;
+        }
+
+        const { name, data } = result.value;
+        const id = itemRows.length + 1;
+        itemIds.set(name, id);
+        itemRows.push({
+            id,
+            name,
+            description: truncateUtf8(data.description, 256),
+        });
+    }
+
+    if (failed) {
+        throw new Error('Some item descriptions failed to fetch/parse');
+    }
+
+    return { itemRows, itemIds };
+}
+
 export function buildBossBattlePokemonRows(
     rosters: readonly RawBossRoster[],
     pokemonIds: Map<string, number>,
     abilityIds: Map<string, number>,
+    itemIds: Map<string, number>,
 ): BossBattlePokemonRow[] {
     const rows: BossBattlePokemonRow[] = [];
     for (const roster of rosters) {
@@ -543,18 +589,28 @@ export function buildBossBattlePokemonRows(
             const pokemonId = pokemonIds.get(
                 toCanonicalPokemonName(entry.pokemon),
             );
-            if (pokemonId === undefined) {
-                throw new Error(
-                    `[Boss id=${bossId}] Unknown Pokémon: "${entry.pokemon}"`,
-                );
-            }
+            assert(pokemonId);
             const abilityId = abilityIds.get(entry.ability) ?? 0;
+            const secondaryAbilityId = entry.ability2
+                ? abilityIds.get(entry.ability2)
+                : undefined;
+            if (entry.ability2) {
+                assert(secondaryAbilityId);
+            }
+
+            const itemId = entry.item ? itemIds.get(entry.item) : undefined;
+            if (entry.item) {
+                assert(itemId);
+            }
+
             rows.push({
                 boss_battle_id: bossId,
                 slot: slot + 1,
                 pokemon_id: pokemonId,
                 level: entry.level,
                 ability_id: abilityId,
+                secondary_ability_id: secondaryAbilityId ?? 0,
+                item_id: itemId ?? 0,
             });
         }
     }

@@ -1,4 +1,4 @@
-import type { BossFightSeed } from '../sources/fetch-boss-fight-seeds.ts';
+import type { BulbapediaBossFightSeed } from '../sources/fetch-boss-fight-seeds.ts';
 import { buildPageWikitextUrl } from './bulbapedia-parser.ts';
 import type { TrainerPartyEntry } from './bulbapedia-trainer-parser.ts';
 import {
@@ -22,7 +22,7 @@ export function parseWikitextResponse(json: string, pageName: string): string {
 }
 
 export async function fetchTrainerParty(
-    seed: BossFightSeed,
+    seed: BulbapediaBossFightSeed,
 ): Promise<TrainerPartyEntry[]> {
     const url = buildPageWikitextUrl(seed.bulbapediaPage);
     const json = await cachedFetcher.get(url);

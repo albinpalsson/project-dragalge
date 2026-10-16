@@ -33,6 +33,7 @@ test('Fun preset plays through the available progression', async ({ page }) => {
             await expect(
                 settings.getByLabel('Include Team Star battles'),
             ).toBeChecked();
+            await settings.getByLabel('Show strong trainers').check();
         },
     });
     await expectNextStep(page, 'Starter');
@@ -105,6 +106,16 @@ test('Fun preset plays through the available progression', async ({ page }) => {
     });
     await completeBossBattle(page, 'Iono (Gym)');
     await completeEncounter(page, 'Asado Desert');
+    await test.step('inspect an optional strong trainer without changing progress', async () => {
+        const name = 'Strong trainer - Elias the Black Belt';
+        await expandCollapsedSummary(page, name);
+        const trainerCard = cardFor(page, name).first();
+        await expect(trainerCard).toContainText('Find Elias the Black Belt');
+        const heracross = trainerCard
+            .locator('article')
+            .filter({ hasText: 'Heracross' });
+        await expect(heracross).toContainText('Focus Sash');
+    });
     await completeEncounter(page, 'East Paldean Sea');
     await completeEncounter(page, 'East Province (Area Three)');
     await completeBossBattle(page, 'Mela (Team Star)');

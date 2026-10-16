@@ -18,6 +18,8 @@ export interface TrainerPartyEntry {
     pokemon: string;
     level: number;
     ability: string;
+    ability2?: string;
+    item?: string;
     moves: string[];
 }
 

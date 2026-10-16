@@ -41,6 +41,7 @@ const CLEAN_FULL_SETTINGS: FullGameSettingsValue = {
     teraRaids: 'unlimited',
     showHelpfulTips: false,
     includeTeamStarBattles: false,
+    showStrongTrainers: false,
     monoRunEnabled: false,
     monoRunType: 'grass',
     monoRunFutureEvolutions: true,

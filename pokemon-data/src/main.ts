@@ -9,6 +9,7 @@ import {
     buildAbilityRows,
     buildBossBattlePokemonMoveRows,
     buildBossBattlePokemonRows,
+    buildItemRows,
     buildEvolutionRows,
     buildMoveRows,
     buildPokemonNameMap,
@@ -118,17 +119,30 @@ async function main(): Promise<void> {
     // Build and insert abilities (de-duped from all boss rosters).
     const allAbilityNames = new Set(
         rawRosters
-            .flatMap((r) => r.party.map((p) => p.ability))
+            .flatMap((r) =>
+                r.party.flatMap((p) => [p.ability, p.ability2 ?? '']),
+            )
             .filter(Boolean),
     );
     const { abilityRows, abilityIds } = await buildAbilityRows(allAbilityNames);
     await db.insertInto('abilities').values(abilityRows).execute();
+
+    const allItemNames = new Set(
+        rawRosters.flatMap((roster) =>
+            roster.party.flatMap((pokemon) =>
+                pokemon.item ? [pokemon.item] : [],
+            ),
+        ),
+    );
+    const { itemRows, itemIds } = await buildItemRows(allItemNames);
+    await db.insertInto('items').values(itemRows).execute();
 
     // Build and insert boss_battle_pokemon (with slot positions).
     const bossBattlePokemonRows = buildBossBattlePokemonRows(
         rawRosters,
         pokemonIds,
         abilityIds,
+        itemIds,
     );
     await db
         .insertInto('boss_battle_pokemon')
@@ -167,7 +181,9 @@ Built db (${(size / 1000).toFixed(2)} KB) with:
   ${moveRows.length} moves,
   ${subAreaRows.length} sub-areas,
   ${terrainRows.length} terrain types,
-  ${typeRows.length} types\n`,
+  ${typeRows.length} types,
+  ${abilityRows.length} abilities,
+  ${itemRows.length} items\n`,
     );
 }
 

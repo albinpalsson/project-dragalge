@@ -1,0 +1,268 @@
+[
+    {
+        "name": "Hiker Nerea",
+        "roster": [
+            {
+                "name": "Sudowoodo",
+                "level": 23,
+                "item": "",
+                "ability1": "Sturdy",
+                "ability2": "Rock Head",
+                "moves": [
+                    { "name": "Rock Tomb" },
+                    { "name": "Mimic" },
+                    { "name": "Block" },
+                    { "name": "Slam" }
+                ]
+            },
+
+            {
+                "name": "Sneasel",
+                "level": 24,
+                "item": "",
+                "ability1": "Inner Focus",
+                "ability2": "Keen Eye",
+                "moves": [
+                    { "name": "Ice Punch" },
+                    { "name": "Icy Wind" },
+                    { "name": "Taunt" },
+                    { "name": "Brick Break" }
+                ]
+            },
+
+            {
+                "name": "Lycanroc (Dusk Form)",
+                "level": 25,
+                "item": "",
+                "ability1": "Tough Claws",
+                "ability2": "",
+                "moves": [
+                    { "name": "Accelerock" },
+                    { "name": "Rock Slide" },
+                    { "name": "Drill Run" },
+                    { "name": "Howl" }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Waitress Sofia",
+        "roster": [
+            {
+                "name": "Indeedee (Female)",
+                "level": 23,
+                "item": "",
+                "ability1": "Inner Focus",
+                "ability2": "Synchronize",
+                "moves": [
+                    { "name": "Helping Hand" },
+                    { "name": "Psybeam" },
+                    { "name": "Disarming Voice" },
+                    { "name": "Baton Pass" }
+                ]
+            },
+            {
+                "name": "Gulpin",
+                "level": 23,
+                "item": "",
+                "ability1": "Liquid Ooze",
+                "ability2": "Sticky Hold",
+                "moves": [
+                    { "name": "Body Slam" },
+                    { "name": "Acid Spray" },
+                    { "name": "Giga Drain" },
+                    { "name": "Mud Shot" }
+                ]
+            },
+            {
+                "name": "Azumarill",
+                "level": 24,
+                "item": "",
+                "ability1": "Thick Fat",
+                "ability2": "Huge Power",
+                "moves": [
+                    { "name": "Aqua Tail" },
+                    { "name": "Play Rough" },
+                    { "name": "Slam" },
+                    { "name": "Surf" }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Businessman Severino",
+        "roster": [
+            {
+                "name": "Jigglypuff",
+                "level": 17,
+                "item": "",
+                "ability1": "Cute Charm",
+                "ability2": "Competitive",
+                "moves": [
+                    { "name": "Round" },
+                    { "name": "Swallow" },
+                    { "name": "Spit Up" },
+                    { "name": "Stockpile" }
+                ]
+            },
+            {
+                "name": "Skiddo",
+                "level": 17,
+                "item": "Leftovers",
+                "ability1": "Sap Sipper",
+                "ability2": "",
+                "moves": [
+                    { "name": "Razor Leaf" },
+                    { "name": "Tackle" },
+                    { "name": "Tail Whip" },
+                    { "name": "Growth" }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Model Candina",
+        "roster": [
+            {
+                "name": "Oinkologne (Female)",
+                "level": 20,
+                "item": "",
+                "ability1": "Aroma Veil",
+                "ability2": "Gluttony",
+                "moves": [
+                    { "name": "Zen Headbutt" },
+                    { "name": "Iron Head" },
+                    { "name": "Play Rough" },
+                    { "name": "Bullet Seed" }
+                ]
+            },
+            {
+                "name": "Luxio",
+                "level": 20,
+                "item": "",
+                "ability1": "Intimidate",
+                "ability2": "Rivalry",
+                "moves": [
+                    { "name": "Thunder Fang" },
+                    { "name": "Fire Fang" },
+                    { "name": "Ice Fang" },
+                    { "name": "Psychic Fangs" }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Elias the Black Belt",
+        "roster": [
+            {
+                "name": "Breloom",
+                "level": 26,
+                "item": "",
+                "ability1": "Effect Spore",
+                "ability2": "Poison Heal",
+                "moves": [
+                    { "name": "Counter" },
+                    { "name": "Feint" },
+                    { "name": "Headbutt" },
+                    { "name": "Mega Drain" }
+                ]
+            },
+            {
+                "name": "Heracross",
+                "level": 27,
+                "item": "Focus Sash",
+                "ability1": "Swarm",
+                "ability2": "Guts",
+                "moves": [
+                    { "name": "Close Combat" },
+                    { "name": "Aerial Ace" },
+                    { "name": "Swords Dance" },
+                    { "name": "Rock Tomb" }
+                ]
+            }
+        ]
+    },
+    {
+        "name": "Student Xavier",
+        "roster": [
+            {
+                "name": "Kirlia",
+                "level": 23,
+                "item": "",
+                "ability1": "Synchronize",
+                "ability2": "Trace",
+                "moves": [
+                    { "name": "Reflect" },
+                    { "name": "Psybeam" },
+                    { "name": "Disarming Voice" }
+                ]
+            },
+            {
+                "name": "Noibat",
+                "level": 22,
+                "item": "",
+                "ability1": "Frisk",
+                "ability2": "Infiltrator",
+                "moves": [{ "name": "Absorb" }, { "name": "Wing Attack" }]
+            },
+            {
+                "name": "Zangoose",
+                "level": 23,
+                "item": "",
+                "ability1": "Immunity",
+                "ability2": "",
+                "moves": [
+                    { "name": "Power Trip" },
+                    { "name": "Slash" },
+                    { "name": "Hone Claws" },
+                    { "name": "Metal Claw" }
+                ]
+            }
+        ]
+    },
+
+    {
+        "name": "Researcher Ignacio",
+        "roster": [
+            {
+                "name": "Magnezone",
+                "level": 41,
+                "item": "",
+                "ability1": "Magnet Pull",
+                "ability2": "Sturdy",
+                "moves": [
+                    { "name": "Discharge" },
+                    { "name": "Flash Cannon" },
+                    { "name": "Magnet Rise" },
+                    { "name": "Screech" }
+                ]
+            },
+            {
+                "name": "Muk",
+                "level": 41,
+                "item": "",
+                "ability1": "Stench",
+                "ability2": "Sticky Hold",
+                "moves": [
+                    { "name": "Gunk Shot" },
+                    { "name": "Sludge Wave" },
+                    { "name": "Screech" },
+                    { "name": "Sludge Bomb" }
+                ]
+            },
+            {
+                "name": "Hypno",
+                "level": 41,
+                "item": "Life Orb",
+                "ability1": "Insomnia",
+                "ability2": "Forewarn",
+                "moves": [
+                    { "name": "Swagger" },
+                    { "name": "Zen Headbutt" },
+                    { "name": "Psych Up" },
+                    { "name": "Psybeam" }
+                ]
+            }
+        ]
+    }
+]

@@ -164,6 +164,13 @@ export function GameSettingsPanel({
                     onChange({ ...value, includeTeamStarBattles })
                 }
             />
+            <Checkbox
+                label="Show strong trainers"
+                checked={value.showStrongTrainers}
+                onChange={(showStrongTrainers) =>
+                    onChange({ ...value, showStrongTrainers })
+                }
+            />
             <section className={section}>
                 <h3 className={banHeading}>Ban list</h3>
                 <Checkbox

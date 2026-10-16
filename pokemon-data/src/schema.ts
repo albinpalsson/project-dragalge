@@ -52,6 +52,12 @@ export interface AbilityRow {
     description: string;
 }
 
+export interface ItemRow {
+    id: number;
+    name: string;
+    description: string;
+}
+
 export interface BossBattleRow {
     id: number;
     name: string;
@@ -64,6 +70,8 @@ export interface BossBattlePokemonRow {
     pokemon_id: number;
     level: number;
     ability_id: number;
+    secondary_ability_id: number;
+    item_id: number;
 }
 
 export interface MoveRow {
@@ -99,6 +107,7 @@ interface StaticPokemonDataDb {
     evolution_transitions: EvolutionTransitionRow;
     locations: LocationRow;
     abilities: AbilityRow;
+    items: ItemRow;
     boss_battles: BossBattleRow;
     boss_battle_pokemon: BossBattlePokemonRow;
     moves: MoveRow;

@@ -81,16 +81,36 @@ export function BossPokemonCard({
                     </p>
                     <p className={abilityLine}>
                         <span className={label}>Ability:</span>{' '}
-                        <Tooltip content={pokemon.ability.description}>
-                            <button
-                                type="button"
-                                className={detailButton}
-                                title={pokemon.ability.name}
-                            >
-                                {pokemon.ability.name}
-                            </button>
-                        </Tooltip>
+                        <AbilityNameWithTooltip
+                            name={pokemon.ability.name}
+                            description={pokemon.ability.description}
+                        />
+                        {pokemon.secondaryAbility && (
+                            <>
+                                {' or '}
+                                <AbilityNameWithTooltip
+                                    name={pokemon.secondaryAbility.name}
+                                    description={
+                                        pokemon.secondaryAbility.description
+                                    }
+                                />
+                            </>
+                        )}
                     </p>
+                    {pokemon.item && (
+                        <p className={abilityLine}>
+                            <span className={label}>Item:</span>{' '}
+                            <Tooltip content={pokemon.item.description}>
+                                <button
+                                    type="button"
+                                    className={detailButton}
+                                    title={pokemon.item.name}
+                                >
+                                    {pokemon.item.name}
+                                </button>
+                            </Tooltip>
+                        </p>
+                    )}
                 </div>
             </div>
             <div className={content}>
@@ -125,6 +145,24 @@ export function BossPokemonCard({
                 </Modal>
             )}
         </article>
+    );
+}
+
+interface AbilityNameWithTooltipProps {
+    name: string;
+    description: string;
+}
+
+function AbilityNameWithTooltip({
+    name,
+    description,
+}: AbilityNameWithTooltipProps) {
+    return (
+        <Tooltip content={description}>
+            <button type="button" className={detailButton} title={name}>
+                {name}
+            </button>
+        </Tooltip>
     );
 }
 
