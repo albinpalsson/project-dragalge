@@ -7,7 +7,6 @@ import {
 } from './progression-items';
 
 export interface ProgressionTracker {
-    completed: number;
     total: number;
     percent: number;
     nextKey: string | undefined;
@@ -46,7 +45,6 @@ export function calculateProgression(
     };
 
     const resolvedItems = countedItems.map(isResolved);
-    const completed = resolvedItems.filter(Boolean).length;
     const firstUnresolvedIndex = resolvedItems.findIndex(
         (resolved) => !resolved,
     );
@@ -66,10 +64,10 @@ export function calculateProgression(
     const nextKey = nextIndex < 0 ? undefined : countedItems[nextIndex].key;
 
     const total = countedItems.length;
-    const percent = total === 0 ? 0 : Math.round((completed / total) * 100);
+    const percent =
+        nextIndex === -1 ? 100 : Math.round((nextIndex / total) * 100);
 
     return {
-        completed,
         total,
         percent,
         nextKey,
