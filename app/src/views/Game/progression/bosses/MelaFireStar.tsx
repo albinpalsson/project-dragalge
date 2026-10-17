@@ -90,7 +90,8 @@ export function MelaFireStar({ isNext }: MelaFireStarProps) {
                     />
                     <ProgressionDescription>
                         Before facing Mela, you must defeat the trainer guarding
-                        the Team Star base, who uses a level 25 Houndour.
+                        the Team Star base. The trainer uses a level-25
+                        Houndour.
                     </ProgressionDescription>
                     <BossResultControls
                         currentResult={currentResult}

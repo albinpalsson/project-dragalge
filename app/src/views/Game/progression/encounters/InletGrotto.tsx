@@ -73,11 +73,11 @@ export function InletGrotto({ isNext }: InletGrottoProps) {
 
                     {showHoundourWarning && (
                         <ProgressionDescription className={warning}>
-                            Houndour is first available in Inlet Grotto after
-                            finishing the Naranja Academy (Scarlet) or Uva
-                            Academy (Violet) introduction, after the first rival
-                            battle, when the level cap is increased above 9.
-                            Re-rolling for the early encounter pickup is valid.
+                            Houndour becomes available in Inlet Grotto after the
+                            Naranja Academy (Scarlet) or Uva Academy (Violet)
+                            introduction and the first rival battle, once the
+                            level cap rises above 9. You can reroll this
+                            encounter for an early pickup.
                         </ProgressionDescription>
                     )}
 

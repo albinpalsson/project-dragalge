@@ -73,8 +73,8 @@ export function PokemonLeaguePaldea({ isNext }: PokemonLeaguePaldeaProps) {
                     />
 
                     <ProgressionDescription>
-                        Located on a hill next to Naranja Academy (Scarlet) or
-                        Uva Academy (Violet) and accessible from northwest of
+                        The Pokémon League is on a hill next to Naranja Academy
+                        (Scarlet) or Uva Academy (Violet), northwest of
                         Mesagoza.
                     </ProgressionDescription>
 

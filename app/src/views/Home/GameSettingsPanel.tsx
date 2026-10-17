@@ -83,7 +83,7 @@ export function GameSettingsPanel({
             <Checkbox
                 label="Mono run"
                 checked={value.monoRunEnabled}
-                title="Only Pokémon of a single type can be used."
+                title="Only Pokémon of the selected type can be used."
                 onChange={(monoRunEnabled) =>
                     onChange({ ...value, monoRunEnabled })
                 }
@@ -101,7 +101,7 @@ export function GameSettingsPanel({
                     <Checkbox
                         label="Allow future evolutions"
                         checked={value.monoRunFutureEvolutions}
-                        title="Also allow Pokémon that can later evolve into the mono type."
+                        title="Also allow Pokémon that can later evolve into the selected type."
                         onChange={(monoRunFutureEvolutions) =>
                             onChange({
                                 ...value,
@@ -152,7 +152,7 @@ export function GameSettingsPanel({
             <Checkbox
                 label="Show helpful support milestones"
                 checked={value.showHelpfulTips}
-                title="Milestones like access to nature changing mints, EV boosting bands and other useful items will appear in the game view."
+                title="The game view will show tips and milestones, including useful item pick ups"
                 onChange={(showHelpfulTips) =>
                     onChange({ ...value, showHelpfulTips })
                 }
@@ -176,7 +176,7 @@ export function GameSettingsPanel({
                 <Checkbox
                     label="Ban full evolution lines"
                     checked={value.banFullEvolutionLines}
-                    title="When enabled, manual bans and presets also ban every Pokémon in each evolution line."
+                    title="When enabled, manual bans and presets also ban every Pokémon in the same evolution line."
                     onChange={(banFullEvolutionLines) =>
                         onChange({ ...value, banFullEvolutionLines })
                     }

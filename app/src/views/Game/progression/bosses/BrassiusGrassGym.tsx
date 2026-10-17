@@ -82,9 +82,9 @@ export function BrassiusGrassGym({ isNext }: BrassiusGrassGymProps) {
                         specialtyType={SPECIALTY_TYPE}
                     />
                     <ProgressionDescription>
-                        The Sunflora Hide-and-Seek gym tests makes you fight a
-                        few (less than 5) Sunflora of levels 12-14. Be wary of
-                        the level cap.
+                        The Sunflora Hide-and-Seek gym test requires you to
+                        battle a few (less than 5) Sunflora at levels 12–14.
+                        Keep the level cap in mind.
                     </ProgressionDescription>
                     <BossResultControls
                         currentResult={currentResult}

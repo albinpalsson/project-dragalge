@@ -32,7 +32,7 @@ export function PokemonStatsPanel({
         <div>
             <h5 className={sectionTitle}>
                 {equivalent ? (
-                    <Tooltip content="Equivalent base stats based on exact exact stat values, calculated for comparison.">
+                    <Tooltip content="Equivalent base stats based on exact stat values, calculated for comparison.">
                         <button type="button" className={equivalentLabel}>
                             EQUIVALENT BASE STATS
                         </button>

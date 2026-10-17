@@ -82,9 +82,8 @@ export function KofuWaterGym({ isNext }: KofuWaterGymProps) {
                         specialtyType={SPECIALTY_TYPE}
                     />
                     <ProgressionDescription>
-                        The Gym test starts when you reach Porto Marinada and
-                        requires defeating one trainer with two level 28
-                        Pokémon.
+                        The Gym test begins when you reach Porto Marinada. You
+                        must defeat one trainer with two level-28 Pokémon.
                     </ProgressionDescription>
                     <BossResultControls
                         currentResult={currentResult}

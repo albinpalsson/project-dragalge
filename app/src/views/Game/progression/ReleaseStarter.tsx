@@ -36,8 +36,8 @@ export function ReleaseStarter({ isNext }: ReleaseStarterProps) {
             </div>
             {starterStatus === 'caught' && (
                 <ProgressionDescription>
-                    Press Release to mark starter released, which move it out of
-                    your team and box.
+                    Press Release to mark your starter as released and remove it
+                    from your party and Box.
                 </ProgressionDescription>
             )}
             {starterStatus !== 'released' && (

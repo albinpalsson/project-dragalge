@@ -78,7 +78,7 @@ export function PocoPath({ isNext }: PocoPathProps) {
                     <Checkbox
                         label="Include ocean/beach encounters"
                         checked={includeOcean}
-                        title="Beach area encounters are first accessible after finishing the Naranja Academy (Scarlet) or Uva Academy (Violet) introduction, after the first rival battle, you may save this encounter for later."
+                        title="Beach encounters become accessible after the Naranja Academy (Scarlet) or Uva Academy (Violet) introduction and the first rival battle. You can save this encounter for later."
                         onChange={setIncludeOcean}
                     />
 

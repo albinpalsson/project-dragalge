@@ -85,13 +85,13 @@ export function DondozoFalseDragonTitan({
                     />
                     <ProgressionDescription>
                         This battle has <strong>three phases</strong>. First,
-                        you will face the Dodonzo alone at its base strength.
-                        After defeating it, you will face it again with{' '}
+                        you will face Dondozo alone at its base strength. After
+                        defeating it, you will face it again with{' '}
                         <strong>twice as much HP</strong>. Arven will join you
-                        for the second phase with his Greedent. Once Dodonzo is
-                        defeated, Titan Tatsugiri will reappear and battle; the
-                        player's party will be healed and their Tera Orb
-                        restored before this battle.
+                        for the second phase with his Greedent. After Dondozo is
+                        defeated, Titan Tatsugiri reappears for the final phase.
+                        Your party is healed and your Tera Orb is restored
+                        before this last phase of the battle.
                     </ProgressionDescription>
                     <BossResultControls
                         currentResult={currentResult}

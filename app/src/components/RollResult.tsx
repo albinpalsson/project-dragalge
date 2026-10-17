@@ -58,7 +58,9 @@ export function RollResult({
                 )}
                 {(encounterRoll.name === 'Applin' ||
                     encounterRoll.name === 'Pineco') && (
-                    <p className={rollMeta}>Only found hanging in trees.</p>
+                    <p className={rollMeta}>
+                        This Pokémon is only found hanging in trees.
+                    </p>
                 )}
             </div>
         </div>

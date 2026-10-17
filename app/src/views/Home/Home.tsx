@@ -22,7 +22,7 @@ export function Home({ onOpenGame, onOpenAbout, onOpenLicenses }: HomeProps) {
                     <p>
                         Track encounters, boss battles, and caught Pokémon in
                         your Paldea Nuzlocke runs. Your runs are saved in this
-                        browser, with no account or cross-device sync.
+                        browser; there is no account or cross-device sync.
                     </p>
                     <button
                         className={textButton}

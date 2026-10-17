@@ -90,8 +90,8 @@ export function AtticusPoisonStar({ isNext }: AtticusPoisonStarProps) {
                     />
                     <ProgressionDescription>
                         Before facing Atticus, you must defeat the trainer
-                        guarding the Team Star base, who uses two Pokémon, at
-                        level 30 and 31.
+                        guarding the Team Star base. The trainer uses two
+                        Pokémon, at levels 30 and 31.
                     </ProgressionDescription>
                     <BossResultControls
                         currentResult={currentResult}

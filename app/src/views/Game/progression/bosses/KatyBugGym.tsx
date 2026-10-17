@@ -83,9 +83,9 @@ export function KatyBugGym({ isNext }: KatyBugGymProps) {
                         specialtyType="Bug"
                     />
                     <ProgressionDescription>
-                        The Olive Roll gym challenge contains 0–2 optional
-                        trainer battles with 0–2 Pokémon in total before you can
-                        face Katy.
+                        Before you can face Katy, you need to complete the Olive
+                        Roll challenge. The challenge include two optional
+                        trainer battles, with one Pokémon each at level 13.
                     </ProgressionDescription>
                     <BossResultControls
                         currentResult={currentResult}

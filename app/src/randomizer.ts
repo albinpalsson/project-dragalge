@@ -180,7 +180,7 @@ const RANDOMIZER_MODES: Record<
         label: 'Normalized',
         shortLabel: 'Normalized',
         description:
-            'Rare Pokémon stay rare, but common Pokémon odds are evened out, so no single Pokémon shows up nearly every time. A Pokémon found in several sub-areas gets a small bonus, not a full extra share.',
+            'Rare Pokémon remain rare, while common Pokémon are less likely to dominate. A Pokémon found in multiple sub-areas gets a small bonus, not a full extra share.',
         shapeGroupWeights: shapeNormalized,
     },
     equal: {
@@ -188,7 +188,7 @@ const RANDOMIZER_MODES: Record<
         label: 'Equal chance',
         shortLabel: 'Equal chance',
         description:
-            'Every Pokémon that can appear in the area has the same chance, no matter how rare it is in the game.',
+            'Every Pokémon that can appear in the area has the same chance, regardless of how rare it is in the game.',
         shapeGroupWeights: shapeEqual,
     },
 };

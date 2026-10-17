@@ -82,13 +82,12 @@ export function LarryNormalGym({ isNext }: LarryNormalGymProps) {
                         specialtyType={SPECIALTY_TYPE}
                     />
                     <ProgressionDescription>
-                        The Medali gym test provides 0-3 optional trainer
-                        battles with 0-4 Pokémon, all at level 34, before facing
-                        Larry.
+                        The Medali Gym test includes 3 optional trainer battles,
+                        and 0–4 Pokémon in total, all at level 34.
                         <br />
                         <br />
-                        <b>Note:</b> Nemona will challenge you to a back-to-back
-                        battle after you face Larry!
+                        <b>Note:</b> After you face Larry, Nemona challenges you
+                        to a back-to-back battle.
                     </ProgressionDescription>
                     <BossResultControls
                         currentResult={currentResult}

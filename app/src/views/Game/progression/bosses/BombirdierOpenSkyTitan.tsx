@@ -89,8 +89,7 @@ export function BombirdierOpenSkyTitan({
                         it, you will face it again with{' '}
                         <strong>twice as much HP</strong>. Arven will join you
                         for the second phase with his Nacli. Your Tera Orb will
-                        recharge,{' '}
-                        <b>but you will not be able to heal between phases.</b>
+                        recharge, <b>but you cannot heal between phases.</b>
                     </ProgressionDescription>
                     <BossResultControls
                         currentResult={currentResult}

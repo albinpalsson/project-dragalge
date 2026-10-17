@@ -87,7 +87,7 @@ export function KlawfStonyCliffTitan({ isNext }: KlawfStonyCliffTitanProps) {
                         you will face it again with{' '}
                         <strong>twice as much HP</strong>. Arven will join you
                         for the second phase with his Shellder. Your Tera Orb
-                        will recharge, and you can heal your Pokemon between
+                        will recharge, and you can heal your Pokémon between
                         phases.
                     </ProgressionDescription>
                     <BossResultControls

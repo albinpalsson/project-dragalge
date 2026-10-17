@@ -64,9 +64,9 @@ export function CandinaStrongTrainer() {
                         </div>
                     </ProgressionCardHeader>
                     <ProgressionDescription>
-                        Model Candina can be found near the windmills in West
-                        Province (Area One), just east of the Open Sky Titan's
-                        location.
+                        Model Candina can be found near the windmills on the
+                        north side of the river leading up to the Open Sky
+                        Titan, in West Province (Area One).
                     </ProgressionDescription>
                     <BossRoster roster={roster} iconSize="lg" zoomedIcon />
                 </>

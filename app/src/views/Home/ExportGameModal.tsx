@@ -24,7 +24,9 @@ export function ExportGameModal({ gameRunId, onClose }: ExportGameModalProps) {
             await navigator.clipboard.writeText(exportLink);
             setCopyError(undefined);
         } catch {
-            setCopyError('Unable to copy the link. Select and copy it manually.');
+            setCopyError(
+                'Unable to copy the link. Select and copy it manually.',
+            );
         }
     };
 
@@ -32,12 +34,14 @@ export function ExportGameModal({ gameRunId, onClose }: ExportGameModalProps) {
         <Modal title="Export game" onClose={onClose} dismissMode="closeButton">
             <div className={content}>
                 <p>
-                    This link contains this game&apos;s progress. Anyone with it can
-                    import a copy into their tracker.
+                    This link contains this game&apos;s progress. Anyone with
+                    the link can import a copy into their tracker.
                 </p>
                 {exportedGame.isPending && <p>Preparing link...</p>}
                 {exportedGame.isError && (
-                    <p className={errorText}>Unable to create the export link.</p>
+                    <p className={errorText}>
+                        Unable to create the export link.
+                    </p>
                 )}
                 {exportLink && (
                     <>
@@ -47,7 +51,9 @@ export function ExportGameModal({ gameRunId, onClose }: ExportGameModalProps) {
                         </label>
                         {copyError && <p className={errorText}>{copyError}</p>}
                         <div className={actions}>
-                            <Button onClick={() => void copyLink()}>Copy link</Button>
+                            <Button onClick={() => void copyLink()}>
+                                Copy link
+                            </Button>
                         </div>
                     </>
                 )}

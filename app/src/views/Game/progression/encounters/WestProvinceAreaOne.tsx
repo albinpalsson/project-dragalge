@@ -78,7 +78,7 @@ export function WestProvinceAreaOne({ isNext }: WestProvinceAreaOneProps) {
                     <Checkbox
                         label="Include ocean encounters"
                         checked={!excludeOcean}
-                        title="Ocean encounters are first accessible after defeating the Open Sky titan."
+                        title="Ocean encounters become accessible after you defeat the Open Sky Titan."
                         onChange={(value) => setExcludeOcean(!value)}
                     />
                     <RollResult encounterRoll={encounterRoll} zoomedIcon />

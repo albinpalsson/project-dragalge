@@ -82,10 +82,10 @@ export function RymeGhostGym({ isNext }: RymeGhostGymProps) {
                         specialtyType={SPECIALTY_TYPE}
                     />
                     <ProgressionDescription>
-                        The Montenevera gym test requires you to battle three
-                        trainers, each in a double battle. This amounts to a
-                        total of 6 pokemons, all at level 40, before you can
-                        face Ryme.
+                        The Montenevera Gym test requires you to battle three
+                        trainers, each in a Double Battle. You will face six
+                        Pokémon in total, all at level 40, before you can face
+                        Ryme.
                         <br />
                         <br />
                         Note that Ryme is faced in a <b>double battle</b>, too.

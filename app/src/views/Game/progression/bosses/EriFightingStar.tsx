@@ -90,8 +90,8 @@ export function EriFightingStar({ isNext }: EriFightingStarProps) {
                     />
                     <ProgressionDescription>
                         Before facing Eri, you must defeat the trainer guarding
-                        the Team Star base, who uses two pokemons at level 54
-                        and 55 respectively.
+                        the Team Star base. The trainer's two Pokémon are levels
+                        54 and 55.
                     </ProgressionDescription>
                     <BossResultControls
                         currentResult={currentResult}

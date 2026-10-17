@@ -78,7 +78,7 @@ export function SouthProvinceAreaFour({ isNext }: SouthProvinceAreaFourProps) {
                     <Checkbox
                         label="Include ocean/underwater encounters"
                         checked={includeOcean}
-                        title="Ocean and underwater-only encounters are first accessible after defeating the Open Sky titan."
+                        title="Ocean and underwater encounters become accessible after you defeat the Open Sky Titan."
                         onChange={setIncludeOcean}
                     />
                     <RollResult encounterRoll={encounterRoll} zoomedIcon />

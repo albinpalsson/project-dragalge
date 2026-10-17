@@ -90,7 +90,7 @@ export function GiacomoDarkStar({ isNext }: GiacomoDarkStarProps) {
                     />
                     <ProgressionDescription>
                         Before facing Giacomo, you must defeat the trainer
-                        guarding the Team Star base, who uses a level 19
+                        guarding the Team Star base. The trainer uses a level-19
                         Murkrow.
                     </ProgressionDescription>
                     <BossResultControls

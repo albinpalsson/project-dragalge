@@ -143,7 +143,9 @@ function SkippedEncounterActions({
     return (
         <div className={actionRow}>
             <StatusChip status="skipped" />
-            <p className={emptyPoolText}>No encounter available here.</p>
+            <p className={emptyPoolText}>
+                There are no eligible encounters at this location.
+            </p>
             <Button
                 variant="secondary"
                 ariaLabel="Undo skip"
@@ -166,8 +168,8 @@ function ConfirmSkipActions({
     return (
         <div className={actionRow}>
             <p className={emptyPoolText}>
-                Every possible encounter here is banned or not allowed in this
-                run.
+                All available encounters are banned or excluded by this run's
+                rules.
             </p>
             <br />
             <Button
