@@ -63,8 +63,8 @@ export function XavierStrongTrainer() {
                         />
                     </ProgressionCardHeader>
                     <ProgressionDescription>
-                        Student Xavier is on the south side of the river leading
-                        to Levincia in East Province (Area Two).
+                        Xavier is on the south side of the river leading to
+                        Levincia in East Province (Area Two).
                     </ProgressionDescription>
                     <BossRoster roster={roster} iconSize="lg" zoomedIcon />
                 </>

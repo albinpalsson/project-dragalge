@@ -63,9 +63,8 @@ export function IgnacioStrongTrainer() {
                         />
                     </ProgressionCardHeader>
                     <ProgressionDescription>
-                        Researcher Ignacio stands on a cliff on Glaseado
-                        Mountain, looking down toward North Province (Area
-                        Three).
+                        Ignacio stands on a cliff on Glaseado Mountain, looking
+                        down toward North Province (Area Three).
                         <br />
                         Consider stealing the Life Orb item from his Hypno.
                     </ProgressionDescription>
