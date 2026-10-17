@@ -5,6 +5,7 @@ import { ProgressionCard } from '../../../../components/ProgressionCard';
 import { ProgressionCardHeader } from '../../../../components/ProgressionCardHeader';
 import { useBossBattleRosterQuery } from '../../queries';
 import { BossRoster } from '../bosses/BossRoster';
+import { StrongTrainerIdentity } from './StrongTrainerIdentity';
 
 const BATTLE_NAME = 'Elias the Black Belt';
 const LOCATION_NAME = 'Asado Desert';
@@ -55,12 +56,10 @@ export function EliasStrongTrainer() {
                             </BadgeButton>
                         }
                     >
-                        <div>
-                            <div className={titleRow}>
-                                <h3 className={title}>{DISPLAY_NAME}</h3>
-                            </div>
-                            <p className={locationText}>{LOCATION_NAME}</p>
-                        </div>
+                        <StrongTrainerIdentity
+                            displayName={DISPLAY_NAME}
+                            locationName={LOCATION_NAME}
+                        />
                     </ProgressionCardHeader>
                     <BossRoster roster={roster} iconSize="lg" zoomedIcon />
                 </>
@@ -73,23 +72,4 @@ const collapsedSummary = css`
     && {
         color: var(--color-text-muted);
     }
-`;
-
-const titleRow = css`
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-2);
-`;
-
-const title = css`
-    margin: 0;
-    font-size: var(--font-size-lg);
-    font-weight: 600;
-`;
-
-const locationText = css`
-    margin: var(--space-1) 0 0;
-    color: var(--color-text-muted);
-    font-size: var(--font-size-sm);
 `;

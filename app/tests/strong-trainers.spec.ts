@@ -26,13 +26,18 @@ test('strong trainer cards de-emphasize collapsed summaries and show rosters', a
     await showMoreProgression(page);
 
     const trainers = [
-        ['Hiker Nerea', 'South Province (Area Five)'],
-        ['Waitress Sofia', 'South Province (Area Five)'],
-        ['Businessman Severino', 'South Province (Area Three)'],
-        ['Model Candina', 'West Province (Area One)'],
-        ['Elias the Black Belt', 'Asado Desert'],
-        ['Student Xavier', 'East Province (Area Two)'],
-        ['Researcher Ignacio', 'Glaseado Mountain'],
+        ['Hiker Nerea', 'South Province (Area Five)', 'Sudowoodo'],
+        ['Sofia the Waitress', 'South Province (Area Five)', 'Indeedee'],
+        [
+            'Severino the Office Worker',
+            'South Province (Area Three)',
+            'Jigglypuff',
+        ],
+        ['Candina the Model', 'West Province (Area One)', 'Oinkologne'],
+        ['Elias the Black Belt', 'Asado Desert', 'Breloom'],
+        ['Xavier the Student', 'East Province (Area Two)', 'Kirlia'],
+        ['Ignacio the Scientist', 'Glaseado Mountain', 'Magnezone'],
+        ['Angel the Courier', 'South Province (Area Two)', 'Psyduck'],
     ] as const;
 
     for (const [name] of trainers) {
@@ -44,7 +49,19 @@ test('strong trainer cards de-emphasize collapsed summaries and show rosters', a
         ).toHaveCount(0);
     }
 
-    await expandCollapsedSummary(page, 'Strong trainer - Elias the Black Belt');
+    for (const [name, , firstPokemon] of trainers) {
+        await expandCollapsedSummary(page, `Strong trainer - ${name}`);
+        await expect(
+            cardFor(page, `Strong trainer - ${name}`)
+                .first()
+                .getByText(firstPokemon),
+        ).toBeVisible();
+    }
+
+    await expect(
+        cardFor(page, 'Strong trainer - Angel the Courier').first(),
+    ).toContainText('Angel is found at the crossroads just east or Cortondo');
+
     const elias = cardFor(
         page,
         'Strong trainer - Elias the Black Belt',
@@ -57,9 +74,6 @@ test('strong trainer cards de-emphasize collapsed summaries and show rosters', a
     ).toBeVisible();
     await expect(elias.locator('header img')).toHaveCount(0);
     await expect(elias).toContainText('Asado Desert');
-    await expect(elias).toContainText(
-        'Find Elias the Black Belt in Asado Desert',
-    );
 
     const heracross = elias
         .locator('article')

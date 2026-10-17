@@ -46,7 +46,7 @@
         ]
     },
     {
-        "name": "Waitress Sofia",
+        "name": "Sofia the Waitress",
         "roster": [
             {
                 "name": "Indeedee (Female)",
@@ -90,7 +90,7 @@
         ]
     },
     {
-        "name": "Businessman Severino",
+        "name": "Severino the Office Worker",
         "roster": [
             {
                 "name": "Jigglypuff",
@@ -121,7 +121,7 @@
         ]
     },
     {
-        "name": "Model Candina",
+        "name": "Candina the Model",
         "roster": [
             {
                 "name": "Oinkologne (Female)",
@@ -183,7 +183,7 @@
         ]
     },
     {
-        "name": "Student Xavier",
+        "name": "Xavier the Student",
         "roster": [
             {
                 "name": "Kirlia",
@@ -222,7 +222,7 @@
     },
 
     {
-        "name": "Researcher Ignacio",
+        "name": "Ignacio the Scientist",
         "roster": [
             {
                 "name": "Magnezone",
@@ -261,6 +261,50 @@
                     { "name": "Zen Headbutt" },
                     { "name": "Psych Up" },
                     { "name": "Psybeam" }
+                ]
+            }
+        ]
+    },
+
+    {
+        "name": "Angel the Courier",
+        "roster": [
+            {
+                "name": "Psyduck",
+                "level": 14,
+                "item": "",
+                "ability1": "Damp",
+                "ability2": "Cloud Nine",
+                "moves": [
+                    { "name": "Water Pulse" },
+                    { "name": "Fury Swipes" },
+                    { "name": "Confusion" },
+                    { "name": "Water Gun" }
+                ]
+            },
+            {
+                "name": "Maschiff",
+                "level": 14,
+                "item": "",
+                "ability1": "Intimidate",
+                "ability2": "Run Away",
+                "moves": [
+                    { "name": "Bite" },
+                    { "name": "Hone Claws" },
+                    { "name": "Snarl" },
+                    { "name": "Lick" }
+                ]
+            },
+            {
+                "name": "Mudbray",
+                "level": 14,
+                "item": "Oran Berry",
+                "ability1": "Own Tempo",
+                "ability2": "Stamina",
+                "moves": [
+                    { "name": "Bulldoze" },
+                    { "name": "Double Kick" },
+                    { "name": "Iron Defense" }
                 ]
             }
         ]

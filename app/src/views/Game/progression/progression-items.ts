@@ -75,6 +75,7 @@ import {
     AsadoDesertTrainerTip,
     SouthProvinceAreaFiveTrainerTip,
 } from './TrainerRewardTips';
+import { AngelStrongTrainer } from './trainers/AngelStrongTrainer';
 import { CandinaStrongTrainer } from './trainers/CandinaStrongTrainer';
 import { EliasStrongTrainer } from './trainers/EliasStrongTrainer';
 import { IgnacioStrongTrainer } from './trainers/IgnacioStrongTrainer';
@@ -190,6 +191,14 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
         Component: SouthProvinceAreaTwo,
     },
     {
+        key: 'strong-trainer-angel',
+        kind: 'boss',
+        isVisible: ({ settings }) => settings.showStrongTrainers,
+        countsTowardProgress: () => false,
+        getBattleName: () => 'Angel the Courier',
+        Component: AngelStrongTrainer,
+    },
+    {
         key: 'tera-raid-1-star',
         kind: 'raid',
         stars: 1,
@@ -215,7 +224,7 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
         kind: 'boss',
         isVisible: ({ settings }) => settings.showStrongTrainers,
         countsTowardProgress: () => false,
-        getBattleName: () => 'Businessman Severino',
+        getBattleName: () => 'Severino the Office Worker',
         Component: SeverinoStrongTrainer,
     },
     {
@@ -256,7 +265,7 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
         kind: 'boss',
         isVisible: ({ settings }) => settings.showStrongTrainers,
         countsTowardProgress: () => false,
-        getBattleName: () => 'Model Candina',
+        getBattleName: () => 'Candina the Model',
         Component: CandinaStrongTrainer,
     },
     {
@@ -318,7 +327,7 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
         kind: 'boss',
         isVisible: ({ settings }) => settings.showStrongTrainers,
         countsTowardProgress: () => false,
-        getBattleName: () => 'Waitress Sofia',
+        getBattleName: () => 'Sofia the Waitress',
         Component: SofiaStrongTrainer,
     },
     {
@@ -332,7 +341,7 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
         kind: 'boss',
         isVisible: ({ settings }) => settings.showStrongTrainers,
         countsTowardProgress: () => false,
-        getBattleName: () => 'Student Xavier',
+        getBattleName: () => 'Xavier the Student',
         Component: XavierStrongTrainer,
     },
     {
@@ -472,7 +481,7 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
         kind: 'boss',
         isVisible: ({ settings }) => settings.showStrongTrainers,
         countsTowardProgress: () => false,
-        getBattleName: () => 'Researcher Ignacio',
+        getBattleName: () => 'Ignacio the Scientist',
         Component: IgnacioStrongTrainer,
     },
     {

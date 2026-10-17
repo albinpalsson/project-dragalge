@@ -2,7 +2,7 @@ import { ProgressionInfoCard } from '../../../components/ProgressionInfoCard';
 
 export function FourthBadgeShoppingTip() {
     return (
-        <ProgressionInfoCard title="Power Items and Leftovers">
+        <ProgressionInfoCard title="Power Items">
             <p>
                 After earning 4 Gym Badges, you can buy Power Items at Delibird
                 Presents in Mesagoza, Levincia, and Cascarrafa. These give a

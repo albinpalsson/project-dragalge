@@ -3,11 +3,12 @@ import { BadgeButton } from '../../../../components/Badge';
 import { CollapsedSummaryRow } from '../../../../components/CollapsedSummaryRow';
 import { ProgressionCard } from '../../../../components/ProgressionCard';
 import { ProgressionCardHeader } from '../../../../components/ProgressionCardHeader';
-import { ProgressionDescription } from '../../../../components/ProgressionDescription';
 import { useBossBattleRosterQuery } from '../../queries';
+import { ProgressionDescription } from '../../../../components/ProgressionDescription';
 import { BossRoster } from '../bosses/BossRoster';
+import { StrongTrainerIdentity } from './StrongTrainerIdentity';
 
-const BATTLE_NAME = 'Model Candina';
+const BATTLE_NAME = 'Candina the Model';
 const LOCATION_NAME = 'West Province (Area One)';
 const DISPLAY_NAME = `Strong trainer - ${BATTLE_NAME}`;
 
@@ -56,12 +57,10 @@ export function CandinaStrongTrainer() {
                             </BadgeButton>
                         }
                     >
-                        <div>
-                            <div className={titleRow}>
-                                <h3 className={title}>{DISPLAY_NAME}</h3>
-                            </div>
-                            <p className={locationText}>{LOCATION_NAME}</p>
-                        </div>
+                        <StrongTrainerIdentity
+                            displayName={DISPLAY_NAME}
+                            locationName={LOCATION_NAME}
+                        />
                     </ProgressionCardHeader>
                     <ProgressionDescription>
                         Model Candina can be found near the windmills on the
@@ -79,23 +78,4 @@ const collapsedSummary = css`
     && {
         color: var(--color-text-muted);
     }
-`;
-
-const titleRow = css`
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-2);
-`;
-
-const title = css`
-    margin: 0;
-    font-size: var(--font-size-lg);
-    font-weight: 600;
-`;
-
-const locationText = css`
-    margin: var(--space-1) 0 0;
-    color: var(--color-text-muted);
-    font-size: var(--font-size-sm);
 `;
