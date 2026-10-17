@@ -64,7 +64,7 @@ export function SofiaStrongTrainer() {
                     </ProgressionCardHeader>
                     <ProgressionDescription>
                         Sofia can be found along the beach near the Pokémon
-                        Center in South Province (Area Five).
+                        Center in South Province (A5).
                     </ProgressionDescription>
                     <BossRoster roster={roster} iconSize="lg" zoomedIcon />
                 </>

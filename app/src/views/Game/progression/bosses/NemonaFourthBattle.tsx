@@ -15,7 +15,7 @@ import { BossHeader, BossRoster } from './BossRoster';
 import { progressionCardPattern } from './progression-card-pattern';
 
 const LOCATION_NAME = 'Medali';
-const DISPLAY_BATTLE_NAME = 'Nemona (Fourth rival battle)';
+const DISPLAY_BATTLE_NAME = 'Nemona (4th rival battle)';
 
 interface NemonaFourthBattleProps {
     isNext?: boolean;

@@ -10,6 +10,7 @@ import type {
     BossBattleRoster,
     BossPokemonView,
 } from '../../../../db/pokemon-data/queries';
+import { formatLocationName } from '../../../../utils/encounter-formatters';
 
 export interface BossRosterPokemon extends BossPokemonView {
     displayName?: string;
@@ -50,7 +51,7 @@ export function BossHeader({
         <ProgressionCardHeader
             actions={
                 <>
-                    <Badge>Lv cap {levelCap}</Badge>
+                    {!currentResult && <Badge>Lv cap {levelCap}</Badge>}
                     {onCollapse && (
                         <BadgeButton
                             onClick={onCollapse}
@@ -74,7 +75,7 @@ export function BossHeader({
                         {currentResult && <StatusChip status={currentResult} />}
                     </span>
                 </div>
-                <p className={subtitle}>{locationName}</p>
+                <p className={subtitle}>{formatLocationName(locationName)}</p>
             </div>
         </ProgressionCardHeader>
     );

@@ -15,7 +15,7 @@ import { BossHeader, BossRoster } from './BossRoster';
 import { progressionCardPattern } from './progression-card-pattern';
 
 const LOCATION_NAME = 'Alfornada';
-const DISPLAY_BATTLE_NAME = 'Nemona (Fifth rival battle)';
+const DISPLAY_BATTLE_NAME = 'Nemona (5th rival battle)';
 
 interface NemonaFifthBattleProps {
     isNext?: boolean;

@@ -26,18 +26,18 @@ test('strong trainer cards de-emphasize collapsed summaries and show rosters', a
     await showMoreProgression(page);
 
     const trainers = [
-        ['Hiker Nerea', 'South Province (Area Five)', 'Sudowoodo'],
-        ['Sofia the Waitress', 'South Province (Area Five)', 'Indeedee'],
+        ['Hiker Nerea', 'South Province (A5)', 'Sudowoodo'],
+        ['Sofia the Waitress', 'South Province (A5)', 'Indeedee'],
         [
             'Severino the Office Worker',
-            'South Province (Area Three)',
+            'South Province (A3)',
             'Jigglypuff',
         ],
-        ['Candina the Model', 'West Province (Area One)', 'Oinkologne'],
+        ['Candina the Model', 'West Province (A1)', 'Oinkologne'],
         ['Elias the Black Belt', 'Asado Desert', 'Breloom'],
-        ['Xavier the Student', 'East Province (Area Two)', 'Kirlia'],
+        ['Xavier the Student', 'East Province (A2)', 'Kirlia'],
         ['Ignacio the Scientist', 'Glaseado Mountain', 'Magnezone'],
-        ['Angel the Courier', 'South Province (Area Two)', 'Psyduck'],
+        ['Angel the Courier', 'South Province (A2)', 'Psyduck'],
     ] as const;
 
     for (const [name] of trainers) {

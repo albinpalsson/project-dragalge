@@ -57,7 +57,6 @@ export function SouthProvinceAreaFour({ isNext }: SouthProvinceAreaFourProps) {
             defaultExpanded={false}
             collapsedContent={({ expand }) => (
                 <EncounterCollapsedSummary
-                    areaName={encountersQuery.data.location.province}
                     locationName={LOCATION_NAME}
                     encounterRoll={encounterRoll}
                     encounters={activeEncounters}
@@ -71,6 +70,7 @@ export function SouthProvinceAreaFour({ isNext }: SouthProvinceAreaFourProps) {
                 <>
                     <EncounterHeader
                         location={encountersQuery.data.location}
+                        encounterRoll={encounterRoll}
                         encounters={activeEncounters}
                         canCollapse
                         onCollapse={collapse}

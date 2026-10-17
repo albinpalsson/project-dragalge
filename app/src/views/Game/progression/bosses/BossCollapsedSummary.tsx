@@ -4,6 +4,7 @@ import { Badge } from '../../../../components/Badge';
 import { CollapsedSummaryRow } from '../../../../components/CollapsedSummaryRow';
 import { StatusChip } from '../../../../components/StatusChip';
 import { TypeBadge } from '../../../../components/TypeBadge';
+import { formatLocationName } from '../../../../utils/encounter-formatters';
 
 interface BossCollapsedSummaryProps {
     battleName: string;
@@ -36,7 +37,7 @@ export function BossCollapsedSummary({
                     {icon}
                 </span>
             }
-            label={locationName}
+            label={formatLocationName(locationName)}
             title={battleName}
             leftBadges={
                 <>
@@ -44,7 +45,7 @@ export function BossCollapsedSummary({
                     {result && <StatusChip status={result} />}
                 </>
             }
-            rightBadges={<Badge>Lv cap {levelCap}</Badge>}
+            rightBadges={!result && <Badge>Lv cap {levelCap}</Badge>}
             isNext={isNext}
             onExpand={onExpand}
         />

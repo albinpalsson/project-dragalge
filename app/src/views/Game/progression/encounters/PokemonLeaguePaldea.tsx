@@ -11,7 +11,7 @@ import { useEncounterActions } from '../../../../hooks/useEncounterActions';
 import { useLocationEncounterCandidates } from '../../queries';
 import { ProgressionDescription } from '../../../../components/ProgressionDescription';
 
-const LOCATION_NAME = 'Pokemon League (Paldea)';
+const LOCATION_NAME = 'Pokemon League';
 
 interface PokemonLeaguePaldeaProps {
     isNext?: boolean;
@@ -46,7 +46,6 @@ export function PokemonLeaguePaldea({ isNext }: PokemonLeaguePaldeaProps) {
             defaultExpanded={false}
             collapsedContent={({ expand }) => (
                 <EncounterCollapsedSummary
-                    areaName={encountersQuery.data.location.province}
                     locationName={LOCATION_NAME}
                     encounterRoll={encounterRoll}
                     encounters={allEncounters}
@@ -60,6 +59,7 @@ export function PokemonLeaguePaldea({ isNext }: PokemonLeaguePaldeaProps) {
                 <>
                     <EncounterHeader
                         location={encountersQuery.data.location}
+                        encounterRoll={encounterRoll}
                         encounters={allEncounters}
                         canCollapse
                         onCollapse={collapse}

@@ -181,7 +181,7 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
         key: 'pokemon-league-paldea',
         kind: 'encounter',
         checkpointBefore: true,
-        locationName: 'Pokemon League (Paldea)',
+        locationName: 'Pokemon League',
         Component: PokemonLeaguePaldea,
     },
     {

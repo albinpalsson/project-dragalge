@@ -64,7 +64,7 @@ export function IgnacioStrongTrainer() {
                     </ProgressionCardHeader>
                     <ProgressionDescription>
                         Ignacio stands on a cliff on Glaseado Mountain, looking
-                        down toward North Province (Area Three).
+                        down toward North Province (A3).
                         <br />
                         Consider stealing the Life Orb item from his Hypno.
                     </ProgressionDescription>

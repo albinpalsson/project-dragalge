@@ -56,7 +56,6 @@ export function PocoPath({ isNext }: PocoPathProps) {
             defaultExpanded={false}
             collapsedContent={({ expand }) => (
                 <EncounterCollapsedSummary
-                    areaName={encountersQuery.data.location.province}
                     locationName={LOCATION_NAME}
                     encounterRoll={encounterRoll}
                     encounters={activeEncounters}
@@ -70,6 +69,7 @@ export function PocoPath({ isNext }: PocoPathProps) {
                 <>
                     <EncounterHeader
                         location={encountersQuery.data.location}
+                        encounterRoll={encounterRoll}
                         encounters={activeEncounters}
                         canCollapse
                         onCollapse={collapse}

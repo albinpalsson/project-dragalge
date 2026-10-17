@@ -45,7 +45,6 @@ export function TagtreeThicket({ isNext }: TagtreeThicketProps) {
             defaultExpanded={false}
             collapsedContent={({ expand }) => (
                 <EncounterCollapsedSummary
-                    areaName={encountersQuery.data.location.province}
                     locationName={LOCATION_NAME}
                     encounterRoll={encounterRoll}
                     encounters={allEncounters}
@@ -58,6 +57,7 @@ export function TagtreeThicket({ isNext }: TagtreeThicketProps) {
                 <>
                     <EncounterHeader
                         location={encountersQuery.data.location}
+                        encounterRoll={encounterRoll}
                         encounters={allEncounters}
                         canCollapse
                         onCollapse={collapse}

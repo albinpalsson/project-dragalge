@@ -15,7 +15,7 @@ import { BossHeader, BossRoster } from './BossRoster';
 import { progressionCardPattern } from './progression-card-pattern';
 
 const LOCATION_NAME = 'Levincia';
-const DISPLAY_BATTLE_NAME = 'Nemona (Third rival battle)';
+const DISPLAY_BATTLE_NAME = 'Nemona (3rd rival battle)';
 
 interface NemonaThirdBattleProps {
     isNext?: boolean;

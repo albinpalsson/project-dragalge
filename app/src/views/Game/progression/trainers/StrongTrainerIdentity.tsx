@@ -1,4 +1,5 @@
 import { css } from '@pokedb2/css-in-js';
+import { formatLocationName } from '../../../../utils/encounter-formatters';
 
 interface StrongTrainerIdentityProps {
     displayName: string;
@@ -14,7 +15,7 @@ export function StrongTrainerIdentity({
             <div className={titleRow}>
                 <h3 className={title}>{displayName}</h3>
             </div>
-            <p className={locationText}>{locationName}</p>
+            <p className={locationText}>{formatLocationName(locationName)}</p>
         </div>
     );
 }

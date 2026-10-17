@@ -12,7 +12,7 @@ import { BossHeader, BossRoster } from './BossRoster';
 import { progressionCardPattern } from './progression-card-pattern';
 
 const LOCATION_NAME = 'South Province (Area One)';
-const DISPLAY_BATTLE_NAME = 'Nemona (Second rival battle)';
+const DISPLAY_BATTLE_NAME = 'Nemona (2nd rival battle)';
 
 interface NemonaSouthProvinceProps {
     isNext?: boolean;
@@ -83,8 +83,8 @@ export function NemonaSouthProvince({ isNext }: NemonaSouthProvinceProps) {
                     />
                     <ProgressionDescription>
                         This battle begins when you reach the large door between
-                        South Province (Area One) and Mesagoza, beside the
-                        Pokemon Center.
+                        South Province (A1) and Mesagoza, beside the Pokemon
+                        Center.
                     </ProgressionDescription>
                     <BossResultControls
                         currentResult={currentResult}

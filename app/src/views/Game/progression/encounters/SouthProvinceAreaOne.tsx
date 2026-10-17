@@ -13,6 +13,7 @@ import { usePersistentGameState } from '../../../../hooks/usePersistentGameState
 import type { LocationEncounterView } from '../../../../db/pokemon-data/queries';
 import { useGame } from '../../GameContext';
 import { useLocationEncounterCandidates } from '../../queries';
+import { formatLocationName } from '../../../../utils/encounter-formatters';
 
 const LOCATION_NAME = 'South Province (Area One)';
 
@@ -33,13 +34,13 @@ export function SouthProvinceAreaOne({ isNext }: SouthProvinceAreaOneProps) {
     const encounterActions = useEncounterActions();
 
     if (encountersQuery.isPending) {
-        return <p>Loading South Province (Area One) encounters...</p>;
+        return <p>Loading {formatLocationName(LOCATION_NAME)} encounters...</p>;
     }
 
     if (encountersQuery.isError) {
         return (
             <p>
-                Error loading {LOCATION_NAME} encounters:{' '}
+                Error loading {formatLocationName(LOCATION_NAME)} encounters:{' '}
                 {encountersQuery.error.message}
             </p>
         );
@@ -57,7 +58,6 @@ export function SouthProvinceAreaOne({ isNext }: SouthProvinceAreaOneProps) {
             defaultExpanded={false}
             collapsedContent={({ expand }) => (
                 <EncounterCollapsedSummary
-                    areaName={encountersQuery.data.location.province}
                     locationName={LOCATION_NAME}
                     encounterRoll={encounterRoll}
                     encounters={activeEncounters}
@@ -71,6 +71,7 @@ export function SouthProvinceAreaOne({ isNext }: SouthProvinceAreaOneProps) {
                 <>
                     <EncounterHeader
                         location={encountersQuery.data.location}
+                        encounterRoll={encounterRoll}
                         encounters={activeEncounters}
                         canCollapse
                         onCollapse={collapse}

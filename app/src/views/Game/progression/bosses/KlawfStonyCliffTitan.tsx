@@ -66,7 +66,6 @@ export function KlawfStonyCliffTitan({ isNext }: KlawfStonyCliffTitanProps) {
                     isNext={isNext}
                     onExpand={expand}
                     icon={TITAN_BOSS_ICON}
-                    specialtyType={SPECIALTY_TYPE}
                 />
             )}
         >
@@ -79,7 +78,6 @@ export function KlawfStonyCliffTitan({ isNext }: KlawfStonyCliffTitanProps) {
                         onCollapse={collapse}
                         currentResult={currentResult}
                         icon={TITAN_BOSS_ICON}
-                        specialtyType={SPECIALTY_TYPE}
                     />
                     <ProgressionDescription>
                         The Titan battle has two phases. First, you will face

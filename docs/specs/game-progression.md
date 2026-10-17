@@ -8,7 +8,7 @@ The canonical order interleaves encounters, bosses, and optional raid cards as t
 
 The runtime order follows the Full Progression Order table below, except Nemona's First Battle is skipped because no matching battle data exists. Release Starter remains optional after Poco Path. Raid cards are inserted at the placements listed under Tera Raids. Team Star cards are hidden when "Include Team Star battles" is off; Tera Raid cards are hidden when raids are set to "None".
 
-Show more boundaries follow each back-to-back boss group containing at least one Gym or Rival fight. Runtime checkpoints are placed before Pokemon League (Paldea), South Province (Area Three), South Province (Area Four), East Province (Area One), Asado Desert, Tagtree Thicket, Glaseado Mountain, South Province (Area Six), North Province (Area One), and North Province (Area Three). When Team Star battles are hidden, the North Province (Area One) checkpoint follows Grusha; otherwise it follows Ortega. The post-Tulip boundary remains before North Province (Area Three), independently of whether raids are enabled.
+Show more boundaries follow each back-to-back boss group containing at least one Gym or Rival fight. Runtime checkpoints are placed before Pokemon League, South Province (Area Three), South Province (Area Four), East Province (Area One), Asado Desert, Tagtree Thicket, Glaseado Mountain, South Province (Area Six), North Province (Area One), and North Province (Area Three). When Team Star battles are hidden, the North Province (Area One) checkpoint follows Grusha; otherwise it follows Ortega. The post-Tulip boundary remains before North Province (Area Three), independently of whether raids are enabled.
 
 ## Full Progression Order
 
@@ -22,7 +22,7 @@ Legend: **Boss type** — Rival / Gym / Titan / Starfall / Elite Four. "Implemen
 | 4 | Encounter | Inlet Grotto | — | — | South Province | ✅ |
 | 5 | Encounter | South Province (Area One) | — | — | South Province | ✅ |
 | 6 | Boss | Nemona (Second Battle) | Rival | 9 | South Province (Area One) | ✅ |
-| 7 | Encounter | Pokemon League (Paldea) | — | — | South Province | ✅ |
+| 7 | Encounter | Pokemon League | — | — | South Province | ✅ |
 | 8 | Encounter | South Province (Area Two) | — | — | South Province | ✅ |
 | 9 | Boss | Katy (Bug Gym) | Gym | 15 | Cortondo | ✅ |
 | 10 | Encounter | South Province (Area Three) | — | — | South Province | ✅ |

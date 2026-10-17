@@ -1,6 +1,21 @@
 import { type EncounterRates, getEffectiveWeight } from '../randomizer';
 
 const PEAK_DENSITY_THRESHOLD_RATIO = 0.2;
+const AREA_NUMBERS: Record<string, string> = {
+    One: '1',
+    Two: '2',
+    Three: '3',
+    Four: '4',
+    Five: '5',
+    Six: '6',
+};
+
+export function formatLocationName(locationName: string): string {
+    return locationName.replace(
+        /\(Area (One|Two|Three|Four|Five|Six)\)$/,
+        (_match, area: string) => `(A${AREA_NUMBERS[area]})`,
+    );
+}
 
 interface EncounterGroupLevelRange {
     min: number;

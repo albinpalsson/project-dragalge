@@ -64,7 +64,7 @@ export function SeverinoStrongTrainer() {
                     </ProgressionCardHeader>
                     <ProgressionDescription>
                         You can find Severino close to the Pokémon Center in
-                        South Province (Area Three). <br />
+                        South Province (A3). <br />
                         Consider stealing the Leftovers item from his Skiddo.
                     </ProgressionDescription>
                     <BossRoster roster={roster} iconSize="lg" zoomedIcon />

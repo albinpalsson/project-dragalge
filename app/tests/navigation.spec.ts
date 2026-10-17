@@ -16,7 +16,7 @@ test('progression windows, Home resume and browser history preserve the run', as
     await page.goto('/');
     await createGame(page, 'checkpoint-window-run');
 
-    await expect(cardFor(page, 'Nemona (Second rival battle)')).toBeVisible();
+    await expect(cardFor(page, 'Nemona (2nd rival battle)')).toBeVisible();
     await expect(cardFor(page, 'Katy (Gym)')).toHaveCount(0);
     await expect(
         page.getByRole('button', { name: 'Show previous steps', exact: true }),
@@ -32,19 +32,19 @@ test('progression windows, Home resume and browser history preserve the run', as
     await expect(showMore).toHaveCount(0);
 
     await page.reload();
-    await expect(cardFor(page, 'Nemona (Second rival battle)')).toBeVisible();
+    await expect(cardFor(page, 'Nemona (2nd rival battle)')).toBeVisible();
     await expect(cardFor(page, 'Katy (Gym)')).toHaveCount(0);
     await selectStarter(page, 'Sprigatito');
     await catchEncounter(page, 'Poco Path');
     await catchEncounter(page, 'Inlet Grotto');
-    await catchEncounter(page, 'South Province (Area One)');
-    await winBossBattle(page, 'Nemona (Second rival battle)');
+    await catchEncounter(page, 'South Province (A1)');
+    await winBossBattle(page, 'Nemona (2nd rival battle)');
     await waitForPersistence(page);
     await navigateTo(page, 'Home');
     await page.getByRole('button', { name: /checkpoint-window-run/ }).click();
     await page.reload();
 
-    await expect(cardFor(page, 'Pokemon League (Paldea)')).toBeVisible();
+    await expect(cardFor(page, 'Pokemon League')).toBeVisible();
     await expect(cardFor(page, 'Katy (Gym)')).toBeVisible();
     await expect(cardFor(page, 'Brassius (Gym)')).toHaveCount(0);
     const nextShowMore = page.getByRole('button', {
@@ -102,11 +102,11 @@ test('a resolved boss advances next step without hiding skipped encounters', asy
     await createGame(page, 'skipped-encounter-run');
     await selectStarter(page, 'Sprigatito');
 
-    await winBossBattle(page, 'Nemona (Second rival battle)');
+    await winBossBattle(page, 'Nemona (2nd rival battle)');
     await waitForPersistence(page);
     await page.reload();
 
-    await expectNextStep(page, 'Pokemon League (Paldea)');
+    await expectNextStep(page, 'Pokemon League');
     await expect(cardFor(page, 'Poco Path')).toBeVisible();
     await expect(
         page.getByRole('button', { name: 'Show previous steps', exact: true }),

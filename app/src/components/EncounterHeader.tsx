@@ -3,12 +3,20 @@ import { Badge, BadgeButton } from './Badge';
 import { ProgressionCardHeader } from './ProgressionCardHeader';
 import type { LocationEncounterDetails } from '../db/pokemon-data/queries';
 import type { LocationEncounterView } from '../db/pokemon-data/queries';
-import { formatEncounterGroupLevelRange } from '../utils/encounter-formatters';
+import {
+    isEncounterRollResolved,
+    type EncounterRoll,
+} from '../hooks/useEncounterRoll';
+import {
+    formatEncounterGroupLevelRange,
+    formatLocationName,
+} from '../utils/encounter-formatters';
 import { useMemo } from 'react';
 
 interface EncounterHeaderProps {
     location: LocationEncounterDetails['location'];
     encounters: LocationEncounterView[];
+    encounterRoll: EncounterRoll | undefined;
     canCollapse?: boolean;
     onCollapse?: () => void;
 }
@@ -16,6 +24,7 @@ interface EncounterHeaderProps {
 export function EncounterHeader({
     location,
     encounters,
+    encounterRoll,
     canCollapse,
     onCollapse,
 }: EncounterHeaderProps) {
@@ -23,12 +32,15 @@ export function EncounterHeader({
         () => formatEncounterGroupLevelRange(encounters),
         [encounters],
     );
+    const isResolved = isEncounterRollResolved(encounterRoll);
 
     return (
         <ProgressionCardHeader
             actions={
                 <>
-                    {levelRange && <Badge>Lv {levelRange}</Badge>}
+                    {!isResolved && levelRange && (
+                        <Badge>Lv {levelRange}</Badge>
+                    )}
                     {canCollapse && onCollapse && (
                         <BadgeButton
                             ariaLabel="Collapse encounter"
@@ -42,8 +54,10 @@ export function EncounterHeader({
             }
         >
             <div>
-                <h3 className={heading}>{location.name}</h3>
-                <p className={subheading}>{location.province}</p>
+                <h3 className={heading}>{formatLocationName(location.name)}</h3>
+                <p className={subheading}>
+                    {formatLocationName(location.province)}
+                </p>
             </div>
         </ProgressionCardHeader>
     );

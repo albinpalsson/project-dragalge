@@ -24,6 +24,16 @@ export type EncounterRoll =
           status: Exclude<EncounterStatus, 'skipped'>;
       });
 
+export function isEncounterRollResolved(
+    encounterRoll: EncounterRoll | undefined,
+): boolean {
+    return (
+        encounterRoll !== undefined &&
+        encounterRoll.status !== 'notRolled' &&
+        encounterRoll.status !== 'pending'
+    );
+}
+
 export function useEncounterRoll(
     locationName: string,
 ): EncounterRoll | undefined {

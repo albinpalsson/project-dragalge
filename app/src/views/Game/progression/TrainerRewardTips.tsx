@@ -2,12 +2,12 @@ import { ProgressionInfoCard } from '../../../components/ProgressionInfoCard';
 
 export function SouthProvinceAreaFiveTrainerTip() {
     return (
-        <ProgressionInfoCard title="South Province (Area Five) trainer reward">
+        <ProgressionInfoCard title="South Province (A5) trainer reward">
             <p>
-                Defeat 7 trainers in South Province (Area Five), then talk to
-                the League Staff next to the Pokémon Center at the southwestern
-                end of Secluded Beach to receive an <strong>Eviolite</strong>.
-                Their Pokémon range from levels 17 to 25.
+                Defeat 7 trainers in South Province (A5), then talk to the
+                League Staff next to the Pokémon Center at the southwestern end
+                of Secluded Beach to receive an <strong>Eviolite</strong>. Their
+                Pokémon range from levels 17 to 25.
             </p>
         </ProgressionInfoCard>
     );

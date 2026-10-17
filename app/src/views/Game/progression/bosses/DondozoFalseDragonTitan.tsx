@@ -68,7 +68,6 @@ export function DondozoFalseDragonTitan({
                     isNext={isNext}
                     onExpand={expand}
                     icon={TITAN_BOSS_ICON}
-                    specialtyType={SPECIALTY_TYPE}
                 />
             )}
         >
@@ -81,7 +80,6 @@ export function DondozoFalseDragonTitan({
                         onCollapse={collapse}
                         currentResult={currentResult}
                         icon={TITAN_BOSS_ICON}
-                        specialtyType={SPECIALTY_TYPE}
                     />
                     <ProgressionDescription>
                         This battle has <strong>three phases</strong>. First,

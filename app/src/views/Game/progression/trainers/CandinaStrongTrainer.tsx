@@ -65,7 +65,7 @@ export function CandinaStrongTrainer() {
                     <ProgressionDescription>
                         Candina can be found near the windmills on the north
                         side of the river leading up to the Open Sky Titan, in
-                        West Province (Area One).
+                        West Province (A1).
                     </ProgressionDescription>
                     <BossRoster roster={roster} iconSize="lg" zoomedIcon />
                 </>

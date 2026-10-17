@@ -13,6 +13,41 @@ import {
     waitForPersistence,
 } from './helpers';
 
+test('compact encounter and battle labels fit phone-width viewports', async ({
+    page,
+}) => {
+    await page.setViewportSize({ width: 320, height: 800 });
+    await page.goto('/');
+    await createGame(page, 'compact-header-mobile-run');
+
+    const areaCard = cardFor(page, 'South Province (A1)').first();
+    const battleCard = cardFor(page, 'Nemona (2nd rival battle)').first();
+    await expect(areaCard).toBeVisible();
+    await expect(battleCard).toBeVisible();
+
+    for (const width of [320, 390]) {
+        await page.setViewportSize({ width, height: 800 });
+        await expect
+            .poll(() =>
+                page.evaluate(
+                    () =>
+                        document.documentElement.scrollWidth <=
+                        window.innerWidth,
+                ),
+            )
+            .toBe(true);
+
+        for (const card of [areaCard, battleCard]) {
+            const bounds = await card.evaluate((element) => {
+                const { left, right } = element.getBoundingClientRect();
+                return { left, right, viewportWidth: window.innerWidth };
+            });
+            expect(bounds.left).toBeGreaterThanOrEqual(0);
+            expect(bounds.right).toBeLessThanOrEqual(bounds.viewportWidth);
+        }
+    }
+});
+
 test('missed encounters stay out of Box and can be rerolled after reload', async ({
     page,
 }) => {
@@ -20,6 +55,10 @@ test('missed encounters stay out of Box and can be rerolled after reload', async
     await createGame(page, 'reroll-run');
 
     const card = cardFor(page, 'Poco Path');
+    await expect(
+        card.first().getByText('South Province', { exact: true }),
+    ).toHaveCount(0);
+    await expect(card.first().getByText(/^Lv /)).toBeVisible();
 
     const missed = await rollEncounter(page, 'Poco Path');
     await resolveEncounter(page, 'Poco Path', 'Missed');
@@ -36,14 +75,25 @@ test('missed encounters stay out of Box and can be rerolled after reload', async
 
     const reloadedCard = cardFor(page, 'Poco Path');
     await expect(reloadedCard).toContainText('Missed');
+    await expect(reloadedCard.getByText(/^Lv /)).toHaveCount(0);
     await expect(
         reloadedCard.getByRole('button', { name: 'Randomize' }),
     ).toBeHidden();
     await expandCollapsedSummary(page, 'Poco Path');
+    const expandedCard = cardFor(page, 'Poco Path').first();
+    await expect(
+        expandedCard.getByText('South Province', { exact: true }),
+    ).toBeVisible();
+    await expect(
+        expandedCard.locator('header').first().getByText(/^Lv /),
+    ).toHaveCount(0);
     await expect(
         cardFor(page, 'Poco Path').getByRole('button', { name: 'Re-roll' }),
     ).toBeVisible();
     await rollEncounter(page, 'Poco Path');
+    await expect(
+        expandedCard.locator('header').first().getByText(/^Lv /),
+    ).toBeVisible();
     await expect(
         card.getByRole('button', { name: 'Caught', exact: true }),
     ).toBeEnabled();
@@ -90,10 +140,7 @@ test('caught encounters update dupes and preserve manual, dupes, and mono reason
         .click();
     await resolveEncounter(page, 'Poco Path', 'Caught');
 
-    const southProvinceCard = cardFor(
-        page,
-        'South Province (Area One)',
-    ).first();
+    const southProvinceCard = cardFor(page, 'South Province (A1)').first();
     await southProvinceCard.click();
     await southProvinceCard
         .getByRole('button', { name: 'Show encounters' })
@@ -150,7 +197,7 @@ test('evolution preserves the original grouped encounter name and icon', async (
     await page.goto('/');
     await createGame(page, 'original-form-run', { preset: 'Clean' });
     await showMoreProgression(page);
-    const location = 'South Province (Area Two)';
+    const location = 'South Province (A2)';
     const original = 'Flab\u00e9b\u00e9 (Red Flower)';
     const group = 'Flab\u00e9b\u00e9';
     await expandCollapsedSummary(page, location);
@@ -264,7 +311,7 @@ test('available Paldea trade offers replace and restore the current encounter Po
         return cardFor(page, locationName).first();
     };
 
-    const flabebeLocation = 'South Province (Area Two)';
+    const flabebeLocation = 'South Province (A2)';
     const flabebe = 'Flab\u00e9b\u00e9 (Blue Flower)';
     let card = await pickEncounter(flabebeLocation, flabebe);
     await expect(card).toContainText(
@@ -324,10 +371,7 @@ test('available Paldea trade offers replace and restore the current encounter Po
     ).toBeVisible();
     await expect(card).toContainText('Caught');
 
-    card = await pickEncounter(
-        'South Province (Area One)',
-        'Wooper (Paldean Form)',
-    );
+    card = await pickEncounter('South Province (A1)', 'Wooper (Paldean Form)');
     await expect(card).toContainText(
         'Paldean Wooper can be traded for a Johtonian Wooper (Lv. 18) in Cascarrafa from a trainer next to the center fountain. Mark trade here to change the species in your box.',
     );
