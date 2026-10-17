@@ -28,11 +28,7 @@ test('strong trainer cards de-emphasize collapsed summaries and show rosters', a
     const trainers = [
         ['Hiker Nerea', 'South Province (A5)', 'Sudowoodo'],
         ['Sofia the Waitress', 'South Province (A5)', 'Indeedee'],
-        [
-            'Severino the Office Worker',
-            'South Province (A3)',
-            'Jigglypuff',
-        ],
+        ['Severino the Office Worker', 'South Province (A3)', 'Jigglypuff'],
         ['Candina the Model', 'West Province (A1)', 'Oinkologne'],
         ['Elias the Black Belt', 'Asado Desert', 'Breloom'],
         ['Xavier the Student', 'East Province (A2)', 'Kirlia'],
@@ -60,7 +56,7 @@ test('strong trainer cards de-emphasize collapsed summaries and show rosters', a
 
     await expect(
         cardFor(page, 'Strong trainer - Angel the Courier').first(),
-    ).toContainText('Angel is found at the crossroads just east or Cortondo');
+    ).toContainText('Angel is found at the crossroads just east of Cortondo');
 
     const elias = cardFor(
         page,

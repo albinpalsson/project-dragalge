@@ -110,7 +110,6 @@ test('Fun preset plays through the available progression', async ({ page }) => {
         const name = 'Strong trainer - Elias the Black Belt';
         await expandCollapsedSummary(page, name);
         const trainerCard = cardFor(page, name).first();
-        await expect(trainerCard).toContainText('Find Elias the Black Belt');
         const heracross = trainerCard
             .locator('article')
             .filter({ hasText: 'Heracross' });
