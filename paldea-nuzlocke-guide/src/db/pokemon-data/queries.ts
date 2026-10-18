@@ -1,0 +1,402 @@
+import { getPokemonDb } from './client';
+import { getEvolutionGraph } from './evolution-graph';
+import type { LocationRow, PokemonDataDb } from '@project-dragalge/pokemon-data';
+
+export interface PokemonNameDto {
+    name: string;
+}
+
+export interface LocationEncounterDetails {
+    location: LocationRow;
+    encounters: LocationEncounterView[];
+}
+
+export interface LocationEncounterView {
+    name: string;
+    subArea: string;
+    games: string;
+    terrain: string;
+    minLevel: number;
+    maxLevel: number;
+    morningRate: number;
+    dayRate: number;
+    eveningRate: number;
+    nightRate: number;
+}
+
+export interface PokemonBaseStats {
+    hp: number;
+    attack: number;
+    defense: number;
+    specialAttack: number;
+    specialDefense: number;
+    speed: number;
+}
+
+export interface TypeChartEntry {
+    attackingType: string;
+    defendingType: string;
+    multiplier: number;
+}
+
+export interface PokemonView {
+    name: string;
+    primaryType: string;
+    // Empty when the Pokémon is single-typed; the seed data stores type id 0 for "none".
+    secondaryType: string;
+    baseStats: PokemonBaseStats;
+}
+
+export interface EvolutionTarget {
+    pokemonName: string;
+    method: string;
+}
+
+export interface PokemonEvolutionDetails {
+    pokemonName: string;
+    nextEvolutions: EvolutionTarget[];
+    previousEvolutions: EvolutionTarget[];
+}
+
+export interface BossMoveView {
+    name: string;
+    type: string;
+    category: string;
+    power: number;
+    accuracy: number;
+    effect: string;
+}
+
+export interface BossAbilityView {
+    name: string;
+    description: string;
+}
+
+export interface BossItemView {
+    name: string;
+    description: string;
+}
+
+export interface BossPokemonView {
+    slot: number;
+    pokemonName: string;
+    level: number;
+    primaryType: string;
+    secondaryType: string;
+    baseStats: PokemonBaseStats;
+    ability: BossAbilityView;
+    secondaryAbility?: BossAbilityView;
+    item?: BossItemView;
+    moves: BossMoveView[];
+}
+
+export interface BossBattleRoster {
+    battleName: string;
+    battleType: string;
+    pokemon: BossPokemonView[];
+}
+
+export async function getBossBattleRoster(
+    battleName: string,
+): Promise<BossBattleRoster | undefined> {
+    const db = await getPokemonDb();
+
+    // Fetch battle info
+    const battle = await db
+        .selectFrom('boss_battles')
+        .selectAll()
+        .where('name', '=', battleName)
+        .executeTakeFirst();
+
+    if (!battle) {
+        return undefined;
+    }
+
+    const [rosterRows, moveRows] = await Promise.all([
+        db
+            .selectFrom('boss_battle_pokemon')
+            .innerJoin(
+                'pokemon',
+                'boss_battle_pokemon.pokemon_id',
+                'pokemon.id',
+            )
+            .selectAll()
+            .where('boss_battle_id', '=', battle.id)
+            .execute(),
+        db
+            .selectFrom('boss_battle_pokemon_moves')
+            .innerJoin('moves', 'boss_battle_pokemon_moves.move_id', 'moves.id')
+            .selectAll()
+            .where('boss_battle_id', '=', battle.id)
+            .execute(),
+    ]);
+
+    const abilityIds = Array.from(
+        new Set(
+            rosterRows.flatMap((row) =>
+                [row.ability_id, row.secondary_ability_id].filter(
+                    (id) => id > 0,
+                ),
+            ),
+        ),
+    );
+    const itemIds = Array.from(
+        new Set(rosterRows.map((row) => row.item_id).filter((id) => id > 0)),
+    );
+    const typeIds = Array.from(
+        new Set([
+            ...rosterRows.map((row) => row.primary_type_id),
+            ...rosterRows.map((row) => row.secondary_type_id),
+            ...moveRows.map((row) => row.type_id),
+        ]),
+    );
+
+    const [abilities, types, items] = await Promise.all([
+        db
+            .selectFrom('abilities')
+            .selectAll()
+            .where('id', 'in', abilityIds)
+            .execute(),
+        db
+            .selectFrom('pokemon_types')
+            .selectAll()
+            .where('id', 'in', typeIds)
+            .execute(),
+        itemIds.length === 0
+            ? Promise.resolve([])
+            : db
+                  .selectFrom('items')
+                  .selectAll()
+                  .where('id', 'in', itemIds)
+                  .execute(),
+    ]);
+
+    const typeById = new Map(types.map((type) => [type.id, type.name]));
+    const abilityById = new Map(
+        abilities.map((ability) => [ability.id, ability]),
+    );
+    const itemById = new Map(items.map((item) => [item.id, item]));
+
+    const roster: BossPokemonView[] = rosterRows.flatMap((rosterRow) => {
+        const ability = abilityById.get(rosterRow.ability_id);
+        if (!ability) {
+            return [];
+        }
+        const secondaryAbility = abilityById.get(
+            rosterRow.secondary_ability_id,
+        );
+        const item = itemById.get(rosterRow.item_id);
+
+        const pokemonMoves: BossMoveView[] = moveRows.flatMap((moveRow) => {
+            if (moveRow.pokemon_slot !== rosterRow.slot) {
+                return [];
+            }
+
+            return [
+                {
+                    name: moveRow.name,
+                    type: typeById.get(moveRow.type_id) ?? 'unknown',
+                    category: moveRow.category,
+                    power: moveRow.power,
+                    accuracy: moveRow.accuracy,
+                    effect: moveRow.effect,
+                },
+            ];
+        });
+
+        return [
+            {
+                slot: rosterRow.slot,
+                pokemonName: rosterRow.name,
+                level: rosterRow.level,
+                primaryType: typeById.get(rosterRow.primary_type_id) ?? '',
+                secondaryType: typeById.get(rosterRow.secondary_type_id) ?? '',
+                baseStats: {
+                    hp: rosterRow.base_hp,
+                    attack: rosterRow.base_attack,
+                    defense: rosterRow.base_defense,
+                    specialAttack: rosterRow.base_sp_attack,
+                    specialDefense: rosterRow.base_sp_defense,
+                    speed: rosterRow.base_speed,
+                },
+                ability: {
+                    name: ability.name,
+                    description: ability.description,
+                },
+                ...(secondaryAbility
+                    ? {
+                          secondaryAbility: {
+                              name: secondaryAbility.name,
+                              description: secondaryAbility.description,
+                          },
+                      }
+                    : {}),
+                ...(item
+                    ? {
+                          item: {
+                              name: item.name,
+                              description: item.description,
+                          },
+                      }
+                    : {}),
+                moves: pokemonMoves,
+            },
+        ];
+    });
+
+    return {
+        battleName: battle.name,
+        battleType: battle.battle_type,
+        pokemon: roster,
+    };
+}
+
+export async function getPokemon(
+    name: string,
+): Promise<PokemonView | undefined> {
+    const db = await getPokemonDb();
+    const row = await db
+        .selectFrom('pokemon')
+        .selectAll()
+        .where('name', '=', name)
+        .executeTakeFirst();
+
+    if (!row) {
+        return undefined;
+    }
+
+    const types = await db.selectFrom('pokemon_types').selectAll().execute();
+    const typeById = new Map(types.map((type) => [type.id, type.name]));
+
+    return {
+        name: row.name,
+        primaryType: typeById.get(row.primary_type_id) ?? '',
+        secondaryType: typeById.get(row.secondary_type_id) ?? '',
+        baseStats: {
+            hp: row.base_hp,
+            attack: row.base_attack,
+            defense: row.base_defense,
+            specialAttack: row.base_sp_attack,
+            specialDefense: row.base_sp_defense,
+            speed: row.base_speed,
+        },
+    };
+}
+
+export async function listAllPokemon(): Promise<string[]> {
+    const db = await getPokemonDb();
+    const rows = await db.selectFrom('pokemon').selectAll().execute();
+    return rows.map((row) => row.name);
+}
+
+export interface PokemonTypeCatalog {
+    pokemon: PokemonTypeEntry[];
+}
+
+export interface PokemonTypeEntry {
+    name: string;
+    primaryType: string;
+    // Empty when single-typed.
+    secondaryType: string;
+}
+
+export async function getPokemonTypeCatalog(): Promise<PokemonTypeCatalog> {
+    const db = await getPokemonDb();
+    const [types, pokemon] = await Promise.all([
+        db.selectFrom('pokemon_types').selectAll().execute(),
+        db.selectFrom('pokemon').selectAll().execute(),
+    ]);
+    const typeById = new Map(types.map((type) => [type.id, type.name]));
+
+    return {
+        pokemon: pokemon.map((row) => ({
+            name: row.name,
+            primaryType: typeById.get(row.primary_type_id) ?? '',
+            secondaryType: typeById.get(row.secondary_type_id) ?? '',
+        })),
+    };
+}
+
+export async function getPokemonEvolutionDetails(
+    pokemonName: string,
+): Promise<PokemonEvolutionDetails | undefined> {
+    const graph = await getEvolutionGraph();
+    const pokemon = graph.getNode(pokemonName);
+    if (!pokemon) {
+        return undefined;
+    }
+
+    return {
+        pokemonName: pokemon.pokemonName,
+        nextEvolutions: pokemon.nextEvolutions,
+        previousEvolutions: pokemon.previousEvolutions,
+    };
+}
+
+export async function getTypeChart(): Promise<TypeChartEntry[]> {
+    const db = await getPokemonDb();
+    const [types, effectiveness] = await Promise.all([
+        db.selectFrom('pokemon_types').selectAll().execute(),
+        db.selectFrom('type_effectiveness').selectAll().execute(),
+    ]);
+
+    const typeById = new Map(types.map((type) => [type.id, type.name]));
+
+    return effectiveness.map((entry) => ({
+        attackingType: typeById.get(entry.attacking_type_id) ?? 'unknown',
+        defendingType: typeById.get(entry.defending_type_id) ?? 'unknown',
+        multiplier: entry.multiplier_pct / 100,
+    }));
+}
+
+export async function getLocationEncounterDetails(
+    locationName: string,
+): Promise<LocationEncounterDetails> {
+    const db = await getPokemonDb();
+    const location = await db
+        .selectFrom('locations')
+        .selectAll()
+        .where('name', '=', locationName)
+        .executeTakeFirst();
+
+    if (!location) {
+        throw new Error(`Unknown location: ${locationName}`);
+    }
+    const encounterTable = location.id as keyof PokemonDataDb & string;
+
+    const [rows, subAreas, terrains] = await Promise.all([
+        db
+            .selectFrom(encounterTable)
+            .innerJoin('pokemon', `${encounterTable}.pokemon_id`, 'pokemon.id')
+            .selectAll()
+            .execute(),
+        db.selectFrom('sub_areas').selectAll().execute(),
+        db.selectFrom('terrain_types').selectAll().execute(),
+    ]);
+    const subAreaById = new Map(
+        subAreas.map((subArea) => [subArea.id, subArea.name]),
+    );
+    const terrainById = new Map(
+        terrains.map((terrain) => [terrain.id, terrain.key]),
+    );
+
+    return {
+        location,
+        encounters: rows.flatMap((row) => {
+            return [
+                {
+                    name: row.name,
+                    subArea: subAreaById.get(row.sub_area_id) ?? 'Unknown',
+                    games: row.games,
+                    terrain: terrainById.get(row.terrain_id) ?? 'unknown',
+                    minLevel: row.min_level,
+                    maxLevel: row.max_level,
+                    morningRate: row.morning_rate,
+                    dayRate: row.day_rate,
+                    eveningRate: row.evening_rate,
+                    nightRate: row.night_rate,
+                },
+            ];
+        }),
+    };
+}

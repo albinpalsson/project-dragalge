@@ -1,7 +1,7 @@
 import { mkdir, readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createDb } from '@pokedb2/query-builder';
+import { createDb } from '@project-dragalge/query-builder';
 import { fetchPokemonIcons } from './fetch/index.ts';
 import { DbClient } from './logging-db-client.ts';
 import type { PokemonDataDb } from './schema.ts';

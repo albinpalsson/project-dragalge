@@ -1,12 +1,12 @@
 {
-    "name": "@pokedb2/db",
+    "name": "@project-dragalge/db",
     "version": "0.1.0",
     "private": true,
     "type": "module",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "bin": {
-        "pokedb2-db-sql": "./dist/cli/main.js"
+        "project-dragalge-db-sql": "./dist/cli/main.js"
     },
     "exports": {
         ".": {

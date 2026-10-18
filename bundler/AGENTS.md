@@ -45,7 +45,7 @@ verify emitted behavior, not only TypeScript compilation.
   and shutdown behavior when changing its lifecycle.
 - App Playwright tests use the dev-server CLI with watching disabled and a
   dynamically assigned port. Keep its readiness output compatible with
-  `app/playwright.config.ts`.
+  `paldea-nuzlocke-guide/playwright.config.ts`.
 - Keep static serving behavior shared with the production serve path where
   appropriate; verify compressed and uncompressed asset responses when
   changing output or serving logic.

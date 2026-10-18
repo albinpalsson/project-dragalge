@@ -1,11 +1,11 @@
 {
-    "name": "@pokedb2/bundler",
+    "name": "@project-dragalge/bundler",
     "version": "0.1.0",
     "private": true,
     "type": "module",
     "bin": {
-        "pokedb2-bundle": "./dist/bundle.js",
-        "pokedb2-dev-server": "./dist/dev-server.js"
+        "project-dragalge-bundle": "./dist/bundle.js",
+        "project-dragalge-dev-server": "./dist/dev-server.js"
     },
     "files": [
         "dist"
@@ -22,7 +22,7 @@
         "lint": "tsc --noEmit"
     },
     "dependencies": {
-        "@pokedb2/validator": "*",
+        "@project-dragalge/validator": "*",
         "@types/node": "^20.19.43",
         "typescript": "^7.0.1-rc"
     }

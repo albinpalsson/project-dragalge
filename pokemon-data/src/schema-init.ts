@@ -1,6 +1,6 @@
 import { rm } from 'node:fs/promises';
-import type { DB } from '@pokedb2/db';
-import type { Database, DbClient } from '@pokedb2/query-builder';
+import type { DB } from '@project-dragalge/db';
+import type { Database, DbClient } from '@project-dragalge/query-builder';
 import { toCanonicalPokemonName } from './pokemon-names.ts';
 import { fetchAbilityData } from './fetch/fetch-ability-data.ts';
 import { fetchItemData } from './fetch/fetch-item-data.ts';

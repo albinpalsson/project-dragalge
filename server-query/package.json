@@ -1,5 +1,5 @@
 {
-    "name": "@pokedb2/server-query",
+    "name": "@project-dragalge/server-query",
     "version": "0.1.0",
     "private": true,
     "type": "module",

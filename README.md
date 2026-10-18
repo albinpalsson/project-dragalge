@@ -1,6 +1,7 @@
-// README for Project Structure
+# project-dragalge
 
-# Paldea Nuzlocke Tracker - Project Structure
+The Paldea nuzlocke guide is the React application in this npm-workspaces
+monorepo.
 
 ## Quick Start
 
@@ -22,7 +23,7 @@ npm run test
 
 This repository is an npm-workspaces monorepo. The main packages are:
 
-- `app/` — React application and Playwright tests
+- `paldea-nuzlocke-guide/` — React application and Playwright tests
 - `bundler/` — application bundler, development server, and minifier transforms
 - `css-in-js/` — build-time CSS extraction
 - `db/` — in-memory database and persistence primitives
@@ -47,7 +48,7 @@ public identifiers, not secrets.
 
 ```powershell
 $env:GA4_MEASUREMENT_ID = 'G-XXXXXXXXXX'
-npm run build --prefix app
+npm run build --prefix paldea-nuzlocke-guide
 ```
 
 ## Development

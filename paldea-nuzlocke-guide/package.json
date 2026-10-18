@@ -1,0 +1,33 @@
+{
+    "name": "@project-dragalge/paldea-nuzlocke-guide",
+    "version": "0.1.0",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "sync-assets": "node scripts/sync-pokemon-assets.mjs",
+        "predev": "npm run sync-assets",
+        "prebuild": "npm run sync-assets",
+        "build": "project-dragalge-bundle --mode production",
+        "start": "project-dragalge-dev-server --port 3000",
+        "playwright-dev": "project-dragalge-dev-server --port 0 --no-watch",
+        "test": "playwright test",
+        "lint": "tsc --noEmit"
+    },
+    "dependencies": {
+        "@project-dragalge/css-in-js": "*",
+        "@project-dragalge/db": "*",
+        "@project-dragalge/pokemon-data": "*",
+        "@project-dragalge/query-builder": "*",
+        "@project-dragalge/server-query": "*",
+        "@types/react-dom": "^19.2.3",
+        "react": "^19.2.7",
+        "react-dom": "^19.2.7",
+        "typescript": "^7.0.2"
+    },
+    "devDependencies": {
+        "@playwright/test": "^1.62.1",
+        "@project-dragalge/bundler": "*",
+        "@types/node": "^20.19.43",
+        "@types/react": "^19.2.17"
+    }
+}

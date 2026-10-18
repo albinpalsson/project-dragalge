@@ -8,7 +8,7 @@ import {
     record,
     string,
     union,
-} from '@pokedb2/validator';
+} from '@project-dragalge/validator';
 import { assert } from './assert.ts';
 
 interface ParsedBareSpecifier {

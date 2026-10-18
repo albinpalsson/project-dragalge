@@ -7,7 +7,7 @@
     record,
     string,
     union,
-} from '@pokedb2/validator';
+} from '@project-dragalge/validator';
 
 export const transformSchema = object({
     version: string(),

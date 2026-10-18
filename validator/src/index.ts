@@ -77,7 +77,7 @@ function createSchema<TOutput>(
     return {
         '~standard': {
             version: 1,
-            vendor: '@pokedb2/validator',
+            vendor: '@project-dragalge/validator',
             validate,
         },
     };

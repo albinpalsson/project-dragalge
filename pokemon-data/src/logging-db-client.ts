@@ -1,6 +1,6 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
-import { DB } from '@pokedb2/db';
+import { DB } from '@project-dragalge/db';
 
 export class DbClient extends DB {
     private readonly logger: SqlQueryLogger;

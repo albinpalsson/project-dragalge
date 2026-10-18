@@ -1,0 +1,20 @@
+Bulbapedia Data Attribution Notice
+
+Some Pokemon reference data, location encounters, trainer teams, and raid
+information used by The Paldea nuzlocke guide are derived from Bulbapedia.
+
+Sources and license information:
+- Bulbapedia About: https://bulbapedia.bulbagarden.net/wiki/Bulbapedia:About
+- Bulbapedia Copyrights: https://bulbapedia.bulbagarden.net/wiki/Bulbapedia:Copyrights
+- Creative Commons Attribution-NonCommercial-ShareAlike 2.5:
+  https://creativecommons.org/licenses/by-nc-sa/2.5/
+
+License terms can vary by page or revision. The CC BY-NC-SA 2.5 terms apply
+only to material covered by that license. Where they apply, attribution is
+required, commercial use is not permitted, and adaptations must be shared under
+the same license. Consult Bulbapedia's copyright information and the relevant
+source pages for applicable terms.
+
+This notice does not grant rights to Pokemon names, characters, or other
+franchise material, which belong to their respective rights holders. Images and
+audio are not covered by this data attribution.

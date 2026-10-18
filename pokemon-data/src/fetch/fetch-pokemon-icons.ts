@@ -10,7 +10,7 @@ const ICON_BASE_URL =
 const ATTRIBUTION = `Pokémon icon sprites fetched from Pokémon Database (${ICON_BASE_URL}).
 Pokémon images & names © 1995-2026 Nintendo/Game Freak/The Pokémon Company.
 Pokémon Database says it uses these official assets under its fair-use policy and considers them free to use. This is not a license or permission from the rights holders.
-PokéDB is an unofficial, non-commercial fan project; this describes the project's intended use and does not grant rights to these assets.
+The Paldea nuzlocke guide is an unofficial, non-commercial fan project; this describes the project's intended use and does not grant rights to these assets.
 See the Licenses & Notices page for full attribution and rights information.
 `;
 

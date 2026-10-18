@@ -1,5 +1,5 @@
 {
-    "name": "@pokedb2/pokemon-data",
+    "name": "@project-dragalge/pokemon-data",
     "version": "0.1.0",
     "private": true,
     "type": "module",
@@ -30,13 +30,13 @@
         "sync-bulbapedia-locations": "node --use-system-ca --strip-types scripts/sync-bulbapedia-locations.ts",
         "lint": "tsc --noEmit",
         "test": "node -e \"process.exit(0)\"",
-        "run-sql": "npm --prefix ../db run build && npm --prefix ../db exec -- pokedb2-db-sql",
+        "run-sql": "npm --prefix ../db run build && npm --prefix ../db exec -- project-dragalge-db-sql",
         "build-pokemon-db": "npm run build",
         "dump": "node --strip-types scripts/dump-db.ts"
     },
     "dependencies": {
-        "@pokedb2/db": "*",
-        "@pokedb2/query-builder": "*"
+        "@project-dragalge/db": "*",
+        "@project-dragalge/query-builder": "*"
     },
     "devDependencies": {
         "@types/node": "^20.19.43",

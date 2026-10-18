@@ -17,7 +17,7 @@ interface StandardTypeSlot<Input, Output> {
 export interface StandardSchema<Input = unknown, Output = Input> {
     readonly '~standard': {
         readonly version: 1;
-        readonly vendor: '@pokedb2/validator';
+        readonly vendor: '@project-dragalge/validator';
         validate: (value: unknown) => StandardResult<Output>;
         readonly types?: StandardTypeSlot<Input, Output>;
     };

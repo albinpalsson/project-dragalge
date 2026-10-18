@@ -1,6 +1,6 @@
 # Database Instructions
 
-`@pokedb2/db` is a small in-memory SQL engine backed by fixed-layout binary
+`@project-dragalge/db` is a small in-memory SQL engine backed by fixed-layout binary
 table buffers. Keep its supported SQL, row encoding, and storage plugin
 contracts explicit and test changes at the database boundary.
 
@@ -30,7 +30,7 @@ contracts explicit and test changes at the database boundary.
   relying on a SQL feature: supported statements are SELECT, INSERT, UPDATE,
   DELETE, CREATE TABLE, with equality/IN filters and at most one INNER JOIN.
 - Keep the synchronous `DB.execute()` result compatible with the
-  `DbClient.execute()` contract in `@pokedb2/query-builder`, which also permits
+  `DbClient.execute()` contract in `@project-dragalge/query-builder`, which also permits
   asynchronous clients.
 - Do not fold app-specific localStorage ownership, schema versioning, or
   multi-tab policy into this generic engine. Those are responsibilities of

@@ -60,7 +60,7 @@ interface ParsedTemplate {
     media: MediaSegment[];
 }
 
-export const CSS_IN_JS_METADATA_KEY = '@pokedb2/css-in-js';
+export const CSS_IN_JS_METADATA_KEY = '@project-dragalge/css-in-js';
 
 export function cssInJsTransform(): CssTransform {
     return {

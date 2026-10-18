@@ -19,7 +19,7 @@ What this means for this project:
 - Only sprite image files are taken from pokemondb.net. No written content, page text,
   descriptions, or table/layout data is scraped from that site.
 - Pokémon textual/reference data in this package comes from Bulbapedia instead; see
-  `app/BULBAPEDIA_DATA_LICENSE.md`.
+  `paldea-nuzlocke-guide/BULBAPEDIA_DATA_LICENSE.md`.
 
 Important notes:
 - The sprites are official game assets: Pokémon images & names © 1995-2026

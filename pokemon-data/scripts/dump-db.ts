@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { DB, type StoragePlugin, describeDb, dumpDb } from '@pokedb2/db';
+import { DB, type StoragePlugin, describeDb, dumpDb } from '@project-dragalge/db';
 
 // Read-only StoragePlugin that loads from a base64 string
 class Base64ReadOnlyStoragePlugin implements StoragePlugin {

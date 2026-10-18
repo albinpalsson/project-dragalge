@@ -5,7 +5,7 @@
  * that exports the config object via module.exports:
  *
  *   // @ts-check
- *   // @type {import('@pokedb2/bundler/configure').BundlerConfig}
+ *   // @type {import('@project-dragalge/bundler/configure').BundlerConfig}
  *   module.exports = { entry: 'src/index.ts', outputDir: 'dist', transforms: [] };
  */
 export function configure(config: BundlerConfig): BundlerConfig {

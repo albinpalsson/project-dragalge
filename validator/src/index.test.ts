@@ -19,7 +19,7 @@ import {
 test('exposes a Standard Schema compatible contract', () => {
     const schema = string();
     assert.equal(schema['~standard'].version, 1);
-    assert.equal(schema['~standard'].vendor, '@pokedb2/validator');
+    assert.equal(schema['~standard'].vendor, '@project-dragalge/validator');
     assert.equal(typeof schema['~standard'].validate, 'function');
     assert.equal(isStandardSchema(schema), true);
 });

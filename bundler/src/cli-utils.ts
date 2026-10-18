@@ -1,4 +1,4 @@
-﻿import { literal, parse, union } from '@pokedb2/validator';
+﻿import { literal, parse, union } from '@project-dragalge/validator';
 
 const modeSchema = union([literal('dev'), literal('production')] as const);
 

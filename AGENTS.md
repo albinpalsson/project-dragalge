@@ -1,7 +1,8 @@
 # Workspace Instructions
 
 This repository is an npm-workspaces monorepo. Package-specific guidance lives in:
-[app](app/AGENTS.md), [bundler](bundler/AGENTS.md),
+[Paldea nuzlocke guide](paldea-nuzlocke-guide/AGENTS.md),
+[bundler](bundler/AGENTS.md),
 [css-in-js](css-in-js/AGENTS.md), [db](db/AGENTS.md), and
 [query-builder](query-builder/AGENTS.md). Follow the nearest applicable file.
 
@@ -27,8 +28,8 @@ Use `npm run build:all` when a change spans the workspace dependency chain.
 Run all three commands from the repository root after changes:
 
 ```powershell
-npm run build --prefix app
-npm run test --prefix app
+npm run build --prefix paldea-nuzlocke-guide
+npm run test --prefix paldea-nuzlocke-guide
 npm run lint
 ```
 

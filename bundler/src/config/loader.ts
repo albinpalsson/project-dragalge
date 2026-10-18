@@ -1,5 +1,5 @@
 ﻿import path from 'node:path';
-import { parse } from '@pokedb2/validator';
+import { parse } from '@project-dragalge/validator';
 import type { BundlerConfig } from '../main.ts';
 import { pathExists } from '../node-modules-resolver.ts';
 import { bundlerConfigSchema } from './schema.ts';

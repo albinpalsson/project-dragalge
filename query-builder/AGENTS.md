@@ -1,6 +1,6 @@
 # Query Builder Instructions
 
-`@pokedb2/query-builder` generates parameterized SQL against the `DbClient`
+`@project-dragalge/query-builder` generates parameterized SQL against the `DbClient`
 interface; it does not own a database implementation.
 
 ## Contracts and Limits
