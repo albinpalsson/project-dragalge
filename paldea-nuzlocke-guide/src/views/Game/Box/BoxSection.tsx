@@ -1,4 +1,5 @@
 import { css } from '@project-dragalge/css-in-js';
+import { MAX_PARTY_SIZE } from '../../../db/game-db/schema';
 import type { EncounterRollRow } from '../../../db/game-db/queries';
 import type { BoxSectionKind } from './box-model';
 import { PokemonBoxIcon, type PokemonBoxIconDragProps } from './PokemonBoxIcon';
@@ -34,6 +35,15 @@ export function BoxSection({
     consumeDragClick,
     onSelect,
 }: BoxSectionProps) {
+    const placeholderCount = Math.max(0, MAX_PARTY_SIZE - rows.length);
+    const placeholderKeys =
+        sectionKind === 'party'
+            ? Array.from(
+                  { length: placeholderCount },
+                  (_, index) => `party-placeholder-${rows.length + index + 1}`,
+              )
+            : [];
+
     return (
         <section
             className={`${section} ${isDropTarget ? sectionDropTarget : ''}`}
@@ -53,7 +63,7 @@ export function BoxSection({
                     {dropDisabledReason}
                 </span>
             )}
-            {rows.length === 0 ? (
+            {rows.length === 0 && sectionKind !== 'party' ? (
                 <p className={empty}>{emptyText}</p>
             ) : (
                 <ul className={list}>
@@ -76,6 +86,9 @@ export function BoxSection({
                                 {...getIconDragProps(row)}
                             />
                         </li>
+                    ))}
+                    {placeholderKeys.map((placeholderKey) => (
+                        <PartySlotPlaceholder key={placeholderKey} />
                     ))}
                 </ul>
             )}
@@ -116,6 +129,21 @@ const list = css`
   list-style: none;
 `;
 
+const placeholderSlot = css`
+    display: grid;
+    flex: 0 0 6rem;
+    width: 6rem;
+    height: 6rem;
+    place-items: center;
+    color: var(--color-border);
+`;
+
+const placeholderBall = css`
+    width: 2.8rem;
+    height: 2.8rem;
+    transform: translateY(0.6rem);
+`;
+
 const empty = css`
   margin: 0;
   font-size: var(--font-size-sm);
@@ -126,3 +154,21 @@ const dropState = css`
     font-size: var(--font-size-sm);
     color: var(--color-text-muted);
 `;
+
+function PartySlotPlaceholder() {
+    return (
+        <li className={placeholderSlot} aria-hidden="true">
+            <svg
+                className={placeholderBall}
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 32 32"
+                width="32"
+                height="32"
+                focusable="false"
+            >
+                <title>Empty party slot</title>
+                <circle cx="16" cy="16" r="14" fill="currentColor" />
+            </svg>
+        </li>
+    );
+}
