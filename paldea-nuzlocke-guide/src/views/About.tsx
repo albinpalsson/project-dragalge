@@ -1,4 +1,5 @@
 import { css } from '@project-dragalge/css-in-js';
+import { textLink } from '../components/text-link';
 
 interface AboutProps {
     onOpenLicenses: () => void;
@@ -19,6 +20,7 @@ export function About({ onOpenLicenses }: AboutProps) {
                 <p>
                     New to Nuzlockes? Read{' '}
                     <a
+                        className={textLink}
                         href="https://bulbapedia.bulbagarden.net/wiki/Nuzlocke_Challenge"
                         target="_blank"
                         rel="noreferrer"
@@ -148,7 +150,7 @@ export function About({ onOpenLicenses }: AboutProps) {
                 <p>GitHub issues: TODO.</p>
             </div>
             <button
-                className={textButton}
+                className={textLink}
                 type="button"
                 onClick={onOpenLicenses}
             >
@@ -192,9 +194,6 @@ const body = css`
         margin-top: var(--space-2);
     }
 
-    a {
-        color: var(--color-info);
-    }
 `;
 
 const about = css`
@@ -203,12 +202,3 @@ const about = css`
     }
 `;
 
-const textButton = css`
-    padding: 0;
-    border: 0;
-    background: none;
-    color: var(--color-info);
-    font: inherit;
-    text-decoration: underline;
-    cursor: pointer;
-`;

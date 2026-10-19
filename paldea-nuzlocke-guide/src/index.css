@@ -29,6 +29,8 @@ html {
     --color-warning-bg: rgba(232, 183, 61, 0.15);
     --color-info: #6aa8ff;
     --color-info-bg: rgba(106, 168, 255, 0.15);
+    --color-link: #c4c4c4;
+    --color-link-hover: #eeeeee;
     --color-on-primary: #1a1a2e;
     --color-hover-overlay: rgba(255, 255, 255, 0.08);
 
@@ -83,6 +85,8 @@ html {
     --color-warning-bg: rgba(150, 106, 11, 0.1);
     --color-info: #1f5fbf;
     --color-info-bg: rgba(31, 95, 191, 0.1);
+    --color-link: #525252;
+    --color-link-hover: #333333;
     --color-on-primary: #ffffff;
     --color-hover-overlay: rgba(0, 0, 0, 0.05);
 

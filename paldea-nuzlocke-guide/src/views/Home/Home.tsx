@@ -1,4 +1,5 @@
 import { css, cx } from '@project-dragalge/css-in-js';
+import { textLink } from '../../components/text-link';
 import { GameCard } from './GameCard';
 import { ImportGameModal } from './ImportGameModal';
 import { NewGameModal } from './NewGameModal';
@@ -27,15 +28,15 @@ export function Home({ onOpenGame, onOpenAbout, onOpenLicenses }: HomeProps) {
                     <p>
                         Your runs are saved in this browser. No account or
                         sign-up is required, and you can transfer runs between
-                        devices using manual export/import.
-                    </p>
+                        devices using manual export/import.&nbsp;
                     <button
-                        className={textButton}
+                        className={textLink}
                         type="button"
                         onClick={onOpenAbout}
                     >
                         Read more about the guide
                     </button>
+                    </p>
                 </section>
             )}
 
@@ -85,7 +86,7 @@ export function Home({ onOpenGame, onOpenAbout, onOpenLicenses }: HomeProps) {
                 Pokémon icons are sourced from Pokémon Database. Some Pokémon
                 data is derived from Bulbapedia. See{' '}
                 <button
-                    className={textButton}
+                    className={textLink}
                     type="button"
                     onClick={onOpenLicenses}
                 >
@@ -115,7 +116,7 @@ const welcome = css`
     flex-direction: column;
     align-items: flex-start;
     gap: var(--space-2);
-    padding-bottom: var(--space-3);
+    padding-bottom: var(--space-4);
     border-bottom: 0.1rem solid var(--color-border);
 
     h2,
@@ -133,16 +134,6 @@ const notice = css`
     margin: 0;
     color: var(--color-text-muted);
     font-size: var(--font-size-sm);
-`;
-
-const textButton = css`
-    padding: 0;
-    border: 0;
-    background: none;
-    color: var(--color-info);
-    font: inherit;
-    text-decoration: underline;
-    cursor: pointer;
 `;
 
 const gamesList = css`

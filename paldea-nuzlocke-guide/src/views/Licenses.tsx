@@ -1,4 +1,5 @@
 import { css } from '@project-dragalge/css-in-js';
+import { textLink } from '../components/text-link';
 
 export function Licenses() {
     return (
@@ -25,6 +26,7 @@ export function Licenses() {
                 </p>
                 <p>
                     <a
+                        className={textLink}
                         href="https://bulbapedia.bulbagarden.net/wiki/Bulbapedia:About"
                         target="_blank"
                         rel="noreferrer"
@@ -33,6 +35,7 @@ export function Licenses() {
                     </a>
                     {' · '}
                     <a
+                        className={textLink}
                         href="https://bulbapedia.bulbagarden.net/wiki/Bulbapedia:Copyrights"
                         target="_blank"
                         rel="noreferrer"
@@ -41,6 +44,7 @@ export function Licenses() {
                     </a>
                     {' · '}
                     <a
+                        className={textLink}
                         href="https://creativecommons.org/licenses/by-nc-sa/2.5/"
                         target="_blank"
                         rel="noreferrer"
@@ -51,6 +55,7 @@ export function Licenses() {
                 <p>
                     Examples of Bulbapedia source pages include{' '}
                     <a
+                        className={textLink}
                         href="https://bulbapedia.bulbagarden.net/wiki/Nemona"
                         target="_blank"
                         rel="noreferrer"
@@ -59,6 +64,7 @@ export function Licenses() {
                     </a>
                     ,{' '}
                     <a
+                        className={textLink}
                         href="https://bulbapedia.bulbagarden.net/wiki/Katy"
                         target="_blank"
                         rel="noreferrer"
@@ -67,6 +73,7 @@ export function Licenses() {
                     </a>
                     ,{' '}
                     <a
+                        className={textLink}
                         href="https://bulbapedia.bulbagarden.net/wiki/Brassius"
                         target="_blank"
                         rel="noreferrer"
@@ -75,6 +82,7 @@ export function Licenses() {
                     </a>
                     , and{' '}
                     <a
+                        className={textLink}
                         href="https://bulbapedia.bulbagarden.net/wiki/List_of_1%E2%98%85_Tera_Raid_Battles_(Paldea)"
                         target="_blank"
                         rel="noreferrer"
@@ -83,7 +91,7 @@ export function Licenses() {
                     </a>
                     .
                 </p>
-                <a href="/notices/bulbapedia-data.txt" download>
+                <a className={textLink} href="/notices/bulbapedia-data.txt" download>
                     Full Bulbapedia data notice
                 </a>
             </section>
@@ -102,6 +110,7 @@ export function Licenses() {
                 </p>
                 <p>
                     <a
+                        className={textLink}
                         href="https://pokemondb.net/sprites"
                         target="_blank"
                         rel="noreferrer"
@@ -110,6 +119,7 @@ export function Licenses() {
                     </a>
                     {' · '}
                     <a
+                        className={textLink}
                         href="https://pokemondb.net/about"
                         target="_blank"
                         rel="noreferrer"
@@ -118,6 +128,7 @@ export function Licenses() {
                     </a>
                     {' · '}
                     <a
+                        className={textLink}
                         href="/assets/ATTRIBUTION.txt"
                         target="_blank"
                         rel="noreferrer"
@@ -125,7 +136,7 @@ export function Licenses() {
                         Sprite asset attribution
                     </a>
                 </p>
-                <a href="/notices/pokemondb-sprites.txt" download>
+                <a className={textLink} href="/notices/pokemondb-sprites.txt" download>
                     Full sprite notice
                 </a>
             </section>
@@ -136,7 +147,7 @@ export function Licenses() {
                     This app includes React, React DOM, and Scheduler, each
                     distributed under the MIT License.
                 </p>
-                <a href="/notices/third-party.txt" download>
+                <a className={textLink} href="/notices/third-party.txt" download>
                     Third-party software licenses
                 </a>
             </section>
@@ -180,7 +191,6 @@ const page = css`
   }
 
   a {
-    color: var(--color-info);
     overflow-wrap: anywhere;
   }
 `;
