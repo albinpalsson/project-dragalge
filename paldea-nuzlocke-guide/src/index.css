@@ -42,7 +42,7 @@ html {
     --space-6: 4.8rem;
 
     --header-height: 5.6rem;
-    --content-max-width: 192rem;
+    --content-max-width: 110rem;
 
     --font-size-sm: 1.3rem;
     --font-size-base: 1.5rem;
@@ -113,7 +113,7 @@ main {
     flex-direction: column;
     align-items: stretch;
     gap: var(--space-4);
-    max-width: var(--content-max-width);
+    max-width: calc(var(--content-max-width) + 2 * var(--space-4));
     margin: 0 auto;
     padding: var(--space-5) var(--space-4);
 }

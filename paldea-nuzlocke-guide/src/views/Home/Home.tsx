@@ -103,8 +103,6 @@ const content = css`
   flex-direction: column;
   gap: var(--space-4);
   width: 100%;
-  max-width: 120rem;
-  margin: 0 auto;
 `;
 
 const mutedText = css`
@@ -147,7 +145,7 @@ const gamesList = css`
 `;
 
 const gameListItem = css`
-    flex: 0 1 36rem;
+    flex: 0 1 35rem;
     min-width: 0;
     max-width: 100%;
 `;

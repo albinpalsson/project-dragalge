@@ -197,8 +197,6 @@ const layout = css`
   flex-direction: column;
   gap: var(--space-3);
     width: 100%;
-    max-width: 90rem;
-    margin: 0 auto;
     min-width: 0;
 `;
 

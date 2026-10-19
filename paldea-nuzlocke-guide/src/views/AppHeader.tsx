@@ -42,7 +42,7 @@ const header = css`
   align-items: center;
   gap: var(--space-2);
   height: var(--header-height);
-  padding: 0 var(--space-4);
+  padding: 0 max(var(--space-4), calc((100% - var(--content-max-width)) / 2));
   background: var(--color-bg);
 `;
 
@@ -51,6 +51,7 @@ const title = css`
   font-size: var(--font-size-lg);
   font-weight: var(--font-weight-bold);
     line-height: 1.15;
+
 `;
 
 const slot = css`
