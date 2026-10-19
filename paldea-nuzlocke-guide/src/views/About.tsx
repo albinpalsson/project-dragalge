@@ -84,10 +84,12 @@ export function About({ onOpenLicenses }: AboutProps) {
                 <p>
                     I developed this app because I love playing Nuzlockes on
                     my Switch. Paldea is my favourite region to Nuzlocke for
-                    one main reason: the vast number of available Pokemon
-                    species. That variety keeps pushing me to use different
-                    Pokemon from run to run and learn how to make the most of
-                    them.
+                    two main reasons. First, it has a vast number of available
+                    Pokemon species. That variety keeps pushing me to use
+                    different Pokemon from run to run and learn how to make
+                    the most of them. Second, Scarlet and Violet have
+                    the most quality-of-life features of any Pokemon games,
+                    which makes them especially enjoyable to play on Switch.
                 </p>
                 <p>
                     Besides helping with encounter randomization and routing,
@@ -106,7 +108,6 @@ export function About({ onOpenLicenses }: AboutProps) {
                     alongside following the guide's route and encounter order:
                 </p>
                 <ul>
-                    <li>Use standard hardcore Nuzlocke rules.</li>
                     <li>
                         Do not farm Tera shards or change the Tera types of
                         your Pokemon.
@@ -117,11 +118,6 @@ export function About({ onOpenLicenses }: AboutProps) {
                         Province (Area One) to pick up a Thunder Stone before
                         you have defeated Brassius and it is time to randomize
                         your encounter for that location.
-                    </li>
-                    <li>
-                        Take no Tera Raid encounters, or limit yourself to one
-                        Pokemon from each star rating covered by the guide.
-                        There are settings for this in the app.
                     </li>
                     <li>
                         Enter the Elite Four with no Pokemon above level 61.

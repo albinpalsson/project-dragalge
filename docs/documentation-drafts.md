@@ -5,12 +5,14 @@
 Why Scarlet and Violet are my favourite games to Nuzlocke on Switch
 
 I love playing Nuzlockes on my Switch, and Scarlet and Violet are my favourites
-for one main reason: the number of Pokemon species available in Paldea. The
-variety keeps pushing me to use different Pokemon from run to run and learn
-how to make the most of ones I would not normally choose.
+for two main reasons. First, the number of Pokemon species available in Paldea
+keeps pushing me to use different Pokemon from run to run and learn how to make
+the most of ones I would not normally choose. Second, these games have
+the most quality-of-life features of any Pokemon games, which makes them
+especially enjoyable to play on Switch.
 
 There are two things I find harder to work around than in the more traditional
-Pokemon games, though.
+Pokemon games, though, and I'm sure anyone who has tried knows this.
 
 The first is encounters. With wild Pokemon visible before you battle them,
 the first-encounter rule loses some of its randomness. It is easy to end up
@@ -39,12 +41,10 @@ Alongside standard hardcore Nuzlocke rules, I enjoy playing with these restricti
   candies, or other preparation. In my runs, this leaves my team around two or
   three levels below Nemona's Pokemon, making the final fight challenging.
 
-I built a website, the Paldea Nuzlocke Guide, around this way of playing. It puts
-the route and encounter randomizer together, with different randomization modes
-and adjustments I've made from experience, including early ocean exclusions.
-It also has raid settings for the restrictions above.
+I built a website, a nuzlocke guide and tracker specifically for Paldea, around this way of playing. It puts the route strategy and encounter randomizer together, with different randomization modes. The randomizer also contains adjustments I've made from experience, such as optionally excluding early ocean encounters.
+It also has raid settings for the restrictions mentioned above.
 
-My ideal way of Nuzlocking is to play using just my Switch, without having to
+My preferred way of Nuzlocking is to play using just my Switch, without having to
 research or look things up too much. Ideally, I can keep a single browser tab
 open on my phone. That is why the website includes additional details, such as
 Pokemon base stats, evolutions, defensive weaknesses, helpful tips throughout
