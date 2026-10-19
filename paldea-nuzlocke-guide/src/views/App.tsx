@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { css } from '@project-dragalge/css-in-js';
 import { Drawer } from '../components/Drawer';
 import { HeaderSlotContext } from '../components/HeaderSlot';
@@ -20,6 +20,19 @@ export function App() {
         onViewChange: () => setMenuOpen(false),
         startAtHome: importData !== undefined,
     });
+    const activeViewKey =
+        activeView.view === 'game'
+            ? `${activeView.view}:${activeView.gameRunId}`
+            : activeView.view;
+    const previousActiveViewKey = useRef(activeViewKey);
+
+    useEffect(() => {
+        if (previousActiveViewKey.current !== activeViewKey) {
+            window.scrollTo(0, 0);
+            previousActiveViewKey.current = activeViewKey;
+        }
+    }, [activeViewKey]);
+
     useEffect(() => {
         track({ name: 'page_view', view: activeView.view });
     }, [activeView.view]);
