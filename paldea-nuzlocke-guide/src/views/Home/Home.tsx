@@ -18,18 +18,23 @@ export function Home({ onOpenGame, onOpenAbout, onOpenLicenses }: HomeProps) {
         <div className={content}>
             {hasNoGames && (
                 <section className={welcome} aria-labelledby="welcome-title">
-                    <h2 id="welcome-title">The Paldea nuzlocke guide</h2>
                     <p>
-                        Track encounters, boss battles, and caught Pokémon in
-                        your Paldea Nuzlocke runs. Your runs are saved in this
-                        browser; there is no account or cross-device sync.
+                        Guide your Pokemon Scarlet or Violet Nuzlocke with a
+                        suggested route for encounters and boss battles, plus
+                        an encounter randomizer to help keep your catches
+                        unpredictable.
+                    </p>
+                    <p>
+                        Your runs are saved in this browser. No account or
+                        sign-up is required, and you can transfer runs between
+                        devices using manual export/import.
                     </p>
                     <button
                         className={textButton}
                         type="button"
                         onClick={onOpenAbout}
                     >
-                        About The Paldea nuzlocke guide
+                        Read more about the guide
                     </button>
                 </section>
             )}
