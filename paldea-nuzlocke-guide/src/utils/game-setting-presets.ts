@@ -59,7 +59,6 @@ export const SETTINGS_PRESETS: readonly GameSettingsPreset[] = [
             banFullEvolutionLines: true,
             teraRaids: 'single',
             includeTeamStarBattles: true,
-            showHelpfulTips: true,
         },
     },
     {
@@ -74,7 +73,6 @@ export const SETTINGS_PRESETS: readonly GameSettingsPreset[] = [
             ),
             banFullEvolutionLines: true,
             releaseStarterEnabled: true,
-            showHelpfulTips: true,
             dupesClauseEnabled: true,
             teraRaids: 'none',
             includeTeamStarBattles: true,
