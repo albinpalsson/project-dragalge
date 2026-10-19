@@ -28,9 +28,9 @@ export function App() {
         <>
             <AppHeader
                 onBack={
-                    activeView.view === 'home'
-                        ? undefined
-                        : () => navigate({ view: 'home' })
+                    activeView.view === 'game'
+                        ? () => navigate({ view: 'home' })
+                        : undefined
                 }
                 onOpenMenu={() => setMenuOpen(true)}
                 showTitle={activeView.view !== 'game'}
