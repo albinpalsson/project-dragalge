@@ -1,6 +1,6 @@
 ﻿import type { AstNode, ConditionalNode, ProgramNode } from './types.ts';
 
-export const AST_LITE_WRITER_VERSION = 'v2';
+export const AST_LITE_WRITER_VERSION = 'v3';
 
 export function writeProgram(program: ProgramNode): string {
     return program.body.map(writeNode).join('');
@@ -33,14 +33,14 @@ function writeConditional(node: ConditionalNode): string {
     for (let i = 0; i < node.branches.length; i += 1) {
         const branch = node.branches[i];
         if (i === 0) {
-            output += `if (${branch.statement}) {${writeNodes(branch.code)}}`;
+            output += `if(${branch.statement}){${writeNodes(branch.code)}}`;
         } else {
-            output += ` else if (${branch.statement}) {${writeNodes(branch.code)}}`;
+            output += `else if(${branch.statement}){${writeNodes(branch.code)}}`;
         }
     }
 
     if (node.elseCode) {
-        output += ` else {${writeNodes(node.elseCode)}}`;
+        output += `else{${writeNodes(node.elseCode)}}`;
     }
 
     return output;

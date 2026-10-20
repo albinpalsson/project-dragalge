@@ -8,7 +8,7 @@
 
 export function createMinifierTransform() {
     return {
-        version: `minifier:v3`,
+        version: `minifier:v5`,
         moduleTransform: (request: { program: ProgramNode }) => {
             return minifyProgram(request.program);
         },

@@ -24,3 +24,8 @@ runtime, and transform APIs are its own, not compatible with Vite or Webpack
 plugins. Replacing it means changing the build configuration and any custom
 transforms. The `@project-dragalge/css-in-js` package uses its transform
 interface to extract CSS.
+
+## Minification
+
+The built-in minimizer removes non-license comments, compacts whitespace, and
+folds simple static conditionals.
