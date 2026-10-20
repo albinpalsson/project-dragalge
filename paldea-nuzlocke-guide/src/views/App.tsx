@@ -10,9 +10,13 @@ import { Licenses } from './Licenses';
 import { ThemeToggle } from './ThemeToggle';
 import { useImportDataFromHash } from '../hooks/useImportDataFromHash';
 import { useViewNavigation } from '../hooks/useViewNavigation';
+import { useReleaseNews } from '../hooks/useReleaseNews';
 import { track } from '../analytics/analytics';
 
 export function App() {
+    // Establishes the browser baseline; connect pending news and explicit
+    // acknowledgment to a presentation here when the first news is published.
+    useReleaseNews();
     const { importData } = useImportDataFromHash();
     const [isMenuOpen, setMenuOpen] = useState(false);
     const [headerSlot, setHeaderSlot] = useState<HTMLElement | null>(null);
