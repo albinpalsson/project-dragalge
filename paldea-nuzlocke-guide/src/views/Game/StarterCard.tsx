@@ -54,7 +54,9 @@ export function StarterCard({ isNext }: StarterCardProps) {
     };
 
     const starterChoice = starterChoiceForName(starter ?? '');
-    const starterBorderColor = getPokemonTypeColor(starterChoice?.type ?? '');
+    const starterBorderColor = getStarterIconBorderColor(
+        starterChoice?.type ?? '',
+    );
     const starterRow = game.encounters.find(
         (row) => row.location_name === STARTER_LOCATION_NAME,
     );
@@ -198,7 +200,7 @@ export function StarterCard({ isNext }: StarterCardProps) {
                                                     name={starterChoice.name}
                                                     size="option"
                                                     zoomed
-                                                    borderColor={getPokemonTypeColor(
+                                                    borderColor={getStarterIconBorderColor(
                                                         starterChoice.type,
                                                     )}
                                                 />
@@ -244,6 +246,10 @@ export function StarterCard({ isNext }: StarterCardProps) {
             )}
         </ProgressionCard>
     );
+}
+
+function getStarterIconBorderColor(type: string): string {
+    return `color-mix(in srgb, ${getPokemonTypeColor(type)} 70%, var(--color-surface))`;
 }
 
 function starterChoiceForName(name: string) {
