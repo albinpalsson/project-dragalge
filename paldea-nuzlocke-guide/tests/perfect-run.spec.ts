@@ -33,6 +33,9 @@ test('Fun preset plays through the available progression', async ({ page }) => {
             await expect(
                 settings.getByLabel('Include Team Star battles'),
             ).toBeChecked();
+            await settings
+                .getByLabel('Show helpful support milestones')
+                .check();
             await settings.getByLabel('Show strong trainers').check();
         },
     });

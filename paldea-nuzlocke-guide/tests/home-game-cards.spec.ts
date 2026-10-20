@@ -49,7 +49,7 @@ test('Home welcome follows whether any games are saved', async ({ page }) => {
     await page.goto('/');
 
     await expect(
-        page.getByRole('heading', { name: 'The Paldea nuzlocke guide' }),
+        page.getByText(/Guide your Pokemon Scarlet or Violet Nuzlocke/),
     ).toBeVisible();
     await expect(
         page.getByRole('button', { name: 'Start New Game' }),
@@ -61,7 +61,7 @@ test('Home welcome follows whether any games are saved', async ({ page }) => {
     await createGame(page, 'welcome-state-run');
     await navigateTo(page, 'Home');
     await expect(
-        page.getByRole('heading', { name: 'The Paldea nuzlocke guide' }),
+        page.getByText(/Guide your Pokemon Scarlet or Violet Nuzlocke/),
     ).toHaveCount(0);
     await expect(
         page.getByRole('button', { name: 'Licenses & Notices' }),
@@ -71,7 +71,7 @@ test('Home welcome follows whether any games are saved', async ({ page }) => {
     await page.getByRole('button', { name: 'Delete game' }).click();
     await page.getByRole('button', { name: 'Delete', exact: true }).click();
     await expect(
-        page.getByRole('heading', { name: 'The Paldea nuzlocke guide' }),
+        page.getByText(/Guide your Pokemon Scarlet or Violet Nuzlocke/),
     ).toBeVisible();
 });
 
