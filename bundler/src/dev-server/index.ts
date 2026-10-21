@@ -1,5 +1,5 @@
 ﻿import { createHash } from 'node:crypto';
-import { type FSWatcher, statSync, watch } from 'node:fs';
+import { type FSWatcher, realpathSync, statSync, watch } from 'node:fs';
 import { readFile, stat } from 'node:fs/promises';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { createServer, type Server } from 'node:http';
@@ -7,6 +7,7 @@ import path from 'node:path';
 
 import { type BundlerConfig, runBundler } from '../main.ts';
 import { BundlerPerformanceCollector } from '../performance-collector.ts';
+import { CompilerSession } from '../transpile/compiler.ts';
 import { OUTPUT_BUFFER_DIR_NAMES, pickCacheSlot } from './cache-slot.ts';
 
 export interface DevServerConfig {
@@ -52,6 +53,7 @@ export class DevServer {
     private readonly watchEnabled: boolean;
     private readonly configOverrides: Partial<BundlerConfig>;
     private readonly debounceMs: number;
+    private compiler: CompilerSession | undefined;
 
     private server: Server | undefined;
     private instanceCacheDir: string | undefined;
@@ -113,6 +115,7 @@ export class DevServer {
         });
 
         this.initializeInstancePaths();
+        this.compiler = new CompilerSession(this.cwd);
 
         const initialRebuildId = ++this.rebuildCounter;
         this.log(`[dev] rebuild #${initialRebuildId} start (initial)`);
@@ -121,7 +124,7 @@ export class DevServer {
             this.log(
                 `[dev] rebuild #${initialRebuildId} failed ${formatMs(initialBuild.buildTime)}`,
             );
-            await this.closeServerAfterFailedStart();
+            await this.stop();
             throw new Error(initialBuild.error ?? 'Initial dev build failed.');
         }
         this.log(
@@ -162,21 +165,27 @@ export class DevServer {
         this.wsClients.clear();
 
         if (!this.server) {
+            await this.compiler?.close();
+            this.compiler = undefined;
             return;
         }
         const server = this.server;
 
-        await new Promise<void>((resolve, reject) => {
-            server.close((error) => {
-                if (error) {
-                    reject(error);
-                    return;
-                }
-                resolve();
+        try {
+            await new Promise<void>((resolve, reject) => {
+                server.close((error) => {
+                    if (error) {
+                        reject(error);
+                        return;
+                    }
+                    resolve();
+                });
             });
-        });
-
-        this.server = undefined;
+        } finally {
+            this.server = undefined;
+            await this.compiler?.close();
+            this.compiler = undefined;
+        }
     }
 
     getBaseUrl(): string {
@@ -220,6 +229,7 @@ export class DevServer {
                     outputDir,
                 },
                 performance: perf,
+                compiler: this.compiler,
             });
 
             const previousVersion = this.currentVersion;
@@ -254,6 +264,12 @@ export class DevServer {
                 reloadTriggered,
             };
         } catch (error) {
+            if (this.watchEnabled && this.compiler) {
+                this.syncWatchers([
+                    ...this.fileWatchers.keys(),
+                    ...this.compiler.getWatchedFilePaths(),
+                ]);
+            }
             const message =
                 error instanceof Error
                     ? (error.stack ?? error.message)
@@ -298,23 +314,17 @@ export class DevServer {
         };
     }
 
-    private async closeServerAfterFailedStart(): Promise<void> {
-        const server = this.server;
-        if (!server) {
-            return;
-        }
-
-        await new Promise<void>((resolve) => {
-            server.close(() => resolve());
-        });
-        this.server = undefined;
-    }
-
     private syncWatchers(inputPaths: string[]): void {
+        const compilerInputs = new Set(this.compiler?.getWatchedFilePaths());
         const nextPaths = new Set(
             inputPaths
                 .map((filePath) => path.resolve(filePath))
-                .filter((filePath) => shouldWatchFile(this.cwd, filePath)),
+                .filter(
+                    (filePath) =>
+                        !filePath.split(path.sep).includes('node_modules') &&
+                        (shouldWatchFile(this.cwd, filePath) ||
+                            compilerInputs.has(filePath)),
+                ),
         );
 
         for (const [watchedPath, watcher] of this.fileWatchers) {
@@ -335,7 +345,7 @@ export class DevServer {
                     filePath,
                     toFileState(statSync(filePath)),
                 );
-                const watcher = watch(filePath, () => {
+                const watcher = watch(realpathSync.native(filePath), () => {
                     void this.handleWatchEvent(filePath);
                 });
                 this.fileWatchers.set(filePath, watcher);

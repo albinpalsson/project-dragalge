@@ -4,13 +4,13 @@ import { parseProgram, writeProgram } from '../ast-lite/index.ts';
 import type { ModuleTransformMetadata, Transform } from '../main.ts';
 import type { BundlerPerformanceCollector } from '../performance-collector.ts';
 import type { ProcessedFileResult } from '../processed-file-result.ts';
+import type { TranspilationResult } from '../transpile/index.ts';
 import { extractAdditionalImports, isCssFilePath } from '../utils/index.ts';
 import { findDependencies } from './parser.ts';
 
 export async function processFile(
     filePath: string,
-    transpilationDir: string,
-    applicationSourceRootDir: string,
+    transpilation: TranspilationResult,
     transforms: Transform[],
     perfCollect: BundlerPerformanceCollector | undefined,
 ): Promise<ProcessedFileResult> {
@@ -26,11 +26,7 @@ export async function processFile(
         );
         return { type: 'css', code, dependencies: [] };
     }
-    const cjs = await resolveCjsFile(
-        filePath,
-        transpilationDir,
-        applicationSourceRootDir,
-    );
+    const cjs = await resolveCjsFile(filePath, transpilation);
 
     const t0 = performance.now();
     const { ast, metadata } = await applyModuleTransforms(
@@ -41,7 +37,7 @@ export async function processFile(
     const dependencies = findDependencies(ast.body).map((dep) => dep.specifier);
     const processedCode = writeProgram(ast);
 
-    if (filePath.startsWith(applicationSourceRootDir)) {
+    if (filePath.startsWith(transpilation.sourceRootDir)) {
         for (const sourceDep of extractAdditionalImports(
             await readFile(filePath, 'utf8'),
         )) {
@@ -69,11 +65,10 @@ export async function processFile(
 
 async function resolveCjsFile(
     filePath: string,
-    transpilationDir: string,
-    applicationSourceRootDir: string,
+    transpilation: TranspilationResult,
 ): Promise<{ path: string; code: string }> {
     const relativeToSourceRoot = path.relative(
-        applicationSourceRootDir,
+        transpilation.sourceRootDir,
         filePath,
     );
     const isApplicationFile =
@@ -82,9 +77,9 @@ async function resolveCjsFile(
 
     if (isApplicationFile) {
         const transpiledPath = path
-            .resolve(transpilationDir, relativeToSourceRoot)
+            .resolve(transpilation.outDir, relativeToSourceRoot)
             .replace(/\.(ts|tsx|mts|cts)$/i, '.js');
-        const code = await readFile(transpiledPath, 'utf8');
+        const code = await transpilation.readEmittedFile(transpiledPath);
         return { path: transpiledPath, code };
     }
 

@@ -24,6 +24,6 @@
     "dependencies": {
         "@project-dragalge/validator": "*",
         "@types/node": "^20.19.43",
-        "typescript": "^7.0.1-rc"
+        "typescript": "7.1.0-beta"
     }
 }

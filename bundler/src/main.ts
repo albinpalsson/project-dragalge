@@ -16,6 +16,7 @@ import {
     writeMergedCssBundle,
 } from './output/index.ts';
 import { BundlerPerformanceCollector } from './performance-collector.ts';
+import type { CompilerSession } from './transpile/compiler.ts';
 import { transpile } from './transpile/index.ts';
 import {
     buildWatchedFilePaths,
@@ -71,6 +72,7 @@ interface RunBundlerOptions {
     configFileName?: string;
     configOverrides?: Partial<BundlerConfig>;
     performance: BundlerPerformanceCollector;
+    compiler?: CompilerSession;
 }
 
 export interface MainBundlerOptions {
@@ -139,10 +141,11 @@ export async function runBundler(
         resolvedConfig.cacheDir,
         resolvedConfig.target,
         resolvedConfig.mode,
+        options.compiler,
     );
     options.performance.add(
         'transpile',
-        'tsc transpile',
+        'TypeScript API transpile',
         performance.now() - transpileStartTime,
     );
 
@@ -152,8 +155,7 @@ export async function runBundler(
         resolvedConfig.processEnv,
         transpilationResult.cacheSalt,
         resolvedConfig.cacheDir,
-        transpilationResult.outDir,
-        transpilationResult.sourceRootDir,
+        transpilationResult,
         options.performance,
     );
 
@@ -205,7 +207,10 @@ export async function runBundler(
         outputCode: bundled,
         cssOutputPaths,
         compressedOutputPaths,
-        watchedFilePaths,
+        watchedFilePaths: [
+            ...watchedFilePaths,
+            ...transpilationResult.watchedFilePaths,
+        ],
     };
 }
 

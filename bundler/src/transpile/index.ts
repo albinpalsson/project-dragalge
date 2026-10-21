@@ -1,7 +1,20 @@
-﻿import { mkdir, stat } from 'node:fs/promises';
-import path from 'node:path';
+﻿import path from 'node:path';
 import type { BundlerMode, BundlerTarget } from '../main.ts';
-import { buildTranspileArgs, runCommand } from './compiler.ts';
+import { CompilerSession } from './compiler.ts';
+
+export interface TranspilationResult {
+    entryPath: string;
+    cacheSalt: string;
+    sourceRootDir: string;
+    outDir: string;
+    watchedFilePaths: string[];
+    readEmittedFile: (filePath: string) => Promise<string>;
+}
+
+function emittedFileKey(filePath: string): string {
+    const resolved = path.resolve(filePath);
+    return process.platform === 'win32' ? resolved.toLowerCase() : resolved;
+}
 
 export async function transpile(
     cwd: string,
@@ -9,43 +22,51 @@ export async function transpile(
     cacheDir: string,
     target: BundlerTarget | undefined,
     mode: BundlerMode,
-): Promise<{
-    entryPath: string;
-    cacheSalt: string;
-    sourceRootDir: string;
-    outDir: string;
-}> {
+    compiler?: CompilerSession,
+): Promise<TranspilationResult> {
     const outDir = path.resolve(cwd, cacheDir, 'tsgo-cjs');
 
-    await mkdir(outDir, { recursive: true });
-    const compileArgs = buildTranspileArgs({
-        entryPath,
-        mode,
-        outDir,
-        target,
-    });
-    const out = await runCommand('tsc', compileArgs, cwd);
-    if (out.stderr || out.stdout) {
-        console.log(out);
-    }
-
-    const relativeEntry = path.relative(path.dirname(entryPath), entryPath);
-    const compiledEntryPath = path
-        .resolve(outDir, relativeEntry)
-        .replace(/\.(ts|tsx|mts|cts)$/i, '.js');
-
+    const session = compiler ?? new CompilerSession(cwd);
     try {
-        await stat(compiledEntryPath);
-    } catch {
-        throw new Error(
-            `Transpilation succeeded but compiled entry was not found: ${compiledEntryPath}`,
-        );
-    }
+        const compilation = await session.compile({
+            entryPath,
+            mode,
+            outDir,
+            target,
+        });
 
-    return {
-        entryPath: compiledEntryPath,
-        cacheSalt: ['tsc', ...compileArgs].join(' '),
-        sourceRootDir: path.dirname(entryPath),
-        outDir,
-    };
+        const compiledEntryPath = path
+            .resolve(outDir, path.basename(entryPath))
+            .replace(/\.(ts|tsx|mts|cts)$/i, '.js');
+
+        const outputFiles = new Map(
+            [...compilation.outputFiles].map(([filePath, output]) => [
+                emittedFileKey(filePath),
+                output.text,
+            ]),
+        );
+        const readEmittedFile = async (filePath: string): Promise<string> => {
+            const text = outputFiles.get(emittedFileKey(filePath));
+            if (text === undefined) {
+                throw new Error(
+                    `TypeScript did not emit the requested module in memory: ${filePath}`,
+                );
+            }
+            return text;
+        };
+        await readEmittedFile(compiledEntryPath);
+
+        return {
+            entryPath: compiledEntryPath,
+            cacheSalt: compilation.cacheSalt,
+            sourceRootDir: path.dirname(entryPath),
+            outDir,
+            watchedFilePaths: session.getWatchedFilePaths(),
+            readEmittedFile,
+        };
+    } finally {
+        if (!compiler) {
+            await session.close();
+        }
+    }
 }

@@ -250,7 +250,7 @@ export class BundlerPerformanceCollector {
             .reduce((total, entry) => total + entry.durationMs, 0);
         if (transpileDurationMs > 0) {
             this.output.write(
-                `TSC transpile time: ${formatMs(transpileDurationMs)}\n`,
+                `TypeScript API transpile time: ${formatMs(transpileDurationMs)}\n`,
             );
         }
         this.output.write(

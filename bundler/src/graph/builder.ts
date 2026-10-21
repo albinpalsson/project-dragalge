@@ -7,6 +7,7 @@ import { NodeModulesResolver } from '../node-modules-resolver.ts';
 import type { BundlerPerformanceCollector } from '../performance-collector.ts';
 import type { ProcessedFileResult } from '../processed-file-result.ts';
 import { SCANNER_VERSION } from '../scanner/index.ts';
+import type { TranspilationResult } from '../transpile/index.ts';
 import { isRelativeSpecifier, resolveRelativePath } from '../utils/index.ts';
 import { emitDeterministicEntries } from './emitter.ts';
 import { processFile } from './processor.ts';
@@ -40,8 +41,7 @@ export async function buildDependencyTree(
     processEnv: Record<string, string | undefined>,
     cacheSalt: string,
     cacheDir: string,
-    transpilationOutDir: string,
-    applicationSourceRootDir: string,
+    transpilation: TranspilationResult,
     perfCollect: BundlerPerformanceCollector,
 ): Promise<BuildDependencyTreeResult> {
     const normalizedEntryPath = path.resolve(entryFilePath);
@@ -96,8 +96,7 @@ export async function buildDependencyTree(
         } else {
             result = await processFile(
                 normalizedPath,
-                transpilationOutDir,
-                applicationSourceRootDir,
+                transpilation,
                 transforms,
                 perfCollect,
             );
