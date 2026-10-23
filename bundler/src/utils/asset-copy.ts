@@ -1,4 +1,4 @@
-﻿import { copyFile, mkdir, readdir } from 'node:fs/promises';
+import { copyFile, mkdir, readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
 
 export async function copyPublicAssetsToOutput(
@@ -10,33 +10,39 @@ export async function copyPublicAssetsToOutput(
     const sourceDirPath = path.resolve(path.dirname(entryPath), '..', 'public');
 
     if (!(await pathExists(sourceDirPath))) {
-        return { sourceDirPath };
+        return { sourceDirPath, copiedSizeBytes: 0 };
     }
 
-    await copyDirectoryRecursive(sourceDirPath, outputDirPath);
-    return { sourceDirPath };
+    const copiedSizeBytes = await copyDirectoryRecursive(
+        sourceDirPath,
+        outputDirPath,
+    );
+    return { sourceDirPath, copiedSizeBytes };
 }
 
 export async function copyDirectoryRecursive(
     sourceDirPath: string,
     targetDirPath: string,
-): Promise<void> {
+): Promise<number> {
     await mkdir(targetDirPath, { recursive: true });
     const entries = await readdir(sourceDirPath, { withFileTypes: true });
+    const copiedSizes = await Promise.all(
+        entries.map(async (entry) => {
+            const sourcePath = path.resolve(sourceDirPath, entry.name);
+            const targetPath = path.resolve(targetDirPath, entry.name);
 
-    for (const entry of entries) {
-        const sourcePath = path.resolve(sourceDirPath, entry.name);
-        const targetPath = path.resolve(targetDirPath, entry.name);
+            if (entry.isDirectory()) {
+                return copyDirectoryRecursive(sourcePath, targetPath);
+            }
 
-        if (entry.isDirectory()) {
-            await copyDirectoryRecursive(sourcePath, targetPath);
-            continue;
-        }
+            if (!entry.isFile()) {
+                return 0;
+            }
 
-        if (!entry.isFile()) {
-            continue;
-        }
+            await copyFile(sourcePath, targetPath);
+            return (await stat(targetPath)).size;
+        }),
+    );
 
-        await copyFile(sourcePath, targetPath);
-    }
+    return copiedSizes.reduce((total, size) => total + size, 0);
 }

@@ -183,11 +183,14 @@ export async function runBundler(
         outputPath,
         cssOutputPaths,
     });
+    const compressionStartTime = performance.now();
     const compressedOutputPaths = await compressOutputFiles({
         outputPath,
         cssOutputPaths,
         mode: resolvedConfig.mode,
     });
+    const compressionDurationMs =
+        performance.now() - compressionStartTime;
 
     const outputFiles = await collectOutputFiles({
         outputPath,
@@ -198,6 +201,8 @@ export async function runBundler(
 
     options.performance.bundleFinished({
         totalDurationMs: performance.now() - bundleStartTime,
+        copiedSizeBytes: publicAssets.copiedSizeBytes,
+        compressionDurationMs,
         outputFiles,
     });
 

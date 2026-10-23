@@ -2,6 +2,7 @@
 
 export interface PublicAssetCopyResult {
     sourceDirPath: string;
+    copiedSizeBytes: number;
 }
 
 export async function cleanOutputDir(outputDirPath: string): Promise<void> {

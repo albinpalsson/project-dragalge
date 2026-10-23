@@ -25,6 +25,8 @@ export type PerformanceEntry =
 
 export interface PerformanceBundleSummary {
     totalDurationMs: number;
+    copiedSizeBytes: number;
+    compressionDurationMs: number;
     moduleCount: number;
     assetSizes: Record<'js' | 'css', PerformanceAssetSizeSummary>;
     outputFiles: PerformanceOutputFile[];
@@ -124,12 +126,13 @@ export class BundlerPerformanceCollector {
     }
 
     bundleFinished(input: {
-        totalDurationMs?: number;
+        totalDurationMs: number;
+        copiedSizeBytes: number;
+        compressionDurationMs: number;
         outputFiles?: PerformanceOutputFile[];
     }): void {
         const totalDurationMs =
-            input.totalDurationMs ??
-            Math.max(0, performance.now() - this.bundleStartedAt);
+            input.totalDurationMs;
         const outputFiles = input.outputFiles ?? [];
 
         const assetSizes: Record<'js' | 'css', PerformanceAssetSizeSummary> = {
@@ -190,6 +193,8 @@ export class BundlerPerformanceCollector {
 
         this.summary = {
             totalDurationMs,
+            copiedSizeBytes: input.copiedSizeBytes,
+            compressionDurationMs: input.compressionDurationMs,
             moduleCount: this.entries.length,
             assetSizes,
             outputFiles,
@@ -219,27 +224,30 @@ export class BundlerPerformanceCollector {
 
         this.output.write(`Modules processed: ${this.summary.moduleCount}\n`);
         this.output.write(
-            `${padRight('Package', 32)} ${padLeft('Modules', 7)} ${padLeft('Time', 9)} ${padLeft('Cached', 7)}  Size\n`,
+            `${padRight('Package', 32)} ${padLeft('Modules', 7)} ${padLeft('Processing', 10)} ${padLeft('Cached', 7)}  Size\n`,
         );
 
         for (const group of this.summary.packages) {
             const name = padRight(group.packageName, 32);
             const modules = padLeft(String(group.moduleCount), 7);
-            const time = padLeft(formatMs(group.totalDurationMs), 9);
+            const time = padLeft(formatMs(group.totalDurationMs), 10);
             const cached = padLeft(
                 formatPercent(group.cacheHitCount / group.moduleCount),
                 7,
             );
-            const size = `${formatKb(group.sizeFrom)} -> ${formatKb(group.sizeTo)}`;
+            const size = `${formatKiB(group.sizeFrom)} -> ${formatKiB(group.sizeTo)}`;
             this.output.write(`${name} ${modules} ${time} ${cached}  ${size}\n`);
         }
 
-        this.output.write('Asset sizes: (compressed)\n');
+        this.output.write('Asset sizes: output (compressed)\n');
+        for (const kind of ['js', 'css'] as const) {
+            const sizes = this.summary.assetSizes[kind];
+            this.output.write(
+                `- ${kind}: ${formatKiB(sizes.processedSizeBytes)} (${formatKiB(sizes.compressedSizeBytes)})\n`,
+            );
+        }
         this.output.write(
-            `- js: ${formatKb(this.summary.assetSizes.js.sourceSizeBytes)} (${formatKb(this.summary.assetSizes.js.compressedSizeBytes)})\n`,
-        );
-        this.output.write(
-            `- css: ${formatKb(this.summary.assetSizes.css.sourceSizeBytes)} (${formatKb(this.summary.assetSizes.css.compressedSizeBytes)})\n`,
+            `- copied assets: ${formatKiB(this.summary.copiedSizeBytes)}\n`,
         );
 
         const transpileDurationMs = this.entries
@@ -254,6 +262,9 @@ export class BundlerPerformanceCollector {
             );
         }
         this.output.write(
+            `Brotli compression time: ${formatMs(this.summary.compressionDurationMs)}\n`,
+        );
+        this.output.write(
             `Total bundle time: ${formatMs(this.summary.totalDurationMs)}\n`,
         );
     }
@@ -263,8 +274,8 @@ function formatMs(value: number): string {
     return `${value.toFixed(1)}ms`;
 }
 
-function formatKb(sizeInBytes: number): string {
-    return `${(sizeInBytes / 1024).toFixed(1)}kb`;
+function formatKiB(sizeInBytes: number): string {
+    return `${(sizeInBytes / 1024).toFixed(1)} KiB`;
 }
 
 function formatPercent(ratio: number): string {

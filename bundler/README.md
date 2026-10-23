@@ -51,20 +51,23 @@ $ npm run build
 > project-dragalge-bundle --mode production
 ..................................................
 Modules processed: 239
-Package                            Modules      Time  Cached  Size
-application                          206  2646.1ms    100%  684.1kb -> 509.7kb
-@project-dragalge/pokemon-data         2    55.6ms    100%  192.0kb -> 191.6kb
-@project-dragalge/query-builder        8    34.6ms    100%  9.0kb -> 7.5kb
-@project-dragalge/db                   7    28.0ms    100%  31.9kb -> 22.6kb
-react-dom                              4    21.7ms    100%  532.6kb -> 425.3kb
-scheduler                              2    15.8ms    100%  10.1kb -> 8.1kb
-react                                  4    12.5ms    100%  18.2kb -> 14.9kb
-@project-dragalge/validator            1    12.1ms    100%  6.4kb -> 4.7kb
-@project-dragalge/server-query         3     8.7ms    100%  5.0kb -> 3.5kb
-@project-dragalge/css-in-js            1     3.0ms    100%  0.5kb -> 0.4kb
-Asset sizes: (compressed)
-- js: 1486.5kb (178.4kb)
-- css: 3.5kb (5.7kb)
-TypeScript API transpile time: 777.9ms
-Total bundle time: 3963.2ms
+Package                          Modules Processing  Cached  Size
+application                          206    106.0ms      0%  683.6 KiB -> 509.7 KiB
+react-dom                              4     75.7ms      0%  532.6 KiB -> 425.3 KiB
+scheduler                              2      1.1ms      0%  10.1 KiB -> 8.1 KiB
+react                                  4      3.0ms      0%  18.2 KiB -> 14.9 KiB
+@project-dragalge/db                   7      7.1ms      0%  31.9 KiB -> 22.6 KiB
+@project-dragalge/pokemon-data         2      6.1ms      0%  192.0 KiB -> 191.6 KiB
+@project-dragalge/server-query         3      2.1ms      0%  5.0 KiB -> 3.5 KiB
+@project-dragalge/query-builder        8      1.9ms      0%  9.0 KiB -> 7.5 KiB
+@project-dragalge/validator            1      0.7ms      0%  6.4 KiB -> 4.7 KiB
+@project-dragalge/css-in-js            1      0.1ms      0%  0.5 KiB -> 0.4 KiB
+Asset sizes: output (compressed)
+- js: 1163.0 KiB (178.4 KiB)
+- css: 20.3 KiB (5.7 KiB)
+- copied assets: 849.3 KiB
+TypeScript API transpile time: 799.1ms
+Brotli compression time: 1886.4ms
+Total bundle time: 3646.3ms
 ```
+

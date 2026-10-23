@@ -74,7 +74,6 @@ export async function buildDependencyTree(
 
         visited.set(normalizedPath, { status: 'pending' });
 
-        const visitStartTime = performance.now();
         const sourceStats = await stat(normalizedPath);
         const cacheLookup = await moduleTransformCache.get(normalizedPath, {
             sourceMtimeMs: sourceStats.mtimeMs,
@@ -83,11 +82,10 @@ export async function buildDependencyTree(
 
         let result: ProcessedFileResult;
         if (cacheLookup) {
-            const elapsedMs = performance.now() - visitStartTime;
             perfCollect?.add(
                 'moduleTransform',
                 normalizedPath,
-                elapsedMs,
+                0,
                 sourceStats.size,
                 cacheLookup.code.length,
                 true,
