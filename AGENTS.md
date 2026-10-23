@@ -6,16 +6,6 @@ This repository is an npm-workspaces monorepo. Package-specific guidance lives i
 [css-in-js](css-in-js/AGENTS.md), [db](db/AGENTS.md), and
 [query-builder](query-builder/AGENTS.md). Follow the nearest applicable file.
 
-## Node.js
-
-Use the nvm-managed Node 26 binary:
-`C:\Users\albin.palsson\.nvm\versions\node\v26.4.0\bin\node.exe`.
-Prepend its directory to `PATH` for the current PowerShell session:
-
-```powershell
-$env:PATH = "C:\Users\albin.palsson\.nvm\versions\node\v26.4.0\bin;$env:PATH"
-```
-
 ## Cross-Package Changes
 
 The app consumes built workspace-package output. After changing `db`,

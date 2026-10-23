@@ -8,7 +8,7 @@ in Pokémon Scarlet and Violet, and the libraries built to support it.
 A guide for Pokémon Scarlet and Violet Nuzlockes, with a suggested order for
 encounters and boss battles and an encounter randomizer.
 
-Try the app: TODO.
+Try the app: https://paldeanuzlocke.com.
 
 ### Why A Guide For Scarlet And Violet?
 
@@ -40,7 +40,7 @@ research while playing.
 ### Feedback
 
 The app is actively maintained. Report mistakes, suggest improvements, or share
-feedback through GitHub issues: TODO.
+feedback through GitHub issues: [project-dragalge issues](https://github.com/albinpalsson/project-dragalge/issues/new).
 
 The libraries are separate projects with small, familiar interfaces. Their core
 features are implemented here rather than built on third-party runtime

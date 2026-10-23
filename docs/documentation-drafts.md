@@ -50,15 +50,9 @@ open on my phone. That is why the website includes additional details, such as
 Pokemon base stats, evolutions, defensive weaknesses, helpful tips throughout
 the game, and information about strong trainers.
 
-App: TODO.
+App: https://paldeanuzlocke.com
 
 I actively maintain it and hope other people enjoy using it as much as I do.
 I'd welcome feedback and suggestions, including mistakes you find in the guide.
-You can open a GitHub issue here: TODO.
+You can open a GitHub issue here: https://github.com/albinpalsson/project-dragalge/issues/new.
 
-## Links To Resolve
-
-- App URL: TODO.
-- GitHub repository URL: TODO.
-- GitHub issues URL: TODO.
-- Target subreddit and its posting rules: TODO.

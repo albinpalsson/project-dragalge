@@ -149,7 +149,7 @@ export function About({ onOpenLicenses }: AboutProps) {
                         want to suggest an improvement, or just want to send
                         feedback, please open an issue on GitHub.
                     </p>
-                    <p>GitHub issues: TODO.</p>
+                    <p>GitHub issues: <a className={textLink} href="https://github.com/albinpalsson/project-dragalge/issues/new" target="_blank" rel="noopener noreferrer">project-dragalge/issues</a>.</p>
                 </div>
                 <button
                     className={textLink}
