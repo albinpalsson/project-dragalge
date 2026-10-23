@@ -82,8 +82,7 @@ function initializeGtag(measurementId: string): Gtag {
         gtag = window.gtag;
         gtag('js', new Date());
 
-        // TODO: Load gtag.js once here after consent and report loading failures.
-        // Until then this is a local command queue, not a delivery implementation.
+        loadGtagScript(measurementId);
     }
 
     if (!configuredMeasurementIds.has(measurementId)) {
@@ -92,4 +91,15 @@ function initializeGtag(measurementId: string): Gtag {
     }
 
     return gtag;
+}
+
+function loadGtagScript(measurementId: string): void {
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+    script.onerror = () => {
+        // Ad blockers and offline use commonly block this; analytics is optional.
+        console.warn('[analytics] Failed to load gtag.js');
+    };
+    document.head.appendChild(script);
 }
