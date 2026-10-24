@@ -3,6 +3,7 @@ import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { assert } from '../assert.ts';
+import { httpTransport } from './http-transport.ts';
 
 const POLITE_DELAY_MS = 300;
 
@@ -47,18 +48,7 @@ async function runExecutor(): Promise<void> {
         assert(item);
         process.stdout.write(`Fetching ${item.url}\n`);
         try {
-            let response: Response;
-            try {
-                response = await fetch(item.url);
-            } catch (cause) {
-                throw new Error(`Network error fetching ${item.url}`, {
-                    cause,
-                });
-            }
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status} fetching ${item.url}`);
-            }
-            item.resolve(new Uint8Array(await response.arrayBuffer()));
+            item.resolve(await httpTransport.fetchBytes(item.url));
             consecutiveFailures = 0;
         } catch (err) {
             consecutiveFailures++;

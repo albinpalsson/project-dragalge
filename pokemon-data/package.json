@@ -36,7 +36,8 @@
     },
     "dependencies": {
         "@project-dragalge/db": "*",
-        "@project-dragalge/query-builder": "*"
+        "@project-dragalge/query-builder": "*",
+        "playwright-core": "^1.62.1"
     },
     "devDependencies": {
         "@types/node": "^20.19.43",
