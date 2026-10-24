@@ -84,10 +84,10 @@ choice, no analytics events are emitted. Game names and save contents stay in th
 browser; the event payloads contain only app views, game settings categories, and
 progression labels.
 
-The build accepts a public GA4 measurement ID through `GA4_MEASUREMENT_ID`, but the
-GA4 transport is not enabled yet. Setting the variable only injects the ID into the
-bundle; it does not load Google scripts or send network requests. Measurement IDs are
-public identifiers, not secrets.
+The build accepts a public GA4 measurement ID through `GA4_MEASUREMENT_ID`. When it is
+set and the user has granted consent, the app loads Google's `gtag.js` and sends events
+to that property. Without the variable, no Google scripts are loaded and no requests
+are sent. Measurement IDs are public identifiers, not secrets.
 
 ```powershell
 $env:GA4_MEASUREMENT_ID = 'G-XXXXXXXXXX'
