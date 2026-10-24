@@ -12,6 +12,17 @@ export interface MoveData {
     effect: string;
 }
 
+// Raw infobox text of power/accuracy values whose current value is newer than
+// Scarlet/Violet, so the parsed number can't be trusted.
+export interface AmbiguousMoveStats {
+    power?: string;
+    accuracy?: string;
+}
+
+export interface ParsedMoveData extends MoveData {
+    ambiguous: AmbiguousMoveStats;
+}
+
 function extractInfoboxParams(block: string): Record<string, string> {
     const params: Record<string, string> = {};
     // Use splitTopLevelParams to handle both |key=val and key=val| layout variants.
@@ -31,17 +42,34 @@ function extractInfoboxParams(block: string): Record<string, string> {
     return params;
 }
 
-function parsePowerOrAccuracy(raw: string): number {
-    // {{tt|<current value>|<older generations' values>}}: keep the current value
+// Games released after Scarlet/Violet. A "prior to <game>" note on one of these
+// means the infobox's current value comes from a game this project doesn't cover.
+const POST_SV_GAME = /\bChampions\b|\bZ-A\b|\bGenerations?\s+(?:XII|XI|X)\b/i;
+
+function isPostSvNote(note: string): boolean {
+    return [...note.matchAll(/\b(?:prior to|before)\s+([^;,]+)/gi)].some(
+        (match) => POST_SV_GAME.test(match[1]),
+    );
+}
+
+function parsePowerOrAccuracy(raw: string): {
+    value: number;
+    ambiguous: boolean;
+} {
+    // {{tt|<current value>|<older generations' values>}}: keep the current value,
+    // unless the note shows that value is newer than Scarlet/Violet
+    const ambiguous = [
+        ...raw.matchAll(/\{\{\s*tt\s*\|[^|}]*\|([^}]*)\}\}/gi),
+    ].some((match) => isPostSvNote(match[1]));
     const cleaned = raw
         .replace(/\{\{\s*tt\s*\|([^|}]*)(?:\|[^}]*)?\}\}/gi, '$1')
         .trim();
     // "—" or "∞" or "-" all mean "no value" → 0
     if (!cleaned || /^[—–\-∞]/.test(cleaned)) {
-        return 0;
+        return { value: 0, ambiguous };
     }
     const n = parseInt(cleaned, 10);
-    return Number.isNaN(n) ? 0 : n;
+    return { value: Number.isNaN(n) ? 0 : n, ambiguous };
 }
 
 // Splits the inner content of a template block on top-level | characters.
@@ -120,7 +148,10 @@ function extractSVDescription(wikitext: string, moveName: string): string {
     throw new Error(`[${moveName}] SV game description not found on move page`);
 }
 
-export function parseMoveData(wikitext: string, moveName: string): MoveData {
+export function parseMoveData(
+    wikitext: string,
+    moveName: string,
+): ParsedMoveData {
     const infobox = extractTemplate(wikitext, 'MoveInfobox');
     if (!infobox) {
         throw new Error(`[${moveName}] MoveInfobox template not found`);
@@ -144,8 +175,22 @@ export function parseMoveData(wikitext: string, moveName: string): MoveData {
 
     const power = parsePowerOrAccuracy(params.power ?? '');
     const accuracy = parsePowerOrAccuracy(params.accuracy ?? '');
+    const ambiguous: AmbiguousMoveStats = {};
+    if (power.ambiguous) {
+        ambiguous.power = params.power;
+    }
+    if (accuracy.ambiguous) {
+        ambiguous.accuracy = params.accuracy;
+    }
 
     const effect = extractSVDescription(wikitext, moveName).slice(0, 152);
 
-    return { type, category, power, accuracy, effect };
+    return {
+        type,
+        category,
+        power: power.value,
+        accuracy: accuracy.value,
+        effect,
+        ambiguous,
+    };
 }

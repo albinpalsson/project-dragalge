@@ -1,11 +1,11 @@
-import type { MoveData } from './bulbapedia-move-parser.ts';
+import type { MoveData, ParsedMoveData } from './bulbapedia-move-parser.ts';
 import { parseMoveData } from './bulbapedia-move-parser.ts';
 import {
     buildMoveWikitextUrl,
     buildPageWikitextUrl,
 } from './bulbapedia-parser.ts';
 import { cachedFetcher } from './cached-fetcher.ts';
-import { MOVE_DESCRIPTION_CACHE } from './move-cache.ts';
+import { MOVE_DESCRIPTION_CACHE, MOVE_STAT_OVERRIDES } from './move-cache.ts';
 
 export type { MoveData };
 
@@ -28,8 +28,34 @@ function parseWikitextResponse(
     return { wikitext: parsed.parse.wikitext['*'], missing: false };
 }
 
+function applyStatOverrides(
+    moveName: string,
+    { ambiguous, ...data }: ParsedMoveData,
+): MoveData {
+    const override = MOVE_STAT_OVERRIDES[moveName];
+    for (const stat of ['power', 'accuracy'] as const) {
+        const value = override?.[stat];
+        if (value !== undefined) {
+            if (!ambiguous[stat]) {
+                process.stderr.write(
+                    `[${moveName}] MOVE_STAT_OVERRIDES ${stat} is no longer needed; the page value is not ambiguous\n`,
+                );
+            }
+            data[stat] = value;
+        } else if (ambiguous[stat]) {
+            throw new Error(
+                `[${moveName}] ${stat} is ambiguous (${ambiguous[stat]}); add an entry to MOVE_STAT_OVERRIDES`,
+            );
+        }
+    }
+    return data;
+}
+
 export async function fetchMoveData(moveName: string): Promise<MoveData> {
-    const data = await fetchParsedMoveData(moveName);
+    const data = applyStatOverrides(
+        moveName,
+        await fetchParsedMoveData(moveName),
+    );
     const cached = MOVE_DESCRIPTION_CACHE[moveName];
     if (cached) {
         return { ...data, effect: cached };
@@ -42,7 +68,9 @@ export async function fetchMoveData(moveName: string): Promise<MoveData> {
     return data;
 }
 
-async function fetchParsedMoveData(moveName: string): Promise<MoveData> {
+async function fetchParsedMoveData(
+    moveName: string,
+): Promise<ParsedMoveData> {
     // Try the standard "(move)" disambig page first
     const moveUrl = buildMoveWikitextUrl(moveName);
     const { wikitext, missing } = parseWikitextResponse(
