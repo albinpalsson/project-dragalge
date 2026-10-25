@@ -1,5 +1,5 @@
 import { css } from '@project-dragalge/css-in-js';
-import { Badge, BadgeButton } from './Badge';
+import { Badge } from './Badge';
 import { ProgressionCardHeader } from './ProgressionCardHeader';
 import type { LocationEncounterDetails } from '../db/pokemon-data/queries';
 import type { LocationEncounterView } from '../db/pokemon-data/queries';
@@ -37,21 +37,12 @@ export function EncounterHeader({
     return (
         <ProgressionCardHeader
             actions={
-                <>
-                    {!isResolved && levelRange && (
-                        <Badge>Lv {levelRange}</Badge>
-                    )}
-                    {canCollapse && onCollapse && (
-                        <BadgeButton
-                            ariaLabel="Collapse encounter"
-                            title="Collapse encounter"
-                            onClick={onCollapse}
-                        >
-                            ▾ Fold
-                        </BadgeButton>
-                    )}
-                </>
+                !isResolved && levelRange ? (
+                    <Badge>Lv {levelRange}</Badge>
+                ) : undefined
             }
+            onCollapse={canCollapse ? onCollapse : undefined}
+            collapseLabel="Collapse encounter"
         >
             <div>
                 <h3 className={heading}>{formatLocationName(location.name)}</h3>

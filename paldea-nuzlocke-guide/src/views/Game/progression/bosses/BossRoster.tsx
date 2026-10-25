@@ -1,6 +1,6 @@
 import { css } from '@project-dragalge/css-in-js';
 import type { ReactNode } from 'react';
-import { Badge, BadgeButton } from '../../../../components/Badge';
+import { Badge } from '../../../../components/Badge';
 import type { PokemonIconSize } from '../../../../components/PokemonIcon';
 import { ProgressionCardHeader } from '../../../../components/ProgressionCardHeader';
 import { StatusChip } from '../../../../components/StatusChip';
@@ -50,19 +50,10 @@ export function BossHeader({
     return (
         <ProgressionCardHeader
             actions={
-                <>
-                    {!currentResult && <Badge>Lv cap {levelCap}</Badge>}
-                    {onCollapse && (
-                        <BadgeButton
-                            onClick={onCollapse}
-                            ariaLabel="Collapse boss fight"
-                            title="Collapse boss fight"
-                        >
-                            ▾ Fold
-                        </BadgeButton>
-                    )}
-                </>
+                !currentResult ? <Badge>Lv cap {levelCap}</Badge> : undefined
             }
+            onCollapse={onCollapse}
+            collapseLabel="Collapse boss fight"
         >
             <div>
                 <div className={titleRow}>

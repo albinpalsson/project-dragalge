@@ -1,9 +1,10 @@
 import { css, cx } from '@project-dragalge/css-in-js';
-import { BadgeButton } from '../../components/Badge';
 import { Button } from '../../components/Button';
+import { CollapseButton } from '../../components/CollapseButton';
 import { CollapsedSummaryRow } from '../../components/CollapsedSummaryRow';
 import { PokemonIcon } from '../../components/PokemonIcon';
 import { ProgressionCard } from '../../components/ProgressionCard';
+import { collapseOnHeaderClick } from '../../components/ProgressionCardHeader';
 import { RandomizeButton } from '../../components/RandomizeButton';
 import { StatusChip } from '../../components/StatusChip';
 import { getPokemonTypeColor } from '../../utils/pokemon-type-colors';
@@ -96,16 +97,19 @@ export function StarterCard({ isNext }: StarterCardProps) {
         >
             {({ collapse }) => (
                 <>
-                    <div className={headingRow}>
+                    {/* biome-ignore lint/a11y/noStaticElementInteractions lint/a11y/useKeyWithClickEvents: pointer shortcut; the collapse button is the keyboard and screen-reader path */}
+                    <div
+                        className={cx(headingRow, starter && clickableRow)}
+                        onClick={
+                            starter ? collapseOnHeaderClick(collapse) : undefined
+                        }
+                    >
                         <h3 className={heading}>Starter - Cabo poco</h3>
                         {starter && (
-                            <BadgeButton
+                            <CollapseButton
                                 onClick={collapse}
-                                ariaLabel="Collapse starter"
-                                title="Collapse starter"
-                            >
-                                ▾ Fold
-                            </BadgeButton>
+                                label="Collapse starter"
+                            />
                         )}
                     </div>
 
@@ -273,6 +277,10 @@ const headingRow = css`
     justify-content: space-between;
     align-items: center;
     gap: var(--space-2);
+`;
+
+const clickableRow = css`
+    cursor: pointer;
 `;
 
 const hint = css`

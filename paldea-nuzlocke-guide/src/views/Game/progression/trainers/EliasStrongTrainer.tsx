@@ -1,5 +1,4 @@
 import { css } from '@project-dragalge/css-in-js';
-import { BadgeButton } from '../../../../components/Badge';
 import { CollapsedSummaryRow } from '../../../../components/CollapsedSummaryRow';
 import { ProgressionCard } from '../../../../components/ProgressionCard';
 import { ProgressionCardHeader } from '../../../../components/ProgressionCardHeader';
@@ -46,15 +45,8 @@ export function EliasStrongTrainer() {
             {({ collapse }) => (
                 <>
                     <ProgressionCardHeader
-                        actions={
-                            <BadgeButton
-                                onClick={collapse}
-                                ariaLabel="Collapse strong trainer fight"
-                                title="Collapse strong trainer fight"
-                            >
-                                ▾ Fold
-                            </BadgeButton>
-                        }
+                        onCollapse={collapse}
+                        collapseLabel="Collapse strong trainer fight"
                     >
                         <StrongTrainerIdentity
                             displayName={DISPLAY_NAME}

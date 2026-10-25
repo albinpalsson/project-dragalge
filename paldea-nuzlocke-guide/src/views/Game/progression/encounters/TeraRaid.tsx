@@ -1,11 +1,13 @@
 import { useMemo } from 'react';
 import { css } from '@project-dragalge/css-in-js';
-import { Badge, BadgeButton } from '../../../../components/Badge';
+import { Badge } from '../../../../components/Badge';
 import { Button } from '../../../../components/Button';
+import { CollapseButton } from '../../../../components/CollapseButton';
 import { CollapsedSummaryRow } from '../../../../components/CollapsedSummaryRow';
 import { PokemonAutocomplete } from '../../../../components/PokemonAutocomplete';
 import { PokemonIcon } from '../../../../components/PokemonIcon';
 import { ProgressionCard } from '../../../../components/ProgressionCard';
+import { collapseOnHeaderClick } from '../../../../components/ProgressionCardHeader';
 import { ProgressionDescription } from '../../../../components/ProgressionDescription';
 import { StatusChip } from '../../../../components/StatusChip';
 import { useEncounterActions } from '../../../../hooks/useEncounterActions';
@@ -92,29 +94,28 @@ export function TeraRaid({ stars, isNext, zoomedIcon = true }: TeraRaidProps) {
         >
             {({ collapse }) => (
                 <>
-                    <header className={header}>
-                        <div>
-                            <h3 id={headingId} className={heading}>
-                                {displayName}
-                            </h3>
-                            <ProgressionDescription>
-                                Sugggested: Search out a Tera Raid den and
-                                battle it — the first {stars}-star raid you find
-                                is your randomized encounter. Failure to catch
-                                equates to a missed encounter.
-                            </ProgressionDescription>
-                        </div>
+                    {/* biome-ignore lint/a11y/noStaticElementInteractions:pointer shortcut; the collapse button is the keyboard and screen-reader path */}
+                    <header
+                        className={header}
+                        onClick={collapseOnHeaderClick(collapse)}
+                    >
+                        <h3 id={headingId} className={heading}>
+                            {displayName}
+                        </h3>
                         <div className={badges}>
                             <Badge>Lv {caughtLevel}</Badge>
-                            <BadgeButton
-                                ariaLabel="Collapse Tera Raid"
-                                title="Collapse Tera Raid"
+                            <CollapseButton
                                 onClick={collapse}
-                            >
-                                ▾ Fold
-                            </BadgeButton>
+                                label="Collapse Tera Raid"
+                            />
                         </div>
                     </header>
+                    <ProgressionDescription>
+                        Sugggested: Search out a Tera Raid den and battle it —
+                        the first {stars}-star raid you find is your randomized
+                        encounter. Failure to catch equates to a missed
+                        encounter.
+                    </ProgressionDescription>
 
                     {rows.length > 0 && (
                         <ul className={rowList}>
@@ -227,9 +228,10 @@ const emptyIcon = css`
 `;
 
 const header = css`
+    cursor: pointer;
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     gap: var(--space-2);
 `;
 
@@ -241,6 +243,7 @@ const heading = css`
 
 const badges = css`
     display: flex;
+    align-items: center;
     flex-wrap: wrap;
     justify-content: flex-end;
     gap: var(--space-1);

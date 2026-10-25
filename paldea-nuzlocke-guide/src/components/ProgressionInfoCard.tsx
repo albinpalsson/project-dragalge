@@ -1,7 +1,6 @@
 import { css } from '@project-dragalge/css-in-js';
 import { useId } from 'react';
 import type { ReactNode } from 'react';
-import { BadgeButton } from './Badge';
 import { CollapsedSummaryRow } from './CollapsedSummaryRow';
 import { InfoIcon } from './icons';
 import { ProgressionCard } from './ProgressionCard';
@@ -34,19 +33,11 @@ export function ProgressionInfoCard({
                 />
             )}
         >
-            {({ collapse, isExpanded }) => (
+            {({ collapse }) => (
                 <>
                     <ProgressionCardHeader
-                        actions={
-                            <BadgeButton
-                                ariaLabel={`Collapse ${title}`}
-                                title={`Collapse ${title}`}
-                                ariaExpanded={isExpanded}
-                                onClick={collapse}
-                            >
-                                ▾ Fold
-                            </BadgeButton>
-                        }
+                        onCollapse={collapse}
+                        collapseLabel={`Collapse ${title}`}
                     >
                         <div className={heading}>
                             <InfoIcon />
