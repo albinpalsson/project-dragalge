@@ -148,6 +148,24 @@ function extractSVDescription(wikitext: string, moveName: string): string {
     throw new Error(`[${moveName}] SV game description not found on move page`);
 }
 
+// Must match the width of moves.effect (CHAR is measured in UTF-8 bytes).
+const MAX_EFFECT_BYTES = 164;
+
+// Cuts on a code point boundary so multi-byte characters are never split.
+function truncateToBytes(text: string, maxBytes: number): string {
+    const encoder = new TextEncoder();
+    let bytes = 0;
+    let result = '';
+    for (const char of text) {
+        bytes += encoder.encode(char).length;
+        if (bytes > maxBytes) {
+            break;
+        }
+        result += char;
+    }
+    return result;
+}
+
 export function parseMoveData(
     wikitext: string,
     moveName: string,
@@ -183,7 +201,10 @@ export function parseMoveData(
         ambiguous.accuracy = params.accuracy;
     }
 
-    const effect = extractSVDescription(wikitext, moveName).slice(0, 152);
+    const effect = truncateToBytes(
+        extractSVDescription(wikitext, moveName),
+        MAX_EFFECT_BYTES,
+    );
 
     return {
         type,

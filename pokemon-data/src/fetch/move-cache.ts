@@ -1,4 +1,5 @@
-// Starmobile signature moves have no in-game description; text is from Bulbapedia's Effect section.
+// Hand-written move descriptions. Starmobile signature moves have no in-game
+// description; their text is from Bulbapedia's Effect section.
 export const MOVE_DESCRIPTION_CACHE: Record<string, string | undefined> = {
     'Wicked Torque':
         'Inflicts damage and has a 10% chance of putting the target to sleep.',
@@ -10,6 +11,10 @@ export const MOVE_DESCRIPTION_CACHE: Record<string, string | undefined> = {
         'Inflicts damage and has a 30% chance of confusing the target.',
     'Combat Torque':
         'Inflicts damage and has a 30% chance of paralyzing the target.',
+    // Bulbapedia lists pre- and post-1.2.0 text, which the parser concatenates;
+    // keep only the current (1.2.0 onwards) behavior.
+    'Glaive Rush':
+        "After this move is used, attacks on the user cannot miss and will inflict double damage until the user's next turn.",
 };
 
 export interface MoveStatOverride {

@@ -43,7 +43,7 @@ export const PROVISIONAL_SCHEMA_SQL: readonly string[] = [
     'CREATE TABLE items (id TINYINT, name CHAR(64), description CHAR(256))',
     'CREATE TABLE boss_battles (id TINYINT, name CHAR(44), battle_type CHAR(8))',
     'CREATE TABLE boss_battle_pokemon (boss_battle_id TINYINT, slot TINYINT, pokemon_id INT, level TINYINT, ability_id TINYINT, secondary_ability_id TINYINT, item_id TINYINT)',
-    'CREATE TABLE moves (id INT, name CHAR(32), type_id TINYINT, category CHAR(8), power TINYINT, accuracy TINYINT, effect CHAR(154))',
+    'CREATE TABLE moves (id INT, name CHAR(32), type_id TINYINT, category CHAR(8), power TINYINT, accuracy TINYINT, effect CHAR(164))',
     'CREATE TABLE boss_battle_pokemon_moves (boss_battle_id TINYINT, pokemon_slot TINYINT, move_slot TINYINT, move_id INT)',
 ];
 
