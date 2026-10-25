@@ -70,7 +70,5 @@ const modalPanel = css`
     && {
         width: min(96rem, 94vw);
         max-width: 96rem;
-        max-height: calc(100vh - var(--space-6));
-        overflow: auto;
     }
 `;

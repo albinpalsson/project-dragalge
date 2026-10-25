@@ -280,8 +280,6 @@ const modesGuideButton = css`
 
 const guideModal = css`
     max-width: 64rem;
-    max-height: 90vh;
-    overflow-y: auto;
 `;
 
 const section = css`

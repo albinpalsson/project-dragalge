@@ -11,6 +11,8 @@ interface ModalProps {
 
 // Open modals in mount order; only the last one reacts to Escape.
 const openModalIds: string[] = [];
+// Body overflow to restore once the last modal closes (the body is scroll-locked meanwhile).
+let previousBodyOverflow = '';
 
 export function Modal({
     title,
@@ -22,9 +24,16 @@ export function Modal({
     const titleId = useId();
     const modalId = useId();
     useEffect(() => {
+        if (openModalIds.length === 0) {
+            previousBodyOverflow = document.body.style.overflow;
+            document.body.style.overflow = 'hidden';
+        }
         openModalIds.push(modalId);
         return () => {
             openModalIds.splice(openModalIds.indexOf(modalId), 1);
+            if (openModalIds.length === 0) {
+                document.body.style.overflow = previousBodyOverflow;
+            }
         };
     }, [modalId]);
     useEffect(() => {
@@ -93,6 +102,8 @@ export function Modal({
 const overlay = css`
   position: fixed;
   inset: 0;
+  box-sizing: border-box;
+  padding: var(--space-3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -107,6 +118,10 @@ const panel = css`
   gap: var(--space-3);
   width: 90vw;
   max-width: 40rem;
+  max-height: calc(100vh - 2 * var(--space-3));
+  max-height: calc(100dvh - 2 * var(--space-3));
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: var(--space-4);
   background: var(--color-surface);
   border: 0.1rem solid var(--color-border);
