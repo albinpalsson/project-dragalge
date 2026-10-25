@@ -8,20 +8,27 @@ interface TypeDefensesProps {
     variant?: 'tooltip';
 }
 
-function getCanonicalName(multiplier: number): string {
+interface CanonicalName {
+    // `short` is what remains visible on narrow screens; `rest` completes the
+    // full word and is hidden there.
+    short: string;
+    rest: string;
+}
+
+function getCanonicalName(multiplier: number): CanonicalName {
     switch (multiplier) {
         case 0:
-            return 'Immune';
+            return { short: 'Imm', rest: 'une' };
         case 0.25:
-            return 'Resistant';
+            return { short: 'Res', rest: 'istant' };
         case 0.5:
-            return 'Resistant';
+            return { short: 'Res', rest: 'istant' };
         case 2:
-            return 'Weak';
+            return { short: 'Weak', rest: '' };
         case 4:
-            return 'Weak';
+            return { short: 'Weak', rest: '' };
         default:
-            return 'Unknown';
+            return { short: 'Unknown', rest: '' };
     }
 }
 
@@ -46,19 +53,23 @@ export function TypeDefenses({
         >
             <h5 className={title}>Type defenses ({defensiveTypes})</h5>
             <div className={list}>
-                {entries.map((entry) => (
-                    <div
-                        className={row}
-                        key={entry.attackingType}
-                        title={`${entry.attackingType}: ${entry.multiplier}×`}
-                    >
-                        <TypeBadge type={entry.attackingType} />
-                        <span className={multiplier}>
-                            {getCanonicalName(entry.multiplier)}{' '}
-                            {entry.multiplier}×
-                        </span>
-                    </div>
-                ))}
+                {entries.map((entry) => {
+                    const name = getCanonicalName(entry.multiplier);
+                    return (
+                        <div
+                            className={row}
+                            key={entry.attackingType}
+                            title={`${entry.attackingType}: ${entry.multiplier}×`}
+                        >
+                            <TypeBadge type={entry.attackingType} />
+                            <span className={multiplier}>
+                                {name.short}
+                                <span className={nameRest}>{name.rest}</span>{' '}
+                                {entry.multiplier}×
+                            </span>
+                        </div>
+                    );
+                })}
             </div>
         </div>
     );
@@ -94,14 +105,14 @@ const list = css`
         column-gap: var(--space-4);
         row-gap: var(--space-2);
 
-        @media (max-width: 34rem) {
+        @media (max-width: 48rem) {
                 grid-template-columns: minmax(0, 1fr);
         }
 `;
 
 const row = css`
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: auto minmax(0, 1fr);
     align-items: center;
     gap: var(--space-2);
     min-width: 0;
@@ -111,9 +122,18 @@ const row = css`
 `;
 
 const multiplier = css`
-  margin-left: auto;
-    flex-shrink: 0;
+  justify-self: end;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
   font-weight: var(--font-weight-bold);
   color: var(--color-text-muted);
+`;
+
+const nameRest = css`
+    @media (max-width: 30rem) {
+        display: none;
+    }
 `;
