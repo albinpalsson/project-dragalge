@@ -25,52 +25,52 @@ export function useEncounterMutations() {
             setPartySlotMutation.isPending ||
             clearRollMutation.isPending,
         addRoll(
-            gameRunId: number,
+            gameName: string,
             locationName: string,
             pokemonName: string,
             status?: EncounterStatus,
         ) {
             return addRollMutation.mutateAsync({
-                gameRunId,
+                gameName,
                 locationName,
                 pokemonName,
                 status,
             });
         },
-        skip(gameRunId: number, locationName: string) {
-            return skipMutation.mutateAsync({ gameRunId, locationName });
+        skip(gameName: string, locationName: string) {
+            return skipMutation.mutateAsync({ gameName, locationName });
         },
         setStatus(
-            gameRunId: number,
+            gameName: string,
             locationName: string,
             status: EncounterStatus,
         ) {
             return setStatusMutation.mutateAsync({
-                gameRunId,
+                gameName,
                 locationName,
                 status,
             });
         },
         setPokemon(
-            gameRunId: number,
+            gameName: string,
             locationName: string,
             pokemonName: string,
         ) {
             return setPokemonMutation.mutateAsync({
-                gameRunId,
+                gameName,
                 locationName,
                 pokemonName,
             });
         },
-        setPartySlot(gameRunId: number, locationName: string, slot: number) {
+        setPartySlot(gameName: string, locationName: string, slot: number) {
             return setPartySlotMutation.mutateAsync({
-                gameRunId,
+                gameName,
                 locationName,
                 slot,
             });
         },
-        clear(gameRunId: number, locationName: string) {
-            return clearRollMutation.mutateAsync({ gameRunId, locationName });
+        clear(gameName: string, locationName: string) {
+            return clearRollMutation.mutateAsync({ gameName, locationName });
         },
     };
 }

@@ -13,6 +13,12 @@ boundaries.
   Put database operations in their owning `src/db/pokemon-data/` or
   `src/db/game-db/` module; do not issue query-builder operations from views or
   components. A database-specific module should not silently combine both DBs.
+- Games are addressed by name everywhere outside `src/db/game-db/`. The
+  game id (and the `game_run_id` foreign key) is internal to that layer:
+  only `queries.ts` and `export-import.ts` may import `internal.ts`, and ids
+  never appear in exported types, query keys or component props. Names are
+  unique among live games but can be reused after a delete, so deleting a game
+  must remove its cached queries and persisted UI state (see `useDeleteGame`).
 - Backend-shaped DB functions return serializable domain data. Prefer stable
   names/keys to storage IDs when callers do not need the IDs. Make cross-DB
   composition explicit at the frontend or at a deliberate service boundary.

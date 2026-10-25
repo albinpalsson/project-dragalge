@@ -3,7 +3,6 @@ import {
     cardFor,
     createGame,
     expandCollapsedSummary,
-    showMoreProgression,
 } from './helpers';
 
 test('a boss ace uses its Tera type for defense information', async ({
@@ -12,7 +11,6 @@ test('a boss ace uses its Tera type for defense information', async ({
     await page.goto('/');
     await createGame(page, 'katy-visuals-run');
 
-    await showMoreProgression(page);
     await expandCollapsedSummary(page, 'Katy (Gym)');
     const card = cardFor(page, 'Katy (Gym)').first();
 

@@ -1,5 +1,5 @@
 export type ActiveView =
     | { view: 'home' }
-    | { view: 'game'; gameRunId: string }
+    | { view: 'game'; gameName: string }
     | { view: 'about' }
     | { view: 'licenses' };

@@ -11,7 +11,6 @@ import {
     resolveEncounter,
     rollEncounter,
     selectBoxPokemon,
-    showMoreProgression,
     waitForPersistence,
 } from './helpers';
 
@@ -81,7 +80,6 @@ test('Home supports sharing, duplicate imports and persisted deletion', async ({
 }) => {
     await page.goto('/');
     await createGameWithTeraRaids(page, 'shared-run', 'unlimited');
-    await showMoreProgression(page);
     await expandCollapsedSummary(page, 'Tera Raid ★');
     const raidCard = cardFor(page, 'Tera Raid ★').first();
     const addPokemon = raidCard.getByRole('combobox', {

@@ -15,7 +15,6 @@ import {
     resolveEncounter,
     selectBoxPokemon,
     selectStarter,
-    showMoreProgression,
     winBossBattle,
 } from './helpers';
 
@@ -72,7 +71,6 @@ test('Fun preset plays through the available progression', async ({ page }) => {
     });
     await completeEncounter(page, 'South Province (A1)');
     await completeBossBattle(page, 'Nemona (2nd rival battle)');
-    await showMoreProgression(page);
     await expect(
         page.getByRole('region', { name: 'Nuzlocke complete' }),
     ).toBeVisible();
@@ -202,7 +200,6 @@ test('Challenging preset plays through the available progression', async ({
     await completeEncounter(page, 'Inlet Grotto');
     await completeEncounter(page, 'South Province (A1)');
     await completeBossBattle(page, 'Nemona (2nd rival battle)');
-    await showMoreProgression(page);
     await test.step('ban a Pokemon and verify its encounter is disabled', async () => {
         await page.getByRole('button', { name: 'Game settings' }).click();
         const banInput = page.getByRole('combobox', {
@@ -230,7 +227,6 @@ test('Challenging preset plays through the available progression', async ({
         await navigateTo(page, 'Home');
         await page.getByRole('button', { name: /challenging-run/ }).click();
         await expectNextStep(page, 'Katy (Gym)');
-        await showMoreProgression(page);
     });
     await expect(cardFor(page, 'Tera Raid ★')).toHaveCount(0);
     await completeBossBattle(page, 'Katy (Gym)');
@@ -331,7 +327,6 @@ test('Mono Electric run plays through the available progression', async ({
     await completeEncounter(page, 'Inlet Grotto');
     await completeEncounter(page, 'South Province (A1)');
     await completeBossBattle(page, 'Nemona (2nd rival battle)');
-    await showMoreProgression(page);
     await completeEncounter(page, 'Pokemon League');
     await completeEncounter(page, 'South Province (A2)');
     await addMultipleUnlimitedRaidEntries(page);

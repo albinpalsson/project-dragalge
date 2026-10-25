@@ -21,9 +21,9 @@ export function useEncounterActions() {
             (row) => row.location_name === locationName,
         );
         if (current && current.party_slot !== NO_PARTY_SLOT) {
-            await mutations.setPartySlot(game.id, locationName, NO_PARTY_SLOT);
+            await mutations.setPartySlot(game.name, locationName, NO_PARTY_SLOT);
         }
-        await mutations.setStatus(game.id, locationName, status);
+        await mutations.setStatus(game.name, locationName, status);
         trackProgression(locationName, status);
     };
 
@@ -31,7 +31,7 @@ export function useEncounterActions() {
         isBusy: mutations.isBusy,
         rollEncounter(pokemonName: string, locationName: string) {
             return mutations.addRoll(
-                game.id,
+                game.name,
                 locationName,
                 pickEncounterSpecies(pokemonName),
             );
@@ -40,22 +40,22 @@ export function useEncounterActions() {
             const current = game.encounters.find(
                 (row) => row.location_name === locationName,
             );
-            await mutations.setStatus(game.id, locationName, 'caught');
+            await mutations.setStatus(game.name, locationName, 'caught');
             trackProgression(locationName, 'caught');
             if (!current || current.party_slot !== NO_PARTY_SLOT) {
                 return;
             }
             const slot = nextFreePartySlot(game.encounters);
             if (slot !== NO_PARTY_SLOT) {
-                await mutations.setPartySlot(game.id, locationName, slot);
+                await mutations.setPartySlot(game.name, locationName, slot);
             }
         },
         async skipEncounter(locationName: string) {
-            await mutations.skip(game.id, locationName);
+            await mutations.skip(game.name, locationName);
             trackProgression(locationName, 'skipped');
         },
         async missEncounter(locationName: string) {
-            await mutations.setStatus(game.id, locationName, 'missed');
+            await mutations.setStatus(game.name, locationName, 'missed');
             trackProgression(locationName, 'missed');
         },
         async eliminateEncounter(locationName: string) {
@@ -65,7 +65,7 @@ export function useEncounterActions() {
             await setStatusAndClearPartySlot(locationName, 'released');
         },
         async trade(locationName: string, pokemonName: string) {
-            await mutations.setPokemon(game.id, locationName, pokemonName);
+            await mutations.setPokemon(game.name, locationName, pokemonName);
         },
         async chooseStarter(
             pokemonName: string,
@@ -73,18 +73,18 @@ export function useEncounterActions() {
         ) {
             const slot = nextFreePartySlot(game.encounters);
             await mutations.addRoll(
-                game.id,
+                game.name,
                 locationName,
                 pickEncounterSpecies(pokemonName),
                 'caught',
             );
             trackProgression('Starter', 'chosen');
             if (slot !== NO_PARTY_SLOT) {
-                await mutations.setPartySlot(game.id, locationName, slot);
+                await mutations.setPartySlot(game.name, locationName, slot);
             }
         },
         clearEncounter(locationName: string) {
-            return mutations.clear(game.id, locationName);
+            return mutations.clear(game.name, locationName);
         },
     };
 }

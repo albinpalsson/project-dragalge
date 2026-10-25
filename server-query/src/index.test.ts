@@ -1,7 +1,11 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 
-import { createQueryClient, invalidateQueries } from './index.ts';
+import {
+    createQueryClient,
+    invalidateQueries,
+    removeQueries,
+} from './index.ts';
 
 // Helper: subscribe to a key and collect all snapshots until unsubscribed
 function collectSnapshots<T>(
@@ -187,4 +191,41 @@ test("query: background refetch keeps status 'success' and preserves old data", 
     // last notification is the completed refetch
     assert.equal(statusDuringRefetch.at(-1), 'success');
     assert.equal(dataDuringRefetch.at(-1), 'v2');
+});
+
+test('query: removeQueries drops cached data and leaves other keys alone', async () => {
+    const client = createQueryClient();
+    const key = JSON.stringify(['rolls', 1]);
+    const otherKey = JSON.stringify(['rolls', 2]);
+
+    await client.fetch(key, () => Promise.resolve('old'));
+    await client.fetch(otherKey, () => Promise.resolve('other'));
+
+    let notified = 0;
+    const unsubscribe = client.subscribe(key, () => {
+        notified += 1;
+    });
+    removeQueries(client, { queryKey: ['rolls', 1] });
+    unsubscribe();
+
+    assert.equal(notified, 1);
+    assert.equal(client.getQuerySnapshot(key).status, 'pending');
+    assert.equal(client.getQuerySnapshot(key).data, undefined);
+    assert.equal(client.getQuerySnapshot(otherKey).data, 'other');
+});
+
+test('query: a fetch that resolves after removeQueries does not resurrect the entry', async () => {
+    const client = createQueryClient();
+    const key = JSON.stringify(['rolls', 1]);
+
+    const pending = client.fetch(key, () => Promise.resolve('stale'));
+    removeQueries(client, { queryKey: ['rolls', 1] });
+    await pending;
+
+    assert.equal(client.getQuerySnapshot(key).status, 'pending');
+    assert.equal(client.getQuerySnapshot(key).data, undefined);
+
+    const fresh = await client.fetch(key, () => Promise.resolve('fresh'));
+    assert.equal(fresh, 'fresh');
+    assert.equal(client.getQuerySnapshot(key).data, 'fresh');
 });

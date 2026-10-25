@@ -6,16 +6,16 @@ export const TYPE_CHART_QUERY_KEY = ['type-chart'];
 export const EVOLUTION_GRAPH_QUERY_KEY = ['evolution-graph'];
 export const POKEMON_TYPE_CATALOG_QUERY_KEY = ['pokemon-type-catalog'];
 
-export const gameRunQueryKey = (gameRunName: string) => [
+export const gameRunQueryKey = (gameName: string) => [
     'game-run',
-    gameRunName,
+    gameName,
 ];
 
-export const encounterRollsQueryKey = (gameRunId: number) => [
+export const encounterRollsQueryKey = (gameName: string) => [
     'encounter-rolls',
-    gameRunId,
+    gameName,
 ];
-export const banListQueryKey = (gameRunId: number) => ['ban-list', gameRunId];
+export const banListQueryKey = (gameName: string) => ['ban-list', gameName];
 
 export const locationEncountersQueryKey = (locationName: string) => [
     'location-encounters',
@@ -37,7 +37,7 @@ export const bossBattleRosterQueryKey = (battleName: string) => [
     battleName,
 ];
 
-export const bossBattleProgressQueryKey = (gameRunId: number) => [
+export const bossBattleProgressQueryKey = (gameName: string) => [
     'boss-battle-progress',
-    gameRunId,
+    gameName,
 ];

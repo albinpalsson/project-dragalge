@@ -1,6 +1,9 @@
 import { useMemo } from 'react';
 import { useMutation, useQuery, useClient } from '../../server-query';
-import { invalidateQueries } from '@project-dragalge/server-query';
+import {
+    invalidateQueries,
+    removeQueries,
+} from '@project-dragalge/server-query';
 import {
     createGame,
     deleteGame,
@@ -22,6 +25,10 @@ import {
     GAMES_QUERY_KEY,
     GAME_CARDS_QUERY_KEY,
     GAME_RUN_SNAPSHOTS_QUERY_KEY,
+    banListQueryKey,
+    bossBattleProgressQueryKey,
+    encounterRollsQueryKey,
+    gameRunQueryKey,
 } from '../../query-keys';
 import {
     PROGRESSION_ITEMS,
@@ -32,6 +39,7 @@ import {
     listEncounterRolls,
     listGames,
 } from '../../db/game-db/queries';
+import { clearPersistentGameState } from '../../hooks/usePersistentGameState';
 import { useEvolutionGraphQuery } from '../../hooks/useEvolutionGraphQuery';
 import { calculateProgression } from '../Game/progression/progression-tracker';
 
@@ -49,8 +57,8 @@ export function useGameRunSnapshotsQuery() {
             return Promise.all(
                 games.map(async (game) => {
                     const [encounterRolls, bossProgress] = await Promise.all([
-                        listEncounterRolls(game.id),
-                        listBossBattleProgress(game.id),
+                        listEncounterRolls(game.name),
+                        listBossBattleProgress(game.name),
                     ]);
                     return {
                         game,
@@ -72,7 +80,11 @@ export function useGameCards() {
             return undefined;
         }
 
-        return snapshotsQuery.data
+        // Newest game first.
+        return [...snapshotsQuery.data]
+            .sort(
+                (first, second) => second.game.createdAt - first.game.createdAt,
+            )
             .map((snapshot) => {
                 const obtained = snapshot.encounterRolls.filter(
                     (row) =>
@@ -111,8 +123,7 @@ export function useGameCards() {
                           ? ('won' as const)
                           : ('in-progress' as const),
                 };
-            })
-            .reverse();
+            });
     }, [snapshotsQuery.data, graphQuery.data]);
 
     const isError = snapshotsQuery.isError || graphQuery.isError;
@@ -151,8 +162,19 @@ export function useCreateGame() {
 export function useDeleteGame() {
     const client = useClient();
     return useMutation({
-        mutationFn: async (gameRunId: number) => {
-            await deleteGame(gameRunId);
+        mutationFn: async (gameName: string) => {
+            await deleteGame(gameName);
+            // Queries and persisted UI state are keyed by name, which a new game
+            // can reuse right away, so nothing of the deleted game may linger.
+            removeQueries(client, { queryKey: gameRunQueryKey(gameName) });
+            removeQueries(client, {
+                queryKey: encounterRollsQueryKey(gameName),
+            });
+            removeQueries(client, { queryKey: banListQueryKey(gameName) });
+            removeQueries(client, {
+                queryKey: bossBattleProgressQueryKey(gameName),
+            });
+            clearPersistentGameState(gameName);
             invalidateQueries(client, { queryKey: GAMES_QUERY_KEY });
             invalidateQueries(client, { queryKey: GAME_CARDS_QUERY_KEY });
             invalidateQueries(client, {
@@ -260,10 +282,10 @@ export function useCompletedGameChampionPresets() {
     };
 }
 
-export function useGameExport(gameRunId: number) {
+export function useGameExport(gameName: string) {
     return useQuery({
-        queryKey: ['game-export', gameRunId],
-        queryFn: () => buildExport(gameRunId),
+        queryKey: ['game-export', gameName],
+        queryFn: () => buildExport(gameName),
     });
 }
 

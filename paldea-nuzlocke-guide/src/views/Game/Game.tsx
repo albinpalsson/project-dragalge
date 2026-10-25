@@ -21,11 +21,11 @@ import {
 import { getMonoRunEligibleNames } from '../../utils/mono-run';
 
 interface GameProps {
-    gameRunId: string;
+    gameName: string;
 }
 
-export function Game({ gameRunId }: GameProps) {
-    const gameRunQuery = useGameRunQuery(gameRunId);
+export function Game({ gameName }: GameProps) {
+    const gameRunQuery = useGameRunQuery(gameName);
 
     if (gameRunQuery.isError) {
         return <p>Error loading game: {String(gameRunQuery.error)}</p>;
@@ -36,7 +36,7 @@ export function Game({ gameRunId }: GameProps) {
     }
 
     if (!gameRunQuery.data) {
-        return <p>Game not found: {gameRunId}</p>;
+        return <p>Game not found: {gameName}</p>;
     }
 
     return <LoadedGame game={gameRunQuery.data} />;
@@ -45,8 +45,8 @@ export function Game({ gameRunId }: GameProps) {
 type Game = NonNullable<ReturnType<typeof useGameRunQuery>['data']>;
 
 function LoadedGame({ game }: { game: Game }) {
-    const encounterRollsQuery = useEncounterRollsQuery(game.id);
-    const bossBattleProgressQuery = useBossBattleProgressQuery(game.id);
+    const encounterRollsQuery = useEncounterRollsQuery(game.name);
+    const bossBattleProgressQuery = useBossBattleProgressQuery(game.name);
     const banReasonResult = useGameBanReason(game);
 
     if (encounterRollsQuery.isError) {
@@ -86,7 +86,7 @@ function LoadedGame({ game }: { game: Game }) {
     return (
         <GameProvider
             value={{
-                id: game.id,
+                name: game.name,
                 run: game,
                 settings: game.settings,
                 randomizerMode: game.settings.randomizerMode,
@@ -94,7 +94,7 @@ function LoadedGame({ game }: { game: Game }) {
                 getBanReason: banReasonResult.getBanReason,
             }}
         >
-            <GameContent key={game.id} />
+            <GameContent key={game.name} />
         </GameProvider>
     );
 }
@@ -108,8 +108,8 @@ type GameBanReasonResult =
       };
 
 function useGameBanReason(game: Game): GameBanReasonResult {
-    const encounterRollsQuery = useEncounterRollsQuery(game.id);
-    const banListEntriesQuery = useBanListEntriesQuery(game.id);
+    const encounterRollsQuery = useEncounterRollsQuery(game.name);
+    const banListEntriesQuery = useBanListEntriesQuery(game.name);
     const evolutionGraphQuery = useEvolutionGraphQuery();
     const typeCatalogQuery = usePokemonTypeCatalogQuery();
 

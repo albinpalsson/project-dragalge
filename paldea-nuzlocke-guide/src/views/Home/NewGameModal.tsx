@@ -31,7 +31,7 @@ import type { AnalyticsConsent } from '../../analytics/consent';
 import { ConsentStep } from '../../analytics/ConsentStep';
 
 interface NewGameModalProps {
-    onOpenGame: (gameRunId: string) => void;
+    onOpenGame: (gameName: string) => void;
 }
 
 export function NewGameModal({ onOpenGame }: NewGameModalProps) {

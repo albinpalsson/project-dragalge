@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { getStoredGameRunId, setStoredGameRunId } from '../game-view-storage';
+import { getStoredGameName, setStoredGameName } from '../game-view-storage';
 import type { ActiveView } from '../router';
 
 interface UseViewNavigationOptions {
@@ -54,9 +54,9 @@ function getInitialActiveView(startAtHome: boolean): ActiveView {
         return historyView;
     }
 
-    const storedGameRunId = getStoredGameRunId();
+    const storedGameRunId = getStoredGameName();
     return storedGameRunId
-        ? { view: 'game', gameRunId: storedGameRunId }
+        ? { view: 'game', gameName: storedGameRunId }
         : { view: 'home' };
 }
 
@@ -65,7 +65,7 @@ function setActiveViewAndStorage(
     setActiveView: (view: ActiveView) => void,
 ): void {
     setActiveView(next);
-    setStoredGameRunId(next.view === 'game' ? next.gameRunId : null);
+    setStoredGameName(next.view === 'game' ? next.gameName : null);
 }
 
 function activeViewFromHistoryState(state: unknown): ActiveView | undefined {
@@ -73,7 +73,7 @@ function activeViewFromHistoryState(state: unknown): ActiveView | undefined {
         return undefined;
     }
 
-    const candidate = state as { view?: unknown; gameRunId?: unknown };
+    const candidate = state as { view?: unknown; gameName?: unknown };
     if (
         candidate.view === 'home' ||
         candidate.view === 'about' ||
@@ -81,8 +81,8 @@ function activeViewFromHistoryState(state: unknown): ActiveView | undefined {
     ) {
         return { view: candidate.view };
     }
-    if (candidate.view === 'game' && typeof candidate.gameRunId === 'string') {
-        return { view: 'game', gameRunId: candidate.gameRunId };
+    if (candidate.view === 'game' && typeof candidate.gameName === 'string') {
+        return { view: 'game', gameName: candidate.gameName };
     }
     return undefined;
 }

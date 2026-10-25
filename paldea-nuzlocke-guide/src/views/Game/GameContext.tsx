@@ -5,7 +5,7 @@ import type { RandomizerMode } from '../../randomizer';
 import type { GetBanReason } from '../../utils/ban-list';
 
 export interface GameContextValue {
-    id: number;
+    name: string;
     run: GameRun;
     settings: GameRun['settings'];
     randomizerMode: RandomizerMode;
@@ -23,7 +23,7 @@ interface GameProviderProps {
 export function GameProvider({ value, children }: GameProviderProps) {
     const memoizedValue = useMemo(
         () => ({
-            id: value.id,
+            name: value.name,
             run: value.run,
             settings: value.settings,
             randomizerMode: value.randomizerMode,
@@ -31,7 +31,7 @@ export function GameProvider({ value, children }: GameProviderProps) {
             getBanReason: value.getBanReason,
         }),
         [
-            value.id,
+            value.name,
             value.run,
             value.settings,
             value.randomizerMode,

@@ -5,13 +5,13 @@ import { Modal } from '../../components/Modal';
 import { useGameExport } from './queries';
 
 interface ExportGameModalProps {
-    gameRunId: number;
+    gameName: string;
     onClose: () => void;
 }
 
-export function ExportGameModal({ gameRunId, onClose }: ExportGameModalProps) {
+export function ExportGameModal({ gameName, onClose }: ExportGameModalProps) {
     const [copyError, setCopyError] = useState<string | undefined>();
-    const exportedGame = useGameExport(gameRunId);
+    const exportedGame = useGameExport(gameName);
     const exportLink = exportedGame.isSuccess
         ? buildExportLink(exportedGame.data)
         : undefined;

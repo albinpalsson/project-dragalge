@@ -101,13 +101,12 @@ export function GameCard({
             </div>
             {isExportOpen && (
                 <ExportGameModal
-                    gameRunId={game.id}
+                    gameName={game.name}
                     onClose={() => setExportOpen(false)}
                 />
             )}
             {isDeleteOpen && (
                 <DeleteGameModal
-                    gameRunId={game.id}
                     gameName={game.name}
                     onClose={() => setDeleteOpen(false)}
                 />

@@ -26,7 +26,7 @@ export function SouthProvinceAreaOne({ isNext }: SouthProvinceAreaOneProps) {
     const encountersQuery = useLocationEncounterCandidates(LOCATION_NAME);
     const encounterRoll = useEncounterRoll(LOCATION_NAME);
     const [includeOcean, setIncludeOcean] = usePersistentGameState(
-        game.id,
+        game.name,
         'SPA1-include-ocean-underwater',
         false,
     );

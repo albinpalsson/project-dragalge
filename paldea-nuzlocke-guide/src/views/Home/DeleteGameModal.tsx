@@ -4,20 +4,18 @@ import { Modal } from '../../components/Modal';
 import { useDeleteGame } from './queries';
 
 interface DeleteGameModalProps {
-    gameRunId: number;
     gameName: string;
     onClose: () => void;
 }
 
 export function DeleteGameModal({
-    gameRunId,
     gameName,
     onClose,
 }: DeleteGameModalProps) {
     const deleteGame = useDeleteGame();
 
     const confirmDelete = async () => {
-        await deleteGame.mutateAsync(gameRunId);
+        await deleteGame.mutateAsync(gameName);
         onClose();
     };
 

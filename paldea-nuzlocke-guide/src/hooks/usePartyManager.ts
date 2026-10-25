@@ -17,7 +17,7 @@ export function usePartyManager() {
         }
 
         if (row.status === 'eliminated') {
-            await mutations.setStatus(game.id, locationName, 'caught');
+            await mutations.setStatus(game.name, locationName, 'caught');
         }
         if (row.party_slot !== NO_PARTY_SLOT) {
             return true;
@@ -27,7 +27,7 @@ export function usePartyManager() {
         if (slot === NO_PARTY_SLOT) {
             return false;
         }
-        await mutations.setPartySlot(game.id, locationName, slot);
+        await mutations.setPartySlot(game.name, locationName, slot);
         return true;
     };
 
@@ -40,10 +40,10 @@ export function usePartyManager() {
         }
 
         if (row.party_slot !== NO_PARTY_SLOT) {
-            await mutations.setPartySlot(game.id, locationName, NO_PARTY_SLOT);
+            await mutations.setPartySlot(game.name, locationName, NO_PARTY_SLOT);
         }
         if (row.status === 'eliminated') {
-            await mutations.setStatus(game.id, locationName, 'caught');
+            await mutations.setStatus(game.name, locationName, 'caught');
         }
         return true;
     };
@@ -55,8 +55,8 @@ export function usePartyManager() {
         if (!row) {
             return false;
         }
-        await mutations.setPartySlot(game.id, locationName, NO_PARTY_SLOT);
-        await mutations.setStatus(game.id, locationName, 'eliminated');
+        await mutations.setPartySlot(game.name, locationName, NO_PARTY_SLOT);
+        await mutations.setStatus(game.name, locationName, 'eliminated');
         return true;
     };
 
@@ -65,7 +65,7 @@ export function usePartyManager() {
         freeSlot: nextFreePartySlot(game.encounters),
         addToParty: moveToParty,
         removeFromParty(locationName: string) {
-            return mutations.setPartySlot(game.id, locationName, NO_PARTY_SLOT);
+            return mutations.setPartySlot(game.name, locationName, NO_PARTY_SLOT);
         },
         async replacePartyMember(outgoing: string, incoming: string) {
             const row = game.encounters.find(
@@ -74,21 +74,21 @@ export function usePartyManager() {
             if (!row) {
                 return;
             }
-            await mutations.setPartySlot(game.id, outgoing, NO_PARTY_SLOT);
-            await mutations.setPartySlot(game.id, incoming, row.party_slot);
+            await mutations.setPartySlot(game.name, outgoing, NO_PARTY_SLOT);
+            await mutations.setPartySlot(game.name, incoming, row.party_slot);
         },
         async eliminate(locationName: string) {
-            await mutations.setPartySlot(game.id, locationName, NO_PARTY_SLOT);
-            await mutations.setStatus(game.id, locationName, 'eliminated');
+            await mutations.setPartySlot(game.name, locationName, NO_PARTY_SLOT);
+            await mutations.setStatus(game.name, locationName, 'eliminated');
         },
         revive(locationName: string) {
-            return mutations.setStatus(game.id, locationName, 'caught');
+            return mutations.setStatus(game.name, locationName, 'caught');
         },
         evolve(locationName: string, toPokemonName: string) {
-            return mutations.setPokemon(game.id, locationName, toPokemonName);
+            return mutations.setPokemon(game.name, locationName, toPokemonName);
         },
         devolve(locationName: string, toPokemonName: string) {
-            return mutations.setPokemon(game.id, locationName, toPokemonName);
+            return mutations.setPokemon(game.name, locationName, toPokemonName);
         },
         moveToParty,
         moveToBox,

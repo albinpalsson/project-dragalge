@@ -25,7 +25,7 @@ export function PocoPath({ isNext }: PocoPathProps) {
     const encountersQuery = useLocationEncounterCandidates(LOCATION_NAME);
     const encounterRoll = useEncounterRoll(LOCATION_NAME);
     const [includeOcean, setIncludeOcean] = usePersistentGameState(
-        game.id,
+        game.name,
         'poco-path-include-ocean',
         false,
     );

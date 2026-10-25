@@ -3,7 +3,6 @@ import {
     cardFor,
     chooseAnalyticsConsentIfPrompted,
     expandCollapsedSummary,
-    showMoreProgression,
     waitForPersistence,
 } from './helpers';
 
@@ -144,7 +143,6 @@ test('raid lookup preserves exact-form typing and forward-only future evolution 
     page,
 }) => {
     await createMonoGame(page, 'mono-raid-lookup-run', 'fire');
-    await showMoreProgression(page);
     await expandCollapsedSummary(page, 'Tera Raid \u2605');
     const picker = page.getByRole('combobox', {
         name: 'Add a 1-star Tera Raid Pok\u00e9mon',

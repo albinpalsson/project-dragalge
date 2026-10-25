@@ -9,7 +9,6 @@ import {
     resolveEncounter,
     rollEncounter,
     selectBoxPokemon,
-    showMoreProgression,
     waitForPersistence,
 } from './helpers';
 
@@ -196,7 +195,6 @@ test('evolution preserves the original grouped encounter name and icon', async (
 }) => {
     await page.goto('/');
     await createGame(page, 'original-form-run', { preset: 'Clean' });
-    await showMoreProgression(page);
     const location = 'South Province (A2)';
     const original = 'Flab\u00e9b\u00e9 (Red Flower)';
     const group = 'Flab\u00e9b\u00e9';
@@ -241,7 +239,6 @@ test('evolution preserves the original grouped encounter name and icon', async (
 
     await waitForPersistence(page);
     await page.reload();
-    await showMoreProgression(page);
     await expect(card.getByText(group, { exact: true })).toBeVisible();
     await expect(icon).toHaveAttribute('src', originalSource);
     await expandCollapsedSummary(page, location);
@@ -265,21 +262,6 @@ test('available Paldea trade offers replace and restore the current encounter Po
     await createGame(page, 'trade-run', { preset: 'Clean' });
 
     const openEncounter = async (locationName: string) => {
-        for (let attempt = 0; attempt < 20; attempt += 1) {
-            const target = cardFor(page, locationName).first();
-            if (await target.isVisible()) {
-                break;
-            }
-            const showMore = page.getByRole('button', {
-                name: 'Show more',
-                exact: true,
-            });
-            if ((await showMore.count()) === 0) {
-                throw new Error(`Could not reveal ${locationName}`);
-            }
-            await showMore.click();
-        }
-
         let card = cardFor(page, locationName).first();
         await expect(card).toBeVisible();
         if (

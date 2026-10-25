@@ -9,7 +9,7 @@ import {
 export function useProgressionTracker(): ProgressionTracker {
     const game = useGame();
     const starter = useStarter();
-    const bossProgressQuery = useBossBattleProgressQuery(game.id);
+    const bossProgressQuery = useBossBattleProgressQuery(game.name);
     const bossProgress = bossProgressQuery.data ?? [];
     const state = {
         settings: game.settings,

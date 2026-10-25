@@ -73,16 +73,6 @@ export async function createGameWithTeraRaids(
     await expect(cardFor(page, 'Starter').first()).toBeVisible();
 }
 
-export async function showMoreProgression(page: Page): Promise<void> {
-    const showMore = page.getByRole('button', {
-        name: 'Show more',
-        exact: true,
-    });
-    if (await showMore.count()) {
-        await showMore.click();
-    }
-}
-
 export async function catchTeraRaid(
     page: Page,
     stars: number,
@@ -299,4 +289,20 @@ export async function dragBoxPokemon(
         { steps: 8 },
     );
     await page.mouse.up();
+}
+
+// Matches the exact game name, so `run` does not also match `run:2`.
+function gameCardNamed(page: Page, name: string) {
+    return page
+        .locator('li')
+        .filter({ has: page.getByText(name, { exact: true }) });
+}
+
+export async function deleteGameFromHome(page: Page, name: string) {
+    const card = gameCardNamed(page, name);
+    await card.getByRole('button', { name: 'Game options' }).click();
+    await page.getByRole('button', { name: 'Delete game' }).click();
+    await page.getByRole('button', { name: 'Delete', exact: true }).click();
+    await expect(page.getByRole('dialog')).toBeHidden();
+    await expect(gameCardNamed(page, name)).toHaveCount(0);
 }

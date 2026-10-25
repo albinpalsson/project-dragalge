@@ -4,7 +4,6 @@ import {
     createGame,
     expandCollapsedSummary,
     expectNextStep,
-    showMoreProgression,
 } from './helpers';
 
 test('strong trainer cards de-emphasize collapsed summaries and show rosters', async ({
@@ -23,7 +22,6 @@ test('strong trainer cards de-emphasize collapsed summaries and show rosters', a
     });
 
     await expectNextStep(page, 'Starter');
-    await showMoreProgression(page);
 
     const trainers = [
         ['Hiker Nerea', 'South Province (A5)', 'Sudowoodo'],

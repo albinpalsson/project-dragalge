@@ -19,7 +19,7 @@ export interface UseBossActionsResult {
 
 export function useBossActions(): UseBossActionsResult {
     const game = useGame();
-    const bossProgressQuery = useBossBattleProgressQuery(game.id);
+    const bossProgressQuery = useBossBattleProgressQuery(game.name);
     const setResultMutation = useSetBossBattleResultMutation();
     const clearMutation = useClearBossBattleResultMutation();
 
@@ -33,7 +33,7 @@ export function useBossActions(): UseBossActionsResult {
     return {
         resolveBattle: async (battleName: string, result: 'won' | 'lost') => {
             await setResultMutation.mutateAsync({
-                gameRunId: game.id,
+                gameName: game.name,
                 battleName,
                 result,
             });
@@ -45,7 +45,7 @@ export function useBossActions(): UseBossActionsResult {
         },
         clearBattle: async (battleName: string) => {
             await clearMutation.mutateAsync({
-                gameRunId: game.id,
+                gameName: game.name,
                 battleName,
             });
         },

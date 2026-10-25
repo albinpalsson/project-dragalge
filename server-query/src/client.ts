@@ -84,8 +84,12 @@ export class QueryClient {
             status: current?.status === 'success' ? 'success' : 'pending',
         });
 
-        const promise = queryFn().then(
+        const promise: Promise<TData> = queryFn().then(
             (data) => {
+                if (this.inflightPromises.get(key) !== promise) {
+                    // Removed while in flight; do not resurrect the entry.
+                    return data;
+                }
                 this.setQueryState(key, {
                     status: 'success',
                     data,
@@ -97,6 +101,9 @@ export class QueryClient {
                 return data;
             },
             (error) => {
+                if (this.inflightPromises.get(key) !== promise) {
+                    throw error;
+                }
                 this.setQueryState(key, {
                     status: 'error',
                     data: undefined,
@@ -148,6 +155,13 @@ export class QueryClient {
         }
         for (const refetch of this.queryRefetchers.get(key) ?? []) {
             refetch();
+        }
+    }
+
+    remove(key: string): void {
+        this.inflightPromises.delete(key);
+        if (this.queryStates.delete(key)) {
+            this.notify(key);
         }
     }
 

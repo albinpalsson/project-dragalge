@@ -5,7 +5,6 @@ import {
     expandCollapsedSummary,
     boxSection,
     openBox,
-    showMoreProgression,
 } from './helpers';
 
 test('raid suggestions honor live bans and grouped catches keep concrete forms', async ({
@@ -14,7 +13,6 @@ test('raid suggestions honor live bans and grouped catches keep concrete forms',
     await page.goto('/');
     await createGameWithTeraRaids(page, 'raid-group-run', 'unlimited');
 
-    await showMoreProgression(page);
     await expandCollapsedSummary(page, 'Tera Raid ★');
     const card = cardFor(page, 'Tera Raid ★').first();
     const addInput = card.getByRole('combobox', {

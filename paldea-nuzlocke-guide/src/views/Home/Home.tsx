@@ -6,7 +6,7 @@ import { NewGameModal } from './NewGameModal';
 import { useGameCards } from './queries';
 
 interface HomeProps {
-    onOpenGame: (gameRunId: string) => void;
+    onOpenGame: (gameName: string) => void;
     onOpenAbout: () => void;
     onOpenLicenses: () => void;
 }
@@ -52,7 +52,7 @@ export function Home({ onOpenGame, onOpenAbout, onOpenLicenses }: HomeProps) {
                 {gameCards.isSuccess && (
                     <ul className={gamesList}>
                         {(gameCards.data ?? []).map((card) => (
-                            <li className={gameListItem} key={card.game.id}>
+                            <li className={gameListItem} key={card.game.name}>
                                 <GameCard
                                     game={card.game}
                                     obtained={card.obtained}

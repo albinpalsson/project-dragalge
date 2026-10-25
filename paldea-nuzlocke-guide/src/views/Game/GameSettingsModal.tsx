@@ -19,7 +19,7 @@ import {
 export function GameSettingsModal() {
     const game = useGame();
     const [isOpen, setIsOpen] = useState(false);
-    const banListEntriesQuery = useBanListEntriesQuery(game.id);
+    const banListEntriesQuery = useBanListEntriesQuery(game.name);
     const pokemonQuery = usePokemonListQuery();
     const presets = useBanListPresetOptions();
     const updateSettingsMutation = useUpdateGameRunSettingsMutation();
@@ -49,8 +49,7 @@ export function GameSettingsModal() {
         setDraft(committedValue);
         const { banList, ...settings } = committedValue;
         void updateSettingsMutation.mutateAsync({
-            gameRunId: game.id,
-            gameRunName: game.run.name,
+            gameName: game.name,
             settings,
             banListNames: banList,
         });

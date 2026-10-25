@@ -36,24 +36,24 @@ import {
 import { filterEncountersForVariant } from '../../utils/game-variant';
 import { useGame } from './GameContext';
 
-export function useGameRunQuery(gameRunName: string) {
+export function useGameRunQuery(gameName: string) {
     return useQuery({
-        queryKey: gameRunQueryKey(gameRunName),
-        queryFn: () => getGameRun(gameRunName),
+        queryKey: gameRunQueryKey(gameName),
+        queryFn: () => getGameRun(gameName),
     });
 }
 
-export function useEncounterRollsQuery(gameRunId: number) {
+export function useEncounterRollsQuery(gameName: string) {
     return useQuery({
-        queryKey: encounterRollsQueryKey(gameRunId),
-        queryFn: () => listEncounterRolls(gameRunId),
+        queryKey: encounterRollsQueryKey(gameName),
+        queryFn: () => listEncounterRolls(gameName),
     });
 }
 
-export function useBanListEntriesQuery(gameRunId: number) {
+export function useBanListEntriesQuery(gameName: string) {
     return useQuery({
-        queryKey: banListQueryKey(gameRunId),
-        queryFn: () => listBanListEntries(gameRunId),
+        queryKey: banListQueryKey(gameName),
+        queryFn: () => listBanListEntries(gameName),
     });
 }
 
@@ -108,14 +108,14 @@ export function useTypeChartQuery() {
     });
 }
 
-export function useBossBattleProgressQuery(gameRunId: number) {
+export function useBossBattleProgressQuery(gameName: string) {
     return useQuery({
-        queryKey: bossBattleProgressQueryKey(gameRunId),
-        queryFn: () => listBossBattleProgress(gameRunId),
+        queryKey: bossBattleProgressQueryKey(gameName),
+        queryFn: () => listBossBattleProgress(gameName),
     });
 }
 
-function useRollMutation<TInput extends { gameRunId: number }, TResult>(
+function useRollMutation<TInput extends { gameName: string }, TResult>(
     mutationFn: (input: TInput) => Promise<TResult>,
 ) {
     const client = useClient();
@@ -123,7 +123,7 @@ function useRollMutation<TInput extends { gameRunId: number }, TResult>(
         mutationFn: async (input: TInput) => {
             const result = await mutationFn(input);
             invalidateQueries(client, {
-                queryKey: encounterRollsQueryKey(input.gameRunId),
+                queryKey: encounterRollsQueryKey(input.gameName),
             });
             invalidateQueries(client, { queryKey: GAME_CARDS_QUERY_KEY });
             invalidateQueries(client, {
@@ -162,14 +162,14 @@ export function useUpdateGameRunSettingsMutation() {
     const client = useClient();
     return useMutation({
         mutationFn: async (
-            input: UpdateGameRunSettingsInput & { gameRunName: string },
+            input: UpdateGameRunSettingsInput & { gameName: string },
         ) => {
             await updateGameRunSettings(input);
             invalidateQueries(client, {
-                queryKey: gameRunQueryKey(input.gameRunName),
+                queryKey: gameRunQueryKey(input.gameName),
             });
             invalidateQueries(client, {
-                queryKey: banListQueryKey(input.gameRunId),
+                queryKey: banListQueryKey(input.gameName),
             });
             invalidateQueries(client, {
                 queryKey: GAME_CARDS_QUERY_KEY,
@@ -182,7 +182,7 @@ export function useUpdateGameRunSettingsMutation() {
 }
 
 function useBossBattleResultMutation<
-    TInput extends { gameRunId: number },
+    TInput extends { gameName: string },
     TResult,
 >(mutationFn: (input: TInput) => Promise<TResult>) {
     const client = useClient();
@@ -190,7 +190,7 @@ function useBossBattleResultMutation<
         mutationFn: async (input: TInput) => {
             const result = await mutationFn(input);
             invalidateQueries(client, {
-                queryKey: bossBattleProgressQueryKey(input.gameRunId),
+                queryKey: bossBattleProgressQueryKey(input.gameName),
             });
             invalidateQueries(client, { queryKey: GAME_CARDS_QUERY_KEY });
             invalidateQueries(client, {

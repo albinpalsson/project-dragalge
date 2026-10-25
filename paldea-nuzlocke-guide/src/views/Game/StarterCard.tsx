@@ -41,7 +41,7 @@ export function StarterCard({ isNext }: StarterCardProps) {
 
     const resetStarter = () => {
         void clearStarterMutation.mutateAsync({
-            gameRunId: game.id,
+            gameName: game.name,
             locationName: STARTER_LOCATION_NAME,
         });
     };

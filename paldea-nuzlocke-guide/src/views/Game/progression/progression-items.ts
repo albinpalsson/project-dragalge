@@ -96,7 +96,6 @@ export interface ProgressionItemState {
 interface ProgressionBaseItem {
     key: string;
     Component: ComponentType<ProgressionItemProps>;
-    checkpointBefore?: boolean;
     isVisible?: (state: ProgressionItemState) => boolean;
     countsTowardProgress?: (state: ProgressionItemState) => boolean;
 }
@@ -180,7 +179,6 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
     {
         key: 'pokemon-league-paldea',
         kind: 'encounter',
-        checkpointBefore: true,
         locationName: 'Pokemon League',
         Component: PokemonLeaguePaldea,
     },
@@ -215,7 +213,6 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
     {
         key: 'south-province-area-three',
         kind: 'encounter',
-        checkpointBefore: true,
         locationName: 'South Province (Area Three)',
         Component: SouthProvinceAreaThree,
     },
@@ -242,7 +239,6 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
     {
         key: 'south-province-area-four',
         kind: 'encounter',
-        checkpointBefore: true,
         locationName: 'South Province (Area Four)',
         Component: SouthProvinceAreaFour,
     },
@@ -285,7 +281,6 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
         key: 'south-paldean-sea',
         kind: 'encounter',
         locationName: 'South Paldean Sea',
-        checkpointBefore: true,
         Component: SouthPaldeanSea,
     },
     {
@@ -353,7 +348,6 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
     {
         key: 'asado-desert',
         kind: 'encounter',
-        checkpointBefore: true,
         locationName: 'Asado Desert',
         Component: AsadoDesert,
     },
@@ -425,7 +419,6 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
     {
         key: 'tagtree-thicket',
         kind: 'encounter',
-        checkpointBefore: true,
         locationName: 'Tagtree Thicket',
         Component: TagtreeThicket,
     },
@@ -472,7 +465,6 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
     {
         key: 'glaseado-mountain',
         kind: 'encounter',
-        checkpointBefore: true,
         locationName: 'Glaseado Mountain',
         Component: GlaseadoMountain,
     },
@@ -506,7 +498,6 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
     {
         key: 'south-province-area-six',
         kind: 'encounter',
-        checkpointBefore: true,
         locationName: 'South Province (Area Six)',
         Component: SouthProvinceAreaSix,
     },
@@ -540,7 +531,6 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
     {
         key: 'north-province-area-three',
         kind: 'encounter',
-        checkpointBefore: true,
         locationName: 'North Province (Area Three)',
         Component: NorthProvinceAreaThree,
     },
@@ -566,7 +556,6 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
     {
         key: 'north-province-area-one',
         kind: 'encounter',
-        checkpointBefore: true,
         locationName: 'North Province (Area One)',
         Component: NorthProvinceAreaOne,
     },

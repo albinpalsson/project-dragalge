@@ -17,23 +17,22 @@ export function ProgressionTimeline() {
             encounters: game.encounters,
         }),
     );
-    // Keep canonical bounds stable for this visit as settings change visibility.
-    const [windowBounds] = useState(() =>
-        calculateProgressionWindow(
+    // Keep the canonical start stable for this visit as settings change visibility.
+    const [startIndex] = useState(() =>
+        calculateProgressionStart(
             visibleItems,
             progression.nextKey,
             progression.firstUnresolvedKey,
         ),
     );
     const [showPrevious, setShowPrevious] = useState(false);
-    const [showMore, setShowMore] = useState(false);
-    const { previousItems, windowItems, futureItems } =
-        partitionProgressionItems(visibleItems, windowBounds);
-    const itemsToRender = [
-        ...(showPrevious ? previousItems : []),
-        ...windowItems,
-        ...(showMore ? futureItems : []),
-    ];
+    const { previousItems, currentItems } = partitionProgressionItems(
+        visibleItems,
+        startIndex,
+    );
+    const itemsToRender = showPrevious
+        ? [...previousItems, ...currentItems]
+        : currentItems;
 
     return (
         <>
@@ -58,62 +57,40 @@ export function ProgressionTimeline() {
                     </li>
                 ))}
             </ol>
-            {futureItems.length > 0 && !showMore && (
-                <button
-                    type="button"
-                    className={progressionReveal}
-                    onClick={() => setShowMore(true)}
-                >
-                    <span>Show more</span>
-                </button>
-            )}
         </>
     );
 }
 
 function partitionProgressionItems(
     visibleItems: IndexedProgressionItem[],
-    windowBounds: ProgressionWindowBounds,
+    startIndex: number | undefined,
 ): {
     previousItems: ProgressionItem[];
-    windowItems: ProgressionItem[];
-    futureItems: ProgressionItem[];
+    currentItems: ProgressionItem[];
 } {
     const previousItems: ProgressionItem[] = [];
-    const windowItems: ProgressionItem[] = [];
-    const futureItems: ProgressionItem[] = [];
+    const currentItems: ProgressionItem[] = [];
 
-    if (
-        windowBounds.startIndex === undefined ||
-        windowBounds.endIndex === undefined
-    ) {
-        return { previousItems, windowItems, futureItems };
+    if (startIndex === undefined) {
+        return { previousItems, currentItems };
     }
 
     for (const { item, canonicalIndex } of visibleItems) {
-        if (canonicalIndex < windowBounds.startIndex) {
+        if (canonicalIndex < startIndex) {
             previousItems.push(item);
-        } else if (canonicalIndex <= windowBounds.endIndex) {
-            windowItems.push(item);
         } else {
-            futureItems.push(item);
+            currentItems.push(item);
         }
     }
 
-    return { previousItems, windowItems, futureItems };
+    return { previousItems, currentItems };
 }
 
 const ITEMS_BEFORE_NEXT_STEP = 2;
-const MINIMUM_WINDOW_SIZE = 4;
 
 interface IndexedProgressionItem {
     item: ProgressionItem;
     canonicalIndex: number;
-}
-
-interface ProgressionWindowBounds {
-    startIndex: number | undefined;
-    endIndex: number | undefined;
 }
 
 function indexProgressionItems(
@@ -125,13 +102,13 @@ function indexProgressionItems(
     }));
 }
 
-function calculateProgressionWindow(
+function calculateProgressionStart(
     visibleItems: IndexedProgressionItem[],
     nextKey: string | undefined,
     firstUnresolvedKey: string | undefined,
-): ProgressionWindowBounds {
+): number | undefined {
     if (visibleItems.length === 0) {
-        return { startIndex: undefined, endIndex: undefined };
+        return undefined;
     }
 
     const matchedNextIndex = visibleItems.findIndex(
@@ -147,32 +124,8 @@ function calculateProgressionWindow(
         (firstUnresolvedIndex < 0 ? nextIndex : firstUnresolvedIndex) -
             ITEMS_BEFORE_NEXT_STEP,
     );
-    const checkpointEndIndices: number[] = [];
 
-    for (
-        let index = nextIndex + 1;
-        index < visibleItems.length && checkpointEndIndices.length < 2;
-        index += 1
-    ) {
-        if (visibleItems[index].item.checkpointBefore) {
-            checkpointEndIndices.push(index - 1);
-        }
-    }
-
-    const [firstCheckpointEndIndex, secondCheckpointEndIndex] =
-        checkpointEndIndices;
-    const lastVisibleIndex = visibleItems.length - 1;
-    const endVisibleIndex =
-        firstCheckpointEndIndex === undefined
-            ? lastVisibleIndex
-            : firstCheckpointEndIndex - nextIndex + 1 >= MINIMUM_WINDOW_SIZE
-              ? firstCheckpointEndIndex
-              : (secondCheckpointEndIndex ?? lastVisibleIndex);
-
-    return {
-        startIndex: visibleItems[startVisibleIndex].canonicalIndex,
-        endIndex: visibleItems[endVisibleIndex].canonicalIndex,
-    };
+    return visibleItems[startVisibleIndex].canonicalIndex;
 }
 
 const cardList = css`

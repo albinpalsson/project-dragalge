@@ -26,7 +26,7 @@ export function App() {
     });
     const activeViewKey =
         activeView.view === 'game'
-            ? `${activeView.view}:${activeView.gameRunId}`
+            ? `${activeView.view}:${activeView.gameName}`
             : activeView.view;
     const previousActiveViewKey = useRef(activeViewKey);
 
@@ -90,8 +90,8 @@ export function App() {
                 <main>
                     {activeView.view === 'home' && (
                         <Home
-                            onOpenGame={(gameRunId) =>
-                                navigate({ view: 'game', gameRunId })
+                            onOpenGame={(gameName) =>
+                                navigate({ view: 'game', gameName })
                             }
                             onOpenAbout={() => navigate({ view: 'about' })}
                             onOpenLicenses={() =>
@@ -100,7 +100,7 @@ export function App() {
                         />
                     )}
                     {activeView.view === 'game' && (
-                        <Game gameRunId={activeView.gameRunId} />
+                        <Game gameName={activeView.gameName} />
                     )}
                     {activeView.view === 'about' && (
                         <About

@@ -25,7 +25,7 @@ export function WestProvinceAreaOne({ isNext }: WestProvinceAreaOneProps) {
     const encountersQuery = useLocationEncounterCandidates(LOCATION_NAME);
     const encounterRoll = useEncounterRoll(LOCATION_NAME);
     const [excludeOcean, setExcludeOcean] = usePersistentGameState(
-        game.id,
+        game.name,
         'west-province-area-one-exclude-ocean',
         true,
     );

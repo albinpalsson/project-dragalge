@@ -22,3 +22,10 @@ export function invalidateQueries(
 ): void {
     client.invalidate(JSON.stringify(filters.queryKey));
 }
+
+export function removeQueries(
+    client: QueryClient,
+    filters: InvalidateFilters,
+): void {
+    client.remove(JSON.stringify(filters.queryKey));
+}
