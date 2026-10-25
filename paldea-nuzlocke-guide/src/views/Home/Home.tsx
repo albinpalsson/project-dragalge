@@ -1,5 +1,6 @@
 import { css, cx } from '@project-dragalge/css-in-js';
 import { textLink } from '../../components/text-link';
+import { pokemonIconSrc, toIconSlug } from '../../pokemon-icon';
 import { GameCard } from './GameCard';
 import { ImportGameModal } from './ImportGameModal';
 import { NewGameModal } from './NewGameModal';
@@ -17,28 +18,7 @@ export function Home({ onOpenGame, onOpenAbout, onOpenLicenses }: HomeProps) {
 
     return (
         <div className={content}>
-            {hasNoGames && (
-                <section className={welcome} aria-labelledby="welcome-title">
-                    <p>
-                        Guide your Pokemon Scarlet or Violet Nuzlocke with a
-                        suggested route for encounters and boss battles, plus
-                        an encounter randomizer to help keep your catches
-                        unpredictable.
-                    </p>
-                    <p>
-                        Your runs are saved in this browser. No account or
-                        sign-up is required, and you can transfer runs between
-                        devices using manual export/import.&nbsp;
-                    <button
-                        className={textLink}
-                        type="button"
-                        onClick={onOpenAbout}
-                    >
-                        Read more about the guide
-                    </button>
-                    </p>
-                </section>
-            )}
+            {hasNoGames && <WelcomeSection onOpenAbout={onOpenAbout} />}
 
             <NewGameModal onOpenGame={onOpenGame} />
             <ImportGameModal />
@@ -66,17 +46,13 @@ export function Home({ onOpenGame, onOpenAbout, onOpenLicenses }: HomeProps) {
                         ))}
                         {ghostCardSlots
                             .slice(gameCards.data?.length ?? 0)
-                            .map((slot) => (
-                                <li
-                                    className={cx(
-                                        gameListItem,
-                                        slot.hideOnSmall && hideOnSmallGhost,
-                                    )}
+                            .map((slot, index) => (
+                                <GhostCardItem
                                     key={slot.id}
-                                    aria-hidden="true"
-                                >
-                                    <div className={ghostCard} />
-                                </li>
+                                    hideOnSmall={slot.hideOnSmall}
+                                    isFirst={index === 0}
+                                    hasNoGames={hasNoGames}
+                                />
                             ))}
                     </ul>
                 )}
@@ -95,6 +71,72 @@ export function Home({ onOpenGame, onOpenAbout, onOpenLicenses }: HomeProps) {
                 for details.
             </p>
         </div>
+    );
+}
+
+function WelcomeSection({ onOpenAbout }: { onOpenAbout: () => void }) {
+    return (
+        <section className={welcome} aria-labelledby="welcome-title">
+            <p>
+                Guide your Scarlet/Violet Nuzlocke with a suggested
+                route for encounters and boss battles, tracker, and an encounter
+                randomizer to help keep your catches unpredictable.
+            </p>
+            <p>
+                Your runs are saved in this browser. No account or sign-up is
+                required.&nbsp;
+                <button
+                    className={textLink}
+                    type="button"
+                    onClick={onOpenAbout}
+                >
+                    Read more
+                </button>
+            </p>
+        </section>
+    );
+}
+
+interface GhostCardItemProps {
+    hideOnSmall: boolean;
+    isFirst: boolean;
+    hasNoGames: boolean;
+}
+
+function GhostCardItem({ hideOnSmall, isFirst, hasNoGames }: GhostCardItemProps) {
+    return (
+        <li
+            className={cx(gameListItem, hideOnSmall && hideOnSmallGhost)}
+            aria-hidden="true"
+        >
+            <div className={ghostCard}>
+                {isFirst && hasNoGames && (
+                    <>
+                        <span className={ghostText}>
+                            No game yet - placeholder
+                        </span>
+                        <GhostIcons />
+                    </>
+                )}
+            </div>
+        </li>
+    );
+}
+
+function GhostIcons() {
+    return (
+        <span className={ghostIcons}>
+            {ghostPokemon.map((name) => (
+                <span className={ghostIconSlot} key={name}>
+                    <img
+                        className={ghostIcon}
+                        src={pokemonIconSrc(toIconSlug(name))}
+                        alt=""
+                        loading="lazy"
+                    />
+                </span>
+            ))}
+        </span>
     );
 }
 
@@ -131,7 +173,7 @@ const welcome = css`
 const notice = css`
     margin: 0;
     color: var(--color-text-muted);
-    font-size: var(--font-size-sm);
+    font-size: var(--font-size-xs);
 `;
 
 const gamesList = css`
@@ -159,6 +201,9 @@ const ghostCardSlots = [
     { id: 'ghost-5', hideOnSmall: true },
 ] as const;
 
+// Listed right to left, matching the right-to-left icon grid.
+const ghostPokemon = ['Bellibolt', 'Maushold', 'Tinkatuff'] as const;
+
 const hideOnSmallGhost = css`
     @media (max-width: 34rem) {
         display: none;
@@ -170,7 +215,46 @@ const ghostCard = css`
     max-width: 36rem;
     min-height: 24rem;
     background: color-mix(in srgb, var(--color-surface) 45%, transparent);
-    border: 0.1rem solid color-mix(in srgb, var(--color-border) 55%, transparent);
+    border: 0.1rem dashed color-mix(in srgb, var(--color-border) 55%, transparent);
     border-radius: var(--radius-md);
     box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-2);
+
+    img {
+        opacity: 0.7;
+    }
+`;
+
+const ghostText = css`
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+`;
+
+const ghostIcons = css`
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    align-items: center;
+    align-self: center;
+    width: min(100%, 34rem);
+    margin-top: auto;
+    direction: rtl;
+    gap: var(--space-1);
+`;
+
+const ghostIconSlot = css`
+    display: grid;
+    place-items: center;
+    min-width: 0;
+    aspect-ratio: 1;
+    direction: ltr;
+`;
+
+const ghostIcon = css`
+    display: block;
+    width: 100%;
+    max-width: 5.2rem;
+    aspect-ratio: 1;
+    object-fit: contain;
 `;
