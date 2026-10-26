@@ -291,6 +291,52 @@ export async function dragBoxPokemon(
     await page.mouse.up();
 }
 
+// Needs a `hasTouch` context. Real touch input goes through CDP so the app
+// sees `pointerType: 'touch'` and the browser applies its scroll handling.
+export async function touchDragBoxPokemon(
+    page: Page,
+    from: 'Party' | 'Box' | 'Death Box',
+    pokemonName: string,
+    to: 'Party' | 'Box' | 'Death Box',
+    { holdMs }: { holdMs: number },
+) {
+    const iconBox = await boxSection(page, from)
+        .getByRole('button', { name: pokemonName })
+        .boundingBox();
+    const targetBox = await boxSection(page, to).boundingBox();
+    if (!iconBox || !targetBox) {
+        throw new Error('Unable to determine drag positions for Box sections');
+    }
+
+    const start = {
+        x: iconBox.x + iconBox.width / 2,
+        y: iconBox.y + iconBox.height / 2,
+    };
+    const end = {
+        x: targetBox.x + targetBox.width / 2,
+        y: targetBox.y + targetBox.height / 2,
+    };
+    const cdp = await page.context().newCDPSession(page);
+    const touch = (
+        type: 'touchStart' | 'touchMove' | 'touchEnd',
+        point?: { x: number; y: number },
+    ) =>
+        cdp.send('Input.dispatchTouchEvent', {
+            type,
+            touchPoints: point ? [point] : [],
+        });
+
+    await touch('touchStart', start);
+    await page.waitForTimeout(holdMs);
+    for (let step = 1; step <= 8; step++) {
+        await touch('touchMove', {
+            x: start.x + ((end.x - start.x) * step) / 8,
+            y: start.y + ((end.y - start.y) * step) / 8,
+        });
+    }
+    await touch('touchEnd');
+}
+
 // Matches the exact game name, so `run` does not also match `run:2`.
 function gameCardNamed(page: Page, name: string) {
     return page

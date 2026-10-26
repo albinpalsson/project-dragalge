@@ -17,6 +17,8 @@ interface DragStart {
     startX: number;
     startY: number;
     hasMoved: boolean;
+    isTouch: boolean;
+    isArmed: boolean;
 }
 
 interface DragPreview {
@@ -26,7 +28,13 @@ interface DragPreview {
 }
 
 const DRAG_THRESHOLD_PX = 6;
+const LONG_PRESS_MS = 250;
 const BOX_SECTION_ATTRIBUTE = 'data-box-section-kind';
+
+// Module-level so the same reference is removed after re-renders.
+function blockTouchScroll(event: TouchEvent) {
+    event.preventDefault();
+}
 
 export function useBoxDrag({ onDropPokemon }: BoxDragInput) {
     const dragStart = useRef<DragStart | null>(null);
@@ -35,7 +43,11 @@ export function useBoxDrag({ onDropPokemon }: BoxDragInput) {
     const [dropTarget, setDropTarget] = useState<BoxSectionKind>();
     const [preview, setPreview] = useState<DragPreview>();
 
+    const longPressTimer = useRef<number | undefined>(undefined);
+
     const cleanup = () => {
+        window.clearTimeout(longPressTimer.current);
+        window.removeEventListener('touchmove', blockTouchScroll);
         dragStart.current = null;
         setDraggingLocation(undefined);
         setDropTarget(undefined);
@@ -78,15 +90,45 @@ export function useBoxDrag({ onDropPokemon }: BoxDragInput) {
                     if (event.button !== 0) {
                         return;
                     }
-                    event.currentTarget.setPointerCapture(event.pointerId);
-                    dragStart.current = {
+                    const target = event.currentTarget;
+                    const isTouch = event.pointerType === 'touch';
+                    const drag: DragStart = {
                         locationName: row.location_name,
                         pokemonName: row.pokemon_name,
                         pointerId: event.pointerId,
                         startX: event.clientX,
                         startY: event.clientY,
                         hasMoved: false,
+                        isTouch,
+                        isArmed: !isTouch,
                     };
+                    dragStart.current = drag;
+
+                    if (!isTouch) {
+                        target.setPointerCapture(event.pointerId);
+                        return;
+                    }
+
+                    // Touch needs a long press so swiping over icons still scrolls.
+                    longPressTimer.current = window.setTimeout(() => {
+                        if (dragStart.current !== drag) {
+                            return;
+                        }
+                        drag.isArmed = true;
+                        target.setPointerCapture(drag.pointerId);
+                        window.addEventListener(
+                            'touchmove',
+                            blockTouchScroll,
+                            { passive: false },
+                        );
+                        navigator.vibrate?.(10);
+                        setDraggingLocation(drag.locationName);
+                        setPreview({
+                            pokemonName: drag.pokemonName,
+                            x: drag.startX,
+                            y: drag.startY,
+                        });
+                    }, LONG_PRESS_MS);
                 },
                 onPointerMove(event: PointerEvent<HTMLButtonElement>) {
                     const drag = dragStart.current;
@@ -99,6 +141,11 @@ export function useBoxDrag({ onDropPokemon }: BoxDragInput) {
                         event.clientY - drag.startY,
                     );
                     if (!drag.hasMoved && distance < DRAG_THRESHOLD_PX) {
+                        return;
+                    }
+                    if (!drag.isArmed) {
+                        // Moved before the long press fired: let the page scroll.
+                        cleanup();
                         return;
                     }
 

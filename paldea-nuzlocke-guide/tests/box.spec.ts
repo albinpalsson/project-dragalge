@@ -8,6 +8,7 @@ import {
     openBox,
     selectBoxPokemon,
     selectStarter,
+    touchDragBoxPokemon,
     waitForPersistence,
 } from './helpers';
 
@@ -135,6 +136,31 @@ test('Box inspection and party management persist across reload', async ({
         await expect(
             boxSection(page, 'Party').getByRole('img', { name: pocoPath }),
         ).toBeVisible();
+        await expect(
+            boxSection(page, 'Box').getByRole('img', { name: inletGrotto }),
+        ).toBeVisible();
+    });
+});
+
+test.describe('touch drag', () => {
+    test.use({ hasTouch: true });
+
+    test('long press drags a Pokemon between sections, a quick swipe does not', async ({
+        page,
+    }) => {
+        const { inletGrotto } = await setupRunWithThreeCaught(page);
+        await openBox(page);
+
+        await touchDragBoxPokemon(page, 'Party', inletGrotto, 'Box', {
+            holdMs: 0,
+        });
+        await expect(
+            boxSection(page, 'Party').getByRole('img', { name: inletGrotto }),
+        ).toBeVisible();
+
+        await touchDragBoxPokemon(page, 'Party', inletGrotto, 'Box', {
+            holdMs: 400,
+        });
         await expect(
             boxSection(page, 'Box').getByRole('img', { name: inletGrotto }),
         ).toBeVisible();

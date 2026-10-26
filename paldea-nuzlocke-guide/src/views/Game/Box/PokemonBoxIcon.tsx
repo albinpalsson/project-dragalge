@@ -40,6 +40,7 @@ export function PokemonBoxIcon({
             onPointerMove={onPointerMove}
             onPointerUp={onPointerUp}
             onPointerCancel={onPointerCancel}
+            onContextMenu={(event) => event.preventDefault()}
         >
             <img
                 className={icon}
@@ -59,6 +60,9 @@ const iconButton = css`
   border-radius: var(--radius-md);
   background: transparent;
   cursor: pointer;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 
   &:hover {
     background: var(--color-hover-overlay);
