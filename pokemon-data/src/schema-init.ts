@@ -28,7 +28,7 @@ import type { BossFightSeed } from './sources/fetch-boss-fight-seeds.ts';
 import type { LocationSeed } from './sources/fetch-location-seeds.ts';
 import { assert } from './assert.ts';
 
-const ABILITY_DESCRIPTION_MAX_LENGTH = 131;
+const ABILITY_DESCRIPTION_MAX_LENGTH = 170;
 
 export const PROVISIONAL_SCHEMA_SQL: readonly string[] = [
     'CREATE TABLE pokemon (id INT, name CHAR(32), primary_type_id TINYINT, secondary_type_id TINYINT, base_hp TINYINT, base_attack TINYINT, base_defense TINYINT, base_sp_attack TINYINT, base_sp_defense TINYINT, base_speed TINYINT)',
