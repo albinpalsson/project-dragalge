@@ -4,6 +4,7 @@ import { OverflowMenu, OverflowMenuItem } from '../../components/OverflowMenu';
 import { NO_PARTY_SLOT } from '../../db/game-db/schema';
 import type { EncounterRollRow, GameRun } from '../../db/game-db/queries';
 import { pokemonIconSrc, toIconSlug } from '../../pokemon-icon';
+import { formatCreatedDate } from '../../utils/format-date';
 import { DeleteGameModal } from './DeleteGameModal';
 import { ExportGameModal } from './ExportGameModal';
 import { RenameGameModal } from './RenameGameModal';
@@ -49,7 +50,12 @@ export function GameCard({
                         }}
                     />
                     <span className={header}>
-                        <span className={name}>{game.name}</span>
+                        <span className={heading}>
+                            <span className={name}>{game.name}</span>
+                            <span className={createdDate}>
+                                Started {formatCreatedDate(game.createdAt)}
+                            </span>
+                        </span>
                         {isLost && <span className={lostBadge}>Run Lost</span>}
                         {isWon && (
                             <span className={wonBadge}>Run Complete</span>
@@ -191,9 +197,23 @@ const header = css`
         direction: ltr;
 `;
 
-const name = css`
+const heading = css`
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+`;
+
+const createdDate = css`
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    text-align: left;
+`;
+
+const name = css`
   font-size: var(--font-size-sm);
+  font-weight: 600;
   color: var(--color-text-muted);
     min-width: 0;
         text-align: left;

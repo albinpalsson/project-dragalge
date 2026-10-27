@@ -16,12 +16,15 @@ import {
 } from './helpers';
 
 test('Home lists the newest game first after reload', async ({ page }) => {
+    await page.clock.setFixedTime(new Date(2026, 9, 27, 12, 0, 0));
     await page.goto('/');
 
     await createGame(page, 'first-run');
     await navigateTo(page, 'Home');
+    await page.clock.setFixedTime(new Date(2026, 9, 27, 12, 1, 0));
     await createGame(page, 'second-run');
     await navigateTo(page, 'Home');
+    await page.clock.setFixedTime(new Date(2026, 9, 27, 12, 2, 0));
     await createGame(page, 'third-run');
     await navigateTo(page, 'Home');
 
@@ -34,6 +37,7 @@ test('Home lists the newest game first after reload', async ({ page }) => {
         /second-run/,
         /first-run/,
     ]);
+    await expect(gameList.getByText('Started 2026-10-27')).toHaveCount(3);
 
     await waitForPersistence(page);
     await page.reload();
@@ -43,6 +47,7 @@ test('Home lists the newest game first after reload', async ({ page }) => {
         /second-run/,
         /first-run/,
     ]);
+    await expect(gameList.getByText('Started 2026-10-27')).toHaveCount(3);
 });
 
 test('Home welcome follows whether any games are saved', async ({ page }) => {
