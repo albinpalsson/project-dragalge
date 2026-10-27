@@ -11,6 +11,7 @@ import { Friendship } from './Friendship';
 import { Game } from './Game/Game';
 import { Home } from './Home/Home';
 import { Licenses } from './Licenses';
+import { RandomizerModes } from './RandomizerModes';
 import { ThemeToggle } from './ThemeToggle';
 import { useImportDataFromHash } from '../hooks/useImportDataFromHash';
 import { useViewNavigation } from '../hooks/useViewNavigation';
@@ -86,6 +87,15 @@ export function App() {
                         <hr className={menuDivider} />
                         <MenuLink
                             secondary
+                            isCurrent={activeView.view === 'randomizerModes'}
+                            onClick={() =>
+                                navigate({ view: 'randomizerModes' })
+                            }
+                        >
+                            Randomizer modes
+                        </MenuLink>
+                        <MenuLink
+                            secondary
                             isCurrent={activeView.view === 'friendship'}
                             onClick={() => navigate({ view: 'friendship' })}
                         >
@@ -134,9 +144,15 @@ export function App() {
                             onOpenFriendship={() =>
                                 navigate({ view: 'friendship' })
                             }
+                            onOpenRandomizerModes={() =>
+                                navigate({ view: 'randomizerModes' })
+                            }
                         />
                     )}
                     {activeView.view === 'friendship' && <Friendship />}
+                    {activeView.view === 'randomizerModes' && (
+                        <RandomizerModes />
+                    )}
                     {activeView.view === 'licenses' && <Licenses />}
                 </main>
             </HeaderSlotContext.Provider>

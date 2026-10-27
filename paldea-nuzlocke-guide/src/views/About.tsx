@@ -5,9 +5,14 @@ import { FEEDBACK_EMAIL, GITHUB_ISSUES_URL, buildMailto } from '../contact';
 interface AboutProps {
     onOpenLicenses: () => void;
     onOpenFriendship: () => void;
+    onOpenRandomizerModes: () => void;
 }
 
-export function About({ onOpenLicenses, onOpenFriendship }: AboutProps) {
+export function About({
+    onOpenLicenses,
+    onOpenFriendship,
+    onOpenRandomizerModes,
+}: AboutProps) {
     return (
         <section className={about}>
             <div className={content}>
@@ -53,7 +58,15 @@ export function About({ onOpenLicenses, onOpenFriendship }: AboutProps) {
                     <p>
                         The app includes an encounter randomizer with several
                         modes, so you can roll your encounter and then go
-                        looking for it in the game. It also gives hints about
+                        looking for it in the game (
+                        <button
+                            className={textLink}
+                            type="button"
+                            onClick={onOpenRandomizerModes}
+                        >
+                            see how the modes work
+                        </button>
+                        ). It also gives hints about
                         where and when the encounter can be found. There are
                         manual adjustments too, such as excluding ocean
                         encounters by default in early areas where you would not

@@ -3,4 +3,5 @@ export type ActiveView =
     | { view: 'game'; gameName: string }
     | { view: 'about' }
     | { view: 'friendship' }
+    | { view: 'randomizerModes' }
     | { view: 'licenses' };
