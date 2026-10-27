@@ -4,9 +4,10 @@ import { FEEDBACK_EMAIL, GITHUB_ISSUES_URL, buildMailto } from '../contact';
 
 interface AboutProps {
     onOpenLicenses: () => void;
+    onOpenFriendship: () => void;
 }
 
-export function About({ onOpenLicenses }: AboutProps) {
+export function About({ onOpenLicenses, onOpenFriendship }: AboutProps) {
     return (
         <section className={about}>
             <div className={content}>
@@ -104,8 +105,8 @@ export function About({ onOpenLicenses }: AboutProps) {
                         browser tab open on my phone. That is why it includes
                         additional details, such as Pokemon base stats,
                         evolutions, defensive weaknesses, helpful tips
-                        throughout the game, and information about strong
-                        trainers.
+                        throughout the game, information about strong
+                        trainers, friendship mechanics and in-game trades.
                     </p>
 
                     <h4>My Recommended Rules</h4>
@@ -125,6 +126,17 @@ export function About({ onOpenLicenses }: AboutProps) {
                             West Province (Area One) to pick up a Thunder Stone
                             before you have defeated Brassius and it is time to
                             randomize your encounter for that location.
+                        </li>
+                                                <li>
+                            Avoid{' '} 
+                            <button
+                                className={textLink}
+                                type="button"
+                                onClick={onOpenFriendship}
+                            >
+                                friendship
+                            </button>{' '}
+                            battle bonuses.
                         </li>
                         <li>
                             Enter the Elite Four with no Pokemon above level 61.

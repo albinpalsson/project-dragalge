@@ -333,7 +333,7 @@ export async function getPokemonEvolutionDetails(
     };
 }
 
-export async function getTypeChart(): Promise<TypeChartEntry[]> {
+export async function getTypeChart():Promise<TypeChartEntry[]> {
     const db = await getPokemonDb();
     const [types, effectiveness] = await Promise.all([
         db.selectFrom('pokemon_types').selectAll().execute(),

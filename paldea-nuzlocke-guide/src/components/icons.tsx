@@ -38,6 +38,14 @@ export function InfoIcon() {
     );
 }
 
+export function HeartIcon() {
+    return (
+        <svg viewBox="0 0 16 16" className={icon} aria-hidden="true">
+            <path d="M8 13.5S2 10 2 6a3 3 0 0 1 6-1 3 3 0 0 1 6 1c0 4-6 7.5-6 7.5z" />
+        </svg>
+    );
+}
+
 export function MailIcon() {
     return (
         <svg viewBox="0 0 16 16" className={icon} aria-hidden="true">

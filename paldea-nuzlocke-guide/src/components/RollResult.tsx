@@ -1,5 +1,6 @@
 import { css } from '@project-dragalge/css-in-js';
 import type { EncounterRoll } from '../hooks/useEncounterRoll';
+import { FriendshipHintButton } from './FriendshipHintButton';
 import { PokemonIcon } from './PokemonIcon';
 import { StatusChip } from './StatusChip';
 import {
@@ -53,6 +54,12 @@ export function RollResult({
                     {encounterRoll.displayName}{' '}
                     <StatusChip status={encounterRoll.status} />
                 </p>
+                {encounterRoll.status === 'caught' && (
+                    <FriendshipHintButton
+                        pokemonName={encounterRoll.name}
+                        label="This Pokémon evolves through friendship"
+                    />
+                )}
                 {metaParts.length > 0 && (
                     <p className={rollMeta}>{metaParts.join(' · ')}</p>
                 )}

@@ -61,38 +61,36 @@ ecosystem standards; others use familiar patterns but have their own APIs.
 - [Server Query](server-query/README.md) — tracks query and mutation state.
 - [Validator](validator/README.md) — validates values with composable schemas.
 
-## Quick Start
+## Near-Zero Dependencies
 
-```bash
-# Install dependencies and build the workspace packages
-npm install
+This project explores how far a modern web app can go with almost no
+third-party code. The bundler, CSS-in-JS extraction, SQL database, query
+builder, server-state tracking, and validator are all written in this
+repository instead of pulled from npm. The only libraries involved are listed
+here.
 
-# Start development server
-npm run start
+### Runtime
 
-# Build for production
-npm run build
+Shipped to the browser in the production bundle:
 
-# Run tests
-npm run test
-```
+- [`react`](https://www.npmjs.com/package/react) and
+  [`react-dom`](https://www.npmjs.com/package/react-dom) — UI rendering.
 
-## Optional Analytics
+### Bundle And Build
 
-Analytics is opt-in and asks at the first game creation or import. Without a saved
-choice, no analytics events are emitted. Game names and save contents stay in the
-browser; the event payloads contain only app views, game settings categories, and
-progression labels.
+Used while building the app, but not shipped:
 
-The build accepts a public GA4 measurement ID through `GA4_MEASUREMENT_ID`. When it is
-set and the user has granted consent, the app loads Google's `gtag.js` and sends events
-to that property. Without the variable, no Google scripts are loaded and no requests
-are sent. Measurement IDs are public identifiers, not secrets.
+- [`typescript`](https://www.npmjs.com/package/typescript) — transpiles source
+  for the custom bundler and type-checks the packages.
 
-```powershell
-$env:GA4_MEASUREMENT_ID = 'G-XXXXXXXXXX'
-npm run build --prefix paldea-nuzlocke-guide
-```
+### Dev Tools
+
+Used for development, testing, and type definitions only:
+
+- [`@biomejs/biome`](https://www.npmjs.com/package/@biomejs/biome) — linting and
+  formatting.
+- [`@playwright/test`](https://www.npmjs.com/package/@playwright/test) —
+  end-to-end tests.
 
 ## Development
 

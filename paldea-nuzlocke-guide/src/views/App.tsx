@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { css } from '@project-dragalge/css-in-js';
+import { css, cx } from '@project-dragalge/css-in-js';
 import { Drawer } from '../components/Drawer';
 import { HeaderSlotContext } from '../components/HeaderSlot';
 import { IconLink } from '../components/IconLink';
@@ -7,6 +7,7 @@ import { GithubIcon, MailIcon } from '../components/icons';
 import { GITHUB_REPO_URL, buildMailto } from '../contact';
 import { About } from './About';
 import { AppHeader } from './AppHeader';
+import { Friendship } from './Friendship';
 import { Game } from './Game/Game';
 import { Home } from './Home/Home';
 import { Licenses } from './Licenses';
@@ -85,6 +86,14 @@ export function App() {
                         >
                             Licenses &amp; Notices
                         </button>
+                        <hr className={menuDivider} />
+                        <button
+                            type="button"
+                            className={cx(menuLink, menuLinkSecondary)}
+                            onClick={() => navigate({ view: 'friendship' })}
+                        >
+                            Friendship mechanics
+                        </button>
                     </nav>
                     <div className={menuFooter}>
                         <IconLink
@@ -125,8 +134,12 @@ export function App() {
                             onOpenLicenses={() =>
                                 navigate({ view: 'licenses' })
                             }
+                            onOpenFriendship={() =>
+                                navigate({ view: 'friendship' })
+                            }
                         />
                     )}
+                    {activeView.view === 'friendship' && <Friendship />}
                     {activeView.view === 'licenses' && <Licenses />}
                 </main>
             </HeaderSlotContext.Provider>
@@ -144,6 +157,19 @@ const menuFooter = css`
   display: flex;
   gap: var(--space-2);
   margin-top: auto;
+`;
+
+const menuDivider = css`
+  width: 100%;
+  margin: var(--space-1) 0;
+  border: 0;
+  border-top: 0.1rem solid var(--color-border);
+`;
+
+const menuLinkSecondary = css`
+  && {
+    font-size: var(--font-size-sm);
+  }
 `;
 
 const menuLink = css`

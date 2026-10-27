@@ -77,6 +77,7 @@ function activeViewFromHistoryState(state: unknown): ActiveView | undefined {
     if (
         candidate.view === 'home' ||
         candidate.view === 'about' ||
+        candidate.view === 'friendship' ||
         candidate.view === 'licenses'
     ) {
         return { view: candidate.view };

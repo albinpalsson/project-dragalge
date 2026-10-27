@@ -1,6 +1,10 @@
 import { useState } from 'react';
 import { css } from '@project-dragalge/css-in-js';
 import { Button } from '../../../components/Button';
+import {
+    FriendshipGuideButton,
+    isFriendshipEvolutionMethod,
+} from '../../../components/FriendshipHintButton';
 import { Modal } from '../../../components/Modal';
 import type { EvolutionTarget } from '../../../db/pokemon-data/queries';
 
@@ -81,16 +85,21 @@ function EvolutionOption({
                 </span>
                 <span className={method}>({evolution.method})</span>
             </div>
-            <Button
-                variant="secondary"
-                className={evolveButton}
-                ariaLabel="Evolve"
-                title="Evolve"
-                disabled={isBusy}
-                onClick={() => onEvolve(evolution.pokemonName)}
-            >
-                ➕
-            </Button>
+            <div className={optionButtons}>
+                {isFriendshipEvolutionMethod(evolution.method) && (
+                    <FriendshipGuideButton />
+                )}
+                <Button
+                    variant="secondary"
+                    className={evolveButton}
+                    ariaLabel="Evolve"
+                    title="Evolve"
+                    disabled={isBusy}
+                    onClick={() => onEvolve(evolution.pokemonName)}
+                >
+                    ➕
+                </Button>
+            </div>
         </div>
     );
 }
@@ -115,6 +124,13 @@ const option = css`
     flex: 1;
   align-items: center;
   gap: var(--space-3);
+`;
+
+const optionButtons = css`
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: var(--space-1);
 `;
 
 const optionDetails = css`

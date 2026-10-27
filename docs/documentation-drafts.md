@@ -34,6 +34,7 @@ Alongside standard hardcore Nuzlocke rules, I enjoy playing with these restricti
   trip to West Province (Area One) for a Thunder Stone before defeating Brassius
   and reaching that area's encounter.
 - Take no Tera Raid encounters, or at most one Pokemon per star rating.
+- No friendship battle bonuses.
 - Enter the Elite Four with no Pokemon above level 61.
 - Use the same party through the Elite Four, Geeta, and the final Nemona battle.
   After Geeta, go straight on to Nemona under the same restrictions as between
@@ -41,18 +42,21 @@ Alongside standard hardcore Nuzlocke rules, I enjoy playing with these restricti
   candies, or other preparation. In my runs, this leaves my team around two or
   three levels below Nemona's Pokemon, making the final fight challenging.
 
-I built a website, a nuzlocke guide and tracker specifically for Paldea, around this way of playing. It puts the route strategy and encounter randomizer together, with different randomization modes. The randomizer also contains adjustments I've made from experience, such as optionally excluding early ocean encounters.
+This allows me to play the game casually, with a smooth and fast progression, while still keeping it challenging!
+
+I built a website, a nuzlocke guide and tracker specifically for Paldea, around this way of playing.
+It puts the route strategy and encounter randomizer together, with different randomization modes.
+The randomizer also contains adjustments I've made from experience, such as defaulting to excluding early ocean encounters.
 It also has raid settings for the restrictions mentioned above.
+Please do not dismiss this as AI slop! I've put a lot of effort into it, and just hope someone will enjoy it half as much as i do.
 
 My preferred way of Nuzlocking is to play using just my Switch, without having to
 research or look things up too much. Ideally, I can keep a single browser tab
 open on my phone. That is why the website includes additional details, such as
 Pokemon base stats, evolutions, defensive weaknesses, helpful tips throughout
-the game, and information about strong trainers.
+the game, information about strong trainers, friendship mechanics and in-game trades.
 
-App: https://paldeanuzlocke.com
+Here's the link: https://paldeanuzlocke.com
 
-I actively maintain it and hope other people enjoy using it as much as I do.
-I'd welcome feedback and suggestions, including mistakes you find in the guide.
-You can open a GitHub issue here: https://github.com/albinpalsson/project-dragalge/issues/new.
+I actively maintain it and welcome feedback and suggestions, including any mistakes you find.
 
