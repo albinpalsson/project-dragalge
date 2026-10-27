@@ -61,7 +61,6 @@ export interface PerformanceCollectorOutput {
 
 export class BundlerPerformanceCollector {
     private readonly entries: PerformanceEntry[] = [];
-    private bundleStartedAt = 0;
     private summary: PerformanceBundleSummary | undefined;
     private wroteProgressDots = false;
 
@@ -72,7 +71,6 @@ export class BundlerPerformanceCollector {
     }
 
     startBundle(): void {
-        this.bundleStartedAt = performance.now();
         this.summary = undefined;
         this.entries.length = 0;
         this.wroteProgressDots = false;
