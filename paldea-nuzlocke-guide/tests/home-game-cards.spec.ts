@@ -7,6 +7,7 @@ import {
     createGameWithTeraRaids,
     expandCollapsedSummary,
     navigateTo,
+    openRenameGameDialog,
     openBox,
     resolveEncounter,
     rollEncounter,
@@ -190,4 +191,39 @@ test('Home supports sharing, duplicate imports and persisted deletion', async ({
     await expect(page.getByRole('button', { name: /fresh-run/ })).toContainText(
         'No caught Pokémon',
     );
+});
+
+test('Home game card name can be edited', async ({ page }) => {
+    await page.goto('/');
+
+    await createGame(page, 'first-run');
+    await navigateTo(page, 'Home');
+    await createGame(page, 'second-run');
+    await navigateTo(page, 'Home');
+
+    const dialog = await openRenameGameDialog(page, 'first-run');
+    const nameInput = dialog.getByLabel('Game name');
+    const save = dialog.getByRole('button', { name: 'Save' });
+
+    await expect(nameInput).toHaveValue('first-run');
+    await expect(save).toBeDisabled();
+
+    await nameInput.fill('   ');
+    await expect(save).toBeDisabled();
+
+    await nameInput.fill('second-run');
+    await save.click();
+    await expect(dialog).toContainText('Game name already exists: second-run');
+
+    await nameInput.fill('renamed-run');
+    await save.click();
+    await expect(dialog).toBeHidden();
+    await expect(page.getByRole('button', { name: /renamed-run/ })).toBeVisible();
+    await expect(page.getByText('first-run', { exact: true })).toHaveCount(0);
+
+    await waitForPersistence(page);
+    await page.reload();
+    await expect(page.getByRole('button', { name: /renamed-run/ })).toBeVisible();
+    await expect(page.getByRole('button', { name: /second-run/ })).toBeVisible();
+    await expect(page.getByText('first-run', { exact: true })).toHaveCount(0);
 });

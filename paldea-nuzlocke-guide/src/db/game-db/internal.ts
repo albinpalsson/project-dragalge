@@ -223,7 +223,7 @@ function randomGameId(): string {
     return crypto.randomUUID().slice(0, 4);
 }
 
-function assertGameNameFits(name: string): void {
+export function assertGameNameFits(name: string): void {
     if (new TextEncoder().encode(name).length > GAME_NAME_MAX_BYTES) {
         throw new Error(
             `Game name must be ${GAME_NAME_MAX_BYTES} bytes or fewer`,

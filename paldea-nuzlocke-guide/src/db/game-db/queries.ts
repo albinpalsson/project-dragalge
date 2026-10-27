@@ -8,6 +8,7 @@ import {
 } from './codecs';
 import {
     allocateGameIdentity,
+    assertGameNameFits,
     findGameRunRecord,
     insertBanListEntries,
     insertGameRunRecords,
@@ -324,6 +325,34 @@ export async function deleteGame(gameName: string): Promise<void> {
         .where('game_run_id', '=', gameRunId)
         .execute();
     await db.deleteFrom('game_runs').where('id', '=', gameRunId).execute();
+}
+
+// Returns the stored (trimmed) name. Unlike createGame, a taken name is an
+// error rather than being suffixed.
+export async function renameGame(
+    gameName: string,
+    newName: string,
+): Promise<string> {
+    const name = newName.trim();
+    if (name === '') {
+        throw new Error('Game name cannot be empty');
+    }
+    assertGameNameFits(name);
+
+    const db = await getGameDb();
+    const gameRunId = await resolveGameRunId(db, gameName);
+    if (name === gameName) {
+        return name;
+    }
+    if (await findGameRunRecord(db, name)) {
+        throw new Error(`Game name already exists: ${name}`);
+    }
+    await db
+        .updateTable('game_runs')
+        .set({ name })
+        .where('id', '=', gameRunId)
+        .execute();
+    return name;
 }
 
 export interface UpdateGameRunSettingsInput {

@@ -6,6 +6,7 @@ import type { EncounterRollRow, GameRun } from '../../db/game-db/queries';
 import { pokemonIconSrc, toIconSlug } from '../../pokemon-icon';
 import { DeleteGameModal } from './DeleteGameModal';
 import { ExportGameModal } from './ExportGameModal';
+import { RenameGameModal } from './RenameGameModal';
 
 interface GameCardProps {
     game: GameRun;
@@ -22,6 +23,7 @@ export function GameCard({
     progressPercent,
     onOpenGame,
 }: GameCardProps) {
+    const [isRenameOpen, setRenameOpen] = useState(false);
     const [isExportOpen, setExportOpen] = useState(false);
     const [isDeleteOpen, setDeleteOpen] = useState(false);
     const displayed = selectSummaryPokemon(obtained, status);
@@ -91,6 +93,9 @@ export function GameCard({
             </button>
             <div className={menuSlot}>
                 <OverflowMenu label="Game options">
+                    <OverflowMenuItem onClick={() => setRenameOpen(true)}>
+                        Edit name
+                    </OverflowMenuItem>
                     <OverflowMenuItem onClick={() => setExportOpen(true)}>
                         Export game
                     </OverflowMenuItem>
@@ -99,6 +104,12 @@ export function GameCard({
                     </OverflowMenuItem>
                 </OverflowMenu>
             </div>
+            {isRenameOpen && (
+                <RenameGameModal
+                    gameName={game.name}
+                    onClose={() => setRenameOpen(false)}
+                />
+            )}
             {isExportOpen && (
                 <ExportGameModal
                     gameName={game.name}

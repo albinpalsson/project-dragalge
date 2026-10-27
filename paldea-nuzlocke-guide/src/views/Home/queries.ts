@@ -7,6 +7,7 @@ import {
 import {
     createGame,
     deleteGame,
+    renameGame,
     STARTER_LOCATION_NAME,
     type CreateGameInput,
 } from '../../db/game-db/queries';
@@ -39,7 +40,10 @@ import {
     listEncounterRolls,
     listGames,
 } from '../../db/game-db/queries';
-import { clearPersistentGameState } from '../../hooks/usePersistentGameState';
+import {
+    clearPersistentGameState,
+    renamePersistentGameState,
+} from '../../hooks/usePersistentGameState';
 import { useEvolutionGraphQuery } from '../../hooks/useEvolutionGraphQuery';
 import { calculateProgression } from '../Game/progression/progression-tracker';
 
@@ -180,6 +184,36 @@ export function useDeleteGame() {
             invalidateQueries(client, {
                 queryKey: GAME_RUN_SNAPSHOTS_QUERY_KEY,
             });
+        },
+    });
+}
+
+export function useRenameGame() {
+    const client = useClient();
+    return useMutation({
+        mutationFn: async (input: { gameName: string; newName: string }) => {
+            const name = await renameGame(input.gameName, input.newName);
+            // Queries and persisted UI state are keyed by name, so the old
+            // name's entries are dropped and the persisted state moves over.
+            removeQueries(client, {
+                queryKey: gameRunQueryKey(input.gameName),
+            });
+            removeQueries(client, {
+                queryKey: encounterRollsQueryKey(input.gameName),
+            });
+            removeQueries(client, {
+                queryKey: banListQueryKey(input.gameName),
+            });
+            removeQueries(client, {
+                queryKey: bossBattleProgressQueryKey(input.gameName),
+            });
+            renamePersistentGameState(input.gameName, name);
+            invalidateQueries(client, { queryKey: GAMES_QUERY_KEY });
+            invalidateQueries(client, { queryKey: GAME_CARDS_QUERY_KEY });
+            invalidateQueries(client, {
+                queryKey: GAME_RUN_SNAPSHOTS_QUERY_KEY,
+            });
+            return name;
         },
     });
 }

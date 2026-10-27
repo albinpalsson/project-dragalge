@@ -344,6 +344,14 @@ function gameCardNamed(page: Page, name: string) {
         .filter({ has: page.getByText(name, { exact: true }) });
 }
 
+export async function openRenameGameDialog(page: Page, name: string) {
+    await gameCardNamed(page, name)
+        .getByRole('button', { name: 'Game options' })
+        .click();
+    await page.getByRole('button', { name: 'Edit name' }).click();
+    return page.getByRole('dialog', { name: 'Edit name' });
+}
+
 export async function deleteGameFromHome(page: Page, name: string) {
     const card = gameCardNamed(page, name);
     await card.getByRole('button', { name: 'Game options' }).click();

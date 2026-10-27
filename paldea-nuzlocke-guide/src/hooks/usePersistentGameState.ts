@@ -8,8 +8,7 @@ function gamePrefix(gameName: string): string {
     return `${STORAGE_PREFIX}${encodeURIComponent(gameName)}:`;
 }
 
-// Removes every persisted value scoped to the game; call when the game is deleted.
-export function clearPersistentGameState(gameName: string): void {
+function gameStorageKeys(gameName: string): string[] {
     const prefix = gamePrefix(gameName);
     const keys: string[] = [];
     for (let index = 0; index < window.localStorage.length; index += 1) {
@@ -18,7 +17,31 @@ export function clearPersistentGameState(gameName: string): void {
             keys.push(key);
         }
     }
-    for (const key of keys) {
+    return keys;
+}
+
+// Removes every persisted value scoped to the game; call when the game is deleted.
+export function clearPersistentGameState(gameName: string): void {
+    for (const key of gameStorageKeys(gameName)) {
+        window.localStorage.removeItem(key);
+    }
+}
+
+// Moves every persisted value scoped to the game to its new name.
+export function renamePersistentGameState(
+    gameName: string,
+    newName: string,
+): void {
+    const oldPrefix = gamePrefix(gameName);
+    const newPrefix = gamePrefix(newName);
+    for (const key of gameStorageKeys(gameName)) {
+        const value = window.localStorage.getItem(key);
+        if (value !== null) {
+            window.localStorage.setItem(
+                `${newPrefix}${key.slice(oldPrefix.length)}`,
+                value,
+            );
+        }
         window.localStorage.removeItem(key);
     }
 }
