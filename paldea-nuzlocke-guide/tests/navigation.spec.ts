@@ -11,6 +11,30 @@ import {
     winBossBattle,
 } from './helpers';
 
+test('menu and About link to the repository and the feedback email', async ({
+    page,
+}) => {
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Open menu' }).click();
+    await expect(
+        page.getByRole('link', { name: 'GitHub repository' }),
+    ).toHaveAttribute(
+        'href',
+        'https://github.com/albinpalsson/project-dragalge',
+    );
+    await expect(
+        page.getByRole('link', { name: 'Email feedback' }),
+    ).toHaveAttribute('href', /^mailto:feedback@paldeanuzlocke\.com/);
+
+    await page.getByRole('button', { name: 'About', exact: true }).click();
+    await expect(
+        page.getByRole('link', { name: 'feedback@paldeanuzlocke.com' }),
+    ).toBeVisible();
+    await expect(
+        page.getByRole('link', { name: 'open an issue on GitHub' }),
+    ).toBeVisible();
+});
+
 test('progression windows, Home resume and browser history preserve the run', async ({
     page,
 }) => {

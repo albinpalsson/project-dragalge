@@ -2,6 +2,9 @@ import { useEffect, useRef, useState } from 'react';
 import { css } from '@project-dragalge/css-in-js';
 import { Drawer } from '../components/Drawer';
 import { HeaderSlotContext } from '../components/HeaderSlot';
+import { IconLink } from '../components/IconLink';
+import { GithubIcon, MailIcon } from '../components/icons';
+import { GITHUB_REPO_URL, buildMailto } from '../contact';
 import { About } from './About';
 import { AppHeader } from './AppHeader';
 import { Game } from './Game/Game';
@@ -83,6 +86,21 @@ export function App() {
                             Licenses &amp; Notices
                         </button>
                     </nav>
+                    <div className={menuFooter}>
+                        <IconLink
+                            label="GitHub repository"
+                            href={GITHUB_REPO_URL}
+                            external
+                        >
+                            <GithubIcon />
+                        </IconLink>
+                        <IconLink
+                            label="Email feedback"
+                            href={buildMailto('Paldea Nuzlocke Guide feedback')}
+                        >
+                            <MailIcon />
+                        </IconLink>
+                    </div>
                 </Drawer>
             )}
 
@@ -120,6 +138,12 @@ const menuNav = css`
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+`;
+
+const menuFooter = css`
+  display: flex;
+  gap: var(--space-2);
+  margin-top: auto;
 `;
 
 const menuLink = css`

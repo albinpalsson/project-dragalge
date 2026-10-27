@@ -1,8 +1,12 @@
-import { Component, type ReactNode } from 'react';
+import { Component, type ReactNode, useMemo, useState } from 'react';
 import { css } from '@project-dragalge/css-in-js';
+import { copyText } from '../clipboard';
+import { FEEDBACK_EMAIL } from '../contact';
+import { buildCrashReport } from '../crash-report';
 import { GameDbOwnershipError } from '../db/game-db/local-storage-plugin';
 import { Button } from './Button';
 import { Modal } from './Modal';
+import { textLink } from './text-link';
 
 interface Props {
     children: ReactNode;
@@ -64,10 +68,51 @@ export class UnexpectedErrorBoundary extends Component<Props, State> {
                         ? 'Another tab has taken control of your games. Your latest change in this tab was not saved. Reload to load the latest saved data and take control here.'
                         : 'An unexpected error occurred. Your latest changes may not have been saved. Reload to continue.'}
                 </p>
+                {!ownershipLost && <CrashReportActions error={this.state.error} />}
                 <Button onClick={() => window.location.reload()}>Reload</Button>
             </Modal>
         );
     }
+}
+
+function CrashReportActions({ error }: { error: unknown }) {
+    const [copied, setCopied] = useState(false);
+    const report = useMemo(() => buildCrashReport(error), [error]);
+
+    const handleCopy = async () => {
+        const success = await copyText(
+            `To: ${FEEDBACK_EMAIL}\nSubject: ${report.subject}\n\n${report.body}`,
+        );
+        setCopied(success);
+        if (success) {
+            window.setTimeout(() => setCopied(false), 2000);
+        }
+    };
+
+    return (
+        <>
+            <p className={message}>
+                If this keeps happening, please email the details to{' '}
+                {FEEDBACK_EMAIL}. The report contains the error and your
+                browser, but no game data.
+            </p>
+            <div className={actions}>
+                <a className={textLink} href={report.mailto}>
+                    Email report
+                </a>
+                <button type="button" className={textLink} onClick={handleCopy}>
+                    {copied ? 'Copied' : 'Copy report'}
+                </button>
+            </div>
+            <textarea
+                className={reportText}
+                readOnly
+                aria-label="Crash report"
+                value={report.body}
+                onFocus={(event) => event.currentTarget.select()}
+            />
+        </>
+    );
 }
 
 function hasOwnershipError(error: unknown): boolean {
@@ -84,4 +129,22 @@ function hasOwnershipError(error: unknown): boolean {
 
 const message = css`
   margin: 0;
+`;
+
+const actions = css`
+  display: flex;
+  gap: var(--space-4);
+`;
+
+const reportText = css`
+  width: 100%;
+  height: 8rem;
+  padding: var(--space-2);
+  border: 0.1rem solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-family: monospace;
+  font-size: var(--font-size-sm);
+  resize: vertical;
 `;

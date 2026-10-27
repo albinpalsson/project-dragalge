@@ -23,6 +23,9 @@ test('the newest tab owns writes and reload takes control', async ({
     await expect(conflict).toBeVisible();
     await expect(conflict).toContainText('was not saved');
     await expect(
+        conflict.getByRole('link', { name: 'Email report' }),
+    ).toHaveCount(0);
+    await expect(
         conflict.getByRole('button', { name: 'Close dialog' }),
     ).toHaveCount(0);
     await page.keyboard.press('Escape');
