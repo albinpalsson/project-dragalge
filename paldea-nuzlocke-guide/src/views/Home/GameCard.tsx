@@ -42,18 +42,24 @@ export function GameCard({
         <div className={container}>
             <button type="button" className={cardButton} onClick={onOpenGame}>
                 <div className={cx(card, isLost && lostCard)}>
-                    <div
-                        className={fill}
-                        style={{
-                            width: `${progressPercent}%`,
-                            backgroundImage: `repeating-linear-gradient(45deg, color-mix(in srgb, ${statusColor} 35%, transparent), color-mix(in srgb, ${statusColor} 35%, transparent) 0.6rem, color-mix(in srgb, ${statusColor} 20%, transparent) 0.6rem, color-mix(in srgb, ${statusColor} 20%, transparent) 1.2rem)`,
-                        }}
-                    />
+                    <div className={track} aria-hidden="true">
+                        <div
+                            className={fill}
+                            style={{
+                                width: `${progressPercent}%`,
+                                backgroundImage: `repeating-linear-gradient(45deg, color-mix(in srgb, ${statusColor} 80%, transparent), color-mix(in srgb, ${statusColor} 80%, transparent) 0.6rem, color-mix(in srgb, ${statusColor} 50%, transparent) 0.6rem, color-mix(in srgb, ${statusColor} 50%, transparent) 1.2rem)`,
+                            }}
+                        />
+                    </div>
                     <span className={header}>
                         <span className={heading}>
                             <span className={name}>{game.name}</span>
-                            <span className={createdDate}>
-                                Started {formatCreatedDate(game.createdAt)}
+                            <span className={meta}>
+                                <span className={createdDate}>
+                                    Started {formatCreatedDate(game.createdAt)}
+                                </span>
+                                <span aria-hidden="true">|</span>
+                                <span>{progressPercent}%</span>
                             </span>
                         </span>
                         {isLost && <span className={lostBadge}>Run Lost</span>}
@@ -171,6 +177,7 @@ const card = css`
     width: 100%;
     min-height: 24rem;
     padding: var(--space-2);
+    padding-bottom: calc(var(--space-2) + 1.4rem);
   background: var(--color-surface);
   border: 0.1rem solid var(--color-border);
   border-radius: var(--radius-md);
@@ -178,13 +185,17 @@ const card = css`
 
 const lostCard = css`
   opacity: 0.6;
-  border-color: var(--color-danger);
+`;
+
+const track = css`
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 0.6rem;
+  background: var(--color-border);
 `;
 
 const fill = css`
-  position: absolute;
-  inset: 0 auto 0 0;
-    z-index: 0;
+  height: 100%;
 `;
 
 const header = css`
@@ -205,10 +216,17 @@ const heading = css`
     min-width: 0;
 `;
 
-const createdDate = css`
+const meta = css`
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
     font-size: var(--font-size-xs);
     color: var(--color-text-muted);
     text-align: left;
+`;
+
+const createdDate = css`
+    white-space: nowrap;
 `;
 
 const name = css`

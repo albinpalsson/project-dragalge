@@ -193,9 +193,9 @@ test('Home supports sharing, duplicate imports and persisted deletion', async ({
     // The freed id is reused, so the new game must not inherit old rows.
     await createGame(page, 'fresh-run');
     await navigateTo(page, 'Home');
-    await expect(page.getByRole('button', { name: /fresh-run/ })).toContainText(
-        'No caught Pokémon',
-    );
+    const freshCard = page.getByRole('button', { name: /fresh-run/ });
+    await expect(freshCard).toContainText('No caught Pokémon');
+    await expect(freshCard).toContainText('0%');
 });
 
 test('Home game card name can be edited', async ({ page }) => {
