@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { css, cx } from '@project-dragalge/css-in-js';
 import { Drawer } from '../components/Drawer';
 import { HeaderSlotContext } from '../components/HeaderSlot';
@@ -65,35 +65,32 @@ export function App() {
                     onClose={() => setMenuOpen(false)}
                 >
                     <nav className={menuNav}>
-                        <button
-                            type="button"
-                            className={menuLink}
+                        <MenuLink
+                            isCurrent={activeView.view === 'home'}
                             onClick={() => navigate({ view: 'home' })}
                         >
                             Home
-                        </button>
-                        <button
-                            type="button"
-                            className={menuLink}
+                        </MenuLink>
+                        <MenuLink
+                            isCurrent={activeView.view === 'about'}
                             onClick={() => navigate({ view: 'about' })}
                         >
                             About
-                        </button>
-                        <button
-                            type="button"
-                            className={menuLink}
+                        </MenuLink>
+                        <MenuLink
+                            isCurrent={activeView.view === 'licenses'}
                             onClick={() => navigate({ view: 'licenses' })}
                         >
                             Licenses &amp; Notices
-                        </button>
+                        </MenuLink>
                         <hr className={menuDivider} />
-                        <button
-                            type="button"
-                            className={cx(menuLink, menuLinkSecondary)}
+                        <MenuLink
+                            secondary
+                            isCurrent={activeView.view === 'friendship'}
                             onClick={() => navigate({ view: 'friendship' })}
                         >
                             Friendship mechanics
-                        </button>
+                        </MenuLink>
                     </nav>
                     <div className={menuFooter}>
                         <IconLink
@@ -147,10 +144,35 @@ export function App() {
     );
 }
 
+interface MenuLinkProps {
+    isCurrent: boolean;
+    secondary?: boolean;
+    onClick: () => void;
+    children: ReactNode;
+}
+
+function MenuLink({
+    isCurrent,
+    secondary = false,
+    onClick,
+    children,
+}: MenuLinkProps) {
+    return (
+        <button
+            type="button"
+            className={cx(menuLink, secondary && menuLinkSecondary)}
+            aria-current={isCurrent ? 'page' : undefined}
+            onClick={onClick}
+        >
+            {children}
+        </button>
+    );
+}
+
 const menuNav = css`
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-1);
 `;
 
 const menuFooter = css`
@@ -166,15 +188,9 @@ const menuDivider = css`
   border-top: 0.1rem solid var(--color-border);
 `;
 
-const menuLinkSecondary = css`
-  && {
-    font-size: var(--font-size-sm);
-  }
-`;
-
 const menuLink = css`
   padding: var(--space-2) var(--space-3);
-  border: 0.1rem solid var(--color-border);
+  border: 0;
   border-radius: var(--radius-md);
   background: transparent;
   color: var(--color-text);
@@ -184,5 +200,22 @@ const menuLink = css`
 
   &:hover {
     background: var(--color-hover-overlay);
+  }
+
+  &:focus-visible {
+    outline: 0.2rem solid var(--color-accent);
+    outline-offset: 0.1rem;
+  }
+
+  &[aria-current='page'] {
+    background: var(--color-hover-overlay);
+    font-weight: var(--font-weight-bold);
+  }
+`;
+
+const menuLinkSecondary = css`
+  && {
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
   }
 `;
