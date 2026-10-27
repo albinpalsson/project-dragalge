@@ -212,7 +212,7 @@ const heading = css`
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
+    gap: 0.5rem;
     min-width: 0;
 `;
 

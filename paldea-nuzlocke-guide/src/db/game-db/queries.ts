@@ -83,7 +83,7 @@ export interface GameExportData {
 }
 
 export function generateDefaultGameName(variant: GameVariant): string {
-    return `game-${VARIANT_NAMES[variant]}-${randomShortHash()}`;
+    return `Game-${VARIANT_NAMES[variant]}-${randomShortHash()}`;
 }
 
 // Oldest game first.
