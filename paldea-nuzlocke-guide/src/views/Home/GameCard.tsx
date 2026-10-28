@@ -261,17 +261,18 @@ const wonBadge = css`
 const icons = css`
     position: relative;
     z-index: 1;
-    display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    display: flex;
+    flex-flow: row-reverse wrap-reverse;
     align-items: center;
-        align-self: center;
+    align-self: center;
     width: min(100%, 34rem);
     margin-top: auto;
-        direction: rtl;
-  gap: var(--space-1);
+    gap: var(--space-1);
 `;
 
 const partyIcons = css`
+    display: grid;
+    direction: rtl;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     grid-template-rows: repeat(2, minmax(0, 1fr));
     width: min(100%, 17rem);
@@ -282,8 +283,9 @@ const iconSlot = css`
     display: grid;
     place-items: center;
     min-width: 0;
+    flex: 0 0 calc((100% - 5 * var(--space-1)) / 6);
     aspect-ratio: 1;
-        direction: ltr;
+    direction: ltr;
 `;
 
 const icon = css`
