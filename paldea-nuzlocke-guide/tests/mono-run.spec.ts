@@ -1,4 +1,4 @@
-import { test, expect, type Page } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 import {
     cardFor,
     chooseAnalyticsConsentIfPrompted,
@@ -17,9 +17,11 @@ async function createMonoGame(
     await page.getByLabel('Name (optional)').fill(name);
     await page.getByRole('button', { name: 'Next', exact: true }).click();
     await page.getByLabel('Mono run').check();
-    await page.getByLabel('Mono type').selectOption(type);
     await page
-        .getByLabel('Allow future evolutions')
+        .getByRole('combobox', { name: 'Mono type', exact: true })
+        .selectOption(type);
+    await page
+        .getByLabel('Allow Pokémon evolving into the mono type')
         .setChecked(futureEvolutions);
     await page.getByRole('button', { name: 'Start', exact: true }).click();
     await chooseAnalyticsConsentIfPrompted(page);
@@ -78,7 +80,9 @@ test('Mono settings update encounter pools while starters honor manual bans', as
     await expect(card.getByRole('button', { name: 'Confirm' })).toBeVisible();
 
     await page.getByRole('button', { name: 'Game settings' }).click();
-    await page.getByLabel('Mono type').selectOption('grass');
+    await page
+        .getByRole('combobox', { name: 'Mono type', exact: true })
+        .selectOption('grass');
     await expect(hoppipRow.getByRole('button')).toBeEnabled();
     await page.getByRole('button', { name: 'Close dialog' }).click();
     await expect(hoppipRow).not.toContainText('Not allowed in mono run');
@@ -134,7 +138,7 @@ test('Mono settings update encounter pools while starters honor manual bans', as
         .getByRole('combobox', { name: 'Mono type', exact: true })
         .selectOption('ghost');
     await expect(cardFor(page, 'Release starter').first()).toBeVisible();
-    await page.getByLabel('Allow future evolutions').check();
+    await page.getByLabel('Allow Pokémon evolving into the mono type').check();
     await expect(cardFor(page, 'Release starter')).toHaveCount(0);
     await page.getByRole('button', { name: 'Close dialog' }).click();
 });
@@ -162,8 +166,12 @@ test('raid lookup preserves exact-form typing and forward-only future evolution 
     ).toHaveCount(0);
 
     await page.getByRole('button', { name: 'Game settings' }).click();
-    await page.getByLabel('Mono type').selectOption('ghost');
-    await expect(page.getByLabel('Mono type')).toHaveValue('ghost');
+    await page
+        .getByRole('combobox', { name: 'Mono type', exact: true })
+        .selectOption('ghost');
+    await expect(
+        page.getByRole('combobox', { name: 'Mono type', exact: true }),
+    ).toHaveValue('ghost');
     await expect(page.getByText('Saving...', { exact: true })).toHaveCount(0);
     await page.getByRole('button', { name: 'Close dialog' }).click();
     await picker.fill('Fuecoco');
@@ -172,14 +180,16 @@ test('raid lookup preserves exact-form typing and forward-only future evolution 
     ).toHaveCount(0);
 
     await page.getByRole('button', { name: 'Game settings' }).click();
-    await page.getByLabel('Allow future evolutions').check();
+    await page.getByLabel('Allow Pokémon evolving into the mono type').check();
     await expect(
         page.getByRole('option', { name: 'Fuecoco', exact: true }),
     ).toBeVisible();
     await page.getByRole('button', { name: 'Close dialog' }).click();
 
     await page.getByRole('button', { name: 'Game settings' }).click();
-    await page.getByLabel('Mono type').selectOption('normal');
+    await page
+        .getByRole('combobox', { name: 'Mono type', exact: true })
+        .selectOption('normal');
     await expect(
         page.getByRole('option', { name: 'Fuecoco', exact: true }),
     ).toHaveCount(0);

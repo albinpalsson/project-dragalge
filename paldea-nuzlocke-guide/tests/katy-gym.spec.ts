@@ -1,9 +1,5 @@
-import { test, expect } from '@playwright/test';
-import {
-    cardFor,
-    createGame,
-    expandCollapsedSummary,
-} from './helpers';
+import { expect, test } from '@playwright/test';
+import { cardFor, createGame, expandCollapsedSummary } from './helpers';
 
 test('a boss ace uses its Tera type for defense information', async ({
     page,

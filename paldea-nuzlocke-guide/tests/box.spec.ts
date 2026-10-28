@@ -1,8 +1,8 @@
-import { test, expect, type Page } from '@playwright/test';
+import { expect, type Page, test } from '@playwright/test';
 import {
     boxSection,
-    catchEncounter,
     cardFor,
+    catchEncounter,
     createGame,
     dragBoxPokemon,
     openBox,

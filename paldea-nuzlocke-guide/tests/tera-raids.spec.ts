@@ -1,9 +1,9 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import {
+    boxSection,
     cardFor,
     createGameWithTeraRaids,
     expandCollapsedSummary,
-    boxSection,
     openBox,
 } from './helpers';
 

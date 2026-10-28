@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import { css } from '@project-dragalge/css-in-js';
+import { useState } from 'react';
 import { BadgeButton } from '../../components/Badge';
 import { Checkbox } from '../../components/Checkbox';
 import { Modal } from '../../components/Modal';
@@ -7,8 +7,8 @@ import { PokemonAutocomplete } from '../../components/PokemonAutocomplete';
 import { RandomizerModesGuide } from '../../components/RandomizerModesGuide';
 import { Select } from '../../components/Select';
 import { RANDOMIZER_MODE_OPTIONS } from '../../randomizer';
-import { POKEMON_TYPES } from '../../utils/pokemon-types';
 import type { FullGameSettingsValue } from '../../utils/game-setting-presets';
+import { POKEMON_TYPES } from '../../utils/pokemon-types';
 
 interface Preset {
     label: string;
@@ -80,37 +80,45 @@ export function GameSettingsPanel({
                     <RandomizerModesGuide />
                 </Modal>
             )}
-            <Checkbox
-                label="Mono run"
-                checked={value.monoRunEnabled}
-                title="Only Pokémon of the selected type can be used."
-                onChange={(monoRunEnabled) =>
-                    onChange({ ...value, monoRunEnabled })
+            <div
+                className={
+                    value.monoRunEnabled
+                        ? `${monoGroup} ${monoGroupActive}`
+                        : monoGroup
                 }
-            />
-            {value.monoRunEnabled && (
-                <>
-                    <Select
-                        label="Mono type"
-                        value={value.monoRunType}
-                        onChange={(monoRunType) =>
-                            onChange({ ...value, monoRunType })
-                        }
-                        options={monoRunTypeOptions}
-                    />
-                    <Checkbox
-                        label="Allow future evolutions"
-                        checked={value.monoRunFutureEvolutions}
-                        title="Also allow Pokémon that can later evolve into the selected type."
-                        onChange={(monoRunFutureEvolutions) =>
-                            onChange({
-                                ...value,
-                                monoRunFutureEvolutions,
-                            })
-                        }
-                    />
-                </>
-            )}
+            >
+                <Checkbox
+                    label="Mono run"
+                    checked={value.monoRunEnabled}
+                    title="Only Pokémon of the selected type can be used."
+                    onChange={(monoRunEnabled) =>
+                        onChange({ ...value, monoRunEnabled })
+                    }
+                />
+                {value.monoRunEnabled && (
+                    <>
+                        <Checkbox
+                            label="Allow Pokémon evolving into the mono type"
+                            checked={value.monoRunFutureEvolutions}
+                            title="Also allow Pokémon that are not the selected type yet but have a later evolution that is."
+                            onChange={(monoRunFutureEvolutions) =>
+                                onChange({
+                                    ...value,
+                                    monoRunFutureEvolutions,
+                                })
+                            }
+                        />
+                        <Select
+                            label="Mono type"
+                            value={value.monoRunType}
+                            onChange={(monoRunType) =>
+                                onChange({ ...value, monoRunType })
+                            }
+                            options={monoRunTypeOptions}
+                        />
+                    </>
+                )}
+            </div>
             <Checkbox
                 label="Dupes clause"
                 checked={value.dupesClauseEnabled}
@@ -280,6 +288,18 @@ const modesGuideButton = css`
 
 const guideModal = css`
     max-width: 64rem;
+`;
+
+const monoGroup = css`
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+`;
+
+const monoGroupActive = css`
+    margin-left: var(--space-2);
+    padding-left: var(--space-2);
+    border-left: 0.2rem solid var(--color-border);
 `;
 
 const section = css`

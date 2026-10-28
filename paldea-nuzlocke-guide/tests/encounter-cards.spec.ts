@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import {
     boxSection,
     cardFor,
@@ -161,7 +161,9 @@ test('caught encounters update dupes and preserve manual, dupes, and mono reason
     await page
         .getByRole('combobox', { name: 'Mono type', exact: true })
         .selectOption('normal');
-    await expect(page.getByLabel('Mono type')).toHaveValue('normal');
+    await expect(
+        page.getByRole('combobox', { name: 'Mono type', exact: true }),
+    ).toHaveValue('normal');
     await expect(page.getByText('Saving...', { exact: true })).toHaveCount(0);
     await expect(hoppipRow).toContainText('Dupes clause');
     const banInput = page.getByRole('combobox', {

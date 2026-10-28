@@ -1,9 +1,9 @@
 import { expect, test } from '@playwright/test';
 import {
     cardFor,
-    deleteGameFromHome,
     catchEncounter,
     createGame,
+    deleteGameFromHome,
     expectNextStep,
     navigateTo,
     selectStarter,

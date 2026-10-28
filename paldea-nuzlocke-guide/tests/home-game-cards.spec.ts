@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import {
     boxSection,
     cardFor,
@@ -7,8 +7,8 @@ import {
     createGameWithTeraRaids,
     expandCollapsedSummary,
     navigateTo,
-    openRenameGameDialog,
     openBox,
+    openRenameGameDialog,
     resolveEncounter,
     rollEncounter,
     selectBoxPokemon,
@@ -223,12 +223,18 @@ test('Home game card name can be edited', async ({ page }) => {
     await nameInput.fill('renamed-run');
     await save.click();
     await expect(dialog).toBeHidden();
-    await expect(page.getByRole('button', { name: /renamed-run/ })).toBeVisible();
+    await expect(
+        page.getByRole('button', { name: /renamed-run/ }),
+    ).toBeVisible();
     await expect(page.getByText('first-run', { exact: true })).toHaveCount(0);
 
     await waitForPersistence(page);
     await page.reload();
-    await expect(page.getByRole('button', { name: /renamed-run/ })).toBeVisible();
-    await expect(page.getByRole('button', { name: /second-run/ })).toBeVisible();
+    await expect(
+        page.getByRole('button', { name: /renamed-run/ }),
+    ).toBeVisible();
+    await expect(
+        page.getByRole('button', { name: /second-run/ }),
+    ).toBeVisible();
     await expect(page.getByText('first-run', { exact: true })).toHaveCount(0);
 });
