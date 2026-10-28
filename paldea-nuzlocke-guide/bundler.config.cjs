@@ -10,6 +10,7 @@ module.exports = configure({
     cacheDir: '.cache',
     env: {
         GA4_MEASUREMENT_ID: process.env.GA4_MEASUREMENT_ID,
+        APP_VERSION: process.env.APP_VERSION,
     },
     transforms: [cssInJsTransform()],
 });

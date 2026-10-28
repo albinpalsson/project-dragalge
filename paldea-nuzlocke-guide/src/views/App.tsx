@@ -17,6 +17,7 @@ import { useImportDataFromHash } from '../hooks/useImportDataFromHash';
 import { useViewNavigation } from '../hooks/useViewNavigation';
 import { useReleaseNews } from '../hooks/useReleaseNews';
 import { track } from '../analytics/analytics';
+import { APP_VERSION } from '../analytics/config';
 
 export function App() {
     // Establishes the browser baseline; connect pending news and explicit
@@ -103,19 +104,24 @@ export function App() {
                         </MenuLink>
                     </nav>
                     <div className={menuFooter}>
-                        <IconLink
-                            label="GitHub repository"
-                            href={GITHUB_REPO_URL}
-                            external
-                        >
-                            <GithubIcon />
-                        </IconLink>
-                        <IconLink
-                            label="Email feedback"
-                            href={buildMailto('Paldea Nuzlocke Guide feedback')}
-                        >
-                            <MailIcon />
-                        </IconLink>
+                        <span className={menuVersion}>{APP_VERSION}</span>
+                        <div className={menuFooterIcons}>
+                            <IconLink
+                                label="GitHub repository"
+                                href={GITHUB_REPO_URL}
+                                external
+                            >
+                                <GithubIcon />
+                            </IconLink>
+                            <IconLink
+                                label="Email feedback"
+                                href={buildMailto(
+                                    'Paldea Nuzlocke Guide feedback',
+                                )}
+                            >
+                                <MailIcon />
+                            </IconLink>
+                        </div>
                     </div>
                 </Drawer>
             )}
@@ -193,8 +199,19 @@ const menuNav = css`
 
 const menuFooter = css`
   display: flex;
-  gap: var(--space-2);
+  align-items: center;
+  justify-content: space-between;
   margin-top: auto;
+`;
+
+const menuVersion = css`
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+`;
+
+const menuFooterIcons = css`
+  display: flex;
+  gap: var(--space-2);
 `;
 
 const menuDivider = css`
