@@ -111,8 +111,8 @@ export function TeraRaid({ stars, isNext, zoomedIcon = true }: TeraRaidProps) {
                         </div>
                     </header>
                     <ProgressionDescription>
-                        Sugggested: Search out a Tera Raid den and battle it —
-                        the first {stars}-star raid you find is your randomized
+                        Suggested: Search out a Tera Raid den and battle it.
+                        The first {stars}-star raid you find is your randomized
                         encounter. Failure to catch equates to a missed
                         encounter.
                     </ProgressionDescription>
