@@ -47,6 +47,36 @@ test('compact encounter and battle labels fit phone-width viewports', async ({
     }
 });
 
+test('marking a party member missed removes it from the Box until caught again', async ({
+    page,
+}) => {
+    await page.goto('/');
+    await createGame(page, 'miss-party-run');
+
+    const pokemon = await rollEncounter(page, 'Poco Path');
+    await resolveEncounter(page, 'Poco Path', 'Caught');
+    await openBox(page);
+    await expect(
+        boxSection(page, 'Party').getByRole('img', { name: pokemon }),
+    ).toBeVisible();
+    await page.getByRole('button', { name: 'Close dialog' }).click();
+
+    await resolveEncounter(page, 'Poco Path', 'Missed');
+    await openBox(page);
+    await expect(
+        page
+            .getByRole('dialog')
+            .getByRole('img', { name: pokemon, exact: true }),
+    ).toHaveCount(0);
+    await page.getByRole('button', { name: 'Close dialog' }).click();
+
+    await resolveEncounter(page, 'Poco Path', 'Caught');
+    await openBox(page);
+    await expect(
+        boxSection(page, 'Party').getByRole('img', { name: pokemon }),
+    ).toBeVisible();
+});
+
 test('missed encounters stay out of Box and can be rerolled after reload', async ({
     page,
 }) => {
