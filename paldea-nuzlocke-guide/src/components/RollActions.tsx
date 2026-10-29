@@ -13,7 +13,7 @@ interface RollActionsProps {
     encounters: LocationEncounterView[];
 }
 
-const STATUSES = ['caught', 'missed', 'eliminated'] as const;
+const STATUSES = ['caught', 'missed'] as const;
 
 export function RollActions({ locationName, encounters }: RollActionsProps) {
     const game = useGame();
@@ -46,10 +46,7 @@ export function RollActions({ locationName, encounters }: RollActionsProps) {
         if (status === 'caught') {
             return encounterActions.catchEncounter(locationName);
         }
-        if (status === 'missed') {
-            return encounterActions.missEncounter(locationName);
-        }
-        return encounterActions.eliminateEncounter(locationName);
+        return encounterActions.missEncounter(locationName);
     };
 
     return (
@@ -102,18 +99,6 @@ export function RollActions({ locationName, encounters }: RollActionsProps) {
                             }
                         >
                             🏃
-                        </Button>
-                        <Button
-                            variant="secondary"
-                            ariaLabel="Eliminated"
-                            title="Eliminated"
-                            onClick={() => void setStatus('eliminated')}
-                            disabled={
-                                encounterActions.isBusy ||
-                                encounterRoll.status === 'eliminated'
-                            }
-                        >
-                            💀
                         </Button>
                     </>
                 )}

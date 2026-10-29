@@ -15,7 +15,7 @@ export function useEncounterActions() {
 
     const setStatusAndClearPartySlot = async (
         locationName: string,
-        status: 'eliminated' | 'released',
+        status: 'released',
     ) => {
         const current = game.encounters.find(
             (row) => row.location_name === locationName,
@@ -57,9 +57,6 @@ export function useEncounterActions() {
         async missEncounter(locationName: string) {
             await mutations.setStatus(game.name, locationName, 'missed');
             trackProgression(locationName, 'missed');
-        },
-        async eliminateEncounter(locationName: string) {
-            await setStatusAndClearPartySlot(locationName, 'eliminated');
         },
         async releaseStarter(locationName: string) {
             await setStatusAndClearPartySlot(locationName, 'released');

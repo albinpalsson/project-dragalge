@@ -153,9 +153,6 @@ test('caught encounters update dupes and preserve manual, dupes, and mono reason
         hoppipRow.getByRole('button', { name: 'Pick Hoppip' }),
     ).toBeDisabled();
 
-    await resolveEncounter(page, 'Poco Path', 'Eliminated');
-    await expect(hoppipRow).toContainText('Dupes clause');
-
     await page.getByRole('button', { name: 'Game settings' }).click();
     await page.getByLabel('Mono run').check();
     await page

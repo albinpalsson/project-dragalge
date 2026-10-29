@@ -10,6 +10,7 @@ import {
     expectNextStep,
     expectProgressionComplete,
     navigateTo,
+    eliminateBoxPokemon,
     openBox,
     resolveEncounter,
     rollEncounter,
@@ -257,8 +258,9 @@ test('Challenging preset plays through the available progression', async ({
     await expect(cardFor(page, 'Tera Raid ★★★')).toHaveCount(0);
     await test.step('eliminate an encounter and verify Death Box membership', async () => {
         const eliminated = await rollEncounter(page, 'West Paldean Sea');
-        await resolveEncounter(page, 'West Paldean Sea', 'Eliminated');
+        await resolveEncounter(page, 'West Paldean Sea', 'Caught');
         await openBox(page);
+        await eliminateBoxPokemon(page, eliminated);
         await expect(
             boxSection(page, 'Death Box').getByRole('img', {
                 name: eliminated,

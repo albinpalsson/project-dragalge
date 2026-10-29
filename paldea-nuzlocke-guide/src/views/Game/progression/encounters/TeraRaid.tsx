@@ -173,22 +173,6 @@ export function TeraRaid({ stars, isNext, zoomedIcon = true }: TeraRaidProps) {
                                             </Button>
                                             <Button
                                                 variant="secondary"
-                                                ariaLabel="Eliminated"
-                                                title="Eliminated"
-                                                onClick={() =>
-                                                    void encounterActions.eliminateEncounter(
-                                                        row.location_name,
-                                                    )
-                                                }
-                                                disabled={
-                                                    encounterActions.isBusy ||
-                                                    row.status === 'eliminated'
-                                                }
-                                            >
-                                                💀
-                                            </Button>
-                                            <Button
-                                                variant="secondary"
                                                 ariaLabel="Clear"
                                                 title="Clear"
                                                 onClick={() =>

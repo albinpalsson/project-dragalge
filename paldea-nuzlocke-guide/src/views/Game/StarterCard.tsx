@@ -46,14 +46,6 @@ export function StarterCard({ isNext }: StarterCardProps) {
         });
     };
 
-    const toggleStarterEliminated = () => {
-        if (starterStatus === 'eliminated') {
-            void encounterActions.catchEncounter(STARTER_LOCATION_NAME);
-            return;
-        }
-        void encounterActions.eliminateEncounter(STARTER_LOCATION_NAME);
-    };
-
     const starterChoice = starterChoiceForName(starter ?? '');
     const starterBorderColor = getStarterIconBorderColor(
         starterChoice?.type ?? '',
@@ -141,20 +133,6 @@ export function StarterCard({ isNext }: StarterCardProps) {
                                             title="Reset starter choice"
                                         >
                                             ↺
-                                        </Button>
-                                        <Button
-                                            variant="secondary"
-                                            className={
-                                                starterStatus !== 'eliminated'
-                                                    ? eliminatedButtonInactive
-                                                    : undefined
-                                            }
-                                            ariaLabel="Eliminated"
-                                            title="Eliminated"
-                                            onClick={toggleStarterEliminated}
-                                            disabled={isBusy}
-                                        >
-                                            💀
                                         </Button>
                                     </span>
                                 </span>
@@ -384,8 +362,4 @@ const chosenIdentity = css`
     align-items: center;
     gap: var(--space-2);
     flex-wrap: wrap;
-`;
-
-const eliminatedButtonInactive = css`
-    opacity: 0.7;
 `;

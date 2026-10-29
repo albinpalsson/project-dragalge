@@ -185,7 +185,7 @@ export async function catchEncounter(
 export async function resolveEncounter(
     page: Page,
     cardName: string,
-    status: 'Caught' | 'Missed' | 'Eliminated',
+    status: 'Caught' | 'Missed',
 ): Promise<void> {
     await ensureCardExpanded(page, cardName);
     const card = cardFor(page, cardName).first();
@@ -260,6 +260,17 @@ export async function selectBoxPokemon(
             .getByRole('dialog')
             .getByRole('region', { name: `${pokemonName} details` }),
     ).toBeVisible();
+}
+
+/** Eliminates a caught Pokémon from the open Box dialog, whatever section it is in. */
+export async function eliminateBoxPokemon(page: Page, pokemonName: string) {
+    const dialog = page.getByRole('dialog');
+    await dialog.getByRole('button', { name: pokemonName }).first().click();
+    const details = dialog.getByRole('region', {
+        name: `${pokemonName} details`,
+    });
+    await details.getByRole('button', { name: 'More options' }).click();
+    await details.getByRole('button', { name: 'Eliminated' }).click();
 }
 
 export async function dragBoxPokemon(
