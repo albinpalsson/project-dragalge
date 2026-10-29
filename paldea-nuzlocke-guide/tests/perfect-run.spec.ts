@@ -149,10 +149,10 @@ test('Fun preset plays through the available progression', async ({ page }) => {
     await completeEncounter(page, 'Socarrat Trail');
     await completeBossBattle(page, 'Eri (Team Star)');
     await completeBossBattle(page, 'Dondozo (False Dragon Titan)');
-    await completeBossBattle(page, 'Rika (Elite Four)');
-    await completeBossBattle(page, 'Poppy (Elite Four)');
-    await completeBossBattle(page, 'Larry (Elite Four)');
-    await completeBossBattle(page, 'Hassel (Elite Four)');
+    await completeBossBattle(page, 'Rika (E4)');
+    await completeBossBattle(page, 'Poppy (E4)');
+    await completeBossBattle(page, 'Larry (E4)');
+    await completeBossBattle(page, 'Hassel (E4)');
     await completeBossBattle(page, 'Geeta (Top Champion)');
     const championNotice = page.getByRole('region', {
         name: 'Nuzlocke complete',
@@ -287,10 +287,10 @@ test('Challenging preset plays through the available progression', async ({
     await completeEncounter(page, 'Socarrat Trail');
     await completeBossBattle(page, 'Eri (Team Star)');
     await completeBossBattle(page, 'Dondozo (False Dragon Titan)');
-    await completeBossBattle(page, 'Rika (Elite Four)');
-    await completeBossBattle(page, 'Poppy (Elite Four)');
-    await completeBossBattle(page, 'Larry (Elite Four)');
-    await completeBossBattle(page, 'Hassel (Elite Four)');
+    await completeBossBattle(page, 'Rika (E4)');
+    await completeBossBattle(page, 'Poppy (E4)');
+    await completeBossBattle(page, 'Larry (E4)');
+    await completeBossBattle(page, 'Hassel (E4)');
     await completeBossBattle(page, 'Geeta (Top Champion)');
     await expect(
         page.getByRole('region', { name: 'Nuzlocke complete' }),
@@ -372,10 +372,10 @@ test('Mono Electric run plays through the available progression', async ({
     await completeEncounter(page, 'Casseroya Lake');
     await completeEncounter(page, 'Socarrat Trail');
     await completeBossBattle(page, 'Dondozo (False Dragon Titan)');
-    await completeBossBattle(page, 'Rika (Elite Four)');
-    await completeBossBattle(page, 'Poppy (Elite Four)');
-    await completeBossBattle(page, 'Larry (Elite Four)');
-    await completeBossBattle(page, 'Hassel (Elite Four)');
+    await completeBossBattle(page, 'Rika (E4)');
+    await completeBossBattle(page, 'Poppy (E4)');
+    await completeBossBattle(page, 'Larry (E4)');
+    await completeBossBattle(page, 'Hassel (E4)');
     await loseBossBattle(page, 'Geeta (Top Champion)');
     await expectProgressionComplete(page);
     await returnHome(page, 'mono-run');

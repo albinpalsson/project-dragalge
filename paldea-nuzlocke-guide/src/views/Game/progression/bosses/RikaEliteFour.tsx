@@ -10,7 +10,7 @@ import { ELITE_FOUR_BOSS_ICON } from './boss-category-icons';
 import { progressionCardPattern } from './progression-card-pattern';
 
 const LOCATION_NAME = 'Pokemon League';
-const DISPLAY_BATTLE_NAME = 'Rika (Elite Four)';
+const DISPLAY_BATTLE_NAME = 'Rika (E4)';
 const BATTLE_NAME = 'Rika (Elite Four)';
 const SPECIALTY_TYPE = 'Ground';
 

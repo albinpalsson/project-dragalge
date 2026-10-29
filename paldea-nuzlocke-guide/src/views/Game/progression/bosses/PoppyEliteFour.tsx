@@ -10,7 +10,7 @@ import { ELITE_FOUR_BOSS_ICON } from './boss-category-icons';
 import { progressionCardPattern } from './progression-card-pattern';
 
 const LOCATION_NAME = 'Pokemon League';
-const DISPLAY_BATTLE_NAME = 'Poppy (Elite Four)';
+const DISPLAY_BATTLE_NAME = 'Poppy (E4)';
 const BATTLE_NAME = 'Poppy (Elite Four)';
 const SPECIALTY_TYPE = 'Steel';
 
