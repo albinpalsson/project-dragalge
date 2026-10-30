@@ -5,9 +5,11 @@ import {
     decodeBossBattleResult,
     decodeEncounterStatus,
     decodeGameSettings,
+    decodeGameStatus,
     encodeBossBattleResult,
     encodeEncounterStatus,
     encodeGameSettings,
+    encodeGameStatus,
 } from './codecs';
 import type {
     BanListEntryRow,
@@ -83,6 +85,7 @@ export async function insertGameRunRecords(
                 created_at: record.createdAt,
                 name: record.name,
                 variant: record.variant,
+                status: encodeGameStatus(record.status),
                 ...encodeGameSettings(record.settings),
             })),
         )
@@ -208,12 +211,13 @@ export function allocateGameIdentity(
 }
 
 function gameRunRecordFromRow(row: GameRunsDb['game_runs']): GameRunRecord {
-    const { id, created_at, name, variant, ...encodedSettings } = row;
+    const { id, created_at, name, variant, status, ...encodedSettings } = row;
     return {
         id,
         createdAt: created_at,
         name,
         variant,
+        status: decodeGameStatus(status),
         settings: decodeGameSettings(encodedSettings),
     };
 }

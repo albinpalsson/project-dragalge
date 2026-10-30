@@ -2,17 +2,22 @@ import { useState } from 'react';
 import { css, cx } from '@project-dragalge/css-in-js';
 import { OverflowMenu, OverflowMenuItem } from '../../components/OverflowMenu';
 import { NO_PARTY_SLOT } from '../../db/game-db/schema';
-import type { EncounterRollRow, GameRun } from '../../db/game-db/queries';
+import type {
+    EncounterRollRow,
+    GameRun,
+    GameStatus,
+} from '../../db/game-db/queries';
 import { pokemonIconSrc, toIconSlug } from '../../pokemon-icon';
 import { formatCreatedDate } from '../../utils/format-date';
 import { DeleteGameModal } from './DeleteGameModal';
 import { ExportGameModal } from './ExportGameModal';
 import { RenameGameModal } from './RenameGameModal';
+import { SetGameStatusModal } from './SetGameStatusModal';
 
 interface GameCardProps {
     game: GameRun;
     obtained: EncounterRollRow[];
-    status: 'in-progress' | 'lost' | 'won';
+    status: GameStatus;
     progressPercent: number;
     onOpenGame: () => void;
 }
@@ -25,6 +30,7 @@ export function GameCard({
     onOpenGame,
 }: GameCardProps) {
     const [isRenameOpen, setRenameOpen] = useState(false);
+    const [isStatusOpen, setStatusOpen] = useState(false);
     const [isExportOpen, setExportOpen] = useState(false);
     const [isDeleteOpen, setDeleteOpen] = useState(false);
     const displayed = selectSummaryPokemon(obtained, status);
@@ -108,6 +114,9 @@ export function GameCard({
                     <OverflowMenuItem onClick={() => setRenameOpen(true)}>
                         Edit name
                     </OverflowMenuItem>
+                    <OverflowMenuItem onClick={() => setStatusOpen(true)}>
+                        Mark won/lost
+                    </OverflowMenuItem>
                     <OverflowMenuItem onClick={() => setExportOpen(true)}>
                         Export game
                     </OverflowMenuItem>
@@ -120,6 +129,13 @@ export function GameCard({
                 <RenameGameModal
                     gameName={game.name}
                     onClose={() => setRenameOpen(false)}
+                />
+            )}
+            {isStatusOpen && (
+                <SetGameStatusModal
+                    gameName={game.name}
+                    status={status}
+                    onClose={() => setStatusOpen(false)}
                 />
             )}
             {isExportOpen && (

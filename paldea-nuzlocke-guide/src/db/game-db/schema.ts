@@ -3,6 +3,7 @@ export type RandomizerModeCode = 'w' | 'n' | 'e';
 export type EncounterStatusCode = 'p' | 'c' | 'm' | 'e' | 'r' | 's';
 export type TeraRaidsCode = 'n' | 's' | 'u';
 export type BossBattleResultCode = 'w' | 'l';
+export type GameStatusCode = 'p' | 'w' | 'l';
 
 export const MAX_PARTY_SIZE = 6;
 export const NO_PARTY_SLOT = 0;
@@ -12,6 +13,7 @@ interface GameRunDbRow {
     created_at: number;
     name: string;
     variant: string;
+    status: GameStatusCode;
     randomizer_mode: RandomizerModeCode;
     dupes_clause_enabled: BooleanFlag;
     ban_full_evolution_lines: BooleanFlag;
@@ -53,10 +55,10 @@ export interface GameRunsDb {
 }
 
 // Bump whenever GAME_DB_SCHEMA_SQL changes; old versioned storage keys are left in place.
-export const GAME_DB_SCHEMA_VERSION = 26;
+export const GAME_DB_SCHEMA_VERSION = 27;
 
 export const GAME_DB_SCHEMA_SQL: readonly string[] = [
-    'CREATE TABLE game_runs (id CHAR(4), created_at TIMESTAMP, name CHAR(128), variant CHAR(1), randomizer_mode CHAR(1), dupes_clause_enabled TINYINT, ban_full_evolution_lines TINYINT, release_starter_enabled TINYINT, tera_raids CHAR(1), show_helpful_tips TINYINT, include_team_star_battles TINYINT, show_strong_trainers TINYINT, mono_run_enabled TINYINT, mono_run_type CHAR(12), mono_run_future_evolutions TINYINT)',
+    'CREATE TABLE game_runs (id CHAR(4), created_at TIMESTAMP, name CHAR(128), variant CHAR(1), status CHAR(1), randomizer_mode CHAR(1), dupes_clause_enabled TINYINT, ban_full_evolution_lines TINYINT, release_starter_enabled TINYINT, tera_raids CHAR(1), show_helpful_tips TINYINT, include_team_star_battles TINYINT, show_strong_trainers TINYINT, mono_run_enabled TINYINT, mono_run_type CHAR(12), mono_run_future_evolutions TINYINT)',
     'CREATE TABLE ban_list_entries (game_run_id CHAR(4), pokemon_name CHAR(32))',
     'CREATE TABLE encounter_rolls (game_run_id CHAR(4), location_name CHAR(32), pokemon_name CHAR(32), rolled_as CHAR(32), status CHAR(1), party_slot TINYINT)',
     'CREATE TABLE boss_battle_progress (game_run_id CHAR(4), battle_name CHAR(44), result CHAR(1))',

@@ -8,6 +8,7 @@ import {
     createGame,
     deleteGame,
     renameGame,
+    setGameStatus,
     STARTER_LOCATION_NAME,
     type CreateGameInput,
 } from '../../db/game-db/queries';
@@ -20,6 +21,7 @@ import {
 import type {
     EncounterRollRow,
     GameRun,
+    GameStatus,
     BossBattleProgressRow,
 } from '../../db/game-db/queries';
 import {
@@ -31,10 +33,6 @@ import {
     encounterRollsQueryKey,
     gameRunQueryKey,
 } from '../../query-keys';
-import {
-    PROGRESSION_ITEMS,
-    isRaidResolved,
-} from '../Game/progression/progression-items';
 import {
     listBossBattleProgress,
     listEncounterRolls,
@@ -108,24 +106,12 @@ export function useGameCards() {
                     snapshot.bossProgress,
                     starter,
                 );
-                const isLost = snapshot.bossProgress.some(
-                    (battle) => battle.result === 'lost',
-                );
-                const isWon = snapshot.bossProgress.some(
-                    (battle) =>
-                        battle.battle_name === 'Geeta (Top Champion)' &&
-                        battle.result === 'won',
-                );
                 return {
                     game: snapshot.game,
                     obtained,
                     bossProgress: snapshot.bossProgress,
                     progressPercent: progression.percent,
-                    status: isLost
-                        ? ('lost' as const)
-                        : isWon
-                          ? ('won' as const)
-                          : ('in-progress' as const),
+                    status: snapshot.game.status,
                 };
             });
     }, [snapshotsQuery.data, graphQuery.data]);
@@ -188,6 +174,23 @@ export function useDeleteGame() {
     });
 }
 
+export function useSetGameStatus() {
+    const client = useClient();
+    return useMutation({
+        mutationFn: async (input: { gameName: string; status: GameStatus }) => {
+            await setGameStatus(input.gameName, input.status);
+            invalidateQueries(client, { queryKey: GAMES_QUERY_KEY });
+            invalidateQueries(client, {
+                queryKey: gameRunQueryKey(input.gameName),
+            });
+            invalidateQueries(client, { queryKey: GAME_CARDS_QUERY_KEY });
+            invalidateQueries(client, {
+                queryKey: GAME_RUN_SNAPSHOTS_QUERY_KEY,
+            });
+        },
+    });
+}
+
 export function useRenameGame() {
     const client = useClient();
     return useMutation({
@@ -225,63 +228,15 @@ export interface ChampionPreset {
 
 export function useCompletedGameChampionPresets() {
     const snapshotsQuery = useGameRunSnapshotsQuery();
-    const graphQuery = useEvolutionGraphQuery();
 
     const data = useMemo<ChampionPreset[] | undefined>(() => {
-        if (!snapshotsQuery.data || !graphQuery.data) {
+        if (!snapshotsQuery.data) {
             return undefined;
         }
 
         const presets: ChampionPreset[] = [];
-        for (const snapshot of snapshotsQuery.data) {
-            const {
-                game,
-                encounterRolls: rolls,
-                bossProgress: progress,
-            } = snapshot;
-            const settings = game.settings;
-            const state = { settings, encounters: rolls };
-            const starter = rolls.find(
-                (roll) => roll.location_name === 'Starter',
-            );
-            const starterRoot = starter
-                ? graphQuery.data.getFirstStage(starter.pokemon_name)
-                : undefined;
-            const complete = PROGRESSION_ITEMS.every((item) => {
-                if (item.kind === 'info') {
-                    return true;
-                }
-                if (item.isVisible && !item.isVisible(state)) {
-                    return true;
-                }
-                if (
-                    item.countsTowardProgress &&
-                    !item.countsTowardProgress(state)
-                ) {
-                    return true;
-                }
-                if (item.kind === 'encounter') {
-                    return rolls.some(
-                        (roll) =>
-                            roll.location_name === item.locationName &&
-                            roll.status !== 'pending',
-                    );
-                }
-                if (item.kind === 'action') {
-                    return item.isResolved(state);
-                }
-                if (item.kind === 'raid') {
-                    return isRaidResolved(rolls, item.stars);
-                }
-                const battleName = item.getBattleName(starterRoot ?? '');
-                return Boolean(
-                    battleName &&
-                        progress.some(
-                            (battle) => battle.battle_name === battleName,
-                        ),
-                );
-            });
-            if (!complete) {
+        for (const { game, encounterRolls: rolls } of snapshotsQuery.data) {
+            if (game.status !== 'won') {
                 continue;
             }
             presets.push({
@@ -297,22 +252,14 @@ export function useCompletedGameChampionPresets() {
             });
         }
         return presets;
-    }, [snapshotsQuery.data, graphQuery.data]);
-
-    const isPending = snapshotsQuery.isPending || graphQuery.isPending;
-    const isError = snapshotsQuery.isError || graphQuery.isError;
-    const error = snapshotsQuery.isError
-        ? snapshotsQuery.error
-        : graphQuery.isError
-          ? graphQuery.error
-          : null;
+    }, [snapshotsQuery.data]);
 
     return {
         data,
-        isPending,
-        isError,
-        isSuccess: !isPending && !isError,
-        error,
+        isPending: snapshotsQuery.isPending,
+        isError: snapshotsQuery.isError,
+        isSuccess: snapshotsQuery.isSuccess,
+        error: snapshotsQuery.isError ? snapshotsQuery.error : null,
     };
 }
 

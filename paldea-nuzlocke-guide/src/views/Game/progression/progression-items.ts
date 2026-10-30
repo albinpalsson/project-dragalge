@@ -3,7 +3,10 @@ import type {
     EncounterRollRow,
     GameSettings,
 } from '../../../db/game-db/queries';
-import { STARTER_LOCATION_NAME } from '../../../db/game-db/queries';
+import {
+    FINAL_BATTLE_NAME,
+    STARTER_LOCATION_NAME,
+} from '../../../db/game-db/queries';
 import { getNemonaBattleName } from '../../../db/pokemon-data/starter-battles';
 import { parseTeraRaidLocationName } from '../../../utils/tera-raid-location';
 import { StarterCard } from '../StarterCard';
@@ -624,7 +627,7 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
     {
         key: 'geeta-top-champion',
         kind: 'boss',
-        getBattleName: () => 'Geeta (Top Champion)',
+        getBattleName: () => FINAL_BATTLE_NAME,
         Component: GeetaTopChampion,
     },
     {

@@ -1,3 +1,4 @@
+import type { Database } from '@project-dragalge/query-builder';
 import type { RandomizerMode } from '../../randomizer';
 import { getGameDb } from './client';
 import {
@@ -5,6 +6,7 @@ import {
     encodeBossBattleResult,
     encodeEncounterStatus,
     encodeGameSettings,
+    encodeGameStatus,
 } from './codecs';
 import {
     allocateGameIdentity,
@@ -19,7 +21,7 @@ import {
     selectGameRunRecords,
     toGameRun,
 } from './internal';
-import { NO_PARTY_SLOT } from './schema';
+import { type GameRunsDb, NO_PARTY_SLOT } from './schema';
 
 export { GAME_NAME_MAX_BYTES } from './internal';
 
@@ -36,6 +38,10 @@ export type EncounterStatus =
     | 'skipped';
 export type TeraRaidsSetting = 'none' | 'single' | 'unlimited';
 export type BossBattleResult = 'won' | 'lost';
+export type GameStatus = 'in-progress' | 'won' | 'lost';
+
+// Winning this battle marks the game won.
+export const FINAL_BATTLE_NAME = 'Geeta (Top Champion)';
 
 export interface GameSettings {
     randomizerMode: RandomizerMode;
@@ -55,6 +61,7 @@ export interface GameRun {
     createdAt: number;
     name: string;
     variant: string;
+    status: GameStatus;
     settings: GameSettings;
 }
 
@@ -137,6 +144,7 @@ export async function createGame(input: CreateGameInput): Promise<GameRun> {
         ...identity,
         createdAt: Date.now(),
         variant: input.variant,
+        status: 'in-progress' as const,
         settings: input.settings,
     };
     await insertGameRunRecords(db, [record]);
@@ -355,6 +363,15 @@ export async function renameGame(
     return name;
 }
 
+export async function setGameStatus(
+    gameName: string,
+    status: GameStatus,
+): Promise<void> {
+    const db = await getGameDb();
+    const gameRunId = await resolveGameRunId(db, gameName);
+    await updateGameStatus(db, gameRunId, status);
+}
+
 export interface UpdateGameRunSettingsInput {
     gameName: string;
     settings: GameSettings;
@@ -424,6 +441,12 @@ export async function setBossBattleResult(
             .execute();
     }
 
+    if (input.result === 'lost') {
+        await updateGameStatus(db, gameRunId, 'lost');
+    } else if (input.battleName === FINAL_BATTLE_NAME) {
+        await updateGameStatus(db, gameRunId, 'won');
+    }
+
     return { battle_name: input.battleName, result: input.result };
 }
 
@@ -441,6 +464,18 @@ export async function clearBossBattleResult(
         .deleteFrom('boss_battle_progress')
         .where('game_run_id', '=', gameRunId)
         .where('battle_name', '=', input.battleName)
+        .execute();
+}
+
+async function updateGameStatus(
+    db: Database<GameRunsDb>,
+    gameRunId: string,
+    status: GameStatus,
+): Promise<void> {
+    await db
+        .updateTable('game_runs')
+        .set({ status: encodeGameStatus(status) })
+        .where('id', '=', gameRunId)
         .execute();
 }
 

@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import { FINAL_BATTLE_NAME } from '../../../../db/game-db/queries';
 import { ProgressionCard } from '../../../../components/ProgressionCard';
 import { ChampionCompleteInterstitial } from './ChampionCompleteInterstitial';
 import { useBossActions } from '../../../../hooks/useBossActions';
@@ -10,8 +11,8 @@ import { ELITE_FOUR_BOSS_ICON } from './boss-category-icons';
 import { progressionCardPattern } from './progression-card-pattern';
 
 const LOCATION_NAME = 'Pokemon League';
-const DISPLAY_BATTLE_NAME = 'Geeta (Top Champion)';
-const BATTLE_NAME = 'Geeta (Top Champion)';
+const DISPLAY_BATTLE_NAME = FINAL_BATTLE_NAME;
+const BATTLE_NAME = FINAL_BATTLE_NAME;
 
 interface GeetaTopChampionProps {
     isNext?: boolean;

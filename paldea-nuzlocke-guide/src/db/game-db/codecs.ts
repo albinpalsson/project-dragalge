@@ -3,6 +3,7 @@ import type {
     BossBattleResult,
     EncounterStatus,
     GameSettings,
+    GameStatus,
     TeraRaidsSetting,
 } from './queries';
 import type {
@@ -10,14 +11,15 @@ import type {
     BossBattleResultCode,
     EncounterStatusCode,
     GameRunsDb,
+    GameStatusCode,
     RandomizerModeCode,
     TeraRaidsCode,
 } from './schema';
 
-// The encoded storage columns for GameSettings: every game_runs column except identity.
+// The encoded storage columns for GameSettings: every game_runs column except identity and status.
 export type EncodedGameSettings = Omit<
     GameRunsDb['game_runs'],
-    'id' | 'created_at' | 'name' | 'variant'
+    'id' | 'created_at' | 'name' | 'variant' | 'status'
 >;
 
 const RANDOMIZER_MODE_CODES: Record<RandomizerMode, RandomizerModeCode> = {
@@ -47,7 +49,13 @@ const BOSS_BATTLE_RESULT_CODES: Record<BossBattleResult, BossBattleResultCode> =
         lost: 'l',
     };
 
-export const encodeRandomizerMode = (value: RandomizerMode) =>
+const GAME_STATUS_CODES: Record<GameStatus, GameStatusCode> = {
+    'in-progress': 'p',
+    won: 'w',
+    lost: 'l',
+};
+
+export const encodeRandomizerMode =(value: RandomizerMode) =>
     encode(value, RANDOMIZER_MODE_CODES);
 export const decodeRandomizerMode = (code: RandomizerModeCode) =>
     decode(code, RANDOMIZER_MODE_CODES);
@@ -63,6 +71,10 @@ export const encodeBossBattleResult = (value: BossBattleResult) =>
     encode(value, BOSS_BATTLE_RESULT_CODES);
 export const decodeBossBattleResult = (code: BossBattleResultCode) =>
     decode(code, BOSS_BATTLE_RESULT_CODES);
+export const encodeGameStatus = (value: GameStatus) =>
+    encode(value, GAME_STATUS_CODES);
+export const decodeGameStatus = (code: GameStatusCode) =>
+    decode(code, GAME_STATUS_CODES);
 
 function encode<TValue extends string, TCode extends string>(
     value: TValue,

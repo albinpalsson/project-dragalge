@@ -363,6 +363,14 @@ export async function openRenameGameDialog(page: Page, name: string) {
     return page.getByRole('dialog', { name: 'Edit name' });
 }
 
+export async function openGameStatusDialog(page: Page, name: string) {
+    await gameCardNamed(page, name)
+        .getByRole('button', { name: 'Game options' })
+        .click();
+    await page.getByRole('button', { name: 'Mark won/lost' }).click();
+    return page.getByRole('dialog', { name: 'Mark won/lost' });
+}
+
 export async function deleteGameFromHome(page: Page, name: string) {
     const card = gameCardNamed(page, name);
     await card.getByRole('button', { name: 'Game options' }).click();

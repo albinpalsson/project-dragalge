@@ -8,6 +8,7 @@ import {
     expandCollapsedSummary,
     navigateTo,
     openBox,
+    openGameStatusDialog,
     openRenameGameDialog,
     resolveEncounter,
     rollEncounter,
@@ -196,6 +197,90 @@ test('Home supports sharing, duplicate imports and persisted deletion', async ({
     const freshCard = page.getByRole('button', { name: /fresh-run/ });
     await expect(freshCard).toContainText('No caught Pokémon');
     await expect(freshCard).toContainText('0%');
+});
+
+test('Home game card status can be set explicitly', async ({ page }) => {
+    await page.goto('/');
+
+    await createGame(page, 'status-run');
+    await navigateTo(page, 'Home');
+    const card = page.getByRole('button', { name: /status-run/ });
+    await expect(card).not.toContainText('Run Complete');
+    await expect(card).not.toContainText('Run Lost');
+
+    let dialog = await openGameStatusDialog(page, 'status-run');
+    await expect(dialog.getByRole('radio', { name: 'In progress' })).toBeChecked();
+    await expect(dialog.getByRole('button', { name: 'Save' })).toBeDisabled();
+    await dialog.getByRole('radio', { name: 'Won' }).check();
+    await dialog.getByRole('button', { name: 'Save' }).click();
+    await expect(dialog).toBeHidden();
+    await expect(card).toContainText('Run Complete');
+
+    dialog = await openGameStatusDialog(page, 'status-run');
+    await expect(dialog.getByRole('radio', { name: 'Won' })).toBeChecked();
+    await dialog.getByRole('radio', { name: 'Lost' }).check();
+    await dialog.getByRole('button', { name: 'Save' }).click();
+    await expect(dialog).toBeHidden();
+    await expect(card).toContainText('Run Lost');
+
+    await waitForPersistence(page);
+    await page.reload();
+    await expect(page.getByRole('button', { name: /status-run/ })).toContainText(
+        'Run Lost',
+    );
+
+    dialog = await openGameStatusDialog(page, 'status-run');
+    await dialog.getByRole('radio', { name: 'In progress' }).check();
+    await dialog.getByRole('button', { name: 'Save' }).click();
+    await expect(dialog).toBeHidden();
+    await expect(card).not.toContainText('Run Lost');
+});
+
+test('a game marked won offers its party as a previous champions ban preset', async ({
+    page,
+}) => {
+    await page.goto('/');
+
+    await createGame(page, 'champion-run');
+    const pokemon = await rollEncounter(page, 'Poco Path');
+    await resolveEncounter(page, 'Poco Path', 'Caught');
+    await navigateTo(page, 'Home');
+
+    const openBanPresets = async () => {
+        await page.getByRole('button', { name: 'Start New Game' }).click();
+        await page.getByRole('button', { name: 'Next', exact: true }).click();
+        return page.getByRole('button', { name: /^Previous champions/ });
+    };
+    const closeNewGameModal = () =>
+        page.getByRole('button', { name: 'Close dialog' }).click();
+
+    let preset = await openBanPresets();
+    await expect(preset).toBeDisabled();
+    await closeNewGameModal();
+
+    const dialog = await openGameStatusDialog(page, 'champion-run');
+    await dialog.getByRole('radio', { name: 'Won' }).check();
+    await dialog.getByRole('button', { name: 'Save' }).click();
+    await expect(dialog).toBeHidden();
+
+    preset = await openBanPresets();
+    await expect(preset).toHaveText('Previous champions (champion-run)');
+    await expect(preset).toBeEnabled();
+    const bannedChip = page.getByRole('button', {
+        name: `Remove ${pokemon} from ban list`,
+    });
+    await expect(bannedChip).toHaveCount(0);
+    await preset.click();
+    await expect(bannedChip).toBeVisible();
+    await closeNewGameModal();
+
+    const statusDialog = await openGameStatusDialog(page, 'champion-run');
+    await statusDialog.getByRole('radio', { name: 'In progress' }).check();
+    await statusDialog.getByRole('button', { name: 'Save' }).click();
+    await expect(statusDialog).toBeHidden();
+
+    preset = await openBanPresets();
+    await expect(preset).toBeDisabled();
 });
 
 test('Home game card name can be edited', async ({ page }) => {
