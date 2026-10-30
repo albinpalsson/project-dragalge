@@ -1,0 +1,13 @@
+# The Paldea nuzlocke guide
+
+> A web app for tracking a Pokémon Scarlet and Violet Nuzlocke run: roll encounters, manage your party and box, and prepare for bosses across Paldea.
+
+## App
+
+- [The Paldea nuzlocke guide](https://paldeanuzlocke.com/): The app itself. It runs in the browser and needs JavaScript.
+
+## Notices
+
+- [Third-party software notices](https://paldeanuzlocke.com/notices/third-party.txt): Runtime packages used by the app and their licences
+- [Bulbapedia data notice](https://paldeanuzlocke.com/notices/bulbapedia-data.txt): Attribution and licensing for data sourced from Bulbapedia
+- [PokémonDB sprites notice](https://paldeanuzlocke.com/notices/pokemondb-sprites.txt): Attribution and rights notes for Pokémon sprites
