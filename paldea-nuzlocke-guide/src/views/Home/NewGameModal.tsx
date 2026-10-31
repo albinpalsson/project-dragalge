@@ -36,6 +36,32 @@ interface NewGameModalProps {
 
 export function NewGameModal({ onOpenGame }: NewGameModalProps) {
     const [isStartModalOpen, setStartModalOpen] = useState(false);
+
+    return (
+        <>
+            <Button
+                className={startButton}
+                onClick={() => setStartModalOpen(true)}
+            >
+                Start New Game
+            </Button>
+
+            {isStartModalOpen && (
+                <NewGameDialog
+                    onClose={() => setStartModalOpen(false)}
+                    onOpenGame={onOpenGame}
+                />
+            )}
+        </>
+    );
+}
+
+interface NewGameDialogProps {
+    onClose: () => void;
+    onOpenGame: (gameName: string) => void;
+}
+
+function NewGameDialog({ onClose, onOpenGame }: NewGameDialogProps) {
     const [startStep, setStartStep] = useState<
         'basics' | 'settings' | 'consent'
     >('basics');
@@ -55,21 +81,6 @@ export function NewGameModal({ onOpenGame }: NewGameModalProps) {
         () => generateDefaultGameName(variant),
         [variant],
     );
-
-    const openStartModal = () => {
-        const selectedPreset = getSettingsPreset('fun');
-        setPresetKey(selectedPreset.key);
-        setGameSettings(cloneSettings(selectedPreset.defaults));
-        setStartStep('basics');
-        setName('');
-        setVariant('s');
-        setStartModalOpen(true);
-    };
-
-    const closeStartModal = () => {
-        setStartModalOpen(false);
-        setStartStep('basics');
-    };
 
     const selectPreset = (nextPresetKey: SettingsPresetKey) => {
         setPresetKey(nextPresetKey);
@@ -92,7 +103,7 @@ export function NewGameModal({ onOpenGame }: NewGameModalProps) {
                 variant,
                 randomizerMode: settings.randomizerMode,
             });
-            closeStartModal();
+            onClose();
             onOpenGame(game.name);
         } catch {
             setStartStep('settings');
@@ -116,47 +127,39 @@ export function NewGameModal({ onOpenGame }: NewGameModalProps) {
     };
 
     return (
-        <>
-            <Button className={startButton} onClick={openStartModal}>
-                Start New Game
-            </Button>
-
-            {isStartModalOpen && (
-                <Modal title="Start New Game" onClose={closeStartModal}>
-                    <div className={form}>
-                        {startStep === 'basics' ? (
-                            <BasicsStep
-                                variant={variant}
-                                onVariantChange={setVariant}
-                                name={name}
-                                onNameChange={setName}
-                                defaultName={defaultName}
-                                presetKey={presetKey}
-                                onSelectPreset={selectPreset}
-                                onNext={() => setStartStep('settings')}
-                                onCancel={closeStartModal}
-                            />
-                        ) : startStep === 'settings' ? (
-                            <SettingsStep
-                                value={gameSettings}
-                                onChange={setGameSettings}
-                                suggestions={pokemon}
-                                presets={presets}
-                                error={createGame.error?.message}
-                                disabled={createGame.isPending}
-                                onBack={() => setStartStep('basics')}
-                                onStart={handleStart}
-                            />
-                        ) : (
-                            <ConsentStep
-                                disabled={createGame.isPending}
-                                onChoice={handleConsentChoice}
-                            />
-                        )}
-                    </div>
-                </Modal>
-            )}
-        </>
+        <Modal title="Start New Game" onClose={onClose}>
+            <div className={form}>
+                {startStep === 'basics' ? (
+                    <BasicsStep
+                        variant={variant}
+                        onVariantChange={setVariant}
+                        name={name}
+                        onNameChange={setName}
+                        defaultName={defaultName}
+                        presetKey={presetKey}
+                        onSelectPreset={selectPreset}
+                        onNext={() => setStartStep('settings')}
+                        onCancel={onClose}
+                    />
+                ) : startStep === 'settings' ? (
+                    <SettingsStep
+                        value={gameSettings}
+                        onChange={setGameSettings}
+                        suggestions={pokemon}
+                        presets={presets}
+                        error={createGame.error?.message}
+                        disabled={createGame.isPending}
+                        onBack={() => setStartStep('basics')}
+                        onStart={handleStart}
+                    />
+                ) : (
+                    <ConsentStep
+                        disabled={createGame.isPending}
+                        onChoice={handleConsentChoice}
+                    />
+                )}
+            </div>
+        </Modal>
     );
 }
 

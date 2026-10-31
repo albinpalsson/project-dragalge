@@ -75,15 +75,25 @@ export function useGameRunSnapshotsQuery() {
 
 export function useGameCards() {
     const snapshotsQuery = useGameRunSnapshotsQuery();
-    const graphQuery = useEvolutionGraphQuery();
+    const storedGames =
+        snapshotsQuery.isSuccess && snapshotsQuery.data.length > 0;
+    const graphQuery = useEvolutionGraphQuery({ enabled: storedGames });
+
     const data = useMemo(() => {
+        const snapshots = snapshotsQuery.data;
         const evolutionGraph = graphQuery.data;
-        if (!snapshotsQuery.data || !evolutionGraph) {
+        if (!snapshots) {
+            return undefined;
+        }
+        if (snapshots.length === 0) {
+            return [];
+        }
+        if (!evolutionGraph) {
             return undefined;
         }
 
         // Newest game first.
-        return [...snapshotsQuery.data]
+        return [...snapshots]
             .sort(
                 (first, second) => second.game.createdAt - first.game.createdAt,
             )
@@ -118,7 +128,8 @@ export function useGameCards() {
 
     const isError = snapshotsQuery.isError || graphQuery.isError;
     const isPending =
-        !isError && (snapshotsQuery.isPending || graphQuery.isPending);
+        !isError &&
+        (snapshotsQuery.isPending || (storedGames && graphQuery.isPending));
     const error = snapshotsQuery.isError
         ? snapshotsQuery.error
         : graphQuery.isError
