@@ -3,11 +3,23 @@ import { writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import type { CssDependency } from '../graph/index.ts';
 
-function shortContentHash(contents: string): string {
+export function shortContentHash(contents: string): string {
     return createHash('sha1')
         .update(contents, 'utf8')
         .digest('hex')
         .slice(0, 8);
+}
+
+export async function writeJsFile(
+    outputDirPath: string,
+    contents: string,
+): Promise<string> {
+    const outputPath = path.resolve(
+        outputDirPath,
+        `${shortContentHash(contents)}.js`,
+    );
+    await writeFile(outputPath, contents, 'utf8');
+    return outputPath;
 }
 
 export async function writeMergedCssBundle(

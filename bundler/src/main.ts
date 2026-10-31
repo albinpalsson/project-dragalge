@@ -1,17 +1,24 @@
-﻿import { createHash } from 'node:crypto';
-import { writeFile } from 'node:fs/promises';
-import path from 'node:path';
+﻿import path from 'node:path';
 import type { ProgramNode } from './ast-lite/index.ts';
 
 import { loadResolvedConfig } from './config/index.ts';
-import { generateRuntimeCode } from './generate-runtime.ts';
-import { buildDependencyTree, type DependencyEntry } from './graph/index.ts';
+import {
+    assignModuleIds,
+    generateChunkCode,
+    generateMainCode,
+} from './generate-runtime.ts';
+import {
+    buildDependencyTree,
+    type Chunk,
+    type DependencyEntry,
+} from './graph/index.ts';
 
 import {
     cleanOutputDir,
     clearCssDependencyRuntimeSource,
     collectOutputFiles,
     compressOutputFiles,
+    writeJsFile,
     writeLinkedHtmlFile,
     writeMergedCssBundle,
 } from './output/index.ts';
@@ -33,6 +40,7 @@ export interface BundlerConfig {
     target?: BundlerTarget;
     env?: Record<string, string | undefined>;
     cacheDir?: string;
+    minChunkBytes?: number;
     transforms?: Transform[];
 }
 
@@ -85,6 +93,7 @@ export interface RunBundlerResult {
     config: BundlerConfig;
     outputPath: string;
     outputCode: string;
+    chunkOutputPaths: string[];
     cssOutputPaths: string[];
     compressedOutputPaths: string[];
     watchedFilePaths: string[];
@@ -95,13 +104,6 @@ export type {
     ProcessedFileResult,
     ProcessedJsFile,
 } from './processed-file-result.ts';
-
-function shortContentHash(contents: string): string {
-    return createHash('sha1')
-        .update(contents, 'utf8')
-        .digest('hex')
-        .slice(0, 8);
-}
 
 function isCssDependency(
     entry: DependencyEntry,
@@ -157,6 +159,7 @@ export async function runBundler(
         resolvedConfig.cacheDir,
         transpilationResult,
         options.performance,
+        resolvedConfig.minChunkBytes,
     );
 
     const cssDependencies = dependencyTree.entries.filter(isCssDependency);
@@ -171,12 +174,27 @@ export async function runBundler(
     );
     clearCssDependencyRuntimeSource(cssDependencies);
 
-    const bundled = generateRuntimeCode(dependencyTree.entries, { entryPath });
-    const outputPath = path.resolve(
-        outputDirPath,
-        `${shortContentHash(bundled)}.js`,
+    const moduleIds = assignModuleIds(
+        dependencyTree.entries,
+        dependencyTree.roots,
     );
-    await writeFile(outputPath, bundled, 'utf8');
+    const chunkFileNames = new Map<Chunk, string>();
+    const chunkOutputPaths: string[] = [];
+    for (const chunk of dependencyTree.chunks) {
+        const chunkPath = await writeJsFile(
+            outputDirPath,
+            generateChunkCode(chunk, moduleIds),
+        );
+        chunkFileNames.set(chunk, path.basename(chunkPath));
+        chunkOutputPaths.push(chunkPath);
+    }
+    const bundled = generateMainCode(
+        dependencyTree,
+        moduleIds,
+        chunkFileNames,
+        { entryPath },
+    );
+    const outputPath = await writeJsFile(outputDirPath, bundled);
 
     const htmlOutputPath = await writeLinkedHtmlFile({
         entryPath,
@@ -186,6 +204,7 @@ export async function runBundler(
     const compressionStartTime = performance.now();
     const compressedOutputPaths = await compressOutputFiles({
         outputPath,
+        chunkOutputPaths,
         cssOutputPaths,
         mode: resolvedConfig.mode,
     });
@@ -194,6 +213,7 @@ export async function runBundler(
 
     const outputFiles = await collectOutputFiles({
         outputPath,
+        chunkOutputPaths,
         cssOutputPaths,
         htmlOutputPath,
         compressedOutputPaths,
@@ -210,6 +230,7 @@ export async function runBundler(
         config: resolvedConfig,
         outputPath,
         outputCode: bundled,
+        chunkOutputPaths,
         cssOutputPaths,
         compressedOutputPaths,
         watchedFilePaths: [

@@ -34,13 +34,31 @@ export async function processFile(
         transforms,
     );
     const processingStartTime = performance.now();
-    const dependencies = findDependencies(ast.body).map((dep) => dep.specifier);
+    const found = findDependencies(ast.body);
+    const dependencies = found
+        .filter((dep) => dep.type === 'require')
+        .map((dep) => dep.specifier);
+    const dynamicDependencies = [
+        ...new Set(
+            found
+                .filter((dep) => dep.type === 'dynamic')
+                .map((dep) => dep.specifier),
+        ),
+    ];
     const processedCode = writeProgram(ast);
 
     if (filePath.startsWith(transpilation.sourceRootDir)) {
         for (const sourceDep of extractAdditionalImports(code)) {
             dependencies.push(sourceDep);
         }
+    }
+    const mixed = dynamicDependencies.find((specifier) =>
+        dependencies.includes(specifier),
+    );
+    if (mixed !== undefined) {
+        throw new Error(
+            `${filePath}: "${mixed}" is imported both statically and with import(); use one form per module.`,
+        );
     }
     const totalProcessingDurationMs =
         processingDurationMs + performance.now() - processingStartTime;
@@ -58,6 +76,7 @@ export async function processFile(
         type: 'js',
         code: processedCode,
         dependencies: Array.from(dependencies),
+        dynamicDependencies,
         metadata,
     };
 }

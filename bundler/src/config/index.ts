@@ -2,6 +2,9 @@
 import { loadCjsConfig, resolveConfigPath } from './loader.ts';
 import { buildProcessEnv, resolveMode } from './resolver.ts';
 
+// A lazy chunk smaller than this is not worth its own request.
+const DEFAULT_MIN_CHUNK_BYTES = 8 * 1024;
+
 export async function loadResolvedConfig(
     cwd: string,
     configFileName: string | undefined,
@@ -26,6 +29,9 @@ export async function loadResolvedConfig(
 
     return {
         ...mergedConfig,
+        // The validated file config carries unset options as explicit `undefined`,
+        // which would overwrite a default applied before the merge.
+        minChunkBytes: mergedConfig.minChunkBytes ?? DEFAULT_MIN_CHUNK_BYTES,
         mode: resolvedMode,
         processEnv: buildProcessEnv(resolvedMode, mergedConfig.env),
     };

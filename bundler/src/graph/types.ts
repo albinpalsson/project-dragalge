@@ -1,13 +1,14 @@
 ﻿import type { ModuleTransformMetadata } from '../main.ts';
 
 export interface ParsedDependency {
-    type: 'require';
+    type: 'require' | 'dynamic';
     specifier: string;
 }
 
 export interface ResolvedRequire {
     specifier: string;
     resolvedPath: string;
+    dynamic: boolean;
 }
 
 export interface DependencyModule {
@@ -30,6 +31,25 @@ export type VisitState =
     | { status: 'pending' }
     | { status: 'ready'; entry: DependencyEntry };
 
-export interface BuildDependencyTreeResult {
+export interface Chunk {
+    entries: DependencyEntry[];
+    /** Lazy roots whose static closure contains this chunk's modules. */
+    roots: string[];
+}
+
+export interface LazyRoot {
+    path: string;
+    /** Every chunk that must be loaded before `path` can be required. */
+    chunks: Chunk[];
+}
+
+export interface ChunkGraph {
+    main: DependencyEntry[];
+    chunks: Chunk[];
+    roots: LazyRoot[];
+}
+
+export interface BuildDependencyTreeResult extends ChunkGraph {
+    /** Every module in depth-first order, regardless of chunk. */
     entries: DependencyEntry[];
 }

@@ -14,18 +14,21 @@ function inferCompressedKind(filePath: string): 'js' | 'css' | 'html' {
 
 export async function collectOutputFiles(input: {
     outputPath: string;
+    chunkOutputPaths: string[];
     cssOutputPaths: string[];
     htmlOutputPath: string | null;
     compressedOutputPaths: string[];
 }): Promise<PerformanceOutputFile[]> {
     const files: PerformanceOutputFile[] = [];
 
-    files.push({
-        path: input.outputPath,
-        sizeBytes: (await stat(input.outputPath)).size,
-        kind: 'js',
-        stage: 'processed',
-    });
+    for (const jsPath of [input.outputPath, ...input.chunkOutputPaths]) {
+        files.push({
+            path: jsPath,
+            sizeBytes: (await stat(jsPath)).size,
+            kind: 'js',
+            stage: 'processed',
+        });
+    }
 
     for (const cssPath of input.cssOutputPaths) {
         files.push({

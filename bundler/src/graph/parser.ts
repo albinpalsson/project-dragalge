@@ -2,6 +2,11 @@
 import type { ParsedDependency } from './types.ts';
 
 const requireRegex = /require\(\s*$/;
+// The CommonJS shape TypeScript emits for `import('x')`, with or without the
+// `__importStar` interop helper. Anything else is a plain `require`.
+export const dynamicImportRegex =
+    /Promise\.resolve\(\)\.then\(\s*(?:\(\)\s*=>|function\s*\(\)\s*\{\s*return)\s*(?:__importStar\(\s*)?require\(\s*$/;
+
 
 export function findDependencies(code: AstNode[]): ParsedDependency[] {
     const found: ParsedDependency[] = [];
@@ -10,9 +15,11 @@ export function findDependencies(code: AstNode[]): ParsedDependency[] {
         if (node.type === 'blob') {
             if (requireRegex.test(node.code)) {
                 const next = code[i + 1];
-                if (next.type === 'protected' && next.kind === 'string') {
+                if (next?.type === 'protected' && next.kind === 'string') {
                     found.push({
-                        type: 'require',
+                        type: dynamicImportRegex.test(node.code)
+                            ? 'dynamic'
+                            : 'require',
                         specifier: unquoteDependencySpecifier(next.code),
                     });
                 }

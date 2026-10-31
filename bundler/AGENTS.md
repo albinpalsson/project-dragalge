@@ -16,6 +16,19 @@ verify emitted behavior, not only TypeScript compilation.
   resolution or generated wrappers, verify resolved dependencies are compatible
   with that runtime; a successful bundle is not sufficient proof of runtime
   correctness.
+- Lazy loading splits the graph along literal `import()` calls. Everything
+  statically reachable from the entry is the main file; each other `import()`
+  target is a lazy root whose chunks are loaded by a thenable stub in the main
+  table (`src/graph/chunker.ts`, `src/generate-runtime.ts`). `import()` is
+  recognised only by the CommonJS shape TypeScript emits for it
+  (`dynamicImportRegex` in `src/graph/parser.ts`); keep that regex and the
+  emitted shape in step. Deliberately unsupported: non-literal `import()`
+  specifiers and importing a module both statically and dynamically from the
+  same module (both fail the build), per-chunk CSS (all CSS is one render-blocking
+  file), ES-module chunks, chunk preloading and load retries. Lazy roots under
+  `minChunkBytes` are folded into the main file. Chunks are classic scripts
+  that call `Object.assign(m, ...)` on the main script's top-level `m`, and the
+  chunk loader needs a browser `document`.
 - Public assets are copied from the `public/` directory beside the entry file.
   Check the output and dev-server serving behavior when changing asset handling.
 - Treat the resolver as intentionally constrained. Confirm supported package

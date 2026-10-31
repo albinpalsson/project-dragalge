@@ -13,7 +13,7 @@ import type {
     ProcessedFileResultRef,
 } from './processed-file-result.ts';
 
-const MODULE_TRANSFORM_CACHE_VERSION = 4;
+const MODULE_TRANSFORM_CACHE_VERSION = 5;
 
 export interface SourceFingerprint {
     sourceMtimeMs: number;

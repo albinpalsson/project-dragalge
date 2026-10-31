@@ -9,6 +9,7 @@ import type { ProcessedFileResult } from '../processed-file-result.ts';
 import { SCANNER_VERSION } from '../scanner/index.ts';
 import type { TranspilationResult } from '../transpile/index.ts';
 import { isRelativeSpecifier, resolveRelativePath } from '../utils/index.ts';
+import { splitIntoChunks } from './chunker.ts';
 import { emitDeterministicEntries } from './emitter.ts';
 import { processFile } from './processor.ts';
 import type {
@@ -43,6 +44,7 @@ export async function buildDependencyTree(
     cacheDir: string,
     transpilation: TranspilationResult,
     perfCollect: BundlerPerformanceCollector,
+    minChunkBytes: number,
 ): Promise<BuildDependencyTreeResult> {
     const normalizedEntryPath = path.resolve(entryFilePath);
     const { createEnvInjectTransform } = await import(
@@ -107,7 +109,13 @@ export async function buildDependencyTree(
             requires: [] as ResolvedRequire[],
         };
 
-        const uniqueDependencies = [...new Set<string>(result.dependencies)];
+        const dynamicSpecifiers =
+            result.type === 'js'
+                ? new Set<string>(result.dynamicDependencies)
+                : new Set<string>();
+        const uniqueDependencies = [
+            ...new Set<string>([...result.dependencies, ...dynamicSpecifiers]),
+        ];
         const resolvedDependencies = await Promise.all(
             uniqueDependencies.map(async (specifier) => {
                 const resolvedPath = isRelativeSpecifier(specifier)
@@ -116,7 +124,11 @@ export async function buildDependencyTree(
                           specifier,
                           normalizedPath,
                       );
-                return { specifier, resolvedPath };
+                return {
+                    specifier,
+                    resolvedPath,
+                    dynamic: dynamicSpecifiers.has(specifier),
+                };
             }),
         );
 
@@ -143,5 +155,8 @@ export async function buildDependencyTree(
     }
 
     await moduleTransformCache.finalize();
-    return { entries };
+    return {
+        entries,
+        ...splitIntoChunks(entries, normalizedEntryPath, minChunkBytes),
+    };
 }

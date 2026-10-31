@@ -2,6 +2,7 @@
     array,
     func,
     literal,
+    number,
     object,
     optional,
     record,
@@ -22,5 +23,6 @@ export const bundlerConfigSchema = object({
     target: optional(union([literal('es6'), literal('es2022')] as const)),
     env: optional(record(optional(string()))),
     cacheDir: optional(string()),
+    minChunkBytes: optional(number()),
     transforms: optional(array(transformSchema)),
 });

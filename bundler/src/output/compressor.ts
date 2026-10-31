@@ -20,6 +20,7 @@ export async function writeBrotliFile(filePath: string): Promise<string> {
 
 export async function compressOutputFiles(input: {
     outputPath: string;
+    chunkOutputPaths: string[];
     cssOutputPaths: string[];
     mode: BundlerMode;
 }): Promise<string[]> {
@@ -27,7 +28,11 @@ export async function compressOutputFiles(input: {
         return [];
     }
 
-    const outputPaths = [input.outputPath, ...input.cssOutputPaths];
+    const outputPaths = [
+        input.outputPath,
+        ...input.chunkOutputPaths,
+        ...input.cssOutputPaths,
+    ];
     const compressedPaths = await Promise.all(
         outputPaths.map((filePath) => writeBrotliFile(filePath)),
     );

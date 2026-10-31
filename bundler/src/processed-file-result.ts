@@ -2,6 +2,7 @@
     type: 'js';
     code: string;
     dependencies: string[];
+    dynamicDependencies: string[];
     metadata: Record<string, unknown>;
 }
 

@@ -3,6 +3,7 @@ import { mkdir, mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
+import { setTimeout as sleep } from 'node:timers/promises';
 import vm from 'node:vm';
 import { runBundler } from './main.ts';
 import { BundlerPerformanceCollector } from './performance-collector.ts';
@@ -52,6 +53,17 @@ test('bundles a two-file TS app with a CSS import and produces correct js, css, 
                 '}',
                 "console.log(buildQuery('id = 1'));",
                 "console.log(buildQuery(''));",
+                "import('./lazy').then((lazy) => console.log(lazy.lazyValue()));",
+            ].join('\n'),
+            'utf8',
+        );
+
+        await writeFile(
+            path.join(srcDir, 'lazy.ts'),
+            [
+                'export function lazyValue(): string {',
+                "  return 'lazy-ok';",
+                '}',
             ].join('\n'),
             'utf8',
         );
@@ -108,6 +120,8 @@ test('bundles a two-file TS app with a CSS import and produces correct js, css, 
                 entry: 'src/index.ts',
                 outputDir: 'dist',
                 mode: 'production',
+                // The lazy module is tiny; keep it out of the main bundle.
+                minChunkBytes: 0,
             },
         });
 
@@ -133,17 +147,80 @@ test('bundles a two-file TS app with a CSS import and produces correct js, css, 
             new RegExp(`<script src="${jsBasename}"></script>`),
         );
 
-        // --- JS: execute in vm, capture console.log ---
+        // --- Lazy chunk: separate file, compressed, not in the main bundle ---
+        assert.equal(result.chunkOutputPaths.length, 1);
+        const chunkPath = result.chunkOutputPaths[0];
+        assert.ok(result.compressedOutputPaths.includes(`${chunkPath}.br`));
+
         const jsContent = await readFile(result.outputPath, 'utf8');
-        const logs: unknown[] = [];
-        const context = vm.createContext({
-            console: { log: (...args: unknown[]) => logs.push(...args) },
-        });
-        vm.runInContext(jsContent, context);
+
+        // --- JS: execute in a mocked browser, which loads chunk scripts ---
+        const browser = new MockBrowser(path.join(tmpDir, 'dist'));
+        browser.run(jsContent);
+        const { logs } = browser;
         assert.equal(logs[0], 21);
         assert.equal(logs[1], '0,1,2');
         assert.equal(logs[2], 'ok');
         assert.equal(logs[3], 'select * from t where id = 1');
         assert.equal(logs[4], 'select * from t');
+
+        await waitFor(() => assert.equal(logs[5], 'lazy-ok'));
     });
 });
+
+/**
+ * A vm context standing in for a page: it records console output and answers
+ * the chunk loader's `<script>` injections by running the file from `distDir`.
+ */
+class MockBrowser {
+    readonly logs: unknown[] = [];
+    readonly requestedScripts: string[] = [];
+    private readonly context: vm.Context;
+    constructor(distDir: string) {
+        this.context = vm.createContext({
+            console: {
+                log: (...args: unknown[]) => {
+                    this.logs.push(...args);
+                },
+            },
+            document: {
+                createElement: () => ({}),
+                head: {
+                    appendChild: (script: {
+                        src: string;
+                        onload: () => void;
+                    }) => {
+                        this.requestedScripts.push(script.src);
+                        readFile(path.join(distDir, script.src), 'utf8')
+                            .then((code) => this.run(code))
+                            .then(() => script.onload());
+                    },
+                },
+            },
+        });
+    }
+
+    run(code: string): void {
+        vm.runInContext(code, this.context);
+    }
+
+}
+
+/** Retries `assertion` until it stops throwing; rethrows its last error on timeout. */
+async function waitFor(
+    assertion: () => void,
+    timeoutMs = 5000,
+): Promise<void> {
+    const deadline = Date.now() + timeoutMs;
+    while (true) {
+        try {
+            assertion();
+            return;
+        } catch (error) {
+            if (Date.now() >= deadline) {
+                throw error;
+            }
+            await sleep(10);
+        }
+    }
+}
