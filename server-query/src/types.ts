@@ -19,6 +19,7 @@ export interface QueryOptions<TData = unknown> {
     queryKey: unknown[];
     queryFn: () => Promise<TData>;
     staleTime?: number;
+    enabled?: boolean;
 }
 
 export interface MutationOptions<TData = unknown, TVariables = void> {

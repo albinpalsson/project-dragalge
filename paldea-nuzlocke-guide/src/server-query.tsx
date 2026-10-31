@@ -119,6 +119,7 @@ export function useQuery<TData, TError extends Error = Error>(
     const client = useClient();
     const key = JSON.stringify(options.queryKey);
     const staleTime = options.staleTime ?? 0;
+    const enabled = options.enabled ?? true;
 
     // keep a stable ref to queryFn to avoid re-triggering the effect
     const queryFnRef = useRef(options.queryFn);
@@ -137,12 +138,15 @@ export function useQuery<TData, TError extends Error = Error>(
     const state = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 
     const refetch = useCallback(() => {
+        if (!enabled) {
+            return;
+        }
         client
             .fetch(key, () => queryFnRef.current(), staleTime)
             .catch(() => {
                 // error is captured in state; no need to rethrow
             });
-    }, [client, key, staleTime]);
+    }, [client, key, staleTime, enabled]);
 
     useEffect(() => {
         refetch();
