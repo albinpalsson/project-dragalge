@@ -1,4 +1,11 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import {
+    lazy,
+    Suspense,
+    useEffect,
+    useRef,
+    useState,
+    type ReactNode,
+} from 'react';
 import { css, cx } from '@project-dragalge/css-in-js';
 import { Drawer } from '../components/Drawer';
 import { HeaderSlotContext } from '../components/HeaderSlot';
@@ -8,7 +15,6 @@ import { GITHUB_REPO_URL, buildMailto } from '../contact';
 import { About } from './About';
 import { AppHeader } from './AppHeader';
 import { Friendship } from './Friendship';
-import { Game } from './Game/Game';
 import { Home } from './Home/Home';
 import { Licenses } from './Licenses';
 import { RandomizerModes } from './RandomizerModes';
@@ -18,6 +24,13 @@ import { useViewNavigation } from '../hooks/useViewNavigation';
 import { useReleaseNews } from '../hooks/useReleaseNews';
 import { track } from '../analytics/analytics';
 import { APP_VERSION } from '../analytics/config';
+
+// Game is the only view big enough to be worth a separate chunk. The small
+// views stay static: lazy() would suspend (and flash the fallback) even when
+// their code is already in the main bundle.
+const Game = lazy(() =>
+    import('./Game/Game').then((module) => ({ default: module.Game })),
+);
 
 export function App() {
     // Establishes the browser baseline; connect pending news and explicit
@@ -128,38 +141,40 @@ export function App() {
 
             <HeaderSlotContext.Provider value={headerSlot}>
                 <main>
-                    {activeView.view === 'home' && (
-                        <Home
-                            onOpenGame={(gameName) =>
-                                navigate({ view: 'game', gameName })
-                            }
-                            onOpenAbout={() => navigate({ view: 'about' })}
-                            onOpenLicenses={() =>
-                                navigate({ view: 'licenses' })
-                            }
-                        />
-                    )}
-                    {activeView.view === 'game' && (
-                        <Game gameName={activeView.gameName} />
-                    )}
-                    {activeView.view === 'about' && (
-                        <About
-                            onOpenLicenses={() =>
-                                navigate({ view: 'licenses' })
-                            }
-                            onOpenFriendship={() =>
-                                navigate({ view: 'friendship' })
-                            }
-                            onOpenRandomizerModes={() =>
-                                navigate({ view: 'randomizerModes' })
-                            }
-                        />
-                    )}
-                    {activeView.view === 'friendship' && <Friendship />}
-                    {activeView.view === 'randomizerModes' && (
-                        <RandomizerModes />
-                    )}
-                    {activeView.view === 'licenses' && <Licenses />}
+                    <Suspense fallback={<p>Loading...</p>}>
+                        {activeView.view === 'home' && (
+                            <Home
+                                onOpenGame={(gameName) =>
+                                    navigate({ view: 'game', gameName })
+                                }
+                                onOpenAbout={() => navigate({ view: 'about' })}
+                                onOpenLicenses={() =>
+                                    navigate({ view: 'licenses' })
+                                }
+                            />
+                        )}
+                        {activeView.view === 'game' && (
+                            <Game gameName={activeView.gameName} />
+                        )}
+                        {activeView.view === 'about' && (
+                            <About
+                                onOpenLicenses={() =>
+                                    navigate({ view: 'licenses' })
+                                }
+                                onOpenFriendship={() =>
+                                    navigate({ view: 'friendship' })
+                                }
+                                onOpenRandomizerModes={() =>
+                                    navigate({ view: 'randomizerModes' })
+                                }
+                            />
+                        )}
+                        {activeView.view === 'friendship' && <Friendship />}
+                        {activeView.view === 'randomizerModes' && (
+                            <RandomizerModes />
+                        )}
+                        {activeView.view === 'licenses' && <Licenses />}
+                    </Suspense>
                 </main>
             </HeaderSlotContext.Provider>
         </>

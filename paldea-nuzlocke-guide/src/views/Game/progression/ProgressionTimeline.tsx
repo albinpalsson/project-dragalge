@@ -2,6 +2,7 @@ import { css } from '@project-dragalge/css-in-js';
 import { useState } from 'react';
 import { useProgressionTracker } from '../../../hooks/useProgressionTracker';
 import { useGame } from '../GameContext';
+import { getProgressionComponent } from './progression-components';
 import {
     getVisibleProgressionItems,
     PROGRESSION_ITEMS,
@@ -46,16 +47,19 @@ export function ProgressionTimeline() {
                 </button>
             )}
             <ol className={cardList}>
-                {itemsToRender.map((item) => (
-                    <li key={item.key} className={cardItem}>
-                        {progression.nextKey === item.key && (
-                            <p className={nextStepLabel}>→ Next step</p>
-                        )}
-                        <item.Component
-                            isNext={progression.nextKey === item.key}
-                        />
-                    </li>
-                ))}
+                {itemsToRender.map((item) => {
+                    const Component = getProgressionComponent(item.key);
+                    return (
+                        <li key={item.key} className={cardItem}>
+                            {progression.nextKey === item.key && (
+                                <p className={nextStepLabel}>→ Next step</p>
+                            )}
+                            <Component
+                                isNext={progression.nextKey === item.key}
+                            />
+                        </li>
+                    );
+                })}
             </ol>
         </>
     );
