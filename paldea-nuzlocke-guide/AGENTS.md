@@ -4,6 +4,18 @@ Read these instructions for changes under `paldea-nuzlocke-guide/`. The app is a
 React application; keep persistence and data access behind the existing package
 boundaries.
 
+## Runtime
+
+- The app imports `react` and `react-dom`, but `redact-plugin` in
+  `bundler.config.cjs` redirects those requires to TanStack Redact at build time.
+  Types still come from `@types/react`, so an API Redact lacks is not a type error.
+- The plugin's `include` list names the features the app uses; the rest become
+  stubs, which fail quietly. Add a feature before using `memo`, `lazy`,
+  `forwardRef`, `Suspense`, `Activity` or hydration. `class` must stay in for
+  `UnexpectedErrorBoundary`.
+- Redact's `useId` uses BigInt literals, so ES2020 is the real browser floor and
+  the bundler `target` matches it.
+
 ## Architecture and Data Access
 
 - `src/router.ts` defines the `ActiveView` union. Top-level navigation is held

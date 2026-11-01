@@ -20,14 +20,14 @@
         "@project-dragalge/query-builder": "*",
         "@project-dragalge/server-query": "*",
         "@project-dragalge/validator": "*",
+        "@tanstack/redact": "0.2.3",
         "@types/react-dom": "^19.2.3",
-        "react": "^19.2.7",
-        "react-dom": "^19.2.7",
         "typescript": "7.1.0-beta"
     },
     "devDependencies": {
         "@playwright/test": "^1.62.1",
         "@project-dragalge/bundler": "*",
+        "@project-dragalge/redact-plugin": "*",
         "@types/node": "^20.19.43",
         "@types/react": "^19.2.17"
     }

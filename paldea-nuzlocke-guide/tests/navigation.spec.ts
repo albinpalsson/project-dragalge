@@ -164,7 +164,7 @@ test('Licenses & Notices is reachable and restored by browser history', async ({
         ],
         [
             '/notices/third-party.txt',
-            'react-dom 19.2.7 (MIT)',
+            '@tanstack/redact 0.2.3 (MIT)',
             'installed package distributions',
         ],
     ]) {

@@ -2,13 +2,11 @@ Third-Party Software Notices
 
 The production app includes the following third-party runtime packages:
 
-- react 19.2.7 (MIT)
-- react-dom 19.2.7 (MIT)
-- scheduler 0.27.0 (MIT; runtime dependency of react-dom)
+- @tanstack/redact 0.2.3 (MIT)
 
 MIT License
 
-Copyright (c) Meta Platforms, Inc. and affiliates.
+Copyright (c) 2026-present Tanner Linsley
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
