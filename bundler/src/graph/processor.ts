@@ -4,8 +4,10 @@ import { parseProgram, writeProgram } from '../ast-lite/index.ts';
 import type { ModuleTransformMetadata, Transform } from '../main.ts';
 import type { BundlerPerformanceCollector } from '../performance-collector.ts';
 import type { ProcessedFileResult } from '../processed-file-result.ts';
+import type { EsmTranspiler } from '../transpile/esm.ts';
 import type { TranspilationResult } from '../transpile/index.ts';
 import { extractAdditionalImports, isCssFilePath } from '../utils/index.ts';
+import { hoistRequires } from './hoist-requires.ts';
 import { findDependencies } from './parser.ts';
 
 export async function processFile(
@@ -13,6 +15,7 @@ export async function processFile(
     transpilation: TranspilationResult,
     transforms: Transform[],
     perfCollect: BundlerPerformanceCollector | undefined,
+    esmTranspiler: EsmTranspiler,
 ): Promise<ProcessedFileResult> {
     const code = await readFile(filePath, 'utf8');
     if (isCssFilePath(filePath)) {
@@ -26,12 +29,13 @@ export async function processFile(
         );
         return { type: 'css', code, dependencies: [] };
     }
-    const cjs = await resolveCjsFile(filePath, transpilation);
+    const cjs = await resolveCjsFile(filePath, transpilation, esmTranspiler);
 
     const { ast, metadata, processingDurationMs } = await applyModuleTransforms(
         cjs.path,
         cjs.code,
         transforms,
+        cjs.typescriptEmitted,
     );
     const processingStartTime = performance.now();
     const found = findDependencies(ast.body);
@@ -84,7 +88,8 @@ export async function processFile(
 async function resolveCjsFile(
     filePath: string,
     transpilation: TranspilationResult,
-): Promise<{ path: string; code: string }> {
+    esmTranspiler: EsmTranspiler,
+): Promise<{ path: string; code: string; typescriptEmitted: boolean }> {
     const relativeToSourceRoot = path.relative(
         transpilation.sourceRootDir,
         filePath,
@@ -98,20 +103,27 @@ async function resolveCjsFile(
             .resolve(transpilation.outDir, relativeToSourceRoot)
             .replace(/\.(ts|tsx|mts|cts)$/i, '.js');
         const code = await transpilation.readEmittedFile(transpiledPath);
-        return { path: transpiledPath, code };
+        return { path: transpiledPath, code, typescriptEmitted: true };
     }
 
     const code = await readFile(filePath, 'utf8');
-    return { path: filePath, code };
+    const transpiled = await esmTranspiler.transpileIfEsm(filePath, code);
+    return transpiled === undefined
+        ? { path: filePath, code, typescriptEmitted: false }
+        : { path: filePath, code: transpiled, typescriptEmitted: true };
 }
 
 export async function applyModuleTransforms(
     modulePath: string,
     code: string,
     transforms: Transform[],
+    typescriptEmitted: boolean,
 ) {
     const parseStartTime = performance.now();
     let ast = parseProgram(code);
+    if (typescriptEmitted) {
+        ast = hoistRequires(ast);
+    }
     let processingDurationMs = performance.now() - parseStartTime;
     const metadata: ModuleTransformMetadata = {};
 

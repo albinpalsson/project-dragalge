@@ -21,10 +21,42 @@ const exportsTargetSchema = union([string(), record(string())] as const);
 const packageJsonSchema = object({
     exports: optional(union([string(), record(exportsTargetSchema)] as const)),
     main: optional(string()),
+    type: optional(string()),
 });
 
 export class NodeModulesResolver {
     private readonly resolutionCache = new Map<string, Promise<string>>();
+    private readonly packageTypeCache = new Map<string, Promise<boolean>>();
+
+    /** Node's rule: the extension wins, then the nearest package.json `type`. */
+    async isEsmFile(filePath: string): Promise<boolean> {
+        const extension = path.extname(filePath);
+        if (extension === '.mjs' || extension === '.cjs') {
+            return extension === '.mjs';
+        }
+        return this.isEsmDirectory(path.dirname(filePath));
+    }
+
+    private isEsmDirectory(directory: string): Promise<boolean> {
+        const cached = this.packageTypeCache.get(directory);
+        if (cached) {
+            return cached;
+        }
+
+        const lookup = this.readPackageType(directory);
+        this.packageTypeCache.set(directory, lookup);
+        return lookup;
+    }
+
+    private async readPackageType(directory: string): Promise<boolean> {
+        if (await pathExists(path.join(directory, 'package.json'))) {
+            const { type } = await loadPackageJson(directory);
+            return type === 'module';
+        }
+
+        const parent = path.dirname(directory);
+        return parent === directory ? false : this.isEsmDirectory(parent);
+    }
 
     async resolve(specifier: string, fromFilePath: string): Promise<string> {
         const cachedResolution = this.resolutionCache.get(specifier);

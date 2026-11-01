@@ -16,6 +16,18 @@ verify emitted behavior, not only TypeScript compilation.
   resolution or generated wrappers, verify resolved dependencies are compatible
   with that runtime; a successful bundle is not sufficient proof of runtime
   correctness.
+- Application files and ESM files from outside the source root become CommonJS
+  through the TypeScript API. A file is ESM by Node's rule (`.mjs`, or the nearest
+  `package.json` has `type: module`; see `isEsmFile`), so a generated CommonJS file
+  in a `type: module` package must be named `.cjs`. ESM files are converted one at
+  a time in `src/transpile/esm.ts`, with no type checking. `import.meta` and
+  top-level await are unsupported and are syntax errors in the emitted bundle.
+- TypeScript leaves each `require` at its import's source position, while ESM runs
+  imports before the module body. `src/graph/hoist-requires.ts` moves them up on the
+  AST-lite program for all TypeScript-emitted modules, and leaves real CommonJS
+  alone. It relies on TypeScript's one-statement-per-line emit. Import cycles
+  rely on CommonJS partial exports: hoisted functions are visible across a cycle,
+  but reading a `const` from a cycle partner while modules load is not supported.
 - Lazy loading splits the graph along literal `import()` calls. Everything
   statically reachable from the entry is the main file; each other `import()`
   target is a lazy root whose chunks are loaded by a thenable stub in the main
@@ -49,7 +61,8 @@ verify emitted behavior, not only TypeScript compilation.
   as protected nodes. Minification or rewriting must not alter their contents.
   Extend the parser/minifier integration tests with source cases for syntax
   changes.
-- `AST_LITE_VERSION` is shared with `css-in-js/src/ast-types.ts`. Coordinate
+- `AST_LITE_VERSION` is shared with `css-in-js/src/ast-types.ts` and
+  `redact-plugin/src/ast-types.ts`. Coordinate
   incompatible AST changes with `css-in-js`, update both contracts together,
   and rebuild both packages.
 - The bundler test suite has integration tests that bundle a temporary project

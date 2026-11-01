@@ -20,7 +20,13 @@ export const bundlerConfigSchema = object({
     entry: optional(string()),
     outputDir: optional(string()),
     mode: optional(union([literal('production'), literal('dev')] as const)),
-    target: optional(union([literal('es6'), literal('es2022')] as const)),
+    target: optional(
+        union([
+            literal('es6'),
+            literal('es2020'),
+            literal('es2022'),
+        ] as const),
+    ),
     env: optional(record(optional(string()))),
     cacheDir: optional(string()),
     minChunkBytes: optional(number()),

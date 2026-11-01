@@ -80,7 +80,7 @@ async function findConfigFile(cwd: string): Promise<string> {
 export class CompilerSession {
     private readonly cwd: string;
     private sourceRootDir: string;
-    private readonly api: API;
+    readonly api: API;
     private snapshot: Snapshot | undefined;
     private program: Program<SyntheticProjectId> | undefined;
     private configurationKey: string | undefined;

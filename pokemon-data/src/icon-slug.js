@@ -1,4 +1,3 @@
-// CommonJS because the app bundler consumes node_modules packages as CJS (see artifacts/paldea-db.js).
 const ICON_SLUG_OVERRIDES = {
     'Tauros (Combat Breed)': 'tauros-paldean-combat',
     'Tauros (Blaze Breed)': 'tauros-paldean-blaze',
@@ -21,7 +20,7 @@ const ICON_SLUG_OVERRIDES = {
     'Nidoran\u2642': 'nidoran-m',
 };
 
-function toIconSlug(name) {
+export function toIconSlug(name) {
     const override = ICON_SLUG_OVERRIDES[name];
     if (override) {
         return override;
@@ -47,5 +46,3 @@ function toIconSlug(name) {
 
     return slug;
 }
-
-exports.toIconSlug = toIconSlug;

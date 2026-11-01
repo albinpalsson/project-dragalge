@@ -1,6 +1,6 @@
 import { writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { toIconSlug } from '../icon-slug.cjs';
+import { toIconSlug } from '../icon-slug.js';
 import { cachedFetcher } from './cached-fetcher.ts';
 
 const ICON_BASE_URL =

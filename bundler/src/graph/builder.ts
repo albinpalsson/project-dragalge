@@ -1,16 +1,19 @@
 ﻿import { stat } from 'node:fs/promises';
 import path from 'node:path';
+import type { API } from 'typescript/async';
 import { AST_LITE_VERSION } from '../ast-lite/index.ts';
-import type { Transform } from '../main.ts';
+import type { BundlerTarget, Transform } from '../main.ts';
 import { ModuleTransformCache } from '../module-transform-cache.ts';
 import { NodeModulesResolver } from '../node-modules-resolver.ts';
 import type { BundlerPerformanceCollector } from '../performance-collector.ts';
 import type { ProcessedFileResult } from '../processed-file-result.ts';
 import { SCANNER_VERSION } from '../scanner/index.ts';
+import { EsmTranspiler } from '../transpile/esm.ts';
 import type { TranspilationResult } from '../transpile/index.ts';
 import { isRelativeSpecifier, resolveRelativePath } from '../utils/index.ts';
 import { splitIntoChunks } from './chunker.ts';
 import { emitDeterministicEntries } from './emitter.ts';
+import { HOIST_VERSION } from './hoist-requires.ts';
 import { processFile } from './processor.ts';
 import type {
     BuildDependencyTreeResult,
@@ -28,6 +31,7 @@ const buildTransformCacheKey = (
         BUNDLER_VERSION,
         `ast:${AST_LITE_VERSION}`,
         `scanner:${SCANNER_VERSION}`,
+        `hoist:${HOIST_VERSION}`,
         ...transformVersions,
     ];
     if (cacheSalt) {
@@ -45,6 +49,8 @@ export async function buildDependencyTree(
     transpilation: TranspilationResult,
     perfCollect: BundlerPerformanceCollector,
     minChunkBytes: number,
+    typescriptApi: API,
+    target: BundlerTarget | undefined,
 ): Promise<BuildDependencyTreeResult> {
     const normalizedEntryPath = path.resolve(entryFilePath);
     const { createEnvInjectTransform } = await import(
@@ -65,6 +71,11 @@ export async function buildDependencyTree(
         cacheKey,
     });
     const nodeModulesResolver = new NodeModulesResolver();
+    const esmTranspiler = new EsmTranspiler(
+        typescriptApi,
+        target,
+        nodeModulesResolver,
+    );
     const visited = new Map<string, VisitState>();
 
     async function visit(currentFilePath: string): Promise<void> {
@@ -99,6 +110,7 @@ export async function buildDependencyTree(
                 transpilation,
                 transforms,
                 perfCollect,
+                esmTranspiler,
             );
             await moduleTransformCache.set(normalizedPath, result);
         }

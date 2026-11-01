@@ -13,16 +13,16 @@
         "./assets-dir": "./src/assets.js",
         "./assets/*": "./artifacts/assets/*",
         "./icon-slug": {
-            "types": "./src/icon-slug.d.cts",
-            "default": "./src/icon-slug.cjs"
+            "types": "./src/icon-slug.d.ts",
+            "default": "./src/icon-slug.js"
         }
     },
     "files": [
         "src/schema.ts",
         "src/index.d.ts",
         "src/assets.js",
-        "src/icon-slug.cjs",
-        "src/icon-slug.d.cts",
+        "src/icon-slug.js",
+        "src/icon-slug.d.ts",
         "artifacts"
     ],
     "scripts": {

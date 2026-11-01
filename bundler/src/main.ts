@@ -9,6 +9,7 @@ import {
 } from './generate-runtime.ts';
 import {
     buildDependencyTree,
+    type BuildDependencyTreeResult,
     type Chunk,
     type DependencyEntry,
 } from './graph/index.ts';
@@ -23,15 +24,15 @@ import {
     writeMergedCssBundle,
 } from './output/index.ts';
 import { BundlerPerformanceCollector } from './performance-collector.ts';
-import type { CompilerSession } from './transpile/compiler.ts';
-import { transpile } from './transpile/index.ts';
+import { CompilerSession } from './transpile/compiler.ts';
+import { type TranspilationResult, transpile } from './transpile/index.ts';
 import {
     buildWatchedFilePaths,
     copyPublicAssetsToOutput,
 } from './utils/index.ts';
 
 export type BundlerMode = 'production' | 'dev';
-export type BundlerTarget = 'es6' | 'es2022';
+export type BundlerTarget = 'es6' | 'es2020' | 'es2022';
 
 export interface BundlerConfig {
     entry: string;
@@ -136,31 +137,42 @@ export async function runBundler(
         outputDirPath,
     );
 
-    const transpileStartTime = performance.now();
-    const transpilationResult = await transpile(
-        cwd,
-        entryPath,
-        resolvedConfig.cacheDir,
-        resolvedConfig.target,
-        resolvedConfig.mode,
-        options.compiler,
-    );
-    options.performance.add(
-        'transpile',
-        'TypeScript API transpile',
-        performance.now() - transpileStartTime,
-    );
+    const compiler = options.compiler ?? new CompilerSession(cwd);
+    let transpilationResult: TranspilationResult;
+    let dependencyTree: BuildDependencyTreeResult;
+    try {
+        const transpileStartTime = performance.now();
+        transpilationResult = await transpile(
+            cwd,
+            entryPath,
+            resolvedConfig.cacheDir,
+            resolvedConfig.target,
+            resolvedConfig.mode,
+            compiler,
+        );
+        options.performance.add(
+            'transpile',
+            'TypeScript API transpile',
+            performance.now() - transpileStartTime,
+        );
 
-    const dependencyTree = await buildDependencyTree(
-        entryPath,
-        resolvedConfig.transforms,
-        resolvedConfig.processEnv,
-        transpilationResult.cacheSalt,
-        resolvedConfig.cacheDir,
-        transpilationResult,
-        options.performance,
-        resolvedConfig.minChunkBytes,
-    );
+        dependencyTree = await buildDependencyTree(
+            entryPath,
+            resolvedConfig.transforms,
+            resolvedConfig.processEnv,
+            transpilationResult.cacheSalt,
+            resolvedConfig.cacheDir,
+            transpilationResult,
+            options.performance,
+            resolvedConfig.minChunkBytes,
+            compiler.api,
+            resolvedConfig.target,
+        );
+    } finally {
+        if (!options.compiler) {
+            await compiler.close();
+        }
+    }
 
     const cssDependencies = dependencyTree.entries.filter(isCssDependency);
     const watchedFilePaths = await buildWatchedFilePaths(
