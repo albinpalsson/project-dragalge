@@ -42,6 +42,8 @@ research while playing.
 The app is actively maintained. Report mistakes, suggest improvements, or share
 feedback through GitHub issues: [project-dragalge issues](https://github.com/albinpalsson/project-dragalge/issues/new).
 
+## The Libraries
+
 The libraries are separate projects with small, familiar interfaces. Their core
 features are implemented here rather than built on third-party runtime
 libraries. This makes them useful on their own and gives the app clear points
@@ -58,6 +60,8 @@ ecosystem standards; others use familiar patterns but have their own APIs.
 - [Query Builder](query-builder/README.md) — builds typed, parameterized SQL.
 - [Pokémon Data](pokemon-data/README.md) — provides Pokémon data as an embedded
   SQL database.
+- [Redact Plugin](redact-plugin/) — runs the app on TanStack Redact through the
+  bundler's transforms.
 - [Server Query](server-query/README.md) — tracks query and mutation state.
 - [Validator](validator/README.md) — validates values with composable schemas.
 
@@ -73,8 +77,8 @@ here.
 
 Shipped to the browser in the production bundle:
 
-- [`react`](https://www.npmjs.com/package/react) and
-  [`react-dom`](https://www.npmjs.com/package/react-dom) — UI rendering.
+- [`@tanstack/redact`](https://www.npmjs.com/package/@tanstack/redact) — UI
+  rendering, in place of React.
 
 ### Bundle And Build
 
