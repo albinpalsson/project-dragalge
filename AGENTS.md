@@ -3,13 +3,14 @@
 This repository is an npm-workspaces monorepo. Package-specific guidance lives in:
 [Paldea nuzlocke guide](paldea-nuzlocke-guide/AGENTS.md),
 [bundler](bundler/AGENTS.md),
-[css-in-js](css-in-js/AGENTS.md), [db](db/AGENTS.md), and
-[query-builder](query-builder/AGENTS.md). Follow the nearest applicable file.
+[css-in-js](css-in-js/AGENTS.md), [db](db/AGENTS.md),
+[query-builder](query-builder/AGENTS.md), and
+[redact-plugin](redact-plugin/AGENTS.md). Follow the nearest applicable file.
 
 ## Cross-Package Changes
 
 The app consumes built workspace-package output. After changing `db`,
-`query-builder`, `css-in-js`, or `bundler`, rebuild the changed package before
+`query-builder`, `css-in-js`, `redact-plugin`, or `bundler`, rebuild the changed package before
 testing app behavior; otherwise the app may still use stale `dist` files.
 Use `npm run build:all` when a change spans the workspace dependency chain.
 

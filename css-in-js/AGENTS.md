@@ -11,9 +11,9 @@ API. It does not provide runtime style injection.
 - `src/transform.ts` owns `cssInJsTransform()`, its module metadata, and its
   post-module CSS collection. Keep extracted CSS and rewritten class names
   consistent across both transform phases.
-- AST-lite types and `AST_LITE_VERSION` are duplicated across this package and
-  `bundler/src/ast-lite/types.ts`. Coordinate changes and update both versions
-  together; the transformer rejects an incompatible program version.
+- AST-lite types and `AST_LITE_VERSION` are duplicated across this package,
+  `redact-plugin/src/ast-types.ts` and `bundler/src/ast-lite/types.ts`. Coordinate
+  changes and update all versions together; the transformer rejects an incompatible program version.
 - Protected AST nodes represent strings, templates, and regular expressions.
   Only rewrite the intended static CSS template after recognizing its call
   site; dynamic `${...}` values must remain unsupported unless the transform
