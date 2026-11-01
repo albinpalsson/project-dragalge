@@ -60,19 +60,43 @@ export class UnexpectedErrorBoundary extends Component<Props, State> {
             return this.props.children;
         }
 
-        const ownershipLost = hasOwnershipError(this.state.error);
+        const { title, text, showCrashReport } = describeError(this.state.error);
         return (
-            <Modal title={ownershipLost ? 'Game opened in another tab' : 'Something went wrong'} dismissMode="none">
-                <p className={message}>
-                    {ownershipLost
-                        ? 'Another tab has taken control of your games. Your latest change in this tab was not saved. Reload to load the latest saved data and take control here.'
-                        : 'An unexpected error occurred. Your latest changes may not have been saved. Reload to continue.'}
-                </p>
-                {!ownershipLost && <CrashReportActions error={this.state.error} />}
+            <Modal title={title} dismissMode="none">
+                <p className={message}>{text}</p>
+                {showCrashReport && (
+                    <CrashReportActions error={this.state.error} />
+                )}
                 <Button onClick={() => window.location.reload()}>Reload</Button>
             </Modal>
         );
     }
+}
+
+function describeError(error: unknown): {
+    title: string;
+    text: string;
+    showCrashReport: boolean;
+} {
+    if (hasOwnershipError(error)) {
+        return {
+            title: 'Game opened in another tab',
+            text: 'Another tab has taken control of your games. Your latest change in this tab was not saved. Reload to load the latest saved data and take control here.',
+            showCrashReport: false,
+        };
+    }
+    if (isChunkLoadError(error)) {
+        return {
+            title: "Couldn't load part of the app",
+            text: 'Part of the app could not be downloaded. This usually means your connection dropped or the site was updated while this page was open. Reload the page to continue. Your saved games are not affected.',
+            showCrashReport: false,
+        };
+    }
+    return {
+        title: 'Something went wrong',
+        text: 'An unexpected error occurred. Your latest changes may not have been saved. Reload to continue.',
+        showCrashReport: true,
+    };
 }
 
 function CrashReportActions({ error }: { error: unknown }) {
@@ -119,6 +143,20 @@ function hasOwnershipError(error: unknown): boolean {
     const seen = new Set<unknown>();
     while (error instanceof Error && !seen.has(error)) {
         if (error instanceof GameDbOwnershipError) {
+            return true;
+        }
+        seen.add(error);
+        error = 'cause' in error ? error.cause : undefined;
+    }
+    return false;
+}
+
+// The bundler's runtime rejects a failed chunk load with an Error named
+// "ChunkLoadError" (see the lazy-loading contract in bundler/AGENTS.md).
+function isChunkLoadError(error: unknown): boolean {
+    const seen = new Set<unknown>();
+    while (error instanceof Error && !seen.has(error)) {
+        if (error.name === 'ChunkLoadError') {
             return true;
         }
         seen.add(error);

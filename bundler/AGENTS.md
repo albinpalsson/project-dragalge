@@ -23,12 +23,17 @@ verify emitted behavior, not only TypeScript compilation.
   recognised only by the CommonJS shape TypeScript emits for it
   (`dynamicImportRegex` in `src/graph/parser.ts`); keep that regex and the
   emitted shape in step. Deliberately unsupported: non-literal `import()`
-  specifiers and importing a module both statically and dynamically from the
-  same module (both fail the build), per-chunk CSS (all CSS is one render-blocking
-  file), ES-module chunks, chunk preloading and load retries. Lazy roots under
+  specifiers (the parser only sees string literals, so such a call is not
+  bundled and fails at runtime, not at build time), per-chunk CSS (all CSS is
+  one render-blocking file), ES-module chunks, chunk preloading and load
+  retries. Importing a module both statically and dynamically from the same
+  module fails the build. Lazy roots under
   `minChunkBytes` are folded into the main file. Chunks are classic scripts
   that call `Object.assign(m, ...)` on the main script's top-level `m`, and the
-  chunk loader needs a browser `document`.
+  chunk loader needs a browser `document`. A chunk script that fails to load
+  rejects the `import()` with an `Error` whose `name` is `ChunkLoadError` and
+  whose `chunk` property is the file name; apps match on that name. Scripts that
+  load but throw while evaluating, and hung requests, are not covered.
 - Public assets are copied from the `public/` directory beside the entry file.
   Check the output and dev-server serving behavior when changing asset handling.
 - Treat the resolver as intentionally constrained. Confirm supported package

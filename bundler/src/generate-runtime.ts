@@ -64,11 +64,13 @@ export function generateMainCode(
 // `l` loads a chunk script once. `z` builds the stub exports for a lazy root: a
 // thenable flagged `__esModule`, so TypeScript's `__importStar` passes it
 // through and the promise returned by `import()` adopts it, resolving with the
-// real exports once every chunk is loaded. Plain CommonJS exports get a
+// real exports once every chunk is loaded. A chunk whose script fails to load
+// rejects with an Error named "ChunkLoadError" (with a `chunk` property): apps
+// recognise it by that name. Plain CommonJS exports get a
 // `default` like Node's import(); named exports are not spread.
 const lazyLoaderCode = [
     'const q={};',
-    'const l=f=>q[f]||(q[f]=new Promise((ok,fail)=>{const s=document.createElement("script");s.src=f;s.onload=ok;s.onerror=()=>{delete q[f];fail(new Error("Failed to load "+f))};document.head.appendChild(s)}));',
+    'const l=f=>q[f]||(q[f]=new Promise((ok,fail)=>{const s=document.createElement("script");s.src=f;s.onload=ok;s.onerror=()=>{delete q[f];const e=new Error("Failed to load "+f);e.name="ChunkLoadError";e.chunk=f;fail(e)};document.head.appendChild(s)}));',
     'const z=(id,files)=>({__esModule:true,then:(ok,fail)=>Promise.all(files.map(l)).then(()=>{const e=r(id);return e&&e.__esModule?e:{default:e}}).then(ok,fail)});',
 ].join('\n');
 
