@@ -5,7 +5,10 @@ import { BossResultControls } from './BossResultControls';
 import { ProgressionDescription } from '../../../../components/ProgressionDescription';
 import { getPokemonTypeColor } from '../../../../utils/pokemon-type-colors';
 import { ProgressionCard } from '../../../../components/ProgressionCard';
-import { useBossActions } from '../../../../hooks/useBossActions';
+import {
+    useBossActions,
+    useBossResult,
+} from '../../../../hooks/useBossActions';
 import { useBossBattleRosterQuery } from '../../queries';
 import { GYM_BOSS_ICON } from './boss-category-icons';
 import { progressionCardPattern } from './progression-card-pattern';
@@ -21,7 +24,7 @@ interface KatyBugGymProps {
 export function KatyBugGym({ isNext }: KatyBugGymProps) {
     const bossActions = useBossActions();
     const rosterQuery = useBossBattleRosterQuery(BATTLE_NAME);
-    const currentResult = bossActions.getBattleResult(BATTLE_NAME);
+    const currentResult = useBossResult(BATTLE_NAME);
 
     if (rosterQuery.isPending) {
         return <p>Loading {LOCATION_NAME} roster...</p>;

@@ -1,7 +1,13 @@
 import { invalidateQueries } from '@project-dragalge/server-query';
-import { useClient, useMutation, useQuery } from '../../server-query';
+import {
+    useClient,
+    useMutation,
+    useQuery,
+    type UseQueryOptions,
+} from '../../server-query';
 import {
     addEncounterRoll,
+    type BossBattleProgressRow,
     skipEncounter,
     type UpdateGameRunSettingsInput,
     clearEncounterRoll,
@@ -108,8 +114,15 @@ export function useTypeChartQuery() {
     });
 }
 
-export function useBossBattleProgressQuery(gameName: string) {
+export function useBossBattleProgressQuery<TSelected = BossBattleProgressRow[]>(
+    gameName: string,
+    options?: Pick<
+        UseQueryOptions<BossBattleProgressRow[], TSelected>,
+        'select'
+    >,
+) {
     return useQuery({
+        ...options,
         queryKey: bossBattleProgressQueryKey(gameName),
         queryFn: () => listBossBattleProgress(gameName),
     });

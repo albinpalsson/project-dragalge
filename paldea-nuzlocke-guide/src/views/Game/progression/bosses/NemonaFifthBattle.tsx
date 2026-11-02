@@ -2,7 +2,10 @@ import type { CSSProperties } from 'react';
 import { ProgressionCard } from '../../../../components/ProgressionCard';
 import { ProgressionDescription } from '../../../../components/ProgressionDescription';
 import { getNemonaBattleName } from '../../../../db/pokemon-data/starter-battles';
-import { useBossActions } from '../../../../hooks/useBossActions';
+import {
+    useBossActions,
+    useBossResult,
+} from '../../../../hooks/useBossActions';
 import { useStarter } from '../../../../hooks/useStarter';
 import {
     getNemonaStarterChoice,
@@ -27,7 +30,7 @@ export function NemonaFifthBattle({ isNext }: NemonaFifthBattleProps) {
     const displayStarter = starter ?? STARTER_NAMES[0];
     const battleName = getNemonaBattleName(displayStarter, 'Fifth');
     const rosterQuery = useBossBattleRosterQuery(battleName);
-    const currentResult = bossActions.getBattleResult(battleName);
+    const currentResult = useBossResult(battleName);
     const teraType = getNemonaStarterChoice(displayStarter).type;
 
     if (rosterQuery.isPending) {

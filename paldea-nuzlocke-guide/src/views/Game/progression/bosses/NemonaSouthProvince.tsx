@@ -2,7 +2,10 @@ import type { CSSProperties } from 'react';
 import { ProgressionCard } from '../../../../components/ProgressionCard';
 import { ProgressionDescription } from '../../../../components/ProgressionDescription';
 import { getNemonaBattleName } from '../../../../db/pokemon-data/starter-battles';
-import { useBossActions } from '../../../../hooks/useBossActions';
+import {
+    useBossActions,
+    useBossResult,
+} from '../../../../hooks/useBossActions';
 import { useStarter } from '../../../../hooks/useStarter';
 import { STARTER_NAMES } from '../../../../utils/starter-choices';
 import { useBossBattleRosterQuery } from '../../queries';
@@ -24,7 +27,7 @@ export function NemonaSouthProvince({ isNext }: NemonaSouthProvinceProps) {
     const displayStarter = starter ?? STARTER_NAMES[0];
     const battleName = getNemonaBattleName(displayStarter, 'Second');
     const rosterQuery = useBossBattleRosterQuery(battleName);
-    const currentResult = bossActions.getBattleResult(battleName);
+    const currentResult = useBossResult(battleName);
 
     if (rosterQuery.isPending) {
         return <p>Loading {LOCATION_NAME} roster...</p>;

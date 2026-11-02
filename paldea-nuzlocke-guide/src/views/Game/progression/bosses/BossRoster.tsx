@@ -1,5 +1,5 @@
 import { css } from '@project-dragalge/css-in-js';
-import type { ReactNode } from 'react';
+import { memo, type ReactNode } from 'react';
 import { Badge } from '../../../../components/Badge';
 import type { PokemonIconSize } from '../../../../components/PokemonIcon';
 import { ProgressionCardHeader } from '../../../../components/ProgressionCardHeader';
@@ -72,7 +72,7 @@ export function BossHeader({
     );
 }
 
-export function BossRoster({
+export const BossRoster = memo(function BossRoster({
     roster,
     teraType,
     iconSize,
@@ -96,7 +96,7 @@ export function BossRoster({
             ))}
         </div>
     );
-}
+});
 
 const titleClass = css`
     margin: 0;

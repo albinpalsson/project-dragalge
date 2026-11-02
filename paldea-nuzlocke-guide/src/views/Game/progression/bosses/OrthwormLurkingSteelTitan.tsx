@@ -1,6 +1,9 @@
 import type { CSSProperties } from 'react';
 import { ProgressionCard } from '../../../../components/ProgressionCard';
-import { useBossActions } from '../../../../hooks/useBossActions';
+import {
+    useBossActions,
+    useBossResult,
+} from '../../../../hooks/useBossActions';
 import { getPokemonTypeColor } from '../../../../utils/pokemon-type-colors';
 import { useBossBattleRosterQuery } from '../../queries';
 import { BossCollapsedSummary } from './BossCollapsedSummary';
@@ -24,7 +27,7 @@ export function OrthwormLurkingSteelTitan({
 }: OrthwormLurkingSteelTitanProps) {
     const bossActions = useBossActions();
     const rosterQuery = useBossBattleRosterQuery(BATTLE_NAME);
-    const currentResult = bossActions.getBattleResult(BATTLE_NAME);
+    const currentResult = useBossResult(BATTLE_NAME);
 
     if (rosterQuery.isPending) {
         return <p>Loading {LOCATION_NAME} roster...</p>;

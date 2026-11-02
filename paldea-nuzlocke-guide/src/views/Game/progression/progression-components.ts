@@ -1,4 +1,4 @@
-import type { ComponentType } from 'react';
+import { type ComponentType, memo } from 'react';
 import { StarterCard } from '../StarterCard';
 import { AtticusPoisonStar } from './bosses/AtticusPoisonStar';
 import { BombirdierOpenSkyTitan } from './bosses/BombirdierOpenSkyTitan';
@@ -162,10 +162,18 @@ const PROGRESSION_COMPONENTS: Record<
     'nemona-final-battle': NemonaFinalBattle,
 };
 
+// A write should only re-render the cards it affects, not the whole timeline.
+const MEMOIZED_PROGRESSION_COMPONENTS = new Map(
+    Object.entries(PROGRESSION_COMPONENTS).map(([key, component]) => [
+        key,
+        memo(component),
+    ]),
+);
+
 export function getProgressionComponent(
     key: string,
 ): ComponentType<ProgressionItemProps> {
-    const component = PROGRESSION_COMPONENTS[key];
+    const component = MEMOIZED_PROGRESSION_COMPONENTS.get(key);
     if (!component) {
         throw new Error(`No component for progression item "${key}"`);
     }

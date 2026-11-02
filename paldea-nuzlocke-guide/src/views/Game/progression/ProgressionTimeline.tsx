@@ -1,17 +1,53 @@
 import { css } from '@project-dragalge/css-in-js';
 import { useState } from 'react';
-import { useProgressionTracker } from '../../../hooks/useProgressionTracker';
+import type { BossBattleProgressRow } from '../../../db/game-db/queries';
+import { useStarter } from '../../../hooks/useStarter';
 import { useGame } from '../GameContext';
+import { useBossBattleProgressQuery } from '../queries';
 import { getProgressionComponent } from './progression-components';
 import {
     getVisibleProgressionItems,
     PROGRESSION_ITEMS,
     type ProgressionItem,
 } from './progression-items';
+import { calculateProgression } from './progression-tracker';
 
 export function ProgressionTimeline() {
     const game = useGame();
-    const progression = useProgressionTracker();
+    const bossBattleProgressQuery = useBossBattleProgressQuery(game.name);
+
+    if (bossBattleProgressQuery.isError) {
+        return (
+            <p>
+                Error loading boss battle progress:{' '}
+                {bossBattleProgressQuery.error.message}
+            </p>
+        );
+    }
+
+    if (bossBattleProgressQuery.isPending) {
+        return <p>Loading game...</p>;
+    }
+
+    return (
+        <LoadedProgressionTimeline bossProgress={bossBattleProgressQuery.data} />
+    );
+}
+
+interface LoadedProgressionTimelineProps {
+    bossProgress: BossBattleProgressRow[];
+}
+
+function LoadedProgressionTimeline({
+    bossProgress,
+}: LoadedProgressionTimelineProps) {
+    const game = useGame();
+    const starter = useStarter();
+    const progression = calculateProgression(
+        { settings: game.settings, encounters: game.encounters },
+        bossProgress,
+        starter,
+    );
     const visibleItems = indexProgressionItems(
         getVisibleProgressionItems({
             settings: game.settings,
@@ -97,12 +133,16 @@ interface IndexedProgressionItem {
     canonicalIndex: number;
 }
 
+const CANONICAL_INDEXES = new Map(
+    PROGRESSION_ITEMS.map((item, index) => [item, index]),
+);
+
 function indexProgressionItems(
     visibleItems: ProgressionItem[],
 ): IndexedProgressionItem[] {
     return visibleItems.map((item) => ({
         item,
-        canonicalIndex: PROGRESSION_ITEMS.indexOf(item),
+        canonicalIndex: CANONICAL_INDEXES.get(item) ?? -1,
     }));
 }
 

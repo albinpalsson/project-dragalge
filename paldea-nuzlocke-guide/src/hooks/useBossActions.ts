@@ -13,22 +13,21 @@ export interface UseBossActionsResult {
     ) => Promise<void>;
     clearBattle: (battleName: string) => Promise<void>;
     isBusy: boolean;
-    isProgressPending: boolean;
-    getBattleResult: (battleName: string) => 'won' | 'lost' | undefined;
+}
+
+export function useBossResult(battleName: string) {
+    const game = useGame();
+    const resultQuery = useBossBattleProgressQuery(game.name, {
+        select: (progress) =>
+            progress.find((row) => row.battle_name === battleName)?.result,
+    });
+    return resultQuery.data;
 }
 
 export function useBossActions(): UseBossActionsResult {
     const game = useGame();
-    const bossProgressQuery = useBossBattleProgressQuery(game.name);
     const setResultMutation = useSetBossBattleResultMutation();
     const clearMutation = useClearBossBattleResultMutation();
-
-    const getBattleResult = (battleName: string) => {
-        const progress = bossProgressQuery.data?.find(
-            (p) => p.battle_name === battleName,
-        );
-        return progress?.result as 'won' | 'lost' | undefined;
-    };
 
     return {
         resolveBattle: async (battleName: string, result: 'won' | 'lost') => {
@@ -50,7 +49,5 @@ export function useBossActions(): UseBossActionsResult {
             });
         },
         isBusy: setResultMutation.isPending || clearMutation.isPending,
-        isProgressPending: bossProgressQuery.isPending,
-        getBattleResult,
     };
 }
