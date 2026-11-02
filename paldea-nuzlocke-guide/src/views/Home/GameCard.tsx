@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { css, cx } from '@project-dragalge/css-in-js';
+import { FadeInImage } from '../../components/FadeInImage';
 import { OverflowMenu, OverflowMenuItem } from '../../components/OverflowMenu';
 import { NO_PARTY_SLOT } from '../../db/game-db/schema';
 import type {
@@ -85,7 +86,7 @@ export function GameCard({
                                     aria-hidden={row ? undefined : true}
                                 >
                                     {row && (
-                                        <img
+                                        <FadeInImage
                                             className={cx(
                                                 icon,
                                                 row.status === 'eliminated' &&

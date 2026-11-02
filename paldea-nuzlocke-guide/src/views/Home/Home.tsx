@@ -1,4 +1,5 @@
 import { css, cx } from '@project-dragalge/css-in-js';
+import { FadeInImage } from '../../components/FadeInImage';
 import { textLink } from '../../components/text-link';
 import { pokemonIconSrc, toIconSlug } from '../../pokemon-icon';
 import { GameCard } from './GameCard';
@@ -128,7 +129,7 @@ function GhostIcons() {
         <span className={ghostIcons}>
             {ghostPokemon.map((name) => (
                 <span className={ghostIconSlot} key={name}>
-                    <img
+                    <FadeInImage
                         className={ghostIcon}
                         src={pokemonIconSrc(toIconSlug(name))}
                         alt=""

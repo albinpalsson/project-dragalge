@@ -1,5 +1,6 @@
 import { css, cx } from '@project-dragalge/css-in-js';
 import { pokemonIconSrc, toIconSlug } from '../pokemon-icon';
+import { FadeInImage } from './FadeInImage';
 
 export type PokemonIconSize = 'sm' | 'md' | 'lg' | 'option' | 'xl';
 
@@ -20,7 +21,7 @@ export function PokemonIcon({
     borderColor,
 }: PokemonIconProps) {
     const img = (className: string) => (
-        <img
+        <FadeInImage
             className={className}
             src={pokemonIconSrc(toIconSlug(name))}
             alt={alt ?? name}

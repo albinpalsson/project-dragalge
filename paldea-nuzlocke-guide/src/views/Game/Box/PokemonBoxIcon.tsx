@@ -1,5 +1,6 @@
 import type { PointerEventHandler } from 'react';
 import { css, cx } from '@project-dragalge/css-in-js';
+import { FadeInImage } from '../../../components/FadeInImage';
 import { pokemonIconSrc, toIconSlug } from '../../../pokemon-icon';
 
 export interface PokemonBoxIconDragProps {
@@ -42,7 +43,7 @@ export function PokemonBoxIcon({
             onPointerCancel={onPointerCancel}
             onContextMenu={(event) => event.preventDefault()}
         >
-            <img
+            <FadeInImage
                 className={icon}
                 src={pokemonIconSrc(toIconSlug(pokemonName))}
                 alt={pokemonName}
