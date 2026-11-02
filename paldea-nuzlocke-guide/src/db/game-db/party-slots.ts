@@ -1,8 +1,5 @@
-import {
-    MAX_PARTY_SIZE,
-    NO_PARTY_SLOT,
-} from '../db/game-db/schema';
-import type { EncounterRollRow } from '../db/game-db/queries';
+import type { EncounterRollRow } from './queries';
+import { MAX_PARTY_SIZE, NO_PARTY_SLOT } from './schema';
 
 export function nextFreePartySlot(encounters: EncounterRollRow[]): number {
     const taken = new Set(encounters.map((row) => row.party_slot));

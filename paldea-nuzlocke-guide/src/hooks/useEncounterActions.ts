@@ -1,7 +1,7 @@
+import { nextFreePartySlot } from '../db/game-db/party-slots';
 import { NO_PARTY_SLOT } from '../db/game-db/schema';
 import { pickEncounterSpecies } from '../pokemon-species';
 import { useGame } from '../views/Game/GameContext';
-import { nextFreePartySlot } from './party-utils';
 import { useEncounterMutations } from './useEncounterMutations';
 import { track } from '../analytics/analytics';
 
@@ -13,20 +13,6 @@ export function useEncounterActions() {
     const game = useGame();
     const mutations = useEncounterMutations();
 
-    const setStatusAndClearPartySlot = async (
-        locationName: string,
-        status: 'missed' | 'released',
-    ) => {
-        const current = game.encounters.find(
-            (row) => row.location_name === locationName,
-        );
-        if (current && current.party_slot !== NO_PARTY_SLOT) {
-            await mutations.setPartySlot(game.name, locationName, NO_PARTY_SLOT);
-        }
-        await mutations.setStatus(game.name, locationName, status);
-        trackProgression(locationName, status);
-    };
-
     return {
         isBusy: mutations.isBusy,
         rollEncounter(pokemonName: string, locationName: string) {
@@ -37,28 +23,22 @@ export function useEncounterActions() {
             );
         },
         async catchEncounter(locationName: string) {
-            const current = game.encounters.find(
-                (row) => row.location_name === locationName,
-            );
-            await mutations.setStatus(game.name, locationName, 'caught');
+            await mutations.setStatus(game.name, locationName, 'caught', {
+                assignPartySlot: true,
+            });
             trackProgression(locationName, 'caught');
-            if (!current || current.party_slot !== NO_PARTY_SLOT) {
-                return;
-            }
-            const slot = nextFreePartySlot(game.encounters);
-            if (slot !== NO_PARTY_SLOT) {
-                await mutations.setPartySlot(game.name, locationName, slot);
-            }
         },
         async skipEncounter(locationName: string) {
             await mutations.skip(game.name, locationName);
             trackProgression(locationName, 'skipped');
         },
         async missEncounter(locationName: string) {
-            await setStatusAndClearPartySlot(locationName, 'missed');
+            await mutations.setStatus(game.name, locationName, 'missed');
+            trackProgression(locationName, 'missed');
         },
         async releaseStarter(locationName: string) {
-            await setStatusAndClearPartySlot(locationName, 'released');
+            await mutations.setStatus(game.name, locationName, 'released');
+            trackProgression(locationName, 'released');
         },
         async trade(locationName: string, pokemonName: string) {
             await mutations.setPokemon(game.name, locationName, pokemonName);

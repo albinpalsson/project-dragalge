@@ -1,7 +1,7 @@
+import { nextFreePartySlot } from '../db/game-db/party-slots';
 import { NO_PARTY_SLOT } from '../db/game-db/schema';
 import type { BoxSectionKind } from '../views/Game/Box/box-model';
 import { useGame } from '../views/Game/GameContext';
-import { nextFreePartySlot } from './party-utils';
 import { useEncounterMutations } from './useEncounterMutations';
 
 export function usePartyManager() {
@@ -16,19 +16,17 @@ export function usePartyManager() {
             return false;
         }
 
-        if (row.status === 'eliminated') {
-            await mutations.setStatus(game.name, locationName, 'caught');
-        }
         if (row.party_slot !== NO_PARTY_SLOT) {
             return true;
         }
 
-        const slot = nextFreePartySlot(game.encounters);
-        if (slot === NO_PARTY_SLOT) {
-            return false;
-        }
-        await mutations.setPartySlot(game.name, locationName, slot);
-        return true;
+        const slot = await mutations.setStatus(
+            game.name,
+            locationName,
+            'caught',
+            { assignPartySlot: true },
+        );
+        return slot !== NO_PARTY_SLOT;
     };
 
     const moveToBox = async (locationName: string): Promise<boolean> => {
@@ -55,7 +53,6 @@ export function usePartyManager() {
         if (!row) {
             return false;
         }
-        await mutations.setPartySlot(game.name, locationName, NO_PARTY_SLOT);
         await mutations.setStatus(game.name, locationName, 'eliminated');
         return true;
     };
@@ -77,9 +74,8 @@ export function usePartyManager() {
             await mutations.setPartySlot(game.name, outgoing, NO_PARTY_SLOT);
             await mutations.setPartySlot(game.name, incoming, row.party_slot);
         },
-        async eliminate(locationName: string) {
-            await mutations.setPartySlot(game.name, locationName, NO_PARTY_SLOT);
-            await mutations.setStatus(game.name, locationName, 'eliminated');
+        eliminate(locationName: string) {
+            return mutations.setStatus(game.name, locationName, 'eliminated');
         },
         revive(locationName: string) {
             return mutations.setStatus(game.name, locationName, 'caught');

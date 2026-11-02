@@ -44,11 +44,13 @@ export function useEncounterMutations() {
             gameName: string,
             locationName: string,
             status: EncounterStatus,
+            options?: { assignPartySlot?: boolean },
         ) {
             return setStatusMutation.mutateAsync({
                 gameName,
                 locationName,
                 status,
+                ...options,
             });
         },
         setPokemon(

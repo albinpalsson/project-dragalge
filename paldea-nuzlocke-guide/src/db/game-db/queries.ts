@@ -21,6 +21,7 @@ import {
     selectGameRunRecords,
     toGameRun,
 } from './internal';
+import { nextFreePartySlot } from './party-slots';
 import { type GameRunsDb, NO_PARTY_SLOT } from './schema';
 
 export { GAME_NAME_MAX_BYTES } from './internal';
@@ -248,19 +249,45 @@ export interface SetEncounterRollStatusInput {
     gameName: string;
     locationName: string;
     status: EncounterStatus;
+    // Moves a caught Pokémon without a slot into the party, if there is room.
+    assignPartySlot?: boolean;
 }
 
+// Only caught Pokémon can hold a party slot, so any other status clears it.
+// Returns the party slot the encounter ends up with.
 export async function setEncounterRollStatus(
     input: SetEncounterRollStatusInput,
-): Promise<void> {
+): Promise<number> {
     const db = await getGameDb();
     const gameRunId = await resolveGameRunId(db, input.gameName);
+    const rows = await selectEncounterRolls(db, gameRunId);
+    const partySlot = resolvePartySlot(input, rows);
     await db
         .updateTable('encounter_rolls')
-        .set({ status: encodeEncounterStatus(input.status) })
+        .set({
+            status: encodeEncounterStatus(input.status),
+            party_slot: partySlot,
+        })
         .where('game_run_id', '=', gameRunId)
         .where('location_name', '=', input.locationName)
         .execute();
+    return partySlot;
+}
+
+function resolvePartySlot(
+    input: SetEncounterRollStatusInput,
+    rows: EncounterRollRow[],
+): number {
+    if (input.status !== 'caught') {
+        return NO_PARTY_SLOT;
+    }
+    const current = rows.find(
+        (row) => row.location_name === input.locationName,
+    );
+    if (current && current.party_slot !== NO_PARTY_SLOT) {
+        return current.party_slot;
+    }
+    return input.assignPartySlot ? nextFreePartySlot(rows) : NO_PARTY_SLOT;
 }
 
 export interface SetEncounterPokemonInput {
