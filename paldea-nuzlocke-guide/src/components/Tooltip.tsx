@@ -16,6 +16,7 @@ interface TooltipProps {
     children: ReactNode;
     className?: string;
     bubbleClassName?: string;
+    align?: 'center' | 'start';
 }
 
 export function Tooltip({
@@ -23,6 +24,7 @@ export function Tooltip({
     children,
     className,
     bubbleClassName,
+    align = 'center',
 }: TooltipProps) {
     const rootRef = useRef<HTMLSpanElement>(null);
     const [isHovered, setHovered] = useState(false);
@@ -89,7 +91,14 @@ export function Tooltip({
         <span ref={rootRef} className={cx(root, className)}>
             {trigger}
             {isOpen && (
-                <span className={cx(bubble, bubbleClassName)} role="tooltip">
+                <span
+                    className={cx(
+                        bubble,
+                        align === 'start' ? bubbleStart : bubbleCenter,
+                        bubbleClassName,
+                    )}
+                    role="tooltip"
+                >
                     {content}
                 </span>
             )}
@@ -104,9 +113,7 @@ const root = css`
 
 const bubble = css`
   position: absolute;
-  left: 50%;
   bottom: calc(100% + var(--space-1));
-  transform: translateX(-50%);
   min-width: 16rem;
   max-width: 28rem;
   padding: var(--space-1) var(--space-2);
@@ -117,6 +124,15 @@ const bubble = css`
   font-size: var(--font-size-sm);
   box-shadow: var(--shadow-md);
   z-index: 1050;
+`;
+
+const bubbleCenter = css`
+  left: 50%;
+  transform: translateX(-50%);
+`;
+
+const bubbleStart = css`
+  left: 0;
 `;
 
 interface TriggerEvents {

@@ -11,7 +11,7 @@ export function MoveCard({ move }: MoveCardProps) {
     return (
         <div className={card}>
             <div className={nameRow}>
-                <Tooltip content={move.effect}>
+                <Tooltip content={move.effect} align="start">
                     <button
                         type="button"
                         className={nameTrigger}
