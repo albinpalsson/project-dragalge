@@ -144,8 +144,8 @@ export function Licenses() {
             <section className={section} aria-labelledby="software-title">
                 <h3 id="software-title">Third-party software</h3>
                 <p>
-                    This app includes React, React DOM, and Scheduler, each
-                    distributed under the MIT License.
+                    This app includes TanStack Redact, distributed under the MIT
+                    License.
                 </p>
                 <a className={textLink} href="/notices/third-party.txt" download>
                     Third-party software licenses
