@@ -18,6 +18,17 @@ export function BoxIcon() {
     );
 }
 
+export function ListIcon() {
+    return (
+        <svg viewBox="0 0 16 16" className={icon} aria-hidden="true">
+            <path d="M6 4h8M6 8h8M6 12h8" />
+            <circle cx="2.5" cy="4" r="0.6" fill="currentColor" stroke="none" />
+            <circle cx="2.5" cy="8" r="0.6" fill="currentColor" stroke="none" />
+            <circle cx="2.5" cy="12" r="0.6" fill="currentColor" stroke="none" />
+        </svg>
+    );
+}
+
 export function KebabIcon() {
     return (
         <svg viewBox="0 0 16 16" className={kebabIcon} aria-hidden="true">
