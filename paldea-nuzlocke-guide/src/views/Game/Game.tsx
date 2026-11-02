@@ -106,6 +106,19 @@ function useGameBanReason(game: Game): GameBanReasonResult {
     const evolutionGraph = evolutionGraphQuery.data;
     const typeCatalog = typeCatalogQuery.data;
 
+    // Walks the whole catalog, so it is kept apart from the encounter-driven
+    // memo below.
+    const monoRunEligibleNames = useMemo(() => {
+        if (!evolutionGraph || !typeCatalog) {
+            return undefined;
+        }
+        return getMonoRunEligibleNames(
+            game.settings,
+            typeCatalog,
+            evolutionGraph,
+        );
+    }, [game.settings, typeCatalog, evolutionGraph]);
+
     // Part of the game context value, so it must only change with its inputs.
     const getBanReason = useMemo<GetBanReason | undefined>(() => {
         if (
@@ -124,12 +137,6 @@ function useGameBanReason(game: Game): GameBanReasonResult {
                     encounter.status === 'eliminated',
             )
             .map((encounter) => encounter.pokemon_name);
-
-        const monoRunEligibleNames = getMonoRunEligibleNames(
-            game.settings,
-            typeCatalog,
-            evolutionGraph,
-        );
 
         const speciesBans = buildSpeciesBans({
             manualBanNames: banListEntries.map((entry) => entry.pokemon_name),
@@ -158,6 +165,7 @@ function useGameBanReason(game: Game): GameBanReasonResult {
         banListEntries,
         evolutionGraph,
         typeCatalog,
+        monoRunEligibleNames,
         game.settings,
     ]);
 
