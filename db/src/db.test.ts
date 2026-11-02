@@ -171,6 +171,47 @@ describe('unit: SQL operations', () => {
         ]);
     });
 
+    it('filters joined rows by left and right table columns', () => {
+        const engine = makePokemonDb();
+        engine.execute(
+            'INSERT INTO pokemon (id, name, caught, level) VALUES (?, ?, ?, ?), (?, ?, ?, ?)',
+            [1, 'Pikachu', false, 5, 2, 'Raichu', false, 20],
+        );
+        engine.execute(
+            'INSERT INTO encounters (pokemon_id, location) VALUES (?, ?), (?, ?), (?, ?)',
+            [1, 'Forest', 2, 'Forest', 2, 'Power Plant'],
+        );
+
+        const rows = engine.execute(
+            'SELECT * FROM encounters INNER JOIN pokemon ON encounters.pokemon_id = pokemon.id WHERE location = ? AND name = ?',
+            ['Forest', 'Raichu'],
+        );
+
+        assert.deepEqual(rows, [
+            {
+                pokemon_id: 2,
+                location: 'Forest',
+                id: 2,
+                name: 'Raichu',
+                caught: false,
+                level: 20,
+            },
+        ]);
+    });
+
+    it('filters a column shared by joined tables on the right table value', () => {
+        const engine = new DB();
+        engine.execute('CREATE TABLE a (id INT, ref INT)', []);
+        engine.execute('CREATE TABLE b (id INT)', []);
+        engine.execute('INSERT INTO a (id, ref) VALUES (?, ?)', [1, 2]);
+        engine.execute('INSERT INTO b (id) VALUES (?)', [2]);
+
+        const join = 'SELECT * FROM a INNER JOIN b ON a.ref = b.id WHERE id = ?';
+
+        assert.deepEqual(engine.execute(join, [2]), [{ id: 2, ref: 2 }]);
+        assert.deepEqual(engine.execute(join, [1]), []);
+    });
+
     it('filters joined rows with IN', () => {
         const engine = makePokemonDb();
         engine.execute(

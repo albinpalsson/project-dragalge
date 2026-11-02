@@ -279,9 +279,20 @@ export class DB {
             this.joinIndexCache.set(cacheKey, rightIndexByKey);
         }
 
+        // Merged rows take the right table's value for a shared column name, so
+        // only columns unique to the left table can be checked before merging.
+        const isLeftOnly = (where: BoundWhereClause) =>
+            leftTable.schema.columns.some((c) => c.name === where.column) &&
+            !rightTable.schema.columns.some((c) => c.name === where.column);
+        const leftWheres = wheres.filter(isLeftOnly);
+        const mergedWheres = wheres.filter((where) => !isLeftOnly(where));
+
         const result: Record<string, unknown>[] = [];
         const rightRowCache = new Map<number, Record<string, unknown>>();
         for (let i = 0; i < leftCount; i++) {
+            if (!this.matchesWhere(leftTable, i, leftWheres)) {
+                continue;
+            }
             const leftSlotOffset = HEADER_BYTES + i * leftTable.schema.rowSize;
             const leftKey = decodeValue(
                 leftTable.view,
@@ -301,7 +312,7 @@ export class DB {
                     rightRowCache.set(j, rightRow);
                 }
                 const merged = { ...leftRow, ...rightRow };
-                if (this.matchesWhereObject(merged, wheres)) {
+                if (this.matchesWhereObject(merged, mergedWheres)) {
                     result.push(merged);
                 }
             }
