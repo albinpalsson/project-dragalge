@@ -16,6 +16,34 @@ import {
     waitForPersistence,
 } from './helpers';
 
+test('empty Home shows its placeholder Pokémon inlined, with no icon requests', async ({
+    page,
+}) => {
+    const iconRequests: string[] = [];
+    page.on('request', (request) => {
+        if (request.url().endsWith('.avif')) {
+            iconRequests.push(request.url());
+        }
+    });
+
+    await page.goto('/');
+
+    const ghostIcons = page.locator('img[src^="data:image/avif;base64,"]');
+    await expect(ghostIcons).toHaveCount(3);
+    await expect
+        .poll(() =>
+            ghostIcons.evaluateAll((images) =>
+                images.every(
+                    (image) =>
+                        (image as HTMLImageElement).complete &&
+                        (image as HTMLImageElement).naturalWidth > 0,
+                ),
+            ),
+        )
+        .toBe(true);
+    expect(iconRequests).toEqual([]);
+});
+
 test('Home lists the newest game first after reload', async ({ page }) => {
     await page.clock.setFixedTime(new Date(2026, 9, 27, 12, 0, 0));
     await page.goto('/');

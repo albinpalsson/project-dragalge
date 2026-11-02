@@ -9,6 +9,7 @@ module.exports = configure({
     outputDir: 'dist',
     target: 'es2020',
     cacheDir: '.cache',
+    inlineAssets: ['.avif'],
     env: {
         GA4_MEASUREMENT_ID: process.env.GA4_MEASUREMENT_ID,
         APP_VERSION: process.env.APP_VERSION,

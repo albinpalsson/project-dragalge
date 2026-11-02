@@ -23,7 +23,8 @@ import type {
 
 const buildTransformCacheKey = (
     transforms: Transform[],
-    cacheSalt?: string,
+    cacheSalt: string | undefined,
+    inlineAssets: string[],
 ): string => {
     const BUNDLER_VERSION = '0.1.0';
     const transformVersions = transforms.map((transform) => transform.version);
@@ -32,6 +33,7 @@ const buildTransformCacheKey = (
         `ast:${AST_LITE_VERSION}`,
         `scanner:${SCANNER_VERSION}`,
         `hoist:${HOIST_VERSION}`,
+        `inline:${inlineAssets.join(',')}`,
         ...transformVersions,
     ];
     if (cacheSalt) {
@@ -51,6 +53,7 @@ export async function buildDependencyTree(
     minChunkBytes: number,
     typescriptApi: API,
     target: BundlerTarget | undefined,
+    inlineAssets: string[] = [],
 ): Promise<BuildDependencyTreeResult> {
     const normalizedEntryPath = path.resolve(entryFilePath);
     const { createEnvInjectTransform } = await import(
@@ -65,7 +68,11 @@ export async function buildDependencyTree(
         ...applicationTransforms,
         createMinifierTransform(),
     ];
-    const cacheKey = buildTransformCacheKey(transforms, cacheSalt);
+    const cacheKey = buildTransformCacheKey(
+        transforms,
+        cacheSalt,
+        inlineAssets,
+    );
     const moduleTransformCache = await ModuleTransformCache.open({
         cacheDir,
         cacheKey,
@@ -111,6 +118,7 @@ export async function buildDependencyTree(
                 transforms,
                 perfCollect,
                 esmTranspiler,
+                inlineAssets,
             );
             await moduleTransformCache.set(normalizedPath, result);
         }

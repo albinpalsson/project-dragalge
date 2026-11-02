@@ -1,4 +1,5 @@
 ﻿import type { BundlerConfig } from '../main.ts';
+import { normalizeInlineAssetExtensions } from '../utils/index.ts';
 import { loadCjsConfig, resolveConfigPath } from './loader.ts';
 import { buildProcessEnv, resolveMode } from './resolver.ts';
 
@@ -32,6 +33,9 @@ export async function loadResolvedConfig(
         // The validated file config carries unset options as explicit `undefined`,
         // which would overwrite a default applied before the merge.
         minChunkBytes: mergedConfig.minChunkBytes ?? DEFAULT_MIN_CHUNK_BYTES,
+        inlineAssets: normalizeInlineAssetExtensions(
+            mergedConfig.inlineAssets ?? [],
+        ),
         mode: resolvedMode,
         processEnv: buildProcessEnv(resolvedMode, mergedConfig.env),
     };

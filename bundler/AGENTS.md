@@ -46,6 +46,13 @@ verify emitted behavior, not only TypeScript compilation.
   rejects the `import()` with an `Error` whose `name` is `ChunkLoadError` and
   whose `chunk` property is the file name; apps match on that name. Scripts that
   load but throw while evaluating, and hung requests, are not covered.
+- `inlineAssets` in `BundlerConfig` is an opt-in list of extensions (supported
+  ones are in `src/utils/inline-assets.ts`). `processFile` turns an imported
+  file with a listed extension into a CommonJS module whose `default` is a
+  base64 data URI, skipping module transforms; without the option such a file
+  is parsed as JS. The data lives in the importing chunk, so import large or
+  numerous assets only from lazy modules. The list is part of the transform
+  cache key.
 - Public assets are copied from the `public/` directory beside the entry file.
   Check the output and dev-server serving behavior when changing asset handling.
 - Treat the resolver as intentionally constrained. Confirm supported package

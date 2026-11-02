@@ -6,6 +6,11 @@ export {
     APPLICATION_PACKAGE_GROUP,
     getPackageGroup,
 } from './package-group.ts';
+export {
+    inlineAssetModuleCode,
+    isInlineAssetPath,
+    normalizeInlineAssetExtensions,
+} from './inline-assets.ts';
 export { resolveRelativePath } from './path-resolver.ts';
 export { extractAdditionalImports } from './source-scan.ts';
 export { isCssFilePath, isRelativeSpecifier } from './specifiers.ts';

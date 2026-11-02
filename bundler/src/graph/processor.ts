@@ -6,7 +6,12 @@ import type { BundlerPerformanceCollector } from '../performance-collector.ts';
 import type { ProcessedFileResult } from '../processed-file-result.ts';
 import type { EsmTranspiler } from '../transpile/esm.ts';
 import type { TranspilationResult } from '../transpile/index.ts';
-import { extractAdditionalImports, isCssFilePath } from '../utils/index.ts';
+import {
+    extractAdditionalImports,
+    inlineAssetModuleCode,
+    isCssFilePath,
+    isInlineAssetPath,
+} from '../utils/index.ts';
 import { hoistRequires } from './hoist-requires.ts';
 import { findDependencies } from './parser.ts';
 
@@ -16,7 +21,27 @@ export async function processFile(
     transforms: Transform[],
     perfCollect: BundlerPerformanceCollector | undefined,
     esmTranspiler: EsmTranspiler,
+    inlineAssets: readonly string[],
 ): Promise<ProcessedFileResult> {
+    if (isInlineAssetPath(filePath, inlineAssets)) {
+        const data = await readFile(filePath);
+        const assetCode = inlineAssetModuleCode(filePath, data);
+        perfCollect?.add(
+            'moduleTransform',
+            filePath,
+            0,
+            data.length,
+            assetCode.length,
+            false,
+        );
+        return {
+            type: 'js',
+            code: assetCode,
+            dependencies: [],
+            dynamicDependencies: [],
+            metadata: {},
+        };
+    }
     const code = await readFile(filePath, 'utf8');
     if (isCssFilePath(filePath)) {
         perfCollect?.add(

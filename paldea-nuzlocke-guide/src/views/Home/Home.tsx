@@ -1,7 +1,9 @@
 import { css, cx } from '@project-dragalge/css-in-js';
 import { FadeInImage } from '../../components/FadeInImage';
 import { textLink } from '../../components/text-link';
-import { pokemonIconSrc, toIconSlug } from '../../pokemon-icon';
+import bellibolt from '../../../public/assets/bellibolt.avif';
+import maushold from '../../../public/assets/maushold.avif';
+import tinkatuff from '../../../public/assets/tinkatuff.avif';
 import { GameCard } from './GameCard';
 import { ImportGameModal } from './ImportGameModal';
 import { NewGameModal } from './NewGameModal';
@@ -127,11 +129,11 @@ function GhostCardItem({ hideOnSmall, isFirst, hasNoGames }: GhostCardItemProps)
 function GhostIcons() {
     return (
         <span className={ghostIcons}>
-            {ghostPokemon.map((name) => (
+            {ghostPokemon.map(({ name, src }) => (
                 <span className={ghostIconSlot} key={name}>
                     <FadeInImage
                         className={ghostIcon}
-                        src={pokemonIconSrc(toIconSlug(name))}
+                        src={src}
                         alt=""
                         loading="lazy"
                     />
@@ -203,7 +205,13 @@ const ghostCardSlots = [
 ] as const;
 
 // Listed right to left, matching the right-to-left icon grid.
-const ghostPokemon = ['Bellibolt', 'Maushold', 'Tinkatuff'] as const;
+// Inlined as data URIs (see `inlineAssets` in bundler.config.cjs) so the empty
+// Home screen shows them at first paint without an image request.
+const ghostPokemon = [
+    { name: 'Bellibolt', src: bellibolt },
+    { name: 'Maushold', src: maushold },
+    { name: 'Tinkatuff', src: tinkatuff },
+] as const;
 
 const hideOnSmallGhost = css`
     @media (max-width: 34rem) {

@@ -30,5 +30,6 @@ export const bundlerConfigSchema = object({
     env: optional(record(optional(string()))),
     cacheDir: optional(string()),
     minChunkBytes: optional(number()),
+    inlineAssets: optional(array(string())),
     transforms: optional(array(transformSchema)),
 });

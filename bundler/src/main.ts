@@ -42,6 +42,7 @@ export interface BundlerConfig {
     env?: Record<string, string | undefined>;
     cacheDir?: string;
     minChunkBytes?: number;
+    inlineAssets?: string[];
     transforms?: Transform[];
 }
 
@@ -167,6 +168,7 @@ export async function runBundler(
             resolvedConfig.minChunkBytes,
             compiler.api,
             resolvedConfig.target,
+            resolvedConfig.inlineAssets,
         );
     } finally {
         if (!options.compiler) {
