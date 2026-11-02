@@ -31,6 +31,7 @@ import {
 import {
     encounterRollsQueryKey,
     banListQueryKey,
+    GAMES_QUERY_KEY,
     GAME_CARDS_QUERY_KEY,
     GAME_RUN_SNAPSHOTS_QUERY_KEY,
     gameRunQueryKey,
@@ -204,6 +205,11 @@ function useBossBattleResultMutation<
             const result = await mutationFn(input);
             invalidateQueries(client, {
                 queryKey: bossBattleProgressQueryKey(input.gameName),
+            });
+            // Boss results drive the game's won/lost status.
+            invalidateQueries(client, { queryKey: GAMES_QUERY_KEY });
+            invalidateQueries(client, {
+                queryKey: gameRunQueryKey(input.gameName),
             });
             invalidateQueries(client, { queryKey: GAME_CARDS_QUERY_KEY });
             invalidateQueries(client, {

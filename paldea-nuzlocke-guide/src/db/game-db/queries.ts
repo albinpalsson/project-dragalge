@@ -468,11 +468,7 @@ export async function setBossBattleResult(
             .execute();
     }
 
-    if (input.result === 'lost') {
-        await updateGameStatus(db, gameRunId, 'lost');
-    } else if (input.battleName === FINAL_BATTLE_NAME) {
-        await updateGameStatus(db, gameRunId, 'won');
-    }
+    await syncGameStatusFromBosses(db, gameRunId);
 
     return { battle_name: input.battleName, result: input.result };
 }
@@ -492,6 +488,30 @@ export async function clearBossBattleResult(
         .where('game_run_id', '=', gameRunId)
         .where('battle_name', '=', input.battleName)
         .execute();
+
+    await syncGameStatusFromBosses(db, gameRunId);
+}
+
+// Any lost battle loses the game, winning the final battle wins it, and
+// otherwise it is in progress. Recomputed on every boss change so clearing or
+// flipping a result never leaves a stale status behind.
+async function syncGameStatusFromBosses(
+    db: Database<GameRunsDb>,
+    gameRunId: string,
+): Promise<void> {
+    const progress = await selectBossBattleProgress(db, gameRunId);
+    let status: GameStatus = 'in-progress';
+    if (progress.some((row) => row.result === 'lost')) {
+        status = 'lost';
+    } else if (
+        progress.some(
+            (row) =>
+                row.battle_name === FINAL_BATTLE_NAME && row.result === 'won',
+        )
+    ) {
+        status = 'won';
+    }
+    await updateGameStatus(db, gameRunId, status);
 }
 
 async function updateGameStatus(
