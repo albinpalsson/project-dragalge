@@ -56,7 +56,6 @@ export type UseQueryResult<TData, TError extends Error = Error> =
           isPending: true;
           isSuccess: false;
           isError: false;
-          isFetching: boolean;
       }
     | {
           status: 'success';
@@ -65,7 +64,6 @@ export type UseQueryResult<TData, TError extends Error = Error> =
           isPending: false;
           isSuccess: true;
           isError: false;
-          isFetching: boolean;
       }
     | {
           status: 'error';
@@ -74,7 +72,6 @@ export type UseQueryResult<TData, TError extends Error = Error> =
           isPending: false;
           isSuccess: false;
           isError: true;
-          isFetching: boolean;
       };
 
 function toQueryResult<TData, TError extends Error>(
@@ -88,7 +85,6 @@ function toQueryResult<TData, TError extends Error>(
             isPending: false,
             isSuccess: true,
             isError: false,
-            isFetching: state.isFetching,
         };
     }
     if (state.status === 'error') {
@@ -99,7 +95,6 @@ function toQueryResult<TData, TError extends Error>(
             isPending: false,
             isSuccess: false,
             isError: true,
-            isFetching: state.isFetching,
         };
     }
     return {
@@ -109,13 +104,36 @@ function toQueryResult<TData, TError extends Error>(
         isPending: true,
         isSuccess: false,
         isError: false,
-        isFetching: state.isFetching,
     };
 }
 
-export function useQuery<TData, TError extends Error = Error>(
-    options: QueryOptions<TData>,
-): UseQueryResult<TData, TError> {
+export interface UseQueryOptions<TData, TSelected> extends QueryOptions<TData> {
+    select?: (data: TData) => TSelected;
+}
+
+interface LastQuerySnapshot<TData, TError extends Error, TSelected> {
+    state: QueryState<TData, TError>;
+    select: UseQueryOptions<TData, TSelected>['select'];
+    snapshot: QueryState<TSelected, TError>;
+}
+
+function toSelectedState<TData, TError extends Error, TSelected>(
+    state: QueryState<TData, TError>,
+    select: UseQueryOptions<TData, TSelected>['select'],
+): QueryState<TSelected, TError> {
+    if (!select || state.status !== 'success') {
+        return state as unknown as QueryState<TSelected, TError>;
+    }
+    return { ...state, data: select(state.data as TData) };
+}
+
+export function useQuery<
+    TData,
+    TError extends Error = Error,
+    TSelected = TData,
+>(
+    options: UseQueryOptions<TData, TSelected>,
+): UseQueryResult<TSelected, TError> {
     const client = useClient();
     const key = JSON.stringify(options.queryKey);
     const staleTime = options.staleTime ?? 0;
@@ -130,12 +148,31 @@ export function useQuery<TData, TError extends Error = Error>(
         [client, key],
     );
 
-    const getSnapshot = useCallback(
-        () => client.getQuerySnapshot<TData, TError>(key),
-        [client, key],
-    );
+    const { select } = options;
+    const lastSnapshotRef =
+        useRef<LastQuerySnapshot<TData, TError, TSelected>>(undefined);
 
-    const state = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+    // Invalidating and background fetching notify without changing what
+    // consumers read, so keep the previous snapshot to skip those renders.
+    const getSnapshot = () => {
+        const state = client.getQuerySnapshot<TData, TError>(key);
+        const last = lastSnapshotRef.current;
+        if (last && last.state === state && last.select === select) {
+            return last.snapshot;
+        }
+        const selected = toSelectedState(state, select);
+        const snapshot =
+            last &&
+            last.snapshot.status === selected.status &&
+            Object.is(last.snapshot.data, selected.data) &&
+            last.snapshot.error === selected.error
+                ? last.snapshot
+                : selected;
+        lastSnapshotRef.current = { state, select, snapshot };
+        return snapshot;
+    };
+
+    const snapshot = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 
     const refetch = useCallback(() => {
         if (!enabled) {
@@ -153,7 +190,7 @@ export function useQuery<TData, TError extends Error = Error>(
         return client.registerQueryRefetch(key, refetch);
     }, [client, key, refetch]);
 
-    return toQueryResult(state);
+    return toQueryResult(snapshot);
 }
 
 // ─── useMutation ─────────────────────────────────────────────────────────────
