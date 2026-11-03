@@ -48,7 +48,6 @@ export function PokemonBoxIcon({
                 src={pokemonIconSrc(toIconSlug(pokemonName))}
                 alt={pokemonName}
                 draggable={false}
-                loading="lazy"
             />
         </button>
     );

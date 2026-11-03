@@ -135,7 +135,7 @@ function GhostIcons() {
                         className={ghostIcon}
                         src={src}
                         alt=""
-                        loading="lazy"
+                        lazy={false}
                     />
                 </span>
             ))}

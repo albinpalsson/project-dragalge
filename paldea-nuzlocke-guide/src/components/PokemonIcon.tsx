@@ -11,6 +11,8 @@ interface PokemonIconProps {
     /** Crops the sprite's transparent margin so the Pokémon looks bigger. */
     zoomed?: boolean;
     borderColor?: string;
+    /** See `FadeInImage`; pass `false` for icons in the first paint. */
+    lazy?: boolean;
 }
 
 export function PokemonIcon({
@@ -19,13 +21,14 @@ export function PokemonIcon({
     size,
     zoomed,
     borderColor,
+    lazy,
 }: PokemonIconProps) {
     const img = (className: string) => (
         <FadeInImage
             className={className}
             src={pokemonIconSrc(toIconSlug(name))}
             alt={alt ?? name}
-            loading="lazy"
+            lazy={lazy}
         />
     );
 

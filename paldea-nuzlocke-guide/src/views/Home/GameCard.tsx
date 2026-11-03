@@ -96,7 +96,6 @@ export function GameCard({
                                                 toIconSlug(row.pokemon_name),
                                             )}
                                             alt={row.pokemon_name}
-                                            loading="lazy"
                                         />
                                     )}
                                 </span>
