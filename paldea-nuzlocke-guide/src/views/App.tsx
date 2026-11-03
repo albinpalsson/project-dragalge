@@ -12,11 +12,9 @@ import { HeaderSlotContext } from '../components/HeaderSlot';
 import { IconLink } from '../components/IconLink';
 import { GithubIcon, MailIcon } from '../components/icons';
 import { GITHUB_REPO_URL, buildMailto } from '../contact';
-import { About } from './About';
 import { AppHeader } from './AppHeader';
 import { Friendship } from './Friendship';
 import { Home } from './Home/Home';
-import { Licenses } from './Licenses';
 import { RandomizerModes } from './RandomizerModes';
 import { ThemeToggle } from './ThemeToggle';
 import { useImportDataFromHash } from '../hooks/useImportDataFromHash';
@@ -25,11 +23,20 @@ import { useReleaseNews } from '../hooks/useReleaseNews';
 import { track } from '../analytics/analytics';
 import { APP_VERSION } from '../analytics/config';
 
-// Game is the only view big enough to be worth a separate chunk. The small
-// views stay static: lazy() would suspend (and flash the fallback) even when
-// their code is already in the main bundle.
+// Home stays static: it is the landing view. Game is its own chunk; About and
+// Licenses share one chunk through a single import() target. Friendship and
+// RandomizerModes stay static: their guides are also used from main-bundle
+// and Game code, so lazy-loading them would move almost nothing.
 const Game = lazy(() =>
     import('./Game/Game').then((module) => ({ default: module.Game })),
+);
+const About = lazy(() =>
+    import('./secondary-views').then((module) => ({ default: module.About })),
+);
+const Licenses = lazy(() =>
+    import('./secondary-views').then((module) => ({
+        default: module.Licenses,
+    })),
 );
 
 export function App() {
