@@ -17,6 +17,8 @@ module.exports = configure({
     transforms: [
         cssInJsTransform(),
         // Include a feature before using it: the stubs fail quietly.
-        redactPlugin({ include: ['class', 'context', 'memo', 'portal'] }),
+        redactPlugin({
+            include: ['class', 'context', 'lazy', 'memo', 'portal', 'suspense'],
+        }),
     ],
 });
