@@ -19,13 +19,14 @@ function rewrite(
     body: AstNode[],
     path: string,
     plugin = redactPlugin({ include: ['context'] }),
+    mode: 'production' | 'dev' = 'production',
 ): AstNode[] {
     const program = {
         type: 'program',
         version: AST_LITE_VERSION,
         body,
     } as const;
-    return plugin.moduleTransform({ path, program }).body;
+    return plugin.moduleTransform({ mode, path, program }).body;
 }
 
 test('aliases React entry points to Redact', () => {
@@ -119,6 +120,48 @@ test('suspense keeps its runtime', () => {
     );
 });
 
+test('stubs the dev-only modules in production, only inside Redact', () => {
+    const stub = requireOf('@project-dragalge/redact-plugin/dev-only-stub');
+    const reconcile = '/app/node_modules/@tanstack/redact/dist/dom/reconcile.js';
+    for (const specifier of [
+        '../core/devtools.js',
+        './devtools.js',
+        './devtools-effects.js',
+        './refresh.js',
+    ]) {
+        assert.deepEqual(rewrite(requireOf(specifier), reconcile), stub);
+    }
+    const suspense =
+        '/app/node_modules/@tanstack/redact/dist/dom/features/suspense/full.js';
+    assert.deepEqual(
+        rewrite(requireOf('../../../core/devtools.js'), suspense),
+        stub,
+    );
+
+    const other = requireOf('./commit.js');
+    assert.deepEqual(rewrite(other, reconcile), other);
+    const appFile = requireOf('./devtools.js');
+    assert.deepEqual(rewrite(appFile, APP_PATH), appFile);
+});
+
+test('keeps the dev-only modules in dev builds', () => {
+    const reconcile = '/app/node_modules/@tanstack/redact/dist/dom/reconcile.js';
+    const devtools = requireOf('./devtools.js');
+    assert.deepEqual(
+        rewrite(devtools, reconcile, redactPlugin(), 'dev'),
+        devtools,
+    );
+});
+
+test('matches dev-only modules on Windows paths', () => {
+    const reconcile =
+        'C:\\app\\node_modules\\@tanstack\\redact\\dist\\dom\\reconcile.js';
+    assert.deepEqual(
+        rewrite(requireOf('./refresh.js'), reconcile),
+        requireOf('@project-dragalge/redact-plugin/dev-only-stub'),
+    );
+});
+
 test('the included features are part of the cache version', () => {
     assert.notEqual(
         redactPlugin({ include: ['memo'] }).version,
@@ -130,6 +173,7 @@ test('rejects an unknown AST version', () => {
     const plugin = redactPlugin();
     assert.throws(() =>
         plugin.moduleTransform({
+            mode: 'production',
             path: APP_PATH,
             program: { version: 'old' } as never,
         }),

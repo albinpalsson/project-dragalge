@@ -12,6 +12,13 @@ without Vite. All knowledge of Redact belongs here, not in `bundler/`.
   the `<feature>/index.js` of a feature not in `include` becomes
   `<feature>/stub.js`. Only names in `FEATURES` are stubbed, so a feature added
   by a Redact upgrade stays on until it is listed there.
+- In production builds (the request's `mode`), a relative require inside
+  Redact that resolves to `core/devtools.js`, `dom/devtools.js`,
+  `dom/devtools-effects.js` or `dom/refresh.js` becomes
+  `@project-dragalge/redact-plugin/dev-only-stub`, an empty module. This is
+  only safe while Redact uses those exports solely behind
+  `NODE_ENV !== "production"` guards; recheck that when upgrading Redact. Dev
+  builds keep the real modules for React DevTools.
 - Stubbing is intentionally this simple. A stubbed feature fails quietly: for
   example a stubbed `memo` stops skipping re-renders. If a Redact upgrade needs
   more than this suffix rewrite, drop the `include` option rather than growing it.

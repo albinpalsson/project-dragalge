@@ -9,7 +9,8 @@
         ".": {
             "types": "./dist/index.ts",
             "default": "./dist/index.js"
-        }
+        },
+        "./dev-only-stub": "./dist/dev-only-stub.js"
     },
     "files": [
         "dist"

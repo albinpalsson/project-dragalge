@@ -1,3 +1,4 @@
+import { posix } from 'node:path';
 import {
     AST_LITE_VERSION,
     type AstNode,
@@ -27,6 +28,7 @@ export interface RedactPluginOptions {
 }
 
 export interface RedactTransformRequest {
+    mode: 'production' | 'dev';
     path: string;
     program: ProgramNode;
 }
@@ -47,7 +49,16 @@ const ALIASES: Record<string, string> = {
 const redactPathRegex = /[\\/]node_modules[\\/]@tanstack[\\/]redact[\\/]/;
 const requireCallRegex = /(?<![.\w$])require\(\s*$/;
 
-/** Redirects requires from React to Redact, and from features to their stubs. */
+// Redact modules that only run behind `NODE_ENV !== "production"` guards
+// (devtools integration and fast refresh), matched by resolved path.
+const devOnlyModuleRegex =
+    /\/@tanstack\/redact\/dist\/(core\/devtools|dom\/devtools|dom\/devtools-effects|dom\/refresh)\.js$/;
+const DEV_ONLY_STUB = '@project-dragalge/redact-plugin/dev-only-stub';
+
+/**
+ * Redirects requires from React to Redact, from features to their stubs, and
+ * in production from Redact's dev-only modules to an empty stub.
+ */
 export function redactPlugin(
     options: RedactPluginOptions = {},
 ): RedactTransform {
@@ -62,8 +73,8 @@ export function redactPlugin(
     const stubRegex = new RegExp(`(^|/)(${stubbed.join('|')})/index\\.js$`);
 
     return {
-        version: `redact-plugin:v1:${stubbed.join(',')}`,
-        moduleTransform: ({ path, program }) => {
+        version: `redact-plugin:v2:${stubbed.join(',')}`,
+        moduleTransform: ({ mode, path, program }) => {
             if (program.version !== AST_LITE_VERSION) {
                 throw new Error(
                     `Unsupported AST-lite version: ${String(program.version)}. Expected ${AST_LITE_VERSION}.`,
@@ -71,10 +82,19 @@ export function redactPlugin(
             }
 
             const insideRedact = redactPathRegex.test(path);
-            const redirect = (specifier: string) =>
-                insideRedact
-                    ? specifier.replace(stubRegex, '$1$2/stub.js')
-                    : (ALIASES[specifier] ?? specifier);
+            const directory = path.replaceAll('\\', '/').replace(/\/[^/]*$/, '');
+            const isDevOnly = (specifier: string) =>
+                mode === 'production' &&
+                specifier.startsWith('.') &&
+                devOnlyModuleRegex.test(posix.join(directory, specifier));
+            const redirect = (specifier: string) => {
+                if (!insideRedact) {
+                    return ALIASES[specifier] ?? specifier;
+                }
+                return isDevOnly(specifier)
+                    ? DEV_ONLY_STUB
+                    : specifier.replace(stubRegex, '$1$2/stub.js');
+            };
             return {
                 ...program,
                 body: rewriteRequires(program.body, redirect),
