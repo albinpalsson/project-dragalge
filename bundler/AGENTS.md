@@ -63,7 +63,9 @@ verify emitted behavior, not only TypeScript compilation.
 
 - Transforms are versioned and can implement `moduleTransform` and/or
   `postModuleTransform`. Keep transform metadata scoped to the pipeline
-  contract and preserve dependency ordering.
+  contract and preserve dependency ordering. A module request carries the
+  build `mode`; the mode is part of the transform cache key, so dev and
+  production builds never share transformed output.
 - The AST-lite parser represents strings, templates, and regular expressions
   as protected nodes. Minification or rewriting must not alter their contents.
   Extend the parser/minifier integration tests with source cases for syntax

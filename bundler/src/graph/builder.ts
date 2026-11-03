@@ -2,7 +2,7 @@
 import path from 'node:path';
 import type { API } from 'typescript/async';
 import { AST_LITE_VERSION } from '../ast-lite/index.ts';
-import type { BundlerTarget, Transform } from '../main.ts';
+import type { BundlerMode, BundlerTarget, Transform } from '../main.ts';
 import { ModuleTransformCache } from '../module-transform-cache.ts';
 import { NodeModulesResolver } from '../node-modules-resolver.ts';
 import type { BundlerPerformanceCollector } from '../performance-collector.ts';
@@ -24,6 +24,7 @@ import type {
 const buildTransformCacheKey = (
     transforms: Transform[],
     cacheSalt: string | undefined,
+    mode: BundlerMode,
     inlineAssets: string[],
 ): string => {
     const BUNDLER_VERSION = '0.1.0';
@@ -33,6 +34,7 @@ const buildTransformCacheKey = (
         `ast:${AST_LITE_VERSION}`,
         `scanner:${SCANNER_VERSION}`,
         `hoist:${HOIST_VERSION}`,
+        `mode:${mode}`,
         `inline:${inlineAssets.join(',')}`,
         ...transformVersions,
     ];
@@ -53,6 +55,7 @@ export async function buildDependencyTree(
     minChunkBytes: number,
     typescriptApi: API,
     target: BundlerTarget | undefined,
+    mode: BundlerMode,
     inlineAssets: string[] = [],
 ): Promise<BuildDependencyTreeResult> {
     const normalizedEntryPath = path.resolve(entryFilePath);
@@ -71,6 +74,7 @@ export async function buildDependencyTree(
     const cacheKey = buildTransformCacheKey(
         transforms,
         cacheSalt,
+        mode,
         inlineAssets,
     );
     const moduleTransformCache = await ModuleTransformCache.open({
@@ -118,6 +122,7 @@ export async function buildDependencyTree(
                 transforms,
                 perfCollect,
                 esmTranspiler,
+                mode,
                 inlineAssets,
             );
             await moduleTransformCache.set(normalizedPath, result);

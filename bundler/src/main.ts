@@ -54,6 +54,8 @@ export type ModuleTransformMetadata = Record<string, unknown>;
 
 export interface ModuleTransformModuleRequest {
     phase: 'module';
+    /** The build's mode, so a transform can keep dev-only code out of production. */
+    mode: BundlerMode;
     path: string;
     program: ProgramNode;
     metadata: ModuleTransformMetadata;
@@ -168,6 +170,7 @@ export async function runBundler(
             resolvedConfig.minChunkBytes,
             compiler.api,
             resolvedConfig.target,
+            resolvedConfig.mode,
             resolvedConfig.inlineAssets,
         );
     } finally {

@@ -1,7 +1,11 @@
 ﻿import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { parseProgram, writeProgram } from '../ast-lite/index.ts';
-import type { ModuleTransformMetadata, Transform } from '../main.ts';
+import type {
+    BundlerMode,
+    ModuleTransformMetadata,
+    Transform,
+} from '../main.ts';
 import type { BundlerPerformanceCollector } from '../performance-collector.ts';
 import type { ProcessedFileResult } from '../processed-file-result.ts';
 import type { EsmTranspiler } from '../transpile/esm.ts';
@@ -21,6 +25,7 @@ export async function processFile(
     transforms: Transform[],
     perfCollect: BundlerPerformanceCollector | undefined,
     esmTranspiler: EsmTranspiler,
+    mode: BundlerMode,
     inlineAssets: readonly string[],
 ): Promise<ProcessedFileResult> {
     if (isInlineAssetPath(filePath, inlineAssets)) {
@@ -61,6 +66,7 @@ export async function processFile(
         cjs.code,
         transforms,
         cjs.typescriptEmitted,
+        mode,
     );
     const processingStartTime = performance.now();
     const found = findDependencies(ast.body);
@@ -143,6 +149,7 @@ export async function applyModuleTransforms(
     code: string,
     transforms: Transform[],
     typescriptEmitted: boolean,
+    mode: BundlerMode,
 ) {
     const parseStartTime = performance.now();
     let ast = parseProgram(code);
@@ -157,6 +164,7 @@ export async function applyModuleTransforms(
             const startTime = performance.now();
             const result = transform.moduleTransform({
                 phase: 'module',
+                mode,
                 path: modulePath,
                 program: ast,
                 metadata,
