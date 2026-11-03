@@ -13,11 +13,14 @@
   <meta property="og:description" content="Track your Pokémon Scarlet and Violet Nuzlocke run: roll encounters, manage your party and box, and prepare for bosses across Paldea.">
   <meta name="twitter:card" content="summary">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" sizes="any">
+  <!-- Applies a stored light theme before the static shell paints; dark is the CSS default. Keep the key in step with src/theme.ts. -->
+  <script>try{if(localStorage.getItem('paldea-nuzlocke-guide:theme')==='light'){document.documentElement.dataset.theme='light'}}catch{}</script>
   <!-- bundler:css -->
 </head>
 <body>
   <noscript>The Paldea nuzlocke guide needs JavaScript to run.</noscript>
-  <div id="app"></div>
+  <!-- Static shell painted before the bundle runs; React replaces it on first render. -->
+  <div id="app"><header class="app-header"><span class="app-header-title">Paldea nuzlocke guide</span></header></div>
   <!-- bundler:js -->
 </body>
 </html>

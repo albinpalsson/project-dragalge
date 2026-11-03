@@ -1,3 +1,4 @@
+// Duplicated in the inline theme script in index.html.
 const STORAGE_KEY = 'paldea-nuzlocke-guide:theme';
 
 export type Theme = 'light' | 'dark';

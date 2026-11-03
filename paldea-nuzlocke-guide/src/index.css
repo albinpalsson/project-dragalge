@@ -109,6 +109,30 @@ body {
     color: var(--color-text);
 }
 
+/*
+ * Shared by AppHeader and the static shell in index.html, which paints before
+ * the bundle runs. Must not gain transform/filter: it would become the
+ * containing block for the fixed modals portaled into the header slot.
+ */
+.app-header {
+    position: sticky;
+    top: 0;
+    z-index: 900;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    height: var(--header-height);
+    padding: 0 max(var(--space-4), calc((100% - var(--content-max-width)) / 2));
+    background: var(--color-bg);
+}
+
+.app-header-title {
+    min-width: 0;
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-bold);
+    line-height: 1.15;
+}
+
 main {
     display: flex;
     flex-direction: column;

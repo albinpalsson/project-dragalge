@@ -60,7 +60,7 @@ function extractHtmlAssetSignature(html: string): string {
 
 function extractScriptPath(html: string): string {
     const script =
-        html.match(/<script src="([^"]+\.js)"><\/script>/i)?.[1] ?? '';
+        html.match(/<script defer src="([^"]+\.js)"><\/script>/i)?.[1] ?? '';
     if (!script) {
         throw new Error('Could not find bundled script tag in HTML response.');
     }

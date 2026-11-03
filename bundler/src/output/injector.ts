@@ -5,7 +5,7 @@
     const cssMarkup = input.cssFileNames
         .map((cssFileName) => `  <link rel="stylesheet" href="${cssFileName}">`)
         .join('\n');
-    const jsMarkup = `  <script src="${input.jsFileName}"></script>`;
+    const jsMarkup = `  <script defer src="${input.jsFileName}"></script>`;
 
     let html = sourceHtml;
     if (cssMarkup.length > 0) {

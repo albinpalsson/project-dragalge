@@ -16,13 +16,15 @@ export function AppHeader({
     slotRef,
 }: AppHeaderProps) {
     return (
-        <header className={header}>
+        <header className="app-header">
             {onBack && (
                 <IconButton label="Back" onClick={onBack}>
                     ←
                 </IconButton>
             )}
-            {showTitle && <span className={title}>Paldea nuzlocke guide</span>}
+            {showTitle && (
+                <span className="app-header-title">Paldea nuzlocke guide</span>
+            )}
             <div className={slot} ref={slotRef} />
             <div className={actions}>
                 <IconButton label="Open menu" onClick={onOpenMenu}>
@@ -32,27 +34,6 @@ export function AppHeader({
         </header>
     );
 }
-
-// Must not gain transform/filter: it would become the containing block for the fixed modals portaled into the slot.
-const header = css`
-  position: sticky;
-  top: 0;
-  z-index: 900;
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  height: var(--header-height);
-  padding: 0 max(var(--space-4), calc((100% - var(--content-max-width)) / 2));
-  background: var(--color-bg);
-`;
-
-const title = css`
-    min-width: 0;
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-bold);
-    line-height: 1.15;
-
-`;
 
 const slot = css`
   display: flex;

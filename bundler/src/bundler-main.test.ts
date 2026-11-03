@@ -144,7 +144,7 @@ test('bundles a two-file TS app with a CSS import and produces correct js, css, 
         );
         assert.match(
             htmlContent,
-            new RegExp(`<script src="${jsBasename}"></script>`),
+            new RegExp(`<script defer src="${jsBasename}"></script>`),
         );
 
         // --- Lazy chunk: separate file, compressed, not in the main bundle ---
