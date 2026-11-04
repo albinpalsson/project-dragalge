@@ -8,7 +8,7 @@ import {
 } from 'react';
 import { css, cx } from '@project-dragalge/css-in-js';
 import { Drawer } from '../components/Drawer';
-import { HeaderSlotContext } from '../components/HeaderSlot';
+import { HeaderSlotContext } from '../components/HeaderSlotContext';
 import { IconLink } from '../components/IconLink';
 import { GithubIcon, MailIcon } from '../components/icons';
 import { GITHUB_REPO_URL, buildMailto } from '../contact';
