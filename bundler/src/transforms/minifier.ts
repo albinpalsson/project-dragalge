@@ -6,9 +6,13 @@
     ProgramNode,
 } from '../ast-lite/types.ts';
 
+// Bundler pragmas such as `/* bundler:prefetch */`, which later passes read
+// after all module transforms.
+const bundlerPragmaRegex = /^\/\*\s*bundler:[\w-]+\s*\*\/$/;
+
 export function createMinifierTransform() {
     return {
-        version: `minifier:v5`,
+        version: `minifier:v6`,
         moduleTransform: (request: { program: ProgramNode }) => {
             return minifyProgram(request.program);
         },
@@ -92,7 +96,9 @@ function evaluateConditionalNode(node: ConditionalNode): AstNode[] | undefined {
 function shouldPreserveComment(node: CommentNode): boolean {
     return (
         node.kind === 'block' &&
-        (node.text.startsWith('/*!') || node.text.includes('@license'))
+        (node.text.startsWith('/*!') ||
+            node.text.includes('@license') ||
+            bundlerPragmaRegex.test(node.text))
     );
 }
 

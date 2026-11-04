@@ -44,6 +44,7 @@ export async function processFile(
             code: assetCode,
             dependencies: [],
             dynamicDependencies: [],
+            prefetchDependencies: [],
             metadata: {},
         };
     }
@@ -80,6 +81,13 @@ export async function processFile(
                 .map((dep) => dep.specifier),
         ),
     ];
+    const prefetchDependencies = [
+        ...new Set(
+            found
+                .filter((dep) => dep.type === 'dynamic' && dep.prefetch)
+                .map((dep) => dep.specifier),
+        ),
+    ];
     const processedCode = writeProgram(ast);
 
     if (filePath.startsWith(transpilation.sourceRootDir)) {
@@ -112,6 +120,7 @@ export async function processFile(
         code: processedCode,
         dependencies: Array.from(dependencies),
         dynamicDependencies,
+        prefetchDependencies,
         metadata,
     };
 }

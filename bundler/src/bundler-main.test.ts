@@ -168,6 +168,73 @@ test('bundles a two-file TS app with a CSS import and produces correct js, css, 
     });
 });
 
+test('fetches chunks of bundler:prefetch imports when the main script starts', async () => {
+    await withTmpDir(async (tmpDir) => {
+        const srcDir = path.join(tmpDir, 'src');
+        await mkdir(srcDir, { recursive: true });
+
+        await writeFile(
+            path.join(srcDir, 'index.ts'),
+            [
+                "import(/* bundler:prefetch */ './prefetched').then((m) => console.log(m.value));",
+                "import('./later').then((m) => console.log(m.value));",
+            ].join('\n'),
+            'utf8',
+        );
+        await writeFile(
+            path.join(srcDir, 'prefetched.ts'),
+            "export const value = 'prefetched-ok';\n",
+            'utf8',
+        );
+        await writeFile(
+            path.join(srcDir, 'later.ts'),
+            "export const value = 'later-ok';\n",
+            'utf8',
+        );
+        await writeFile(
+            path.join(tmpDir, 'tsconfig.json'),
+            JSON.stringify({
+                compilerOptions: {
+                    target: 'ES2022',
+                    moduleResolution: 'Bundler',
+                    skipLibCheck: true,
+                },
+                include: ['src'],
+            }),
+            'utf8',
+        );
+
+        const result = await runBundler({
+            cwd: tmpDir,
+            performance: new BundlerPerformanceCollector({ write() {} }),
+            configOverrides: {
+                entry: 'src/index.ts',
+                outputDir: 'dist',
+                mode: 'production',
+                minChunkBytes: 0,
+            },
+        });
+
+        assert.equal(result.chunkOutputPaths.length, 2);
+        const chunks = await Promise.all(
+            result.chunkOutputPaths.map(async (chunkPath) => ({
+                name: path.basename(chunkPath),
+                code: await readFile(chunkPath, 'utf8'),
+            })),
+        );
+        const prefetched = chunks.find((chunk) => chunk.code.includes('prefetched-ok'));
+        const later = chunks.find((chunk) => chunk.code.includes('later-ok'));
+        assert.ok(prefetched && later);
+
+        const browser = new MockBrowser(path.join(tmpDir, 'dist'));
+        browser.run(await readFile(result.outputPath, 'utf8'));
+        assert.deepEqual(browser.prefetches, [prefetched.name]);
+        await waitFor(() =>
+            assert.deepEqual([...browser.logs].sort(), ['later-ok', 'prefetched-ok']),
+        );
+    });
+});
+
 /**
  * A vm context standing in for a page: it records console output and answers
  * the chunk loader's `<script>` injections by running the file from `distDir`.
@@ -175,6 +242,7 @@ test('bundles a two-file TS app with a CSS import and produces correct js, css, 
 class MockBrowser {
     readonly logs: unknown[] = [];
     readonly requestedScripts: string[] = [];
+    readonly prefetches: string[] = [];
     private readonly context: vm.Context;
     constructor(distDir: string) {
         this.context = vm.createContext({
@@ -189,7 +257,13 @@ class MockBrowser {
                     appendChild: (script: {
                         src: string;
                         onload: () => void;
+                        rel?: string;
+                        href?: string;
                     }) => {
+                        if (script.rel === 'prefetch') {
+                            this.prefetches.push(script.href ?? '');
+                            return;
+                        }
                         this.requestedScripts.push(script.src);
                         readFile(path.join(distDir, script.src), 'utf8')
                             .then((code) => this.run(code))

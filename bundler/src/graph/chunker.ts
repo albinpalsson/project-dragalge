@@ -18,11 +18,15 @@ export function splitIntoChunks(
 ): ChunkGraph {
     const byPath = new Map(entries.map((entry) => [entry.path, entry]));
     const dynamicTargets = new Set<string>();
+    const prefetchTargets = new Set<string>();
     for (const entry of entries) {
         if ('requires' in entry) {
             for (const dependency of entry.requires) {
                 if (dependency.dynamic) {
                     dynamicTargets.add(dependency.resolvedPath);
+                }
+                if (dependency.prefetch) {
+                    prefetchTargets.add(dependency.resolvedPath);
                 }
             }
         }
@@ -109,6 +113,7 @@ export function splitIntoChunks(
         const lazyRoots: LazyRoot[] = roots.map((root) => ({
             path: root,
             chunks: chunks.filter((chunk) => chunk.roots.includes(root)),
+            prefetch: prefetchTargets.has(root),
         }));
         return { main: mainEntries, chunks, roots: lazyRoots };
     }

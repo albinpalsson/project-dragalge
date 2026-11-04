@@ -52,6 +52,7 @@ export function generateMainCode(
         .join(',\n');
 
     return [
+        ...prefetchCode(graph.roots, chunkFileNames),
         'const m={',
         tableEntries,
         '};',
@@ -74,6 +75,28 @@ const lazyLoaderCode = [
     'const z=(id,files)=>({__esModule:true,then:(ok,fail)=>Promise.all(files.map(l)).then(()=>{const e=r(id);return e&&e.__esModule?e:{default:e}}).then(ok,fail)});',
 ].join('\n');
 
+/**
+ * Runs first in the main script rather than as links in the HTML: a link in
+ * the HTML shares the connection with the main script and delays first paint.
+ */
+function prefetchCode(
+    roots: LazyRoot[],
+    chunkFileNames: Map<Chunk, string>,
+): string[] {
+    const files = new Set(
+        roots
+            .filter((root) => root.prefetch)
+            .flatMap((root) => root.chunks)
+            .map((chunk) => chunkFileNames.get(chunk)),
+    );
+    if (files.size === 0) {
+        return [];
+    }
+    return [
+        `for(const f of ${JSON.stringify([...files])}){const l=document.createElement("link");l.rel="prefetch";l.href=f;document.head.appendChild(l)}`,
+    ];
+}
+
 function moduleTableEntries(
     entries: DependencyEntry[],
     ids: ModuleIds,
@@ -92,7 +115,8 @@ function rewriteRequires(module: DependencyEntry, ids: ModuleIds): string {
         return module.code;
     }
 
-    const localRequireRegex = /require\(\s*['"]([^'"]+)['"]\s*\)/g;
+    const localRequireRegex =
+        /require\(\s*(?:\/\*.*?\*\/\s*)?['"]([^'"]+)['"]\s*\)/g;
     const dependencyMap = buildDependencyMap(module);
 
     return module.code.replace(

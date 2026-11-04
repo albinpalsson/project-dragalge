@@ -37,9 +37,9 @@ verify emitted behavior, not only TypeScript compilation.
   emitted shape in step. Deliberately unsupported: non-literal `import()`
   specifiers (the parser only sees string literals, so such a call is not
   bundled and fails at runtime, not at build time), per-chunk CSS (all CSS is
-  one render-blocking file), ES-module chunks, chunk preloading and load
-  retries. Importing a module both statically and dynamically from the same
-  module fails the build. Lazy roots under
+  one render-blocking file), ES-module chunks and load retries. Importing a
+  module both statically and dynamically from the same module fails the build.
+  Lazy roots under
   `minChunkBytes` are folded into the main file. Chunks are classic scripts
   that call `Object.assign(m, ...)` on the main script's top-level `m`, and the
   chunk loader needs a browser `document`. A chunk script that fails to load
@@ -53,6 +53,15 @@ verify emitted behavior, not only TypeScript compilation.
   is parsed as JS. The data lives in the importing chunk, so import large or
   numerous assets only from lazy modules. The list is part of the transform
   cache key.
+- `import(/* bundler:prefetch */ './x')` makes the first line of the main
+  script add a `<link rel="prefetch">` for each chunk of that lazy root. The
+  browser fetches them at idle priority into its HTTP cache, and the `import()`
+  still loads and evaluates them. They are not linked from the HTML because that
+  delays first paint on slow connections. The pragma relies on TypeScript
+  keeping the comment inside `require(`. The minifier preserves every
+  `/* bundler:<directive> */` comment, and
+  `findDependencies` reads it after all module transforms. ESM files from outside the
+  source root are emitted with `--removeComments` and cannot use it.
 - Public assets are copied from the `public/` directory beside the entry file.
   Check the output and dev-server serving behavior when changing asset handling.
 - Treat the resolver as intentionally constrained. Confirm supported package

@@ -3,12 +3,16 @@
 export interface ParsedDependency {
     type: 'require' | 'dynamic';
     specifier: string;
+    /** Set by a `bundler:prefetch` comment before the specifier. */
+    prefetch: boolean;
 }
 
 export interface ResolvedRequire {
     specifier: string;
     resolvedPath: string;
     dynamic: boolean;
+    /** Set by a `bundler:prefetch` pragma on the `import()`. */
+    prefetch: boolean;
 }
 
 export interface DependencyModule {
@@ -41,6 +45,8 @@ export interface LazyRoot {
     path: string;
     /** Every chunk that must be loaded before `path` can be required. */
     chunks: Chunk[];
+    /** Whether the main script should prefetch these chunks at idle priority. */
+    prefetch: boolean;
 }
 
 export interface ChunkGraph {

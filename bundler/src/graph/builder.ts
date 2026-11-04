@@ -138,6 +138,10 @@ export async function buildDependencyTree(
             result.type === 'js'
                 ? new Set<string>(result.dynamicDependencies)
                 : new Set<string>();
+        const prefetchSpecifiers =
+            result.type === 'js'
+                ? new Set<string>(result.prefetchDependencies)
+                : new Set<string>();
         const uniqueDependencies = [
             ...new Set<string>([...result.dependencies, ...dynamicSpecifiers]),
         ];
@@ -153,6 +157,7 @@ export async function buildDependencyTree(
                     specifier,
                     resolvedPath,
                     dynamic: dynamicSpecifiers.has(specifier),
+                    prefetch: prefetchSpecifiers.has(specifier),
                 };
             }),
         );

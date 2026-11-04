@@ -3,6 +3,7 @@
     code: string;
     dependencies: string[];
     dynamicDependencies: string[];
+    prefetchDependencies: string[];
     metadata: Record<string, unknown>;
 }
 
