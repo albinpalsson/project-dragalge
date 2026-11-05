@@ -92,7 +92,6 @@ export interface BossPokemonView {
 
 export interface BossBattleRoster {
     battleName: string;
-    battleType: string;
     pokemon: BossPokemonView[];
 }
 
@@ -246,7 +245,6 @@ export async function getBossBattleRoster(
 
     return {
         battleName: battle.name,
-        battleType: battle.battle_type,
         pokemon: roster,
     };
 }

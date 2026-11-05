@@ -38,13 +38,13 @@ export const PROVISIONAL_SCHEMA_SQL: readonly string[] = [
     'CREATE TABLE terrain_types (id TINYINT, key CHAR(29))',
     'CREATE TABLE evolution_methods (id TINYINT, description CHAR(132))',
     'CREATE TABLE evolution_transitions (from_pokemon_id INT, to_pokemon_id INT, method_id TINYINT)',
-    'CREATE TABLE locations (id CHAR(32), name CHAR(27), region CHAR(6), province CHAR(14))',
+    'CREATE TABLE locations (id CHAR(32), name CHAR(27), province CHAR(14))',
     `CREATE TABLE abilities (id TINYINT, name CHAR(24), description CHAR(${ABILITY_DESCRIPTION_MAX_LENGTH}))`,
     'CREATE TABLE items (id TINYINT, name CHAR(64), description CHAR(256))',
-    'CREATE TABLE boss_battles (id TINYINT, name CHAR(44), battle_type CHAR(8))',
+    'CREATE TABLE boss_battles (id TINYINT, name CHAR(44))',
     'CREATE TABLE boss_battle_pokemon (boss_battle_id TINYINT, slot TINYINT, pokemon_id INT, level TINYINT, ability_id TINYINT, secondary_ability_id TINYINT, item_id TINYINT)',
     'CREATE TABLE moves (id INT, name CHAR(32), type_id TINYINT, category CHAR(8), power TINYINT, accuracy TINYINT, effect CHAR(164))',
-    'CREATE TABLE boss_battle_pokemon_moves (boss_battle_id TINYINT, pokemon_slot TINYINT, move_slot TINYINT, move_id INT)',
+    'CREATE TABLE boss_battle_pokemon_moves (boss_battle_id TINYINT, pokemon_slot TINYINT, move_id INT)',
 ];
 
 export function applyProvisionalSchema(db: DB): void {
@@ -668,8 +668,7 @@ export function buildBossBattlePokemonMoveRows(
         const bossId = roster.bossIndex + 1;
         for (let slot = 0; slot < roster.party.length; slot++) {
             const entry = roster.party[slot];
-            for (let moveSlot = 0; moveSlot < entry.moves.length; moveSlot++) {
-                const moveName = entry.moves[moveSlot];
+            for (const moveName of entry.moves) {
                 const moveId = moveIds.get(moveName);
                 if (moveId === undefined) {
                     throw new Error(
@@ -679,7 +678,6 @@ export function buildBossBattlePokemonMoveRows(
                 rows.push({
                     boss_battle_id: bossId,
                     pokemon_slot: slot + 1,
-                    move_slot: moveSlot + 1,
                     move_id: moveId,
                 });
             }

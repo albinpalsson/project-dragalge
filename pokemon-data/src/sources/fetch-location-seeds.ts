@@ -16,7 +16,6 @@ export interface LocationEncounterSeed {
 export interface LocationSeed {
     slug: string;
     name: string;
-    region: string;
     province: string;
     encounters: LocationEncounterSeed[];
 }
@@ -50,7 +49,6 @@ export async function fetchLocationSeeds() {
         locations.push({
             slug: location.id,
             name: location.name,
-            region: location.region,
             province: location.province,
             encounters: locationEncounters,
         });

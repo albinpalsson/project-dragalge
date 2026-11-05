@@ -42,7 +42,6 @@ export interface EvolutionTransitionRow {
 export interface LocationRow {
     id: string;
     name: string;
-    region: string;
     province: string;
 }
 
@@ -61,7 +60,6 @@ export interface ItemRow {
 export interface BossBattleRow {
     id: number;
     name: string;
-    battle_type: string;
 }
 
 export interface BossBattlePokemonRow {
@@ -87,7 +85,6 @@ export interface MoveRow {
 export interface BossBattlePokemonMoveRow {
     boss_battle_id: number;
     pokemon_slot: number;
-    move_slot: number;
     move_id: number;
 }
 

@@ -55,7 +55,6 @@ async function main(): Promise<void> {
     const locationRows = locations.map((location) => ({
         id: location.slug,
         name: location.name,
-        region: location.region,
         province: location.province,
     }));
     await db.insertInto('locations').values(locationRows).execute();
@@ -112,7 +111,6 @@ async function main(): Promise<void> {
     const bossRows = bossSeeds.map((boss, index) => ({
         id: index + 1,
         name: boss.name,
-        battle_type: boss.type,
     }));
     await db.insertInto('boss_battles').values(bossRows).execute();
 

@@ -17,7 +17,6 @@ export interface BulbapediaBossFightSeed {
 export interface LocalTrainerBossSeed {
     source: 'local-trainer';
     name: string;
-    type: 'strong';
     party: TrainerPartyEntry[];
 }
 
@@ -63,7 +62,6 @@ function loadLocalTrainerSeeds(): LocalTrainerBossSeed[] {
         return {
             source: 'local-trainer',
             name: trainer.name.trim(),
-            type: 'strong',
             party,
         };
     });
