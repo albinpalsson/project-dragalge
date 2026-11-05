@@ -417,5 +417,16 @@
         "bulbapediaPage": "Nemona",
         "battleSection": "Sixth battle",
         "starterVariant": "quaxly"
+    },
+    {
+        "id": "arven-first",
+        "name": "Arven",
+        "type": "strong",
+        "levelCap": 0,
+        "order": 0,
+        "location": "Poco Path",
+        "bulbapediaPage": "Arven",
+        "battleSection": "First battle",
+        "starterVariant": null
     }
 ]

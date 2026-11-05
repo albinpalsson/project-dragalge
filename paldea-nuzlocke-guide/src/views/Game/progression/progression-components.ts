@@ -69,6 +69,7 @@ import {
     SouthProvinceAreaFiveTrainerTip,
 } from './TrainerRewardTips';
 import { AngelStrongTrainer } from './trainers/AngelStrongTrainer';
+import { ArvenFirstBattle } from './trainers/ArvenFirstBattle';
 import { CandinaStrongTrainer } from './trainers/CandinaStrongTrainer';
 import { EliasStrongTrainer } from './trainers/EliasStrongTrainer';
 import { IgnacioStrongTrainer } from './trainers/IgnacioStrongTrainer';
@@ -88,6 +89,7 @@ const PROGRESSION_COMPONENTS: Record<
     'poco-path': PocoPath,
     'release-starter': ReleaseStarter,
     'inlet-grotto': InletGrotto,
+    'arven-first-battle': ArvenFirstBattle,
     'south-province-area-one': SouthProvinceAreaOne,
     'nemona-south-province': NemonaSouthProvince,
     'pokemon-league-paldea': PokemonLeaguePaldea,

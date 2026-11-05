@@ -199,6 +199,7 @@ test('Challenging preset plays through the available progression', async ({
     await completeEncounter(page, 'Poco Path');
     await releaseStarter(page);
     await completeEncounter(page, 'Inlet Grotto');
+    await expect(cardFor(page, 'Arven').first()).toBeVisible();
     await completeEncounter(page, 'South Province (A1)');
     await completeBossBattle(page, 'Nemona (2nd rival battle)');
     await test.step('ban a Pokemon and verify its encounter is disabled', async () => {

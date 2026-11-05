@@ -84,6 +84,13 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
         locationName: 'Inlet Grotto',
     },
     {
+        key: 'arven-first-battle',
+        kind: 'boss',
+        isVisible: ({ settings }) => settings.releaseStarterEnabled,
+        countsTowardProgress: () => false,
+        getBattleName: () => 'Arven',
+    },
+    {
         key: 'south-province-area-one',
         kind: 'encounter',
         locationName: 'South Province (Area One)',
