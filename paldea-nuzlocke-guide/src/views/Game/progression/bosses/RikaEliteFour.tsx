@@ -10,6 +10,7 @@ import { BossCollapsedSummary } from './BossCollapsedSummary';
 import { BossResultControls } from './BossResultControls';
 import { BossHeader, BossRoster } from './BossRoster';
 import { ELITE_FOUR_BOSS_ICON } from './boss-category-icons';
+import { EliteFourIntroInterstitial } from './EliteFourIntroInterstitial';
 import { progressionCardPattern } from './progression-card-pattern';
 
 const LOCATION_NAME = 'Pokemon League';
@@ -47,58 +48,61 @@ export function RikaEliteFour({ isNext }: RikaEliteFourProps) {
     );
 
     return (
-        <ProgressionCard
-            className={progressionCardPattern}
-            style={
-                {
-                    '--progression-card-pattern-color':
-                        getPokemonTypeColor(SPECIALTY_TYPE),
-                } as CSSProperties
-            }
-            compact
-            isNext={isNext}
-            defaultExpanded={false}
-            collapsedContent={({ expand }) => (
-                <BossCollapsedSummary
-                    className={progressionCardPattern}
-                    battleName={DISPLAY_BATTLE_NAME}
-                    locationName={LOCATION_NAME}
-                    result={currentResult}
-                    levelCap={levelCap}
-                    isNext={isNext}
-                    onExpand={expand}
-                    icon={ELITE_FOUR_BOSS_ICON}
-                    specialtyType={SPECIALTY_TYPE}
-                />
-            )}
-        >
-            {({ collapse }) => (
-                <>
-                    <BossHeader
+        <>
+            <EliteFourIntroInterstitial />
+            <ProgressionCard
+                className={progressionCardPattern}
+                style={
+                    {
+                        '--progression-card-pattern-color':
+                            getPokemonTypeColor(SPECIALTY_TYPE),
+                    } as CSSProperties
+                }
+                compact
+                isNext={isNext}
+                defaultExpanded={false}
+                collapsedContent={({ expand }) => (
+                    <BossCollapsedSummary
+                        className={progressionCardPattern}
+                        battleName={DISPLAY_BATTLE_NAME}
                         locationName={LOCATION_NAME}
-                        displayBattleName={DISPLAY_BATTLE_NAME}
+                        result={currentResult}
                         levelCap={levelCap}
-                        onCollapse={collapse}
-                        currentResult={currentResult}
+                        isNext={isNext}
+                        onExpand={expand}
                         icon={ELITE_FOUR_BOSS_ICON}
                         specialtyType={SPECIALTY_TYPE}
                     />
-                    <BossResultControls
-                        currentResult={currentResult}
-                        onResolve={(result) =>
-                            bossActions.resolveBattle(BATTLE_NAME, result)
-                        }
-                        onClear={() => bossActions.clearBattle(BATTLE_NAME)}
-                        isBusy={bossActions.isBusy}
-                    />
-                    <BossRoster
-                        roster={rosterData}
-                        teraType="Ground"
-                        iconSize="lg"
-                        zoomedIcon
-                    />
-                </>
-            )}
-        </ProgressionCard>
+                )}
+            >
+                {({ collapse }) => (
+                    <>
+                        <BossHeader
+                            locationName={LOCATION_NAME}
+                            displayBattleName={DISPLAY_BATTLE_NAME}
+                            levelCap={levelCap}
+                            onCollapse={collapse}
+                            currentResult={currentResult}
+                            icon={ELITE_FOUR_BOSS_ICON}
+                            specialtyType={SPECIALTY_TYPE}
+                        />
+                        <BossResultControls
+                            currentResult={currentResult}
+                            onResolve={(result) =>
+                                bossActions.resolveBattle(BATTLE_NAME, result)
+                            }
+                            onClear={() => bossActions.clearBattle(BATTLE_NAME)}
+                            isBusy={bossActions.isBusy}
+                        />
+                        <BossRoster
+                            roster={rosterData}
+                            teraType="Ground"
+                            iconSize="lg"
+                            zoomedIcon
+                        />
+                    </>
+                )}
+            </ProgressionCard>
+        </>
     );
 }

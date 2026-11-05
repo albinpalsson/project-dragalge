@@ -79,7 +79,9 @@ function LoadedProgressionTimeline({
                     className={progressionReveal}
                     onClick={() => setShowPrevious(true)}
                 >
-                    <span>Show previous steps</span>
+                    <span>
+                        Show previous steps <span aria-hidden="true">↑</span>
+                    </span>
                 </button>
             )}
             <ol className={cardList}>
@@ -227,11 +229,20 @@ const progressionReveal = css`
 
     > span {
         flex: 0 0 auto;
+        padding: var(--space-1) var(--space-3);
+        border: 0.1rem solid var(--color-border);
+        border-radius: 999px;
         white-space: nowrap;
     }
 
     &:hover {
         color: var(--color-primary);
+    }
+
+    &:hover > span,
+    &:hover::before,
+    &:hover::after {
+        border-color: currentColor;
     }
 
     &:focus-visible {
