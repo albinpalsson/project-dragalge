@@ -13,6 +13,7 @@ import { STARFALL_BOSS_ICON } from './boss-category-icons';
 import { progressionCardPattern } from './progression-card-pattern';
 import {
     applyStarmobileOverride,
+    STARMOBILE_BATTLE_NOTE,
     STARMOBILE_OVERRIDES,
 } from './starmobile-overrides';
 import { ProgressionDescription } from '../../../../components/ProgressionDescription';
@@ -95,6 +96,9 @@ export function OrtegaFairyStar({ isNext }: OrtegaFairyStarProps) {
                         Before facing Ortega, you must win the guard battle,
                         which includes two pokemons at levels 48 and 49
                         respectively.
+                        <br />
+                        <br />
+                        {STARMOBILE_BATTLE_NOTE}
                     </ProgressionDescription>
                     <BossResultControls
                         currentResult={currentResult}

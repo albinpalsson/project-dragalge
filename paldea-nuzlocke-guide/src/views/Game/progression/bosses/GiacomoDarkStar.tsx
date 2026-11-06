@@ -13,6 +13,7 @@ import { STARFALL_BOSS_ICON } from './boss-category-icons';
 import { progressionCardPattern } from './progression-card-pattern';
 import {
     applyStarmobileOverride,
+    STARMOBILE_BATTLE_NOTE,
     STARMOBILE_OVERRIDES,
 } from './starmobile-overrides';
 import { ProgressionDescription } from '../../../../components/ProgressionDescription';
@@ -95,6 +96,9 @@ export function GiacomoDarkStar({ isNext }: GiacomoDarkStarProps) {
                         Before facing Giacomo, you must defeat the trainer
                         guarding the Team Star base. The trainer uses a level-19
                         Murkrow.
+                        <br />
+                        <br />
+                        {STARMOBILE_BATTLE_NOTE}
                     </ProgressionDescription>
                     <BossResultControls
                         currentResult={currentResult}

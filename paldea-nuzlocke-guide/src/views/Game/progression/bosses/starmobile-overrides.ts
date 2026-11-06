@@ -10,6 +10,9 @@ interface StarmobileOverride {
     actualStats: PokemonBaseStats;
 }
 
+export const STARMOBILE_BATTLE_NOTE =
+    'The Starmobile is immune to all negative status conditions, volatile or otherwise. Type-changing moves, Transform, Destiny Bond and the Imposter ability are all useless against the Starmobile.';
+
 export const STARMOBILE_OVERRIDES = {
     'Giacomo (Dark Star)': {
         displayName: 'Segin Starmobile',
