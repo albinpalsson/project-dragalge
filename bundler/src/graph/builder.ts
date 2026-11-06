@@ -65,11 +65,15 @@ export async function buildDependencyTree(
     const { createMinifierTransform } = await import(
         '../transforms/minifier.ts'
     );
+    const { createCssMinifierTransform } = await import(
+        '../transforms/css-minifier.ts'
+    );
 
     const transforms: Transform[] = [
         createEnvInjectTransform(processEnv),
         ...applicationTransforms,
         createMinifierTransform(),
+        createCssMinifierTransform(),
     ];
     const cacheKey = buildTransformCacheKey(
         transforms,

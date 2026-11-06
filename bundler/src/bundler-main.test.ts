@@ -128,7 +128,7 @@ test('bundles a two-file TS app with a CSS import and produces correct js, css, 
         // --- CSS ---
         assert.equal(result.cssOutputPaths.length, 1);
         const cssContent = await readFile(result.cssOutputPaths[0], 'utf8');
-        assert.equal(cssContent, 'body { color: red; }\n');
+        assert.equal(cssContent, 'body{color:red}');
 
         // --- HTML ---
         const htmlPath = path.join(
