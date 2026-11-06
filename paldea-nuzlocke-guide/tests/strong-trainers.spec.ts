@@ -29,7 +29,7 @@ test('strong trainer cards de-emphasize collapsed summaries and show rosters', a
         ['Severino the Office Worker', 'South Province (A3)', 'Jigglypuff'],
         ['Candina the Model', 'West Province (A1)', 'Oinkologne'],
         ['Elias the Black Belt', 'Asado Desert', 'Breloom'],
-        ['Xavier the Student', 'East Province (A2)', 'Kirlia'],
+        ['Xavier the Student', 'East Province (A1)', 'Kirlia'],
         ['Ignacio the Scientist', 'Glaseado Mountain', 'Magnezone'],
         ['Angel the Courier', 'South Province (A2)', 'Psyduck'],
     ] as const;

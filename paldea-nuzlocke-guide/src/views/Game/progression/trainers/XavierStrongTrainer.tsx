@@ -8,7 +8,7 @@ import { BossRoster } from '../bosses/BossRoster';
 import { StrongTrainerIdentity } from './StrongTrainerIdentity';
 
 const BATTLE_NAME = 'Xavier the Student';
-const LOCATION_NAME = 'East Province (Area Two)';
+const LOCATION_NAME = 'East Province (Area One)';
 const DISPLAY_NAME = `Strong trainer - ${BATTLE_NAME}`;
 
 export function XavierStrongTrainer() {
@@ -55,8 +55,9 @@ export function XavierStrongTrainer() {
                         />
                     </ProgressionCardHeader>
                     <ProgressionDescription>
-                        Xavier is on the south side of the river leading to
-                        Levincia in East Province (Area Two).
+                        Xavier is on the south side of the river leading to the
+                        ocean from the Pokémon Center in the middle of East
+                        Province (Area One).
                     </ProgressionDescription>
                     <BossRoster roster={roster} iconSize="lg" zoomedIcon />
                 </>

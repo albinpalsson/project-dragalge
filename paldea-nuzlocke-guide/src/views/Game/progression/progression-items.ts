@@ -198,6 +198,13 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
         locationName: 'East Province (Area One)',
     },
     {
+        key: 'strong-trainer-xavier',
+        kind: 'boss',
+        isVisible: ({ settings }) => settings.showStrongTrainers,
+        countsTowardProgress: () => false,
+        getBattleName: () => 'Xavier the Student',
+    },
+    {
         key: 'nemona-third-battle',
         kind: 'boss',
         getBattleName: (starterName) =>
@@ -232,13 +239,6 @@ export const PROGRESSION_ITEMS: ProgressionItem[] = [
         key: 'east-province-area-two',
         kind: 'encounter',
         locationName: 'East Province (Area Two)',
-    },
-    {
-        key: 'strong-trainer-xavier',
-        kind: 'boss',
-        isVisible: ({ settings }) => settings.showStrongTrainers,
-        countsTowardProgress: () => false,
-        getBattleName: () => 'Xavier the Student',
     },
     {
         key: 'iono-electric-gym',
