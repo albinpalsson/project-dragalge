@@ -5,6 +5,7 @@ import {
     OverflowMenu,
     OverflowMenuItem,
 } from '../../../components/OverflowMenu';
+import { PokemonIcon } from '../../../components/PokemonIcon';
 import { PokemonStatsPanel } from '../../../components/PokemonStatsPanel';
 import { TypeBadge } from '../../../components/TypeBadge';
 import { NO_PARTY_SLOT } from '../../../db/game-db/schema';
@@ -32,6 +33,11 @@ export function PokemonDetailPane({ row, party }: PokemonDetailPaneProps) {
     return (
         <section className={pane} aria-label={`${row.pokemon_name} details`}>
             <div className={headerRow}>
+                <PokemonIcon
+                    name={row.pokemon_name}
+                    alt=""
+                    size="md"
+                />
                 <div className={identity}>
                     <h4 className={heading}>{row.pokemon_name}</h4>
                     {pokemonQuery.data && (
@@ -195,18 +201,21 @@ const pane = css`
 
 const headerRow = css`
     display: flex;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     align-items: flex-start;
-    justify-content: space-between;
-    gap: var(--space-3);
+    gap: var(--space-2);
     flex-basis: 100%;
 `;
 
 const identity = css`
     display: flex;
+    flex: 1;
     flex-wrap: wrap;
     align-items: center;
-    gap: var(--space-2);
+    align-content: center;
+    min-width: 0;
+    min-height: 3.6rem;
+    gap: var(--space-1) var(--space-2);
 `;
 
 const info = css`
@@ -253,7 +262,7 @@ const buttons = css`
   flex-wrap: wrap;
   align-items: flex-start;
   gap: var(--space-2);
-    margin-left: auto;
+  flex: none;
 `;
 
 const replaceRow = css`
