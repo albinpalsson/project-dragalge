@@ -109,7 +109,6 @@ export function BoxContents() {
                 <PokemonDetailPane
                     key={selected.location_name}
                     row={selected}
-                    party={party}
                 />
             )}
             {drag.preview && (

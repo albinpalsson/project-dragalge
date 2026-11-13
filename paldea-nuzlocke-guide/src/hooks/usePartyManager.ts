@@ -64,16 +64,6 @@ export function usePartyManager() {
         removeFromParty(locationName: string) {
             return mutations.setPartySlot(game.name, locationName, NO_PARTY_SLOT);
         },
-        async replacePartyMember(outgoing: string, incoming: string) {
-            const row = game.encounters.find(
-                (entry) => entry.location_name === outgoing,
-            );
-            if (!row) {
-                return;
-            }
-            await mutations.setPartySlot(game.name, outgoing, NO_PARTY_SLOT);
-            await mutations.setPartySlot(game.name, incoming, row.party_slot);
-        },
         eliminate(locationName: string) {
             return mutations.setStatus(game.name, locationName, 'eliminated');
         },

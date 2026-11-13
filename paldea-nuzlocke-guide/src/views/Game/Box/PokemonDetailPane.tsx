@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { css } from '@project-dragalge/css-in-js';
-import { Button } from '../../../components/Button';
 import {
     OverflowMenu,
     OverflowMenuItem,
@@ -17,11 +15,9 @@ import { TypeDefenses } from './TypeDefenses';
 
 interface PokemonDetailPaneProps {
     row: EncounterRollRow;
-    party: EncounterRollRow[];
 }
 
-export function PokemonDetailPane({ row, party }: PokemonDetailPaneProps) {
-    const [isReplacing, setIsReplacing] = useState(false);
+export function PokemonDetailPane({ row }: PokemonDetailPaneProps) {
     const pokemonQuery = usePokemonQuery(row.pokemon_name);
     const evolutionQuery = usePokemonEvolutionQuery(row.pokemon_name);
     const actions = usePartyManager();
@@ -113,16 +109,6 @@ export function PokemonDetailPane({ row, party }: PokemonDetailPaneProps) {
                                         </OverflowMenuItem>
                                     ),
                                 )}
-                                {!isInParty && isPartyFull && (
-                                    <OverflowMenuItem
-                                        disabled={actions.isBusy}
-                                        onClick={() =>
-                                            setIsReplacing(!isReplacing)
-                                        }
-                                    >
-                                        Replace
-                                    </OverflowMenuItem>
-                                )}
                             </>
                         )}
                     </OverflowMenu>
@@ -164,28 +150,6 @@ export function PokemonDetailPane({ row, party }: PokemonDetailPaneProps) {
                     </>
                 )}
             </div>
-
-            {isReplacing && !isInParty && isPartyFull && (
-                <div className={replaceRow}>
-                    <span className={muted}>Swap out:</span>
-                    {party.map((member) => (
-                        <Button
-                            key={member.location_name}
-                            variant="secondary"
-                            disabled={actions.isBusy}
-                            onClick={() => {
-                                setIsReplacing(false);
-                                void actions.replacePartyMember(
-                                    member.location_name,
-                                    row.location_name,
-                                );
-                            }}
-                        >
-                            {member.pokemon_name}
-                        </Button>
-                    ))}
-                </div>
-            )}
         </section>
     );
 }
@@ -263,12 +227,4 @@ const buttons = css`
   align-items: flex-start;
   gap: var(--space-2);
   flex: none;
-`;
-
-const replaceRow = css`
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-2);
-  flex-basis: 100%;
 `;
