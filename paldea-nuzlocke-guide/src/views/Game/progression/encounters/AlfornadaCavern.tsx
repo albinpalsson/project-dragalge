@@ -74,6 +74,7 @@ export function AlfornadaCavern({ isNext }: AlfornadaCavernProps) {
                     />
                     {isTableExpanded && (
                         <EncounterTable
+                            encounterRoll={encounterRoll}
                             encounters={allEncounters}
                             disabled={encounterActions.isBusy}
                             onPick={(pokemonName) =>

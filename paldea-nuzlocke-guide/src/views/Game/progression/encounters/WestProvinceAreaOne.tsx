@@ -93,6 +93,7 @@ export function WestProvinceAreaOne({ isNext }: WestProvinceAreaOneProps) {
                     />
                     {isTableExpanded && (
                         <EncounterTable
+                            encounterRoll={encounterRoll}
                             encounters={activeEncounters}
                             disabled={encounterActions.isBusy}
                             onPick={(pokemonName) =>

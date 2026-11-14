@@ -61,8 +61,12 @@ const buttonPrimary = css`
   background: var(--color-primary);
   color: var(--color-on-primary);
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: var(--color-primary-hover);
+  }
+
+  &:active:not(:disabled) {
+    filter: brightness(0.92);
   }
 `;
 
@@ -70,8 +74,12 @@ const buttonWarm = css`
   background: var(--color-accent-warm);
   color: var(--color-on-primary);
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: var(--color-accent-warm-hover);
+  }
+
+  &:active:not(:disabled) {
+    filter: brightness(0.92);
   }
 `;
 
@@ -84,8 +92,14 @@ const buttonSecondary = css`
     box-shadow: none;
   }
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: var(--color-hover-overlay);
+    color: var(--color-text);
+  }
+
+  &:active:not(:disabled) {
+    background: var(--color-hover-overlay);
+    filter: brightness(0.85);
     color: var(--color-text);
   }
 `;

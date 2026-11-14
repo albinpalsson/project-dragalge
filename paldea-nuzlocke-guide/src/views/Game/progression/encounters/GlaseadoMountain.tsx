@@ -74,6 +74,7 @@ export function GlaseadoMountain({ isNext }: GlaseadoMountainProps) {
                     />
                     {isTableExpanded && (
                         <EncounterTable
+                            encounterRoll={encounterRoll}
                             encounters={allEncounters}
                             disabled={encounterActions.isBusy}
                             onPick={(pokemonName) =>

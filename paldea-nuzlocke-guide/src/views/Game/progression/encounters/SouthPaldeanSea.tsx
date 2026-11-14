@@ -74,6 +74,7 @@ export function SouthPaldeanSea({ isNext }: SouthPaldeanSeaProps) {
                     />
                     {isTableExpanded && (
                         <EncounterTable
+                            encounterRoll={encounterRoll}
                             encounters={allEncounters}
                             disabled={encounterActions.isBusy}
                             onPick={(pokemonName) =>

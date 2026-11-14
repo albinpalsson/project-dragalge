@@ -74,6 +74,7 @@ export function DalizapaPassage({ isNext }: DalizapaPassageProps) {
                     />
                     {isTableExpanded && (
                         <EncounterTable
+                            encounterRoll={encounterRoll}
                             encounters={allEncounters}
                             disabled={encounterActions.isBusy}
                             onPick={(pokemonName) =>

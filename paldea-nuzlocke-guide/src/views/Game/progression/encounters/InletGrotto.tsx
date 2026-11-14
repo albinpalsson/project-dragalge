@@ -94,6 +94,7 @@ export function InletGrotto({ isNext }: InletGrottoProps) {
 
                     {isTableExpanded && (
                         <EncounterTable
+                            encounterRoll={encounterRoll}
                             encounters={allEncounters}
                             disabled={encounterActions.isBusy}
                             onPick={(pokemonName) =>

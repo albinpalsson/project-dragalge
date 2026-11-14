@@ -1,24 +1,36 @@
-import { css } from '@project-dragalge/css-in-js';
+import { css, cx } from '@project-dragalge/css-in-js';
 import type { LocationEncounterView } from '../db/pokemon-data/queries';
+import type { EncounterRoll } from '../hooks/useEncounterRoll';
+import { getEncounterGroupKey } from '../pokemon-species';
 import { useGame } from '../views/Game/GameContext';
 import {
     formatLevelRange,
     formatTime,
     formatWeight,
 } from '../utils/encounter-formatters';
+import { Button } from './Button';
 
 interface EncounterTableProps {
     encounters: LocationEncounterView[];
+    encounterRoll: EncounterRoll | undefined;
     disabled: boolean;
     onPick: (pokemonName: string) => void;
 }
 
 export function EncounterTable({
     encounters,
+    encounterRoll,
     disabled,
     onPick,
 }: EncounterTableProps) {
     const { getBanReason } = useGame();
+    const pickedGroup =
+        encounterRoll &&
+        encounterRoll.status !== 'notRolled' &&
+        encounterRoll.status !== 'skipped'
+            ? encounterRoll.displayName
+            : undefined;
+
     return (
         <div className={tableWrap}>
             <table className={table}>
@@ -37,11 +49,20 @@ export function EncounterTable({
                     {encounters.map((encounter) => {
                         const banReason = getBanReason(encounter.name);
                         const isPickDisabled = disabled || !!banReason;
+                        const isPicked =
+                            pickedGroup !== undefined &&
+                            getEncounterGroupKey(encounter.name) ===
+                                pickedGroup;
 
                         return (
                             <tr
                                 key={`${encounter.name}-${encounter.subArea}-${encounter.terrain}`}
-                                className={banReason ? excludedRow : undefined}
+                                className={cx(
+                                    banReason && excludedRow,
+                                    isPicked && pickedRow,
+                                )}
+                                aria-current={isPicked ? 'true' : undefined}
+                                data-picked={isPicked ? 'true' : undefined}
                             >
                                 <td>
                                     <span
@@ -63,15 +84,16 @@ export function EncounterTable({
                                 <td>{formatTime(encounter)}</td>
                                 <td>{encounter.terrain}</td>
                                 <td>
-                                    <button
-                                        type="button"
+                                    <Button
+                                        variant="secondary"
                                         className={pickButton}
                                         onClick={() => onPick(encounter.name)}
                                         disabled={isPickDisabled}
-                                        aria-label={`Pick ${encounter.name}`}
+                                        ariaLabel={`Pick ${encounter.name}`}
+                                        title={`Pick ${encounter.name}`}
                                     >
-                                        🎣
-                                    </button>
+                                        <span aria-hidden="true">🎣</span>
+                                    </Button>
                                 </td>
                             </tr>
                         );
@@ -110,16 +132,24 @@ const table = css`
 `;
 
 const pickButton = css`
-  padding: var(--space-1) var(--space-2);
-  border: 0.1rem solid var(--color-border);
-  border-radius: var(--radius-sm);
-  background: transparent;
-  cursor: pointer;
+    && {
+        padding: var(--space-1) var(--space-2);
+        font-size: var(--font-size-sm);
+    }
 
-    &:disabled {
-        color: var(--color-text-muted);
-        opacity: 0.45;
-        cursor: not-allowed;
+    span {
+        filter: grayscale(1);
+    }
+
+    &:hover:not(:disabled) span,
+    &:focus-visible span {
+        filter: none;
+    }
+`;
+
+const pickedRow = css`
+    &&& {
+        background: var(--color-picked-row);
     }
 `;
 

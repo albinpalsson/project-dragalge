@@ -97,6 +97,7 @@ export function PocoPath({ isNext }: PocoPathProps) {
 
                     {isTableExpanded && (
                         <EncounterTable
+                            encounterRoll={encounterRoll}
                             encounters={activeEncounters}
                             disabled={encounterActions.isBusy}
                             onPick={(pokemonName) =>
