@@ -244,7 +244,7 @@ function SettingsStep({
                 presets={presets}
             />
             {error && <p className={errorText}>{error}</p>}
-            <div className={formActions}>
+            <div className={settingsActions}>
                 <Button variant="secondary" onClick={onBack}>
                     Back
                 </Button>
@@ -265,6 +265,13 @@ const form = css`
 const formActions = css`
   display: flex;
   gap: var(--space-2);
+`;
+
+const settingsActions = css`
+    display: flex;
+    gap: var(--space-2);
+    padding-top: var(--space-2);
+    border-top: 0.1rem solid var(--color-border);
 `;
 
 const presetSection = css`

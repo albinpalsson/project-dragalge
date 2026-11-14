@@ -306,8 +306,8 @@ const section = css`
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
-    padding-block: var(--space-2);
-    border-block: 0.1rem solid var(--color-border);
+    padding-top: var(--space-2);
+    border-top: 0.1rem solid var(--color-border);
 `;
 
 const banHeading = css`
