@@ -1,5 +1,5 @@
 import { css } from '@project-dragalge/css-in-js';
-import { useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import type { BossBattleProgressRow } from '../../../db/game-db/queries';
 import { useStarter } from '../../../hooks/useStarter';
 import { useGame } from '../GameContext';
@@ -63,13 +63,14 @@ function LoadedProgressionTimeline({
         ),
     );
     const [showPrevious, setShowPrevious] = useState(false);
+    const { listRef, anchorBeforeReveal } = useAnchoredReveal(showPrevious);
     const { previousItems, currentItems } = partitionProgressionItems(
         visibleItems,
         startIndex,
     );
-    const itemsToRender = showPrevious
-        ? [...previousItems, ...currentItems]
-        : currentItems;
+    // Earlier steps stay mounted but hidden, so their data is loaded by the
+    // time they are revealed and nothing grows above the user afterwards.
+    const itemsToRender = [...previousItems, ...currentItems];
 
     return (
         <>
@@ -77,18 +78,25 @@ function LoadedProgressionTimeline({
                 <button
                     type="button"
                     className={progressionReveal}
-                    onClick={() => setShowPrevious(true)}
+                    onClick={() => {
+                        anchorBeforeReveal();
+                        setShowPrevious(true);
+                    }}
                 >
                     <span>
                         Show previous steps <span aria-hidden="true">↑</span>
                     </span>
                 </button>
             )}
-            <ol className={cardList}>
-                {itemsToRender.map((item) => {
+            <ol ref={listRef} className={cardList}>
+                {itemsToRender.map((item, index) => {
                     const Component = getProgressionComponent(item.key);
                     return (
-                        <li key={item.key} className={cardItem}>
+                        <li
+                            key={item.key}
+                            className={cardItem}
+                            hidden={!showPrevious && index < previousItems.length}
+                        >
                             {progression.nextKey === item.key && (
                                 <p className={nextStepLabel}>→ Next step</p>
                             )}
@@ -101,6 +109,39 @@ function LoadedProgressionTimeline({
             </ol>
         </>
     );
+}
+
+/**
+ * Keeps the page from jumping when hidden items above the viewport are
+ * revealed. Attach `listRef` to the list, call `anchorBeforeReveal()` right
+ * before `isRevealed` becomes true, and the first visible child stays at the
+ * same spot on screen.
+ */
+function useAnchoredReveal(isRevealed: boolean) {
+    const listRef = useRef<HTMLOListElement>(null);
+    const anchorRef = useRef<{ el: Element; top: number } | undefined>(
+        undefined,
+    );
+
+    useLayoutEffect(() => {
+        const anchor = anchorRef.current;
+        anchorRef.current = undefined;
+        if (isRevealed && anchor?.el.isConnected) {
+            window.scrollBy(
+                0,
+                anchor.el.getBoundingClientRect().top - anchor.top,
+            );
+        }
+    }, [isRevealed]);
+
+    const anchorBeforeReveal = () => {
+        const el = listRef.current?.querySelector(':scope > :not([hidden])');
+        anchorRef.current = el
+            ? { el, top: el.getBoundingClientRect().top }
+            : undefined;
+    };
+
+    return { listRef, anchorBeforeReveal };
 }
 
 function partitionProgressionItems(
@@ -191,6 +232,10 @@ const cardItem = css`
     gap: var(--space-1);
     width: 100%;
     min-width: 0;
+
+    &[hidden] {
+        display: none;
+    }
 
     > * {
         width: 100%;

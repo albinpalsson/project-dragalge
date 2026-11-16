@@ -68,14 +68,26 @@ test('progression windows, Home resume and browser history preserve the run', as
     await expectNextStep(page, 'Pokemon League');
     await expect(cardFor(page, 'Katy (Gym)')).toBeVisible();
     await expect(cardFor(page, 'Brassius (Gym)')).toBeVisible();
-    await expect(cardFor(page, 'Starter')).toHaveCount(0);
+    await expect(cardFor(page, 'Starter')).toBeHidden();
     const showPrevious = page.getByRole('button', {
         name: 'Show previous steps',
         exact: true,
     });
     await expect(showPrevious).toBeVisible();
+    // Scroll slightly, then check the revealed steps do not move the card
+    // the user was looking at.
+    await page.mouse.wheel(0, 40);
+    const pinnedCard = await page
+        .locator('ol > li:not([hidden])')
+        .first()
+        .elementHandle();
+    const cardTop = () =>
+        pinnedCard?.evaluate((el) => el.getBoundingClientRect().top);
+    const topBefore = await cardTop();
     await showPrevious.click();
-    await expect(cardFor(page, 'Starter')).toBeVisible();
+    await expect(cardFor(page, 'Starter')).toBeAttached();
+    await expect(cardFor(page, 'Starter')).not.toBeHidden();
+    await expect.poll(cardTop).toBeCloseTo(topBefore ?? Number.NaN, 0);
     await expect(showPrevious).toHaveCount(0);
     await test.step('menu navigation reaches About with persistent shell', async () => {
         await navigateTo(page, 'About');
