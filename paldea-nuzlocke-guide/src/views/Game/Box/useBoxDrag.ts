@@ -1,5 +1,6 @@
 import { useRef, useState, type PointerEvent } from 'react';
 import type { EncounterRollRow } from '../../../db/game-db/queries';
+import { hapticTick } from '../../../utils/haptics';
 import type { BoxSectionKind } from './box-model';
 import type { PokemonBoxIconDragProps } from './PokemonBoxIcon';
 
@@ -28,7 +29,10 @@ interface DragPreview {
 }
 
 const DRAG_THRESHOLD_PX = 6;
+// Fingers wobble more than mice; don't cancel a pending long press for that.
+const TOUCH_SLOP_PX = 10;
 const LONG_PRESS_MS = 250;
+const PRESSING_ATTRIBUTE = 'data-pressing';
 const BOX_SECTION_ATTRIBUTE = 'data-box-section-kind';
 
 // Module-level so the same reference is removed after re-renders.
@@ -44,9 +48,16 @@ export function useBoxDrag({ onDropPokemon }: BoxDragInput) {
     const [preview, setPreview] = useState<DragPreview>();
 
     const longPressTimer = useRef<number | undefined>(undefined);
+    const pressedElement = useRef<HTMLElement | null>(null);
+
+    const clearPressing = () => {
+        pressedElement.current?.removeAttribute(PRESSING_ATTRIBUTE);
+        pressedElement.current = null;
+    };
 
     const cleanup = () => {
         window.clearTimeout(longPressTimer.current);
+        clearPressing();
         window.removeEventListener('touchmove', blockTouchScroll);
         dragStart.current = null;
         setDraggingLocation(undefined);
@@ -110,10 +121,14 @@ export function useBoxDrag({ onDropPokemon }: BoxDragInput) {
                     }
 
                     // Touch needs a long press so swiping over icons still scrolls.
+                    // Show press feedback straight away (via the DOM, no re-render).
+                    target.setAttribute(PRESSING_ATTRIBUTE, '');
+                    pressedElement.current = target;
                     longPressTimer.current = window.setTimeout(() => {
                         if (dragStart.current !== drag) {
                             return;
                         }
+                        clearPressing();
                         drag.isArmed = true;
                         target.setPointerCapture(drag.pointerId);
                         window.addEventListener(
@@ -121,7 +136,7 @@ export function useBoxDrag({ onDropPokemon }: BoxDragInput) {
                             blockTouchScroll,
                             { passive: false },
                         );
-                        navigator.vibrate?.(10);
+                        hapticTick();
                         setDraggingLocation(drag.locationName);
                         setPreview({
                             pokemonName: drag.pokemonName,
@@ -140,7 +155,11 @@ export function useBoxDrag({ onDropPokemon }: BoxDragInput) {
                         event.clientX - drag.startX,
                         event.clientY - drag.startY,
                     );
-                    if (!drag.hasMoved && distance < DRAG_THRESHOLD_PX) {
+                    const threshold =
+                        drag.isTouch && !drag.isArmed
+                            ? TOUCH_SLOP_PX
+                            : DRAG_THRESHOLD_PX;
+                    if (!drag.hasMoved && distance < threshold) {
                         return;
                     }
                     if (!drag.isArmed) {

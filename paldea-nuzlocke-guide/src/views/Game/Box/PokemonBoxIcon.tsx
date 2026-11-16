@@ -64,7 +64,14 @@ const iconButton = css`
   -webkit-user-select: none;
   user-select: none;
 
+  transition: transform 120ms ease-out;
+
   &:hover {
+    background: var(--color-hover-overlay);
+  }
+
+  &[data-pressing] {
+    transform: scale(0.92);
     background: var(--color-hover-overlay);
   }
 `;
