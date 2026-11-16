@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { css, cx } from '@project-dragalge/css-in-js';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 import { Button } from './Button';
 
 export const ROLL_DELAY_MS = 700;
@@ -22,6 +23,7 @@ export function RandomizeButton({
     title,
     onRandomize,
 }: RandomizeButtonProps) {
+    const prefersReducedMotion = useMediaQuery(reducedMotionQuery);
     const [isRolling, setRolling] = useState(false);
     const rollTimerRef = useRef<number | undefined>(undefined);
 
@@ -43,7 +45,7 @@ export function RandomizeButton({
                 setRolling(false);
                 void onRandomize();
             },
-            window.matchMedia(reducedMotionQuery).matches ? 0 : ROLL_DELAY_MS,
+            prefersReducedMotion ? 0 : ROLL_DELAY_MS,
         );
     };
 

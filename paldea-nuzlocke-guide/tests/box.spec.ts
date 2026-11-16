@@ -166,3 +166,30 @@ test.describe('touch drag', () => {
         ).toBeVisible();
     });
 });
+
+test('Death Box can be collapsed and expanded, and reopens for a selected fallen Pokemon', async ({
+    page,
+}) => {
+    await page.setViewportSize({ width: 375, height: 800 });
+    const { starter } = await setupRunWithThreeCaught(page);
+
+    await openBox(page);
+    await selectBoxPokemon(page, 'Party', starter);
+    const details = page.getByRole('region', { name: `${starter} details` });
+    await details.getByRole('button', { name: 'More options' }).click();
+    await details.getByRole('button', { name: 'Eliminated' }).click();
+
+    const deathBox = boxSection(page, 'Death Box');
+    const toggle = deathBox.getByRole('button', { name: /^Death Box \(1\)/ });
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    await expect(deathBox.getByRole('img', { name: starter })).toBeVisible();
+
+    // The fallen Pokemon is selected, so collapsing also clears the selection.
+    await toggle.click();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    await expect(deathBox.getByRole('img', { name: starter })).toHaveCount(0);
+
+    await toggle.click();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    await expect(deathBox.getByRole('img', { name: starter })).toBeVisible();
+});

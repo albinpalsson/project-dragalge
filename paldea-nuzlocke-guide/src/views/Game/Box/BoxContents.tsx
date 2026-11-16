@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { css } from '@project-dragalge/css-in-js';
 import { pokemonIconSrc, toIconSlug } from '../../../pokemon-icon';
 import { usePartyManager } from '../../../hooks/usePartyManager';
+import { useIsMobile } from '../../../hooks/useMediaQuery';
 import { useGame } from '../GameContext';
 import {
     canDropPokemon,
@@ -12,11 +13,15 @@ import { BoxSection } from './BoxSection';
 import { PokemonDetailPane } from './PokemonDetailPane';
 import { useBoxDrag } from './useBoxDrag';
 
+const COLLAPSE_DEATH_BOX_AT = 4;
+
 export function BoxContents() {
     const game = useGame();
     const [selectedLocation, setSelectedLocation] = useState<string>();
     const { party, stored, eliminated } = deriveBoxSections(game.encounters);
     const partyManager = usePartyManager();
+    const isMobile = useIsMobile();
+    const [deathCollapsedByUser, setDeathCollapsedByUser] = useState<boolean>();
 
     const selected = game.encounters.find(
         (row) => row.location_name === selectedLocation,
@@ -38,6 +43,15 @@ export function BoxContents() {
             await partyManager.moveToSection(locationName, targetSection);
         },
     });
+    const collapsedByDefault =
+        isMobile &&
+        eliminated.length >= COLLAPSE_DEATH_BOX_AT &&
+        selected !== undefined;
+    const deathBoxInUse =
+        selected?.status === 'eliminated' ||
+        drag.draggingLocation !== undefined;
+    const showDeathCollapsed =
+        (deathCollapsedByUser ?? collapsedByDefault) && !deathBoxInUse;
     const dragged = game.encounters.find(
         (row) => row.location_name === drag.draggingLocation,
     );
@@ -103,6 +117,19 @@ export function BoxContents() {
                     getIconDragProps={drag.getIconDragProps}
                     consumeDragClick={drag.consumeDragClick}
                     onSelect={select}
+                    collapse={{
+                        collapsed: showDeathCollapsed,
+                        onToggle: () => {
+                            if (showDeathCollapsed) {
+                                setDeathCollapsedByUser(false);
+                                return;
+                            }
+                            setDeathCollapsedByUser(true);
+                            if (selected?.status === 'eliminated') {
+                                setSelectedLocation(undefined);
+                            }
+                        },
+                    }}
                 />
             </div>
             {selected && (

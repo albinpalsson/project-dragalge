@@ -19,6 +19,7 @@ interface BoxSectionProps {
     getIconDragProps: (row: EncounterRollRow) => PokemonBoxIconDragProps;
     consumeDragClick: (locationName: string) => boolean;
     onSelect: (locationName: string) => void;
+    collapse?: { collapsed: boolean; onToggle: () => void };
 }
 
 export function BoxSection({
@@ -34,7 +35,9 @@ export function BoxSection({
     getIconDragProps,
     consumeDragClick,
     onSelect,
+    collapse,
 }: BoxSectionProps) {
+    const isCollapsed = collapse?.collapsed === true;
     const placeholderCount = Math.max(0, MAX_PARTY_SIZE - rows.length);
     const placeholderKeys =
         sectionKind === 'party'
@@ -52,7 +55,19 @@ export function BoxSection({
             {...dropZoneProps}
         >
             <h4 className={heading}>
-                {title} ({rows.length})
+                {collapse ? (
+                    <button
+                        type="button"
+                        className={headingToggle}
+                        aria-expanded={!isCollapsed}
+                        onClick={collapse.onToggle}
+                    >
+                        {title} ({rows.length}){' '}
+                        <span aria-hidden="true">{isCollapsed ? '▸' : '▾'}</span>
+                    </button>
+                ) : (
+                    `${title} (${rows.length})`
+                )}
             </h4>
             {dropDisabledReason && (
                 <span
@@ -63,7 +78,8 @@ export function BoxSection({
                     {dropDisabledReason}
                 </span>
             )}
-            {rows.length === 0 && sectionKind !== 'party' ? (
+            {isCollapsed ? null : rows.length === 0 &&
+              sectionKind !== 'party' ? (
                 <p className={empty}>{emptyText}</p>
             ) : (
                 <ul className={list}>
@@ -118,6 +134,15 @@ const heading = css`
   margin: 0;
   font-size: var(--font-size-sm);
   color: var(--color-text-muted);
+`;
+
+const headingToggle = css`
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
 `;
 
 const list = css`
