@@ -18,6 +18,7 @@ import type {
     GameRun,
 } from './queries';
 import type { GameRunsDb } from './schema';
+import { toDefaultForm } from '../../pokemon-species';
 
 export const GAME_NAME_MAX_BYTES = 128;
 
@@ -129,6 +130,8 @@ export async function selectEncounterRolls(
         .execute();
     return rows.map(({ game_run_id: _gameRunId, ...row }) => ({
         ...row,
+        pokemon_name: toDefaultForm(row.pokemon_name),
+        rolled_as: toDefaultForm(row.rolled_as),
         status: decodeEncounterStatus(row.status),
     }));
 }

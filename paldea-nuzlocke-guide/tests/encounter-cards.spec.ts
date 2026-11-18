@@ -284,6 +284,47 @@ test('evolution preserves the original grouped encounter name and icon', async (
     ).toBeVisible();
 });
 
+test('Oricorio can change style with a nectar and keeps its encounter', async ({
+    page,
+}) => {
+    await page.goto('/');
+    await createGame(page, 'nectar-run', { preset: 'Clean' });
+    const location = 'South Province (A1)';
+    const original = 'Oricorio (PomPom Style)';
+    await expandCollapsedSummary(page, location);
+
+    const card = cardFor(page, location).first();
+    await card.getByRole('button', { name: 'Show encounters' }).click();
+    await card
+        .getByRole('button', { name: `Pick ${original}`, exact: true })
+        .first()
+        .click();
+    await card.getByRole('button', { name: 'Hide encounters' }).click();
+    await resolveEncounter(page, location, 'Caught');
+
+    await openBox(page);
+    await selectBoxPokemon(page, 'Party', original);
+    const evolution = page.getByRole('region', {
+        name: 'Evolution',
+        exact: true,
+    });
+    await expect(evolution).toContainText(
+        '3 evolution paths available - Nectar is available at the Delibird Presents store after defeating Iono.',
+    );
+    await evolution.getByRole('button', { name: 'View paths' }).click();
+    const paths = page.getByRole('dialog', { name: 'Evolution paths' });
+    await paths
+        .getByRole('button', { name: 'Evolve', exact: true })
+        .first()
+        .click();
+
+    await expect(
+        boxSection(page, 'Party').getByRole('img', {
+            name: /^Oricorio \((?!PomPom)/,
+        }),
+    ).toBeVisible();
+});
+
 test('available Paldea trade offers replace and restore the current encounter Pokemon', async ({
     page,
 }) => {

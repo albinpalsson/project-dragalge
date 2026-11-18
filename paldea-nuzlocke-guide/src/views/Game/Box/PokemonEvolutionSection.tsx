@@ -25,6 +25,10 @@ export function PokemonEvolutionSection({
         return null;
     }
 
+    const hasNectar = evolutions.some((evolution) =>
+        isNectarEvolutionMethod(evolution.method),
+    );
+
     if (evolutions.length === 1) {
         return (
             <section className={section} aria-label="Evolution">
@@ -41,6 +45,7 @@ export function PokemonEvolutionSection({
         <section className={section} aria-label="Evolution">
             <span className={summary}>
                 {evolutions.length} evolution paths available
+                {hasNectar && ` - ${NECTAR_NOTE}`}
             </span>
             <Button variant="secondary" onClick={() => setIsOpen(true)}>
                 View paths
@@ -65,6 +70,13 @@ export function PokemonEvolutionSection({
         </section>
     );
 }
+
+function isNectarEvolutionMethod(method: string): boolean {
+    return /^nectar$/i.test(method);
+}
+
+const NECTAR_NOTE =
+    'Nectar is available at the Delibird Presents store after defeating Iono.';
 
 interface EvolutionOptionProps {
     evolution: EvolutionTarget;

@@ -101,9 +101,16 @@ function extractSection(wikitext: string, heading: string): string | null {
     return null;
 }
 
+// Roster templates carry the form in a separate `form` param; map the ones we model as distinct rows.
+const ROSTER_FORM_NAMES: Record<string, string> = {
+    'Oricorio|-Pom-Pom': 'Oricorio (PomPom Style)',
+};
+
 function parsePokemonBlock(block: string): TrainerPartyEntry | null {
     const params = parseRobustTemplateParams(block);
-    const pokemon = stripWikiMarkup(params.pokemon ?? '').trim();
+    const species = stripWikiMarkup(params.pokemon ?? '').trim();
+    const form = stripWikiMarkup(params.form ?? '').trim();
+    const pokemon = ROSTER_FORM_NAMES[`${species}|${form}`] ?? species;
     const level = parseInt(params.level ?? '', 10);
     const ability = stripWikiMarkup(params.ability ?? '').trim();
 

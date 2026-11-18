@@ -24,6 +24,17 @@ export const SPECIES_FORMS: Readonly<Record<string, readonly string[]>> = {
     Rockruff: ['Rockruff (Own Tempo)'],
 };
 
+// Short group names a user can register (e.g. from a tera raid). They are stored as typed but read
+// back as the default form, so every view treats them like that form. Kept apart from
+// SPECIES_FORMS, which would make pickEncounterSpecies roll nectar-only styles in the wild.
+const DEFAULT_FORMS: Readonly<Record<string, string>> = {
+    Oricorio: 'Oricorio (Baile Style)',
+};
+
+export function toDefaultForm(pokemonName: string): string {
+    return DEFAULT_FORMS[pokemonName] ?? pokemonName;
+}
+
 const speciesByForm = new Map(
     Object.entries(SPECIES_FORMS).flatMap(([species, forms]) =>
         forms.map((form) => [form, species] as const),

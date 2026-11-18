@@ -16,6 +16,10 @@ const ICON_SLUG_OVERRIDES = {
     'Deerling (Winter Form)': 'deerling-winter',
     'Sawsbuck (Autumn Form)': 'sawsbuck-autumn',
     'Sawsbuck (Winter Form)': 'sawsbuck-winter',
+    'Oricorio (Baile Style)': 'oricorio-baile',
+    'Oricorio (PomPom Style)': 'oricorio-pom-pom',
+    "Oricorio (Pa'u Style)": 'oricorio-pau',
+    'Oricorio (Sensu Style)': 'oricorio-sensu',
     'Nidoran\u2640': 'nidoran-f',
     'Nidoran\u2642': 'nidoran-m',
 };

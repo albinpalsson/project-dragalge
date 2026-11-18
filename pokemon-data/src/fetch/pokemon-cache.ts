@@ -137,6 +137,51 @@ export const POKEMON_CACHE: Record<string, CachedPokemonData | undefined> = {
         base_speed: 91,
     },
 
+    // Oricorio: styles share stats; only type differs. Listed explicitly because the
+    // scraper can't map "PomPom Style" to Bulbapedia's "Pom-Pom Style" and would
+    // fall back to the base Fire/Flying typing.
+    'Oricorio (Baile Style)': {
+        primary_type: 'fire',
+        secondary_type: 'flying',
+        base_hp: 75,
+        base_attack: 70,
+        base_defense: 70,
+        base_sp_attack: 98,
+        base_sp_defense: 70,
+        base_speed: 93,
+    },
+    'Oricorio (PomPom Style)': {
+        primary_type: 'electric',
+        secondary_type: 'flying',
+        base_hp: 75,
+        base_attack: 70,
+        base_defense: 70,
+        base_sp_attack: 98,
+        base_sp_defense: 70,
+        base_speed: 93,
+    },
+
+    "Oricorio (Pa'u Style)": {
+        primary_type: 'psychic',
+        secondary_type: 'flying',
+        base_hp: 75,
+        base_attack: 70,
+        base_defense: 70,
+        base_sp_attack: 98,
+        base_sp_defense: 70,
+        base_speed: 93,
+    },
+    'Oricorio (Sensu Style)': {
+        primary_type: 'ghost',
+        secondary_type: 'flying',
+        base_hp: 75,
+        base_attack: 70,
+        base_defense: 70,
+        base_sp_attack: 98,
+        base_sp_defense: 70,
+        base_speed: 93,
+    },
+
     // Lycanroc: three forms with genuinely different stats
     'Lycanroc (Midday Form)': {
         primary_type: 'rock',
@@ -207,10 +252,31 @@ export const POKEMON_CACHE: Record<string, CachedPokemonData | undefined> = {
 // Manual evolution edges for pokemon whose Bulbapedia prose names ('Paldean Wooper') don't
 // match the encounter/cache key ('Wooper (Paldean Form)'), so narrative parsing drops the edge.
 // Also pins base Wooper's edge, since narrative parsing elsewhere spuriously links it to Clodsire too.
+// Oricorio changes style with a nectar, so every style "evolves" into every other style.
+const ORICORIO_STYLES = [
+    'Oricorio (Baile Style)',
+    'Oricorio (PomPom Style)',
+    "Oricorio (Pa'u Style)",
+    'Oricorio (Sensu Style)',
+] as const;
+
+const ORICORIO_NECTAR_EDGES: Record<string, EvolutionEdge[]> =
+    Object.fromEntries(
+        ORICORIO_STYLES.map((from) => [
+            from,
+            ORICORIO_STYLES.filter((to) => to !== from).map((to) => ({
+                from,
+                to,
+                method: 'Nectar',
+            })),
+        ]),
+    );
+
 export const POKEMON_EVOLUTION_OVERRIDES: Record<
     string,
     EvolutionEdge[] | undefined
 > = {
+    ...ORICORIO_NECTAR_EDGES,
     Wooper: [{ from: 'Wooper', to: 'Quagsire', method: 'level 20' }],
     'Wooper (Paldean Form)': [
         { from: 'Wooper (Paldean Form)', to: 'Clodsire', method: 'level 20' },
