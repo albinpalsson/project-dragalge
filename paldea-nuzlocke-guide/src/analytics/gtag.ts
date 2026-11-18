@@ -1,7 +1,9 @@
+import { APP_VERSION } from './config';
 import type { AnalyticsEvent } from './events';
 
 type GtagCommand =
     | ['js', Date]
+    | ['set', 'user_properties', { app_version: string }]
     | ['config', string, { send_page_view: false }]
     | [
           'event',
@@ -81,6 +83,7 @@ function initializeGtag(measurementId: string): Gtag {
         };
         gtag = window.gtag;
         gtag('js', new Date());
+        gtag('set', 'user_properties', { app_version: APP_VERSION });
 
         loadGtagScript(measurementId);
     }
