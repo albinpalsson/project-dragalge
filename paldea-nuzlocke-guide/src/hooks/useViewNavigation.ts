@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { getStoredGameName, setStoredGameName } from '../game-view-storage';
 import type { ActiveView } from '../router';
+import { hashForView, urlForView, viewFromHash } from '../view-hash';
 
 interface UseViewNavigationOptions {
     onViewChange?: () => void;
@@ -19,13 +20,20 @@ export function useViewNavigation({
     onViewChangeRef.current = onViewChange;
 
     useEffect(() => {
-        window.history.replaceState(initialActiveView.current, '');
+        // Only rewrite the URL for linkable views so an `#import=` hash survives.
+        const view = initialActiveView.current;
+        window.history.replaceState(
+            view,
+            '',
+            hashForView(view) ? urlForView(view) : undefined,
+        );
     }, []);
 
     useEffect(() => {
         const handlePopState = (event: PopStateEvent) => {
             setActiveViewAndStorage(
-                activeViewFromHistoryState(event.state) ?? { view: 'home' },
+                activeViewFromHistoryState(event.state) ??
+                    viewFromHash(window.location.hash) ?? { view: 'home' },
                 setActiveView,
             );
             onViewChangeRef.current?.();
@@ -36,7 +44,7 @@ export function useViewNavigation({
     }, []);
 
     const navigate = (next: ActiveView) => {
-        window.history.pushState(next, '');
+        window.history.pushState(next, '', urlForView(next));
         setActiveViewAndStorage(next, setActiveView);
         onViewChangeRef.current?.();
     };
@@ -52,6 +60,11 @@ function getInitialActiveView(startAtHome: boolean): ActiveView {
     const historyView = activeViewFromHistoryState(window.history.state);
     if (historyView) {
         return historyView;
+    }
+
+    const hashView = viewFromHash(window.location.hash);
+    if (hashView) {
+        return hashView;
     }
 
     const storedGameRunId = getStoredGameName();

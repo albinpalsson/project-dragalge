@@ -315,3 +315,55 @@ test('opening a game name that does not exist reports it as missing', async ({
 
     await expect(page.getByText('Game not found: missing-run')).toBeVisible();
 });
+
+for (const [hash, heading] of [
+    ['#/about', 'About'],
+    ['#/friendship', 'Friendship mechanics'],
+    ['#/randomizer-modes', 'Randomizer modes'],
+    ['#/licenses', 'Licenses & Notices'],
+]) {
+    test(`link ${hash} opens its page and keeps the stored game`, async ({
+        page,
+    }) => {
+        await page.goto('/');
+        await createGame(page, 'deep-link-run');
+        await waitForPersistence(page);
+
+        // Leave the app so the link is a real page load, not a hash change.
+        await page.goto('about:blank');
+        await page.goto(`/${hash}`);
+        await expect(
+            page.getByRole('heading', { name: heading }),
+        ).toBeVisible();
+        expect(new URL(page.url()).hash).toBe(hash);
+
+        // A plain visit still resumes the stored game.
+        await page.goto('about:blank');
+        await page.goto('/');
+        await expect(page.getByRole('heading', { name: 'Games' })).toHaveCount(
+            0,
+        );
+    });
+}
+
+test('menu navigation keeps the address bar in sync with static pages', async ({
+    page,
+}) => {
+    await page.goto('/');
+    await navigateTo(page, 'Licenses & Notices');
+    expect(new URL(page.url()).hash).toBe('#/licenses');
+
+    await page.goBack();
+    await expect(page.getByRole('heading', { name: 'Games' })).toBeVisible();
+    expect(new URL(page.url()).hash).toBe('');
+
+    await page.evaluate(() => {
+        window.location.hash = '#/about';
+    });
+    await expect(page.getByRole('heading', { name: 'About' })).toBeVisible();
+});
+
+test('unknown link hashes fall back to Home', async ({ page }) => {
+    await page.goto('/#/nope');
+    await expect(page.getByRole('heading', { name: 'Games' })).toBeVisible();
+});

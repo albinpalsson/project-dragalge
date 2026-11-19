@@ -20,7 +20,9 @@ boundaries.
 
 - `src/router.ts` defines the `ActiveView` union. Top-level navigation is held
   in app state and synchronized with browser history; overlays and expandable
-  content remain local component state.
+  content remain local component state. Static pages are linkable by hash
+  (`/#/about`); the view<->hash table is in `src/view-hash.ts`, so add new
+  static views there. Games are not linkable.
 - Keep the Pokémon data DB read-only and separate from the writable game DB.
   Put database operations in their owning `src/db/pokemon-data/` or
   `src/db/game-db/` module; do not issue query-builder operations from views or
