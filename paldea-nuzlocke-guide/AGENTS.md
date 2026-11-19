@@ -56,6 +56,9 @@ boundaries.
 - The localStorage-backed game DB uses a single-writer guard. A second tab can
   make an older tab unable to save; do not imply that tabs merge or transact
   changes with one another.
+- The Game view asks the browser for persistent storage through
+  `src/storage-persistence.ts` (once per page load). This is best-effort: a
+  denial or missing support is normal and must never block saving.
 - Encounter rows distinguish persisted lifecycle states from frontend-only
   display states. Keep `notRolled` frontend-only; do not conflate a rolled
   `pending` encounter with query loading. A skipped encounter is resolved but

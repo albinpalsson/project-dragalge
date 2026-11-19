@@ -4,6 +4,7 @@ import { HeaderSlot } from '../../components/HeaderSlot';
 import { Box } from './Box/Box';
 import { GameProvider, useGame } from './GameContext';
 import { useEvolutionGraphQuery } from '../../hooks/useEvolutionGraphQuery';
+import { usePersistentStorageRequest } from '../../hooks/usePersistentStorageRequest';
 import { usePokemonTypeCatalogQuery } from '../../hooks/usePokemonTypeCatalogQuery';
 import { ProgressionTimeline } from './progression/ProgressionTimeline';
 import {
@@ -45,6 +46,7 @@ export function Game({ gameName }: GameProps) {
 type Game = NonNullable<ReturnType<typeof useGameRunQuery>['data']>;
 
 function LoadedGame({ game }: { game: Game }) {
+    usePersistentStorageRequest();
     const encounterRollsQuery = useEncounterRollsQuery(game.name);
     const banReasonResult = useGameBanReason(game);
 
