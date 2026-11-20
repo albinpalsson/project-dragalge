@@ -1,0 +1,62 @@
+/*
+ * Evolutions that are not plain "level N" but that a mono run can reasonably
+ * use. The evolution data only has free-text methods for these, so the
+ * planner uses this table instead. They are assumptions, not game data: change
+ * them here to move when an evolution becomes available.
+ */
+
+export interface AssumedEvolution {
+    to: string;
+    /** Level the Pokémon must reach before it can evolve, 0 for none. */
+    level: number;
+    /**
+     * Progression key (see PROGRESSION_ITEMS) that unlocks the evolution. It is
+     * available at every boss after that item. Omitted means always available.
+     */
+    availableAfter?: string;
+}
+
+/**
+ * Progression key after which each evolution stone can be had. Most are sold
+ * by Delibird Presents after the 3rd badge. The Ice Stone is found on
+ * Glaseado Mountain. A Pokémon evolves by stone as soon as its stone is
+ * available, like a level-up evolution.
+ */
+const STONE_AVAILABLE_AFTER: Record<string, string> = {
+    Fire: 'iono-electric-gym',
+    Water: 'iono-electric-gym',
+    Thunder: 'iono-electric-gym',
+    Leaf: 'iono-electric-gym',
+    Moon: 'iono-electric-gym',
+    Sun: 'iono-electric-gym',
+    Shiny: 'iono-electric-gym',
+    Dusk: 'iono-electric-gym',
+    Dawn: 'iono-electric-gym',
+    Ice: 'glaseado-mountain',
+};
+
+/** E.g. "Leaf Stone" in "Leaf Stone VIII or Level up near Moss Rock". */
+const STONE_METHOD = /\b(\w+) Stone\b/;
+
+/**
+ * The progression key that unlocks an evolution method's stone, or undefined
+ * when the method needs no evolution stone.
+ */
+export function getStoneAvailableAfter(method: string): string | undefined {
+    const stone = STONE_METHOD.exec(method)?.[1];
+    return stone ? STONE_AVAILABLE_AFTER[stone] : undefined;
+}
+
+/** Keyed by the Pokémon that evolves. */
+export const ASSUMED_EVOLUTIONS: Record<string, readonly AssumedEvolution[]> = {
+    // Espeon and Umbreon are friendship evolutions (day/night level-up): a
+    // picnic gets friendship to 160 early, so Eevee evolves at its next
+    // level-up, before it can learn a Fairy move. Sylveon needs a known Fairy
+    // move; Eevee learns Baby-Doll Eyes at level 15, which is available from
+    // the first Gym fight.
+    Eevee: [
+        { to: 'Espeon', level: 0 },
+        { to: 'Umbreon', level: 0 },
+        { to: 'Sylveon', level: 15 },
+    ],
+};

@@ -92,6 +92,7 @@ function activeViewFromHistoryState(state: unknown): ActiveView | undefined {
         candidate.view === 'about' ||
         candidate.view === 'friendship' ||
         candidate.view === 'randomizerModes' ||
+        candidate.view === 'monoPlanner' ||
         candidate.view === 'licenses'
     ) {
         return { view: candidate.view };

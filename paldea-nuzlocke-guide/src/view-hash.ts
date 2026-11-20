@@ -8,6 +8,7 @@ const VIEW_HASHES: Record<LinkableView['view'], string> = {
     about: '#/about',
     friendship: '#/friendship',
     randomizerModes: '#/randomizer-modes',
+    monoPlanner: '#/mono-planner',
     licenses: '#/licenses',
 };
 

@@ -23,10 +23,11 @@ import { useReleaseNews } from '../hooks/useReleaseNews';
 import { track } from '../analytics/analytics';
 import { APP_VERSION } from '../analytics/config';
 
-// Home stays static: it is the landing view. Game is its own chunk; About and
-// Licenses share one chunk through a single import() target. Friendship and
-// RandomizerModes stay static: their guides are also used from main-bundle
-// and Game code, so lazy-loading them would move almost nothing.
+// Home stays static: it is the landing view. Game and MonoPlanner are their
+// own chunks; About and Licenses share one chunk through a single import()
+// target. Friendship and RandomizerModes stay static: their guides are also
+// used from main-bundle and Game code, so lazy-loading them would move almost
+// nothing.
 const Game = lazy(() =>
     import('./Game/Game').then((module) => ({ default: module.Game })),
 );
@@ -36,6 +37,11 @@ const About = lazy(() =>
 const Licenses = lazy(() =>
     import('./secondary-views').then((module) => ({
         default: module.Licenses,
+    })),
+);
+const MonoPlanner = lazy(() =>
+    import('./MonoPlanner/MonoPlanner').then((module) => ({
+        default: module.MonoPlanner,
     })),
 );
 
@@ -122,6 +128,13 @@ export function App() {
                         >
                             Friendship mechanics
                         </MenuLink>
+                        <MenuLink
+                            secondary
+                            isCurrent={activeView.view === 'monoPlanner'}
+                            onClick={() => navigate({ view: 'monoPlanner' })}
+                        >
+                            Mono type planner
+                        </MenuLink>
                     </nav>
                     <div className={menuFooter}>
                         <span className={menuVersion}>{APP_VERSION}</span>
@@ -180,6 +193,7 @@ export function App() {
                         {activeView.view === 'randomizerModes' && (
                             <RandomizerModes />
                         )}
+                        {activeView.view === 'monoPlanner' && <MonoPlanner />}
                         {activeView.view === 'licenses' && <Licenses />}
                     </Suspense>
                 </main>

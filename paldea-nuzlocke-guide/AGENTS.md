@@ -44,6 +44,9 @@ boundaries.
   receives ready game data and exposes it through `useGame()`; it is not a
   query owner. Encounter lifecycle actions and party/box transitions belong
   to the existing action/manager hooks, not individual UI components.
+- The experimental mono type planner is isolated in `src/views/MonoPlanner/`;
+  follow [its instructions](src/views/MonoPlanner/AGENTS.md) for anything that
+  touches it.
 - The runtime progression order is owned by
   `src/views/Game/progression/progression-items.ts`. Keep exceptional
   progression behavior in direct components under that directory rather than
@@ -102,6 +105,8 @@ App behavior is primarily covered by focused Playwright user flows. Extend the
 existing canonical progression tests and focused regression tests where they
 cover the behavior; do not remove supporting coverage just because a canonical
 run exercises a related path. Shared browser helpers live in `tests/helpers.ts`.
+An isolated feature may keep its spec in its own folder, listed in
+`testMatch` in `playwright.config.ts`.
 Game DB writes are debounced, so call `waitForPersistence()` before reloading
 when a test needs to observe saved state.
 

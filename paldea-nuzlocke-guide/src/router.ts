@@ -4,4 +4,5 @@ export type ActiveView =
     | { view: 'about' }
     | { view: 'friendship' }
     | { view: 'randomizerModes' }
+    | { view: 'monoPlanner' }
     | { view: 'licenses' };
