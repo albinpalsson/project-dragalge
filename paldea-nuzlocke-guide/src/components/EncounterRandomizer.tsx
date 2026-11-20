@@ -1,5 +1,9 @@
 import type { LocationEncounterView } from '../db/pokemon-data/queries';
-import { randomizeEncounter, type RandomizerMode } from '../randomizer';
+import {
+    getEncounterOdds,
+    randomizeEncounter,
+    type RandomizerMode,
+} from '../randomizer';
 import { RandomizeButton } from './RandomizeButton';
 
 interface EncounterRandomizerProps {
@@ -25,14 +29,27 @@ export function EncounterRandomizer({
         onPick(pokemonName);
     };
 
+    const isSingleOption =
+        getEncounterOdds(encounters, randomizerMode).length === 1;
+    if (isSingleOption && hasExistingRoll) {
+        return null;
+    }
+
+    const label = isSingleOption
+        ? 'Encounter'
+        : hasExistingRoll
+          ? 'Re-roll'
+          : 'Randomize';
+
     return (
         <RandomizeButton
-            label={hasExistingRoll ? 'Re-roll' : 'Randomize'}
+            label={label}
             variant={hasExistingRoll ? 'secondary' : 'warm'}
             onRandomize={randomize}
             disabled={disabled || encounters.length === 0}
-            ariaLabel={hasExistingRoll ? 'Re-roll' : 'Randomize'}
-            title={hasExistingRoll ? 'Re-roll' : 'Randomize'}
+            ariaLabel={label}
+            title={label}
+            instant={isSingleOption}
         />
     );
 }

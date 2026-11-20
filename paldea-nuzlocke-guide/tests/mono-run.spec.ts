@@ -88,7 +88,7 @@ test('Mono settings update encounter pools while starters honor manual bans', as
     await expect(hoppipRow).not.toContainText('Not allowed in mono run');
     await expect(lechonkRow.getByRole('button')).toBeDisabled();
     await expect(
-        card.getByRole('button', { name: 'Randomize', exact: true }),
+        card.getByRole('button', { name: /^(Randomize|Encounter)$/ }),
     ).toBeEnabled();
     await expect(card.getByRole('button', { name: 'Confirm' })).toHaveCount(0);
 
@@ -126,7 +126,7 @@ test('Mono settings update encounter pools while starters honor manual bans', as
     ).toBeEnabled();
     const starterCard = cardFor(page, 'Starter').first();
     await starterCard
-        .getByRole('button', { name: 'Randomize', exact: true })
+        .getByRole('button', { name: /^(Randomize|Encounter)$/ })
         .click();
     await expect(
         starterCard.getByRole('img', { name: 'Sprigatito', exact: true }),

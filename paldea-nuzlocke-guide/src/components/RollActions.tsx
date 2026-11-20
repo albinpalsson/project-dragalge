@@ -158,7 +158,8 @@ function ConfirmSkipActions({
             </p>
             <br />
             <Button
-                variant="primary"
+                variant="secondary"
+                className={confirmSkipButton}
                 onClick={() =>
                     void encounterActions.skipEncounter(locationName)
                 }
@@ -188,6 +189,20 @@ const emptyPoolText = css`
     margin: 0;
     color: var(--color-text-muted);
     font-size: var(--font-size-sm);
+`;
+
+const confirmSkipButton = css`
+    &&& {
+        padding: var(--space-1) var(--space-3);
+        border-color: var(--color-primary);
+        color: var(--color-primary);
+        font-size: var(--font-size-sm);
+    }
+
+    &&&:hover:not(:disabled) {
+        color: var(--color-primary-hover);
+        border-color: var(--color-primary-hover);
+    }
 `;
 
 const pendingActionHighlight = css`

@@ -13,6 +13,7 @@ interface RandomizeButtonProps {
     ariaLabel: string;
     title: string;
     onRandomize: () => void | Promise<void>;
+    instant?: boolean;
 }
 
 export function RandomizeButton({
@@ -22,6 +23,7 @@ export function RandomizeButton({
     ariaLabel,
     title,
     onRandomize,
+    instant = false,
 }: RandomizeButtonProps) {
     const prefersReducedMotion = useMediaQuery(reducedMotionQuery);
     const [isRolling, setRolling] = useState(false);
@@ -37,6 +39,10 @@ export function RandomizeButton({
 
     const randomize = () => {
         if (isRolling) {
+            return;
+        }
+        if (instant) {
+            void onRandomize();
             return;
         }
         setRolling(true);
@@ -57,11 +63,18 @@ export function RandomizeButton({
             ariaLabel={ariaLabel}
             title={title}
         >
-            <span
-                className={cx(dicePadding, isRolling ? spinningDie : undefined)}
-            >
-                🎲
-            </span>{' '}
+            {!instant && (
+                <>
+                    <span
+                        className={cx(
+                            dicePadding,
+                            isRolling ? spinningDie : undefined,
+                        )}
+                    >
+                        🎲
+                    </span>{' '}
+                </>
+            )}
             {label}
         </Button>
     );

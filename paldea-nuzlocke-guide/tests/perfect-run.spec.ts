@@ -589,15 +589,14 @@ async function completeEncounter(page: Page, location: string) {
             exact: true,
         });
         const randomize = card.getByRole('button', {
-            name: 'Randomize',
-            exact: true,
+            name: /^(Randomize|Encounter)$/,
         });
         await expect(confirm.or(randomize)).toBeVisible();
         if (await confirm.count()) {
             await confirm.click();
         } else {
             await card
-                .getByRole('button', { name: /Randomize|Re-roll/ })
+                .getByRole('button', { name: /Randomize|Encounter|Re-roll/ })
                 .click();
             await card
                 .getByRole('button', { name: 'Caught', exact: true })
