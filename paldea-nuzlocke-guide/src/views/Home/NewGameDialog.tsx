@@ -21,7 +21,8 @@ import {
     type SettingsPresetKey,
 } from '../../utils/game-setting-presets';
 import { GameSettingsPanel } from './GameSettingsPanel';
-import { useCreateGame } from './queries';
+import { useCreateGame, useGameRunSnapshotsQuery } from './queries';
+import { getStorageMode } from '../../db/game-db/storage-mode';
 import {
     getAnalyticsConsent,
     setAnalyticsConsent,
@@ -47,6 +48,7 @@ export function NewGameDialog({ onClose, onOpenGame }: NewGameDialogProps) {
     );
 
     const createGame = useCreateGame();
+    const storedGames = useGameRunSnapshotsQuery();
     const presets = useBanListPresetOptions();
     const pokemonQuery = usePokemonListQuery();
     const pokemon = pokemonQuery.data ?? [];
@@ -65,6 +67,10 @@ export function NewGameDialog({ onClose, onOpenGame }: NewGameDialogProps) {
 
     const createRun = async () => {
         const { banList, ...settings } = applyMonoRunRules(gameSettings);
+        // Decided before creating, while the list does not include the new game.
+        const isFirstCloudGame =
+            getStorageMode() === 'google-drive' &&
+            storedGames.data?.length === 0;
         try {
             const game = await createGame.mutateAsync({
                 name: name || defaultName,
@@ -77,6 +83,9 @@ export function NewGameDialog({ onClose, onOpenGame }: NewGameDialogProps) {
                 variant,
                 randomizerMode: settings.randomizerMode,
             });
+            if (isFirstCloudGame) {
+                track({ name: 'first_cloud_game' });
+            }
             onClose();
             onOpenGame(game.name);
         } catch {

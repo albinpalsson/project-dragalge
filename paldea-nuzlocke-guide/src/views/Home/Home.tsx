@@ -8,6 +8,8 @@ import { GameCard } from './GameCard';
 import { ImportGameModal } from './ImportGameModal';
 import { NewGameModal } from './NewGameModal';
 import { useGameCards } from './queries';
+import { StorageSelect } from './StorageSelect';
+import { getStorageMode } from '../../db/game-db/storage-mode';
 
 interface HomeProps {
     onOpenGame: (gameName: string) => void;
@@ -26,9 +28,16 @@ export function Home({ onOpenGame, onOpenAbout, onOpenLicenses }: HomeProps) {
             <NewGameModal onOpenGame={onOpenGame} />
             <ImportGameModal />
 
-            <section>
+            <section className={storedGames}>
                 <h2>Stored games</h2>
-                {gameCards.isPending && <p className={mutedText}>Loading...</p>}
+                <StorageSelect className={storageSelect} />
+                {gameCards.isPending && (
+                    <p className={mutedText}>
+                        {getStorageMode() === 'google-drive'
+                            ? 'Loading games from Google Drive...'
+                            : 'Loading...'}
+                    </p>
+                )}
                 {gameCards.isError && (
                     <p>Error loading games: {gameCards.error?.message}</p>
                 )}
@@ -71,7 +80,11 @@ export function Home({ onOpenGame, onOpenAbout, onOpenLicenses }: HomeProps) {
                 >
                     Licenses &amp; Notices
                 </button>{' '}
-                for details.
+                for details. Read the{' '}
+                <a className={textLink} href="/privacy.html">
+                    Privacy policy
+                </a>
+                .
             </p>
         </div>
     );
@@ -86,8 +99,10 @@ function WelcomeSection({ onOpenAbout }: { onOpenAbout: () => void }) {
                 randomizer to help keep your catches unpredictable.
             </p>
             <p>
-                Your runs are saved in this browser. No account or sign-up is
-                required.&nbsp;
+                {getStorageMode() === 'google-drive'
+                    ? 'Your runs are saved in your Google Drive.'
+                    : 'Your runs are saved in this browser. No account or sign-up is required.'}
+                &nbsp;
                 <button
                     className={textLink}
                     type="button"
@@ -152,6 +167,35 @@ const content = css`
 
 const mutedText = css`
     color: var(--color-text-muted);
+    padding: var(--space-5) var(--space-3);
+`;
+
+// The storage select sits right after the heading; everything else takes a
+// full row of its own.
+const storedGames = css`
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    column-gap: var(--space-3);
+
+    & > * {
+        grid-column: 1 / -1;
+    }
+
+    & > h2 {
+        grid-column: 1;
+        grid-row: 1;
+    }
+`;
+
+const storageSelect = css`
+    && {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: start;
+        /* The heading has more space below than above; this centers the two. */
+        margin-bottom: var(--space-2);
+    }
 `;
 
 const welcome = css`

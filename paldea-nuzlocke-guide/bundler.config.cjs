@@ -13,6 +13,7 @@ module.exports = configure({
     env: {
         GA4_MEASUREMENT_ID: process.env.GA4_MEASUREMENT_ID,
         APP_VERSION: process.env.APP_VERSION,
+        GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     },
     transforms: [
         cssInJsTransform(),

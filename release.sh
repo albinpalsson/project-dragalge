@@ -25,6 +25,14 @@ while true; do
     echo "Expected an ID like G-ABC123XYZ."
 done
 
+# --- Google OAuth client ID (Google Drive storage) -----------------------------
+# A public id, not a secret. Left empty, the release has no Google Drive option.
+while true; do
+    read -r -p "Google OAuth client ID for Google Drive storage (empty to disable): " GOOGLE_ID
+    [[ -z "$GOOGLE_ID" || "$GOOGLE_ID" =~ ^[0-9]+-[A-Za-z0-9_]+\.apps\.googleusercontent\.com$ ]] && break
+    echo "Expected an ID like 1234567890-abc123.apps.googleusercontent.com."
+done
+
 # --- Version -----------------------------------------------------------------
 latest="$(git tag -l 'v[0-9]*.[0-9]*.[0-9]*' --sort=-v:refname | head -n 1)"
 if [[ -n "$latest" ]]; then
@@ -45,6 +53,7 @@ git ls-remote --exit-code --tags origin "refs/tags/$VERSION" >/dev/null 2>&1 \
 
 echo
 echo "  GA4 ID:  $GA4_ID"
+echo "  Google:  ${GOOGLE_ID:-(Google Drive storage disabled)}"
 echo "  Version: $VERSION"
 echo "  Commit:  $(git rev-parse --short HEAD)"
 echo "  Output:  releases/$VERSION"
@@ -61,10 +70,11 @@ npm run lint
 npm run lint --prefix "$APP"
 npm run test:all
 
-# Only the app reads the GA4 ID and version, so rebuild just the app with them.
+# Only the app reads these build constants, so rebuild just the app with them.
 clean_app() { rm -rf "$APP/dist" "$APP/.cache"; }
 clean_app
-GA4_MEASUREMENT_ID="$GA4_ID" APP_VERSION="$VERSION" npm run build --prefix "$APP"
+GA4_MEASUREMENT_ID="$GA4_ID" APP_VERSION="$VERSION" GOOGLE_CLIENT_ID="$GOOGLE_ID" \
+    npm run build --prefix "$APP"
 
 # --- Collect output, tag, push -----------------------------------------------
 mkdir -p releases

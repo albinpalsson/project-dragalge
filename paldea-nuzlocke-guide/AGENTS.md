@@ -72,6 +72,49 @@ boundaries.
 - Keep app-owned randomizer and form-selection behavior in `src/randomizer.ts`
   and `src/pokemon-species.ts`; keep presentation and data access separate.
 
+## Storage Places
+
+Games live in exactly one place at a time, chosen with the "Stored in" select
+on Home (`StorageSelect`): this browser (`LocalStoragePlugin`, the default) or
+the player's own Google Drive (`GoogleDriveStoragePlugin`). They are two
+separate sets of games. The app shows and edits only the selected set, nothing
+is copied or merged between them, and changing the place restarts the app
+(`src/storage/switch-storage.ts`). Moving a game is the existing
+export/import. There is no backend: the browser talks to Google directly. The
+select only exists in builds with `GOOGLE_CLIENT_ID` (a public id;
+`release.sh` prompts for it and Playwright sets a fake one).
+
+- The mode is `getStorageMode()` (`src/db/game-db/storage-mode.ts`), read once
+  by `initGameDb()` in `client.ts`. Drive read failures must propagate there:
+  an empty database in place of an unreachable one would hide the player's
+  games. The mode is only saved after a successful Google sign-in.
+- Drive mode keeps the whole game DB, gzipped, in one file in the Drive
+  `appDataFolder` (scope `drive.appdata`, so only the app's own hidden folder),
+  named `game-db-v<GAME_DB_SCHEMA_VERSION>.bin`. A schema bump starts a fresh
+  file, as it does locally.
+- Saves never merge. An upload takes a second or two, so the plugin keeps only
+  the newest database, uploads it about a second after the last edit, and runs
+  one upload at a time. Before uploading, it checks that the file still has the
+  revision this tab last read or wrote; if not, it throws `GameDbOwnershipError`,
+  the same newest-writer-wins rule and dialog as multiple tabs. The upload runs
+  from a timer, so any failed save is an unhandled rejection and reaches
+  `UnexpectedErrorBoundary`; there is no status store or retry. A request that
+  gets no answer, or an error status, is a `DriveRequestError`, which the
+  boundary shows as "Couldn't reach Google Drive" without a crash report.
+- Google's browser flow has no refresh token. Access lasts about an hour and is
+  kept in `sessionStorage`. `google-auth.ts` counts the user as signed out two
+  minutes before it lapses (and re-checks when the tab becomes visible), and
+  `App` then shows `GoogleLoginModal` in any view. Reading and saving games
+  wait on `whenSignedIn()` instead of failing, so signing in again carries on
+  where it was, with no reload. Timers run late after sleep, so `driveFetch`
+  also signs out and waits when it finds the token has lapsed. A different account, or a change of place,
+  reloads.
+- The last account's name and email are remembered in localStorage
+  (`google-account.ts`) for "Continue as ...", which passes `login_hint` to
+  Google. They come from Drive's `about` call, so no extra permissions.
+- `tests/fake-google.ts` stands in for Google's sign-in script (two accounts)
+  and the Drive API, so the real Drive code runs in `tests/storage.spec.ts`.
+
 ## UI and Styling
 
 - Global tokens and theme values live in `src/index.css`. Component styles use
@@ -92,6 +135,11 @@ boundaries.
 - Keep the Licenses & Notices page and Home attribution link visible. Full
   notices are app-owned static files under `public/notices/` and must ship in
   production output.
+- `public/privacy.html` is the public privacy policy that Google's OAuth
+  consent screen links to, so it has to be a real page at its own URL, not a
+  view inside the app. Keep it, the "Storage and privacy" section in
+  `Licenses.tsx` and the analytics events in step with what the app actually
+  stores and sends; change the "Last updated" date when the policy changes.
 - Scope Bulbapedia licensing statements to material confirmed to be covered;
   source pages and revisions can have different terms. Keep sprite attribution
   and rights notes distinct from Bulbapedia data licensing.

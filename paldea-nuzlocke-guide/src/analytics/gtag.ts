@@ -15,6 +15,7 @@ type GtagCommand =
           'game_created',
           { send_to: string; game_variant: string; randomizer_mode: string },
       ]
+    | ['event', 'first_cloud_game', { send_to: string }]
     | [
           'event',
           'progression_milestone',
@@ -54,6 +55,9 @@ export function sendGtagEvent(
                 game_variant: event.variant,
                 randomizer_mode: event.randomizerMode,
             });
+            return;
+        case 'first_cloud_game':
+            send('event', 'first_cloud_game', { send_to: measurementId });
             return;
         case 'progression_milestone':
             send('event', 'progression_milestone', {

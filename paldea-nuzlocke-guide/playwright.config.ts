@@ -78,6 +78,9 @@ export default defineConfig({
             stdout: /\[dev\] ready http:\/\/[^:]+:(?<dev_server_port>\d+)/,
         },
         stdout: 'pipe',
+        // A fake client id turns the Google Drive storage option on; the tests answer Google's
+        // script and the Drive API themselves (see tests/fake-google.ts).
+        env: { GOOGLE_CLIENT_ID: 'test-client.apps.googleusercontent.com' },
         reuseExistingServer: !process.env.CI,
     },
 });

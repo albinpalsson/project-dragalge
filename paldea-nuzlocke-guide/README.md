@@ -30,7 +30,9 @@ research while playing.
   unlimited encounters.
 - Optional helpful tips and information about strong trainers.
 - Multiple saved runs, with support for sharing and importing runs.
-- Browser-based storage without an account or automatic cross-device sync.
+- Browser-based storage without an account, or optionally keeping all runs in
+  a hidden app folder in the player's own Google Drive to use them across
+  devices. Runs live in one place at a time; nothing is merged between them.
 
 ## Feedback
 

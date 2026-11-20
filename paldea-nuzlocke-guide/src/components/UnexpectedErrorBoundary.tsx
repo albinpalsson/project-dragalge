@@ -81,7 +81,14 @@ function describeError(error: unknown): {
     if (hasOwnershipError(error)) {
         return {
             title: 'Game opened in another tab',
-            text: 'Another tab has taken control of your games. Your latest change in this tab was not saved. Reload to load the latest saved data and take control here.',
+            text: 'Another tab or device has taken control of your games. Your latest change here was not saved. Reload to load the latest saved data and take control here.',
+            showCrashReport: false,
+        };
+    }
+    if (isDriveRequestError(error)) {
+        return {
+            title: "Couldn't reach Google Drive",
+            text: 'Your latest change was not saved. Check your connection and reload to load your latest saved games.',
             showCrashReport: false,
         };
     }
@@ -140,23 +147,36 @@ function CrashReportActions({ error }: { error: unknown }) {
 }
 
 function hasOwnershipError(error: unknown): boolean {
-    const seen = new Set<unknown>();
-    while (error instanceof Error && !seen.has(error)) {
-        if (error instanceof GameDbOwnershipError) {
-            return true;
-        }
-        seen.add(error);
-        error = 'cause' in error ? error.cause : undefined;
-    }
-    return false;
+    return someErrorInChain(
+        error,
+        (current) => current instanceof GameDbOwnershipError,
+    );
+}
+
+// Matched by name so the error dialog does not import the Drive code.
+function isDriveRequestError(error: unknown): boolean {
+    return someErrorInChain(
+        error,
+        (current) => current.name === 'DriveRequestError',
+    );
 }
 
 // The bundler's runtime rejects a failed chunk load with an Error named
 // "ChunkLoadError" (see the lazy-loading contract in bundler/AGENTS.md).
 function isChunkLoadError(error: unknown): boolean {
+    return someErrorInChain(
+        error,
+        (current) => current.name === 'ChunkLoadError',
+    );
+}
+
+function someErrorInChain(
+    error: unknown,
+    matches: (error: Error) => boolean,
+): boolean {
     const seen = new Set<unknown>();
     while (error instanceof Error && !seen.has(error)) {
-        if (error.name === 'ChunkLoadError') {
+        if (matches(error)) {
             return true;
         }
         seen.add(error);

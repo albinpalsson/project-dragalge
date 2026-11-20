@@ -6,6 +6,10 @@
 
 - [The Paldea nuzlocke guide](https://paldeanuzlocke.com/): The app itself. It runs in the browser and needs JavaScript.
 
+## Privacy
+
+- [Privacy policy](https://paldeanuzlocke.com/privacy.html): How the app stores data in the browser or, optionally, in the user's own Google Drive, and what it shares
+
 ## Notices
 
 - [Third-party software notices](https://paldeanuzlocke.com/notices/third-party.txt): Runtime packages used by the app and their licences

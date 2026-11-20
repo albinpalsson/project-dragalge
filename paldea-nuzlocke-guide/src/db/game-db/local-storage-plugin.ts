@@ -15,7 +15,7 @@ function stringToBytes(value: string): Uint8Array {
 
 export class GameDbOwnershipError extends Error {
     constructor() {
-        super('Another tab has taken ownership of the game database.');
+        super('Another tab or device has taken ownership of the game database.');
         this.name = 'GameDbOwnershipError';
     }
 }

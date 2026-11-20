@@ -16,7 +16,10 @@ import { AppHeader } from './AppHeader';
 import { Friendship } from './Friendship';
 import { Home } from './Home/Home';
 import { RandomizerModes } from './RandomizerModes';
+import { GoogleLoginModal } from './GoogleLoginModal';
 import { ThemeToggle } from './ThemeToggle';
+import { getStorageMode } from '../db/game-db/storage-mode';
+import { useGoogleSession } from '../hooks/useGoogleSession';
 import { useImportDataFromHash } from '../hooks/useImportDataFromHash';
 import { useViewNavigation } from '../hooks/useViewNavigation';
 import { useReleaseNews } from '../hooks/useReleaseNews';
@@ -51,6 +54,7 @@ export function App() {
     useReleaseNews();
     const { importData } = useImportDataFromHash();
     const [isMenuOpen, setMenuOpen] = useState(false);
+    const isSignedInToGoogle = useGoogleSession();
     const [headerSlot, setHeaderSlot] = useState<HTMLElement | null>(null);
     const { activeView, navigate } = useViewNavigation({
         onViewChange: () => setMenuOpen(false),
@@ -157,6 +161,12 @@ export function App() {
                         </div>
                     </div>
                 </Drawer>
+            )}
+
+            {/* Games kept in Google Drive need a sign-in at startup and again
+                when Google's short-lived access lapses, in any view. */}
+            {getStorageMode() === 'google-drive' && !isSignedInToGoogle && (
+                <GoogleLoginModal />
             )}
 
             <HeaderSlotContext.Provider value={headerSlot}>

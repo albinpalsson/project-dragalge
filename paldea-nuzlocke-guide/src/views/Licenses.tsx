@@ -156,16 +156,39 @@ export function Licenses() {
                 <h3 id="privacy-title">Storage and privacy</h3>
                 <p>
                     Game runs and preferences are stored in this browser on this
-                    device. There is no account, automatic cloud backup, or
-                    cross-device sync. Clearing this browser&apos;s site data
-                    can remove saved runs. Exporting or sharing a run is an
-                    action you choose.
+                    device. There is no account, and nothing is backed up
+                    unless you choose to. Clearing this browser&apos;s site
+                    data can remove saved runs. Exporting or sharing a run is
+                    an action you choose.
+                </p>
+                <p>
+                    Where Home offers a choice of where runs are stored, you can
+                    keep them in a hidden app folder in your own Google Drive
+                    instead of this browser, and open them on other devices.
+                    Your browser talks to Google directly, so your runs do not
+                    pass through this site&apos;s servers, and the app can only
+                    reach its own folder, not the rest of your Drive. After you
+                    sign in, the name and email of the Google account are
+                    remembered in this browser so you can continue with one
+                    click. Runs kept in Google Drive and runs kept in this
+                    browser are separate: nothing is copied between them unless
+                    you export and import a run yourself. Switching back to
+                    this browser leaves the runs in Google Drive where they
+                    are, and you can delete them from your Google account&apos;s
+                    app data settings.
                 </p>
                 <p>
                     If you opt in, the app sends usage analytics to Google
                     Analytics. These may reflect activity and progress in the
                     app, but do not include your game names or a complete copy
                     of your saved runs.
+                </p>
+                <p>
+                    The full policy is also available as a standalone page:{' '}
+                    <a className={textLink} href="/privacy.html">
+                        Privacy policy
+                    </a>
+                    .
                 </p>
             </section>
         </article>
