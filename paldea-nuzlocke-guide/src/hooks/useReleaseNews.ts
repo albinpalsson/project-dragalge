@@ -55,7 +55,7 @@ export function useReleaseNews() {
                 throw new RangeError('Cannot acknowledge unknown release news.');
             }
 
-            // Call only after the future UI's explicit acknowledgment action,
+            // Call only after the person dismisses the news popup,
             // never just because news was calculated or the app was opened.
             // Pass the number actually presented, not the latest at click time.
             // Acknowledging through N retires all earlier news: present the pending

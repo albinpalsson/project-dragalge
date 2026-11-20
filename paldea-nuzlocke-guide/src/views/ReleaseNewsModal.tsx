@@ -1,0 +1,104 @@
+import { css, cx } from '@project-dragalge/css-in-js';
+import { Button } from '../components/Button';
+import { Modal } from '../components/Modal';
+import { textLink } from '../components/text-link';
+import type { ReleaseNews } from '../release-news';
+import type { ActiveView } from '../router';
+
+interface ReleaseNewsModalProps {
+    news: readonly ReleaseNews[];
+    // Called with the highest number shown when the popup is dismissed in any way.
+    onAcknowledge: (newsNumber: number) => void;
+    onNavigate: (view: ActiveView) => void;
+}
+
+// Shows all pending news at once: acknowledging the highest number retires
+// everything below it, so nothing may be held back for later.
+export function ReleaseNewsModal({
+    news,
+    onAcknowledge,
+    onNavigate,
+}: ReleaseNewsModalProps) {
+    const shownThrough = Math.max(...news.map((item) => item.number));
+    const dismiss = () => onAcknowledge(shownThrough);
+
+    return (
+        <Modal title="What's new" onClose={dismiss}>
+            <div className={content}>
+                {news.map(({ number, title, paragraphs, action, link }) => (
+                    <section
+                        key={number}
+                        className={newsItem}
+                        aria-labelledby={`release-news-${number}`}
+                    >
+                        <h3 id={`release-news-${number}`}>{title}</h3>
+                        {paragraphs.map((paragraph) => (
+                            <p key={paragraph}>{paragraph}</p>
+                        ))}
+                        {(action || link) && (
+                            <div className={links}>
+                                {action && (
+                                    <button
+                                        type="button"
+                                        className={textLink}
+                                        onClick={() => {
+                                            dismiss();
+                                            onNavigate(action.view);
+                                        }}
+                                    >
+                                        {action.label}
+                                    </button>
+                                )}
+                                {link && (
+                                    <a
+                                        className={cx(textLink, quietLink)}
+                                        href={link.href}
+                                    >
+                                        {link.label}
+                                    </a>
+                                )}
+                            </div>
+                        )}
+                    </section>
+                ))}
+                <Button className={gotIt} onClick={dismiss}>
+                    Got it
+                </Button>
+            </div>
+        </Modal>
+    );
+}
+
+const content = css`
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-2);
+`;
+
+const newsItem = css`
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+
+  h3,
+  p {
+    margin: 0;
+  }
+`;
+
+const links = css`
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
+`;
+
+const quietLink = css`
+  && {
+    font-weight: normal;
+  }
+`;
+
+const gotIt = css`
+  align-self: flex-end;
+`;

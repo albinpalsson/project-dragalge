@@ -115,6 +115,16 @@ select only exists in builds with `GOOGLE_CLIENT_ID` (a public id;
 - `tests/fake-google.ts` stands in for Google's sign-in script (two accounts)
   and the Drive API, so the real Drive code runs in `tests/storage.spec.ts`.
 
+## Release News
+
+`src/release-news.ts` holds the news shown to returning browsers in one
+"What's new" popup (`ReleaseNewsModal`). To announce a feature, add an entry
+with the next number; never reuse or renumber entries. A browser's first
+visit starts at the latest number, so news only reaches browsers that opened
+an earlier build. Any dismissal, including an entry's action, counts as seen
+for everything shown. All news is shown regardless of build settings, so
+release builds are expected to set `GOOGLE_CLIENT_ID`.
+
 ## UI and Styling
 
 - Global tokens and theme values live in `src/index.css`. Component styles use

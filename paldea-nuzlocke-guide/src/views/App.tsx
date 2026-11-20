@@ -17,6 +17,7 @@ import { Friendship } from './Friendship';
 import { Home } from './Home/Home';
 import { RandomizerModes } from './RandomizerModes';
 import { GoogleLoginModal } from './GoogleLoginModal';
+import { ReleaseNewsModal } from './ReleaseNewsModal';
 import { ThemeToggle } from './ThemeToggle';
 import { getStorageMode } from '../db/game-db/storage-mode';
 import { useGoogleSession } from '../hooks/useGoogleSession';
@@ -49,9 +50,7 @@ const MonoPlanner = lazy(() =>
 );
 
 export function App() {
-    // Establishes the browser baseline; connect pending news and explicit
-    // acknowledgment to a presentation here when the first news is published.
-    useReleaseNews();
+    const { pendingNews, acknowledgeThrough } = useReleaseNews();
     const { importData } = useImportDataFromHash();
     const [isMenuOpen, setMenuOpen] = useState(false);
     const isSignedInToGoogle = useGoogleSession();
@@ -167,6 +166,16 @@ export function App() {
                 when Google's short-lived access lapses, in any view. */}
             {getStorageMode() === 'google-drive' && !isSignedInToGoogle && (
                 <GoogleLoginModal />
+            )}
+
+            {/* After the sign-in modal, so it opens on top of it: the sign-in
+                can't be dismissed, but this can. */}
+            {pendingNews.length > 0 && (
+                <ReleaseNewsModal
+                    news={pendingNews}
+                    onAcknowledge={acknowledgeThrough}
+                    onNavigate={navigate}
+                />
             )}
 
             <HeaderSlotContext.Provider value={headerSlot}>
