@@ -16,7 +16,7 @@ interface TooltipProps {
     children: ReactNode;
     className?: string;
     bubbleClassName?: string;
-    align?: 'center' | 'start';
+    align?: 'center' | 'start' | 'end';
 }
 
 export function Tooltip({
@@ -94,7 +94,7 @@ export function Tooltip({
                 <span
                     className={cx(
                         bubble,
-                        align === 'start' ? bubbleStart : bubbleCenter,
+                        bubbleAlignments[align],
                         bubbleClassName,
                     )}
                     role="tooltip"
@@ -134,6 +134,16 @@ const bubbleCenter = css`
 const bubbleStart = css`
   left: 0;
 `;
+
+const bubbleEnd = css`
+  right: 0;
+`;
+
+const bubbleAlignments = {
+    center: bubbleCenter,
+    start: bubbleStart,
+    end: bubbleEnd,
+};
 
 interface TriggerEvents {
     onMouseEnter: MouseEventHandler<HTMLElement>;
