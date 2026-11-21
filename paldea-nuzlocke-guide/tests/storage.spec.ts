@@ -49,7 +49,7 @@ async function signInAndUseDrive(page: Page) {
     await storageSelect(page).selectOption('google-drive');
     const loaded = page.waitForEvent('load');
     await page
-        .getByRole('dialog', { name: 'Sign in to Google' })
+        .getByRole('dialog', { name: 'Keep your runs in Google Drive' })
         .getByRole('button', { name: 'Sign in with Google' })
         .click();
     await loaded;
@@ -87,7 +87,7 @@ async function lastTokenRequest(page: Page) {
 
 const continueAsA = (page: Page) =>
     page
-        .getByRole('dialog', { name: 'Sign in to Google' })
+        .getByRole('dialog', { name: 'Continue with Google' })
         .getByRole('button', { name: /^Continue as Account A/ });
 
 test('shows only the games kept in the selected place', async ({
@@ -130,10 +130,13 @@ test('cancelling the sign-in leaves the games where they were', async ({
 }) => {
     const page = await openDevice(browser, baseURL, new FakeDrive());
     await storageSelect(page).selectOption('google-drive');
-    await page
-        .getByRole('dialog', { name: 'Sign in to Google' })
-        .getByRole('button', { name: 'Close dialog' })
-        .click();
+    const dialog = page.getByRole('dialog', {
+        name: 'Keep your runs in Google Drive',
+    });
+    await expect(
+        dialog.getByRole('link', { name: 'Privacy policy' }),
+    ).toHaveAttribute('href', '/privacy.html');
+    await dialog.getByRole('button', { name: 'Close dialog' }).click();
     await expect(page.getByRole('dialog')).toHaveCount(0);
     await expect(storageSelect(page)).toHaveValue('local');
 });
@@ -301,7 +304,7 @@ test('a different account has its own games', async ({ browser, baseURL }) => {
     await second.goto('/');
     const loaded = second.waitForEvent('load');
     await second
-        .getByRole('dialog', { name: 'Sign in to Google' })
+        .getByRole('dialog', { name: 'Continue with Google' })
         .getByRole('button', { name: 'Use a different account' })
         .click();
     await loaded;
@@ -324,7 +327,7 @@ test('"Use this browser instead" goes home to the games kept here', async ({
     const second = await page.context().newPage();
     await second.goto('/');
     await second
-        .getByRole('dialog', { name: 'Sign in to Google' })
+        .getByRole('dialog', { name: 'Continue with Google' })
         .getByRole('button', { name: 'Use this browser instead' })
         .click();
     await expect(storageSelect(second)).toHaveValue('local');

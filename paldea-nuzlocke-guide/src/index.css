@@ -34,6 +34,9 @@ html {
     --color-link-hover: #eeeeee;
     --color-on-primary: #1a1a2e;
     --color-hover-overlay: rgba(255, 255, 255, 0.08);
+    --color-google-bg: #131314;
+    --color-google-border: #8e918f;
+    --color-google-text: #e3e3e3;
 
     --space-1: 0.4rem;
     --space-2: 0.8rem;
@@ -92,6 +95,9 @@ html {
     --color-link-hover: #333333;
     --color-on-primary: #ffffff;
     --color-hover-overlay: rgba(0, 0, 0, 0.05);
+    --color-google-bg: #ffffff;
+    --color-google-border: #747775;
+    --color-google-text: #1f1f1f;
 
     --shadow-sm: 0 0.1rem 0.3rem rgba(26, 26, 46, 0.12);
     --shadow-md: 0 0.4rem 1.2rem rgba(26, 26, 46, 0.16);

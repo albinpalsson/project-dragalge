@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { css, cx } from '@project-dragalge/css-in-js';
+import { GoogleGIcon, InfoIcon } from '../components/icons';
 import { Modal } from '../components/Modal';
 import { textLink } from '../components/text-link';
 import { getStorageMode } from '../db/game-db/storage-mode';
@@ -19,6 +20,7 @@ interface GoogleLoginModalProps {
 
 export function GoogleLoginModal({ onCancel }: GoogleLoginModalProps) {
     const remembered = getRememberedAccount();
+    const choosing = onCancel !== undefined;
     const [error, setError] = useState<string | null>(null);
     const [busy, setBusy] = useState(false);
 
@@ -54,50 +56,72 @@ export function GoogleLoginModal({ onCancel }: GoogleLoginModalProps) {
         }
     };
 
+    const accountName = remembered ? remembered.name || remembered.email : '';
+
     return (
         <Modal
-            title="Sign in to Google"
-            dismissMode={onCancel ? 'any' : 'none'}
+            title={
+                choosing ? 'Keep your runs in Google Drive' : 'Continue with Google'
+            }
+            dismissMode={choosing ? 'any' : 'none'}
             onClose={onCancel}
         >
             <div className={content}>
                 <p>
-                    Your games are stored in your own Google Drive. Sign in to
-                    open and save them.
+                    {choosing
+                        ? 'Your runs will be saved in your own Google Drive, so you can open them on any device where you sign in.'
+                        : 'Your runs are saved in your Google Drive. Google sign-ins last about an hour, so sign in again to keep loading and saving them.'}
                 </p>
-                {error && <p className={errorText}>{error}</p>}
-                {remembered ? (
-                    <button
-                        type="button"
-                        className={accountCard}
-                        disabled={busy}
-                        onClick={() =>
-                            void signIn({
-                                email: remembered.email || undefined,
-                            })
-                        }
-                    >
-                        <span className={cardTitle}>
-                            Continue as {remembered.name || remembered.email}
-                        </span>
-                        {remembered.name && remembered.email && (
-                            <span className={cardDetail}>
-                                {remembered.email}
-                            </span>
-                        )}
-                    </button>
-                ) : (
-                    <button
-                        type="button"
-                        className={accountCard}
-                        disabled={busy}
-                        onClick={() => void signIn({})}
-                    >
-                        <span className={cardTitle}>Sign in with Google</span>
-                    </button>
+                {error && (
+                    <p className={notice} role="alert">
+                        <InfoIcon />
+                        {error}
+                    </p>
                 )}
-                {(remembered || !onCancel) && (
-                    <div className={links}>
+                <div className={mainAction}>
+                    {remembered ? (
+                        <button
+                            type="button"
+                            className={accountRow}
+                            disabled={busy}
+                            onClick={() =>
+                                void signIn({
+                                    email: remembered.email || undefined,
+                                })
+                            }
+                        >
+                            <span className={avatar} aria-hidden="true">
+                                {accountName.charAt(0).toUpperCase()}
+                            </span>
+                            <span className={accountText}>
+                                <span className={accountTitle}>
+                                    Continue as {accountName}
+                                </span>
+                                {remembered.name && remembered.email && (
+                                    <span className={accountEmail}>
+                                        {remembered.email}
+                                    </span>
+                                )}
+                            </span>
+                            <GoogleGIcon />
+                        </button>
+                    ) : (
+                        <button
+                            type="button"
+                            className={googleButton}
+                            disabled={busy}
+                            onClick={() => void signIn({})}
+                        >
+                            <GoogleGIcon />
+                            Sign in with Google
+                        </button>
+                    )}
+                    <p className={waiting} aria-live="polite">
+                        {busy ? 'Waiting for Google…' : ''}
+                    </p>
+                </div>
+                {(remembered || !choosing) && (
+                    <div className={footer}>
                         {remembered && (
                             <button
                                 type="button"
@@ -110,16 +134,25 @@ export function GoogleLoginModal({ onCancel }: GoogleLoginModalProps) {
                                 Use a different account
                             </button>
                         )}
-                        {!onCancel && (
+                        {!choosing && (
                             <button
                                 type="button"
-                                className={cx(textLink, smallLink)}
+                                className={cx(textLink, smallLink, endLink)}
                                 onClick={() => switchStorage('local')}
                             >
                                 Use this browser instead
                             </button>
                         )}
                     </div>
+                )}
+                {choosing && (
+                    <p className={privacyNote}>
+                        The app can never see your other files, and your runs
+                        go straight from your browser to Google.{' '}
+                        <a className={textLink} href="/privacy.html">
+                            Privacy policy
+                        </a>
+                    </p>
                 )}
             </div>
         </Modal>
@@ -131,29 +164,42 @@ const content = css`
   flex-direction: column;
   gap: var(--space-4);
   padding: var(--space-2);
+  max-width: 44rem;
 
   p {
     margin: 0;
   }
 `;
 
-// The main action: an outlined card in the primary colour.
-const accountCard = css`
+const mainAction = css`
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
   gap: var(--space-1);
-  padding: var(--space-3) var(--space-4);
-  border: 0.15rem solid var(--color-primary);
-  border-radius: var(--radius-md);
-  background: transparent;
-  color: var(--color-primary);
-  font: inherit;
-  text-align: left;
+`;
+
+// The look Google's branding guidelines ask for on "Sign in with Google".
+const googleButton = css`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  min-height: 4rem;
+  padding: 0 var(--space-3);
+  border: 0.1rem solid var(--color-google-border);
+  border-radius: 2rem;
+  background: var(--color-google-bg);
+  color: var(--color-google-text);
+  font-family: Roboto, system-ui, sans-serif;
+  font-size: 1.4rem;
+  font-weight: 500;
   cursor: pointer;
 
   &:hover:not(:disabled) {
-    background: var(--color-hover-overlay);
+    background-image: linear-gradient(
+      var(--color-hover-overlay),
+      var(--color-hover-overlay)
+    );
   }
 
   &:focus-visible {
@@ -167,20 +213,95 @@ const accountCard = css`
   }
 `;
 
-const cardTitle = css`
+const accountRow = css`
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 0.1rem solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background-image: linear-gradient(
+      var(--color-hover-overlay),
+      var(--color-hover-overlay)
+    );
+  }
+
+  &:focus-visible {
+    outline: 0.2rem solid var(--color-accent);
+    outline-offset: 0.1rem;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+`;
+
+const avatar = css`
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 3.6rem;
+  height: 3.6rem;
+  border-radius: 50%;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
   font-weight: var(--font-weight-bold);
 `;
 
-const cardDetail = css`
-  font-size: var(--font-size-sm);
-  opacity: 0.8;
+const accountText = css`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
 `;
 
-// The other actions: small text links rather than buttons.
-const links = css`
+const accountTitle = css`
+  font-weight: var(--font-weight-bold);
+`;
+
+const accountEmail = css`
+  overflow: hidden;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+const waiting = css`
+  min-height: 1.5em;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  text-align: center;
+`;
+
+const notice = css`
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+  font-size: var(--font-size-sm);
+`;
+
+const footer = css`
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-1) var(--space-4);
+  padding-top: var(--space-3);
+  border-top: 0.1rem solid var(--color-border);
 `;
 
 const smallLink = css`
@@ -195,6 +316,11 @@ const smallLink = css`
   }
 `;
 
-const errorText = css`
-  color: var(--color-danger);
+const endLink = css`
+  margin-left: auto;
+`;
+
+const privacyNote = css`
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
 `;

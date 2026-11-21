@@ -237,13 +237,7 @@ export async function signInToGoogle({
         error_callback: (error) => {
             const pending = pendingToken;
             pendingToken = undefined;
-            pending?.reject(
-                new Error(
-                    error.type === 'popup_closed'
-                        ? 'Google sign-in was closed before it finished.'
-                        : 'Google sign-in could not be opened.',
-                ),
-            );
+            pending?.reject(new Error(describeSignInError(error.type)));
         },
     });
 
@@ -257,4 +251,15 @@ export async function signInToGoogle({
         pendingToken = { resolve, reject };
         client.requestAccessToken(options);
     });
+}
+
+function describeSignInError(type: string): string {
+    switch (type) {
+        case 'popup_closed':
+            return 'The Google window was closed before sign-in finished. Try again.';
+        case 'popup_failed_to_open':
+            return "Your browser blocked Google's sign-in window. Allow pop-ups for this site and try again.";
+        default:
+            return 'Google sign-in could not be opened.';
+    }
 }
