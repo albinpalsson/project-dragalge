@@ -137,7 +137,7 @@ export function GoogleLoginModal({ onCancel }: GoogleLoginModalProps) {
                         {!choosing && (
                             <button
                                 type="button"
-                                className={cx(textLink, smallLink, endLink)}
+                                className={cx(textLink, smallLink)}
                                 onClick={() => switchStorage('local')}
                             >
                                 Use this browser instead
@@ -299,6 +299,7 @@ const notice = css`
 const footer = css`
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-between;
   gap: var(--space-1) var(--space-4);
   padding-top: var(--space-3);
   border-top: 0.1rem solid var(--color-border);
@@ -314,10 +315,6 @@ const smallLink = css`
     cursor: not-allowed;
     opacity: 0.5;
   }
-`;
-
-const endLink = css`
-  margin-left: auto;
 `;
 
 const privacyNote = css`
