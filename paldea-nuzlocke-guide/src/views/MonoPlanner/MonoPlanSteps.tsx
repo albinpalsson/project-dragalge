@@ -512,7 +512,18 @@ const entry = css`
 `;
 
 const bossEntry = css`
-    border-left: 0.3rem solid var(--color-text-muted);
+    position: relative;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: var(--space-2);
+        bottom: var(--space-2);
+        left: 0;
+        width: 0.3rem;
+        border-radius: var(--radius-sm);
+        background: var(--color-text-muted);
+    }
 `;
 
 const bossHeader = css`
