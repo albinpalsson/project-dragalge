@@ -31,6 +31,8 @@ export class FakeDrive {
     unreachable = false;
     failNext = 0;
     hang = false;
+    inFlight = 0;
+    lastRequestAt = 0;
     private nextId = 1;
 
     names(owner = ACCOUNTS[0].email): string[] {
@@ -175,7 +177,13 @@ export async function installFakeGoogle(
             })();`,
         }),
     );
-    await context.route('https://www.googleapis.com/**', (route) =>
-        drive.handle(route),
-    );
+    await context.route('https://www.googleapis.com/**', async (route) => {
+        drive.inFlight++;
+        try {
+            await drive.handle(route);
+        } finally {
+            drive.inFlight--;
+            drive.lastRequestAt = Date.now();
+        }
+    });
 }

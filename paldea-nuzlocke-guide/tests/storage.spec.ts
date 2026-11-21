@@ -17,7 +17,6 @@ async function openDevice(
     browser: Browser,
     baseURL: string | undefined,
     drive: FakeDrive,
-    { fakeClock = false }: { fakeClock?: boolean } = {},
 ): Promise<Page> {
     const context = await browser.newContext({
         baseURL,
@@ -25,9 +24,7 @@ async function openDevice(
     });
     await installFakeGoogle(context, drive);
     const page = await context.newPage();
-    if (fakeClock) {
-        await page.clock.install();
-    }
+    await page.clock.install();
     await page.goto('/');
     return page;
 }
@@ -59,19 +56,19 @@ async function signInAndUseDrive(page: Page) {
     await expectHomeLoaded(page);
 }
 
-// One edit causes several debounced saves; wait until Drive has stopped receiving them.
-async function waitForDriveSaves(drive: FakeDrive) {
-    let previous = -1;
+// Must match SAVE_DELAY_MS in google-drive-plugin.ts.
+const DRIVE_SAVE_DELAY_MS = 1_000;
+
+async function saveToDrive(page: Page, drive: FakeDrive) {
+    const start = Date.now();
+    await page.clock.fastForward(DRIVE_SAVE_DELAY_MS);
     await expect
         .poll(
-            async () => {
-                const current = drive.uploads;
-                const settled = current > 0 && current === previous;
-                previous = current;
-                await new Promise((resolve) => setTimeout(resolve, 500));
-                return settled;
-            },
-            { timeout: 15_000 },
+            () =>
+                drive.uploads > 0 &&
+                drive.inFlight === 0 &&
+                Date.now() - Math.max(drive.lastRequestAt, start) > 300,
+            { intervals: [50] },
         )
         .toBe(true);
 }
@@ -112,7 +109,7 @@ test('shows only the games kept in the selected place', async ({
     expect(drive.names()).toEqual([]);
 
     await createGame(page, 'drive-run');
-    await waitForDriveSaves(drive);
+    await saveToDrive(page, drive);
     expect(drive.names()).toEqual([expect.stringMatching(DRIVE_FILE)]);
 
     // Each place keeps its own games, and nothing was copied between them.
@@ -151,7 +148,7 @@ test('another device sees the games kept in Google Drive', async ({
 
     await signInAndUseDrive(deviceA);
     await createGame(deviceA, 'shared-run');
-    await waitForDriveSaves(drive);
+    await saveToDrive(deviceA, drive);
 
     await signInAndUseDrive(deviceB);
     await expect(gameName(deviceB, 'shared-run').first()).toBeVisible();
@@ -167,18 +164,19 @@ test('an older device is told to reload instead of overwriting a newer save', as
 
     await signInAndUseDrive(deviceA);
     await createGame(deviceA, 'stale-run');
-    await waitForDriveSaves(drive);
+    await saveToDrive(deviceA, drive);
 
     await signInAndUseDrive(deviceB);
     await gameName(deviceB, 'stale-run').first().click();
     const afterA = drive.uploads;
     await selectStarter(deviceB, 'Quaxly');
-    await expect.poll(() => drive.uploads).toBeGreaterThan(afterA);
-    await waitForDriveSaves(drive);
+    await saveToDrive(deviceB, drive);
+    expect(drive.uploads).toBeGreaterThan(afterA);
     const savedByB = drive.uploads;
 
     // Device A has not seen device B's save, so its change must not replace it.
     await selectStarter(deviceA, 'Fuecoco');
+    await deviceA.clock.fastForward(DRIVE_SAVE_DELAY_MS);
     const dialog = deviceA.getByRole('dialog', {
         name: 'Game opened in another tab',
     });
@@ -207,10 +205,10 @@ test('asks to continue when Google access runs out, without reloading', async ({
     baseURL,
 }) => {
     const drive = new FakeDrive();
-    const page = await openDevice(browser, baseURL, drive, { fakeClock: true });
+    const page = await openDevice(browser, baseURL, drive);
     await signInAndUseDrive(page);
     await createGame(page, 'lapse-run');
-    await waitForDriveSaves(drive);
+    await saveToDrive(page, drive);
     await page.evaluate(() => {
         (window as unknown as { marker: number }).marker = 1;
     });
@@ -232,7 +230,8 @@ test('asks to continue when Google access runs out, without reloading', async ({
         await page.evaluate(() => (window as unknown as { marker?: number }).marker),
     ).toBe(1);
     await selectStarter(page, 'Quaxly');
-    await expect.poll(() => drive.uploads).toBeGreaterThan(before);
+    await saveToDrive(page, drive);
+    expect(drive.uploads).toBeGreaterThan(before);
 });
 
 test('a save after a late sign-out timer asks to sign in instead of failing', async ({
@@ -240,10 +239,10 @@ test('a save after a late sign-out timer asks to sign in instead of failing', as
     baseURL,
 }) => {
     const drive = new FakeDrive();
-    const page = await openDevice(browser, baseURL, drive, { fakeClock: true });
+    const page = await openDevice(browser, baseURL, drive);
     await signInAndUseDrive(page);
     await createGame(page, 'sleep-run');
-    await waitForDriveSaves(drive);
+    await saveToDrive(page, drive);
     const before = drive.uploads;
 
     // Like a laptop waking from sleep: the time jumps past Google's access
@@ -257,7 +256,8 @@ test('a save after a late sign-out timer asks to sign in instead of failing', as
         page.getByRole('dialog', { name: 'Something went wrong' }),
     ).toHaveCount(0);
     await continueAsA(page).click();
-    await expect.poll(() => drive.uploads).toBeGreaterThan(before);
+    await saveToDrive(page, drive);
+    expect(drive.uploads).toBeGreaterThan(before);
 });
 
 test('a new session continues as the remembered account without reloading', async ({
@@ -268,7 +268,7 @@ test('a new session continues as the remembered account without reloading', asyn
     const page = await openDevice(browser, baseURL, drive);
     await signInAndUseDrive(page);
     await createGame(page, 'gate-run');
-    await waitForDriveSaves(drive);
+    await saveToDrive(page, drive);
     await navigateTo(page, 'Home');
 
     // A new tab is a new session: Google's short-lived access is not carried over.
@@ -294,7 +294,7 @@ test('a different account has its own games', async ({ browser, baseURL }) => {
     const page = await openDevice(browser, baseURL, drive);
     await signInAndUseDrive(page);
     await createGame(page, 'account-a-run');
-    await waitForDriveSaves(drive);
+    await saveToDrive(page, drive);
     await navigateTo(page, 'Home');
 
     const second = await page.context().newPage();
@@ -339,7 +339,7 @@ test('a login Google rejects is an unexpected error', async ({
     const page = await openDevice(browser, baseURL, drive);
     await signInAndUseDrive(page);
     await createGame(page, 'reject-run');
-    await waitForDriveSaves(drive);
+    await saveToDrive(page, drive);
 
     drive.rejectAuth = true;
     await selectStarter(page, 'Quaxly');
@@ -356,14 +356,17 @@ test('a save Google Drive cannot receive says so, without a crash report', async
     const page = await openDevice(browser, baseURL, drive);
     await signInAndUseDrive(page);
     await createGame(page, 'offline-run');
-    await waitForDriveSaves(drive);
+    await saveToDrive(page, drive);
 
     drive.unreachable = true;
     await selectStarter(page, 'Quaxly');
     const dialog = page.getByRole('dialog', {
         name: "Couldn't reach Google Drive",
     });
-    await expect(dialog).toBeVisible({ timeout: 15_000 });
+    await expect(async () => {
+        await page.clock.fastForward(2_000);
+        await expect(dialog).toBeVisible({ timeout: 100 });
+    }).toPass();
     await expect(dialog).toContainText('was not saved');
     await expect(dialog.getByRole('link', { name: 'Email report' })).toHaveCount(
         0,
@@ -378,14 +381,15 @@ test('a short network blip is retried without bothering the user', async ({
     const page = await openDevice(browser, baseURL, drive);
     await signInAndUseDrive(page);
     await createGame(page, 'blip-run');
-    await waitForDriveSaves(drive);
+    await saveToDrive(page, drive);
     const before = drive.uploads;
 
     drive.failNext = 2;
     await selectStarter(page, 'Quaxly');
-    await expect.poll(() => drive.uploads, { timeout: 15_000 }).toBeGreaterThan(
-        before,
-    );
+    await expect(async () => {
+        await page.clock.fastForward(2_000);
+        expect(drive.uploads).toBeGreaterThan(before);
+    }).toPass();
     expect(drive.failNext).toBe(0);
     await expect(page.getByRole('dialog')).toHaveCount(0);
 });
@@ -394,18 +398,20 @@ test('a save Google Drive never answers is reported after a timeout', async ({
     browser,
     baseURL,
 }) => {
-    test.setTimeout(40_000);
     const drive = new FakeDrive();
     const page = await openDevice(browser, baseURL, drive);
     await signInAndUseDrive(page);
     await createGame(page, 'hang-run');
-    await waitForDriveSaves(drive);
+    await saveToDrive(page, drive);
 
     drive.hang = true;
     await selectStarter(page, 'Quaxly');
+    await page.clock.fastForward(DRIVE_SAVE_DELAY_MS);
+    await expect.poll(() => drive.inFlight).toBeGreaterThan(0);
+    await page.clock.fastForward(10_000);
     await expect(
         page.getByRole('dialog', { name: "Couldn't reach Google Drive" }),
-    ).toBeVisible({ timeout: 20_000 });
+    ).toBeVisible();
 });
 
 test('sends first_cloud_game once, for the first game created in Google Drive', async ({
@@ -434,7 +440,7 @@ test('sends first_cloud_game once, for the first game created in Google Drive', 
 
     await signInAndUseDrive(page);
     await createGame(page, 'cloud-first');
-    await waitForDriveSaves(drive);
+    await saveToDrive(page, drive);
     await expect.poll(() => countEvents('game_created')).toBe(1);
     expect(await countEvents('first_cloud_game')).toBe(1);
 
@@ -452,14 +458,14 @@ test('quick edits are saved with fewer uploads, and the last one wins', async ({
     const page = await openDevice(browser, baseURL, drive);
     await signInAndUseDrive(page);
     await createGame(page, 'burst-run');
-    await waitForDriveSaves(drive);
+    await saveToDrive(page, drive);
     const before = drive.uploads;
 
     // Three edits in a row, each well inside the wait before an upload.
     await selectStarter(page, 'Quaxly');
     await resetStarter(page);
     await selectStarter(page, 'Fuecoco');
-    await waitForDriveSaves(drive);
+    await saveToDrive(page, drive);
     expect(drive.uploads - before).toBeLessThan(3);
 
     await page.reload();
