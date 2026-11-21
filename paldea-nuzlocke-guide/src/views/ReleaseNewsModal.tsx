@@ -72,7 +72,7 @@ export function ReleaseNewsModal({
 const content = css`
   display: flex;
   flex-direction: column;
-  gap: var(--space-4);
+  gap: var(--space-5);
   padding: var(--space-2);
 `;
 
@@ -84,6 +84,18 @@ const newsItem = css`
   h3,
   p {
     margin: 0;
+  }
+
+  /* Quieter than the modal title, but set off from the text below it: body
+     size in the full text colour, over paragraphs in the secondary colour. */
+  h3 {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+  }
+
+  p {
+    color: var(--color-text-secondary);
   }
 `;
 
