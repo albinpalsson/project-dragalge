@@ -51,6 +51,7 @@ export const PROGRESSION_INDEX: ReadonlyMap<string, number> = new Map(
 );
 
 const LEVEL_EDGE = /^level (\d+)$/i;
+const FRIENDSHIP_EDGE = /^level up with high friendship\b/i;
 
 export function scoreBoss(
     context: PlanContext,
@@ -401,7 +402,8 @@ function buildBossMembers(
 /**
  * The forms of a species the player can field at the boss: the encountered
  * form and every descendant reachable by plain "level N" evolutions up to the
- * level cap or by an evolution stone available before this fight, plus the
+ * level cap, by friendship at any level, or by an evolution stone available
+ * before this fight, plus the
  * evolutions in ASSUMED_EVOLUTIONS that are available by this fight. Only
  * forms allowed in the run count. That is the mono type, or, with future
  * evolutions on, a Pokémon that will evolve into it, which may be fielded with
@@ -482,6 +484,10 @@ export function getUsableForms(
             }
             if (stoneAfter && isUnlocked(stoneAfter)) {
                 // A stone works at any level once it can be had.
+                pending.push({ ...next, requiredLevel: current.requiredLevel });
+                continue;
+            }
+            if (FRIENDSHIP_EDGE.test(edge.method) && !assumed) {
                 pending.push({ ...next, requiredLevel: current.requiredLevel });
                 continue;
             }
