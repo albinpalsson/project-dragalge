@@ -2,13 +2,14 @@ import { css, cx } from '@project-dragalge/css-in-js';
 import { Button } from '../components/Button';
 import { Modal } from '../components/Modal';
 import { textLink } from '../components/text-link';
+import type { ReleaseNewsDismissal } from '../analytics/events';
 import type { ReleaseNews } from '../release-news';
 import type { ActiveView } from '../router';
 
 interface ReleaseNewsModalProps {
     news: readonly ReleaseNews[];
     // Called with the highest number shown when the popup is dismissed in any way.
-    onAcknowledge: (newsNumber: number) => void;
+    onAcknowledge: (newsNumber: number, via: ReleaseNewsDismissal) => void;
     onNavigate: (view: ActiveView) => void;
 }
 
@@ -20,10 +21,11 @@ export function ReleaseNewsModal({
     onNavigate,
 }: ReleaseNewsModalProps) {
     const shownThrough = Math.max(...news.map((item) => item.number));
-    const dismiss = () => onAcknowledge(shownThrough);
+    const dismiss = (via: ReleaseNewsDismissal) =>
+        onAcknowledge(shownThrough, via);
 
     return (
-        <Modal title="What's new" onClose={dismiss}>
+        <Modal title="What's new" onClose={() => dismiss('close')}>
             <div className={content}>
                 {news.map(({ number, title, paragraphs, action, link }) => (
                     <section
@@ -42,7 +44,7 @@ export function ReleaseNewsModal({
                                         type="button"
                                         className={textLink}
                                         onClick={() => {
-                                            dismiss();
+                                            dismiss('action');
                                             onNavigate(action.view);
                                         }}
                                     >
@@ -61,7 +63,7 @@ export function ReleaseNewsModal({
                         )}
                     </section>
                 ))}
-                <Button className={gotIt} onClick={dismiss}>
+                <Button className={gotIt} onClick={() => dismiss('acknowledge')}>
                     Got it
                 </Button>
             </div>

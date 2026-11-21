@@ -20,6 +20,11 @@ type GtagCommand =
           'event',
           'progression_milestone',
           { send_to: string; milestone: string; outcome?: string },
+      ]
+    | [
+          'event',
+          'release_news_dismissed',
+          { send_to: string; news_number: number; dismissed_via: string },
       ];
 
 type Gtag = (...command: GtagCommand) => void;
@@ -66,6 +71,13 @@ export function sendGtagEvent(
                 ...(event.outcome === undefined
                     ? {}
                     : { outcome: event.outcome }),
+            });
+            return;
+        case 'release_news_dismissed':
+            send('event', 'release_news_dismissed', {
+                send_to: measurementId,
+                news_number: event.newsNumber,
+                dismissed_via: event.via,
             });
             return;
         default: {

@@ -173,7 +173,14 @@ export function App() {
             {pendingNews.length > 0 && (
                 <ReleaseNewsModal
                     news={pendingNews}
-                    onAcknowledge={acknowledgeThrough}
+                    onAcknowledge={(newsNumber, via) => {
+                        acknowledgeThrough(newsNumber);
+                        track({
+                            name: 'release_news_dismissed',
+                            newsNumber,
+                            via,
+                        });
+                    }}
                     onNavigate={navigate}
                 />
             )}

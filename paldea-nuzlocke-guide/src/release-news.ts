@@ -62,7 +62,7 @@ export interface ReleaseNewsCheckpoint {
 
 export const RELEASE_NEWS_STORAGE_KEY = 'paldea-nuzlocke-guide:release-news';
 
-// Keep this browser-level preference outside game saves, exports, and analytics.
+// Keep this browser-level preference outside game saves and exports.
 // Missing state means an unrecognized browser, not necessarily a new person:
 // clearing storage, private browsing, and another device all lose this history.
 export function loadReleaseNewsCheckpoint(): ReleaseNewsCheckpoint {

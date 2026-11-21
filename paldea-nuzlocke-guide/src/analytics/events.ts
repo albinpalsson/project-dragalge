@@ -11,4 +11,11 @@ export type AnalyticsEvent =
           name: 'progression_milestone';
           milestone: string;
           outcome?: string;
+      }
+    | {
+          name: 'release_news_dismissed';
+          newsNumber: number;
+          via: ReleaseNewsDismissal;
       };
+
+export type ReleaseNewsDismissal = 'acknowledge' | 'close' | 'action';
