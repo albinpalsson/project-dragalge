@@ -29,6 +29,8 @@ export class FakeDrive {
     rejectAuth = false;
     // Fail every request as if the network were down.
     unreachable = false;
+    failNext = 0;
+    hang = false;
     private nextId = 1;
 
     names(owner = ACCOUNTS[0].email): string[] {
@@ -40,7 +42,11 @@ export class FakeDrive {
 
     async handle(route: Route): Promise<void> {
         const request = route.request();
-        if (this.unreachable) {
+        if (this.hang) {
+            return new Promise(() => {});
+        }
+        if (this.unreachable || this.failNext > 0) {
+            this.failNext = Math.max(0, this.failNext - 1);
             await route.abort('internetdisconnected');
             return;
         }

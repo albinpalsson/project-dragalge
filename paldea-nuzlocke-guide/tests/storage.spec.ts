@@ -363,11 +363,49 @@ test('a save Google Drive cannot receive says so, without a crash report', async
     const dialog = page.getByRole('dialog', {
         name: "Couldn't reach Google Drive",
     });
-    await expect(dialog).toBeVisible();
+    await expect(dialog).toBeVisible({ timeout: 15_000 });
     await expect(dialog).toContainText('was not saved');
     await expect(dialog.getByRole('link', { name: 'Email report' })).toHaveCount(
         0,
     );
+});
+
+test('a short network blip is retried without bothering the user', async ({
+    browser,
+    baseURL,
+}) => {
+    const drive = new FakeDrive();
+    const page = await openDevice(browser, baseURL, drive);
+    await signInAndUseDrive(page);
+    await createGame(page, 'blip-run');
+    await waitForDriveSaves(drive);
+    const before = drive.uploads;
+
+    drive.failNext = 2;
+    await selectStarter(page, 'Quaxly');
+    await expect.poll(() => drive.uploads, { timeout: 15_000 }).toBeGreaterThan(
+        before,
+    );
+    expect(drive.failNext).toBe(0);
+    await expect(page.getByRole('dialog')).toHaveCount(0);
+});
+
+test('a save Google Drive never answers is reported after a timeout', async ({
+    browser,
+    baseURL,
+}) => {
+    test.setTimeout(40_000);
+    const drive = new FakeDrive();
+    const page = await openDevice(browser, baseURL, drive);
+    await signInAndUseDrive(page);
+    await createGame(page, 'hang-run');
+    await waitForDriveSaves(drive);
+
+    drive.hang = true;
+    await selectStarter(page, 'Quaxly');
+    await expect(
+        page.getByRole('dialog', { name: "Couldn't reach Google Drive" }),
+    ).toBeVisible({ timeout: 20_000 });
 });
 
 test('sends first_cloud_game once, for the first game created in Google Drive', async ({

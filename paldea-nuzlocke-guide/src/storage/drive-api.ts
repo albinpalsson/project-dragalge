@@ -8,6 +8,8 @@ import {
 const FILES_URL = 'https://www.googleapis.com/drive/v3/files';
 const UPLOAD_URL = 'https://www.googleapis.com/upload/drive/v3/files';
 const FILE_FIELDS = 'id,md5Checksum';
+const RETRY_DELAYS_MS = [500, 1000, 2000];
+const REQUEST_TIMEOUT_MS = 10_000;
 
 // Google answered, but not with success, or (status 0) could not be reached.
 // UnexpectedErrorBoundary matches it by name.
@@ -36,6 +38,7 @@ interface RawDriveFile {
 async function driveFetch(
     url: string,
     init: RequestInit = {},
+    { retry = true }: { retry?: boolean } = {},
 ): Promise<Response> {
     let token = getGoogleToken();
     if (!token) {
@@ -48,12 +51,31 @@ async function driveFetch(
     if (!token) {
         throw new GoogleAuthError();
     }
-    const response = await fetch(url, {
-        ...init,
-        headers: { ...init.headers, Authorization: `Bearer ${token}` },
-    }).catch(() => {
+    const delays = retry ? RETRY_DELAYS_MS : [];
+    let response: Response | undefined;
+    for (let attempt = 0; ; attempt++) {
+        try {
+            response = await fetch(url, {
+                ...init,
+                headers: { ...init.headers, Authorization: `Bearer ${token}` },
+                signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+            });
+        } catch (error) {
+            if (error instanceof DOMException && error.name === 'TimeoutError') {
+                throw new DriveRequestError(0);
+            }
+            response = undefined;
+        }
+        const failed =
+            !response || response.status === 429 || response.status >= 500;
+        if (!failed || attempt >= delays.length) {
+            break;
+        }
+        await wait(delays[attempt]);
+    }
+    if (!response) {
         throw new DriveRequestError(0);
-    });
+    }
     if (response.status === 401) {
         clearGoogleToken();
         throw new GoogleAuthError();
@@ -62,6 +84,10 @@ async function driveFetch(
         throw new DriveRequestError(response.status);
     }
     return response;
+}
+
+function wait(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 function toDriveFile(file: RawDriveFile): DriveFile {
@@ -102,11 +128,15 @@ export async function findDriveFile(
 }
 
 export async function createDriveFile(name: string): Promise<DriveFile> {
-    const response = await driveFetch(`${FILES_URL}?fields=${FILE_FIELDS}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json; charset=UTF-8' },
-        body: JSON.stringify({ name, parents: ['appDataFolder'] }),
-    });
+    const response = await driveFetch(
+        `${FILES_URL}?fields=${FILE_FIELDS}`,
+        {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+            body: JSON.stringify({ name, parents: ['appDataFolder'] }),
+        },
+        { retry: false },
+    );
     return toDriveFile((await response.json()) as RawDriveFile);
 }
 

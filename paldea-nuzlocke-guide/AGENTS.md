@@ -98,9 +98,13 @@ select only exists in builds with `GOOGLE_CLIENT_ID` (a public id;
   revision this tab last read or wrote; if not, it throws `GameDbOwnershipError`,
   the same newest-writer-wins rule and dialog as multiple tabs. The upload runs
   from a timer, so any failed save is an unhandled rejection and reaches
-  `UnexpectedErrorBoundary`; there is no status store or retry. A request that
-  gets no answer, or an error status, is a `DriveRequestError`, which the
-  boundary shows as "Couldn't reach Google Drive" without a crash report.
+  `UnexpectedErrorBoundary`; there is no status store. `driveFetch` retries a
+  quick network failure or a 429/5xx three times (0.5, 1 and 2 s apart), so a
+  short blip passes silently while an outage is reported within seconds. Each
+  attempt times out after 10 s, which is reported at once. Creating the file
+  is not retried: a lost answer would make a duplicate. A request that gets no
+  answer, or an error status, is a `DriveRequestError`, which the boundary
+  shows as "Couldn't reach Google Drive" without a crash report.
 - Google's browser flow has no refresh token. Access lasts about an hour and is
   kept in `sessionStorage`. `google-auth.ts` counts the user as signed out two
   minutes before it lapses (and re-checks when the tab becomes visible), and
