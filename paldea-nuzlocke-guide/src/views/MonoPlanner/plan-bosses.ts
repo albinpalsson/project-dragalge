@@ -2,6 +2,7 @@ import type {
     BossBattleRoster,
     BossPokemonView,
 } from '../../db/pokemon-data/queries';
+import { getEncounterGroupKey } from '../../pokemon-species';
 import { getNemonaBattleName } from '../../db/pokemon-data/starter-battles';
 import { defensiveEffectiveness } from '../../utils/type-effectiveness';
 import { PROGRESSION_ITEMS } from '../Game/progression/progression-items';
@@ -251,9 +252,12 @@ function getBaseStatFactor(baseStats: number, teamBaseStats: number): number {
     );
 }
 
-/** The Pokémon a candidate is fielded as, which is what makes two the same. */
+/**
+ * The Pokémon a candidate is fielded as, which is what makes two the same.
+ * Cosmetic forms such as Gastrodon (East Sea) and (West Sea) are one Pokémon.
+ */
 function getFormKey(candidate: BossCandidate): string {
-    return candidate.form?.name ?? candidate.name;
+    return getEncounterGroupKey(candidate.form?.name ?? candidate.name);
 }
 
 /**
@@ -273,7 +277,7 @@ function mergeByForm(
             continue;
         }
         const sources = candidate.locations.map((location) =>
-            candidate.name === formKey
+            candidate.name === (candidate.form?.name ?? candidate.name)
                 ? location
                 : `${location} (as ${candidate.name})`,
         );

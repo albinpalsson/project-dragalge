@@ -1,4 +1,5 @@
 import { STARTER_LOCATION_NAME } from '../../db/game-db/queries';
+import { getEncounterGroupKey } from '../../pokemon-species';
 import { getMonoRunEligibleNames } from '../../utils/mono-run';
 import { STARTER_NAMES } from '../../utils/starter-choices';
 import { PROGRESSION_ITEMS } from '../Game/progression/progression-items';
@@ -258,7 +259,8 @@ function snapshotTeam(
             if (!shown) {
                 continue;
             }
-            const existing = byForm.get(shown.name);
+            const formKey = getEncounterGroupKey(shown.name);
+            const existing = byForm.get(formKey);
             if (existing) {
                 if (!existing.locations.includes(slot.locationName)) {
                     existing.locations.push(slot.locationName);
@@ -266,7 +268,7 @@ function snapshotTeam(
                 continue;
             }
             const total = context.data.baseStatTotals[shown.name] ?? 0;
-            byForm.set(shown.name, {
+            byForm.set(formKey, {
                 speciesKey: species.name,
                 formName: shown.name,
                 iconName: shown.name,
