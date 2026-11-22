@@ -132,13 +132,13 @@ export function MonoPlanner() {
                 <PlannerDisclaimer />
             </div>
             <p className={muted}>
-                A planner for mono-type runs. It gives a heads-up on how hard
-                each boss could be, and a glimpse of the Pokémon you could be
-                running along the way. The threat calculations are basic, and
-                mainly based on type defenses, STAB/Tera attack bonuses and base
-                stats. Simple plain level-up evolutions count up to the
-                boss&apos;s level cap. Tera Raid picks are not counted.
-                Abilities are not considered.
+                A heads-up for planning a mono-type run: how hard each boss
+                could be, and which Pokémon you might use along the way. It
+                doesn&apos;t solve the run; finding the answers is your task
+                and is part of the fun. Ratings use type defenses, STAB/Tera
+                bonuses and base stats, with plain level-up evolutions up to
+                each boss&apos;s level cap. Abilities and Tera Raids are not
+                counted.
             </p>
 
             <div className={controls}>
