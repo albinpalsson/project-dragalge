@@ -39,6 +39,28 @@ export interface BossConfig {
     versionPokemon?: { s: string; v: string };
 }
 
+/**
+ * The player starter that makes Nemona's 2nd rival battle easiest.
+ * Types that hit none of them harder than neutral default to
+ * Fuecoco -> Nemona gets Sprigatito.
+ */
+export const EASIEST_STARTER_BY_MONO_TYPE: Readonly<
+    Partial<Record<string, (typeof STARTER_NAMES)[number]>>
+> = {
+    bug: 'Fuecoco',
+    electric: 'Sprigatito',
+    flying: 'Fuecoco',
+    ground: 'Quaxly',
+    ice: 'Fuecoco',
+    poison: 'Fuecoco',
+    rock: 'Quaxly',
+    steel: 'Fuecoco',
+    dragon: 'Fuecoco',
+    fairy: 'Fuecoco',
+    normal: 'Fuecoco',
+    psychic: 'Fuecoco',
+};
+
 export const BOSS_CONFIGS: Readonly<Record<string, BossConfig>> = {
     'nemona-south-province': {
         label: 'Nemona (2nd rival battle)',

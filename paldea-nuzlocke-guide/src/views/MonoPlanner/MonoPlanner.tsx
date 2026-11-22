@@ -53,7 +53,7 @@ const VERSION_OPTIONS = [
 ];
 
 const STARTER_OPTIONS = [
-    { value: 'auto', label: 'Automatic (mono-eligible starter)' },
+    { value: 'auto', label: 'Automatic (mono-eligible, else easiest)' },
     ...STARTER_NAMES.map((name) => ({ value: name, label: name })),
 ];
 

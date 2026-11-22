@@ -3,7 +3,7 @@ import { getEncounterGroupKey } from '../../pokemon-species';
 import { getMonoRunEligibleNames } from '../../utils/mono-run';
 import { STARTER_NAMES } from '../../utils/starter-choices';
 import { PROGRESSION_ITEMS } from '../Game/progression/progression-items';
-import { BOSS_CONFIGS } from './boss-config';
+import { BOSS_CONFIGS, EASIEST_STARTER_BY_MONO_TYPE } from './boss-config';
 import { MILESTONE_KEYS, MILESTONES } from './milestone-config';
 import { getUsableForms, PROGRESSION_INDEX, scoreBoss } from './plan-bosses';
 import { planLocation, planStarter } from './plan-locations';
@@ -90,6 +90,7 @@ export function calculateMonoPlan(
         nemonaStarter:
             inputs.nemonaStarter === 'auto'
                 ? (STARTER_NAMES.find((name) => monoEligible.has(name)) ??
+                  EASIEST_STARTER_BY_MONO_TYPE[inputs.monoType] ??
                   STARTER_NAMES[0])
                 : inputs.nemonaStarter,
     };

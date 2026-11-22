@@ -17,7 +17,8 @@ export interface MonoPlanInputs {
     includeTeamStar: boolean;
     /**
      * Starter used to pick Nemona's 2nd rival battle roster. 'auto' takes the
-     * first mono-eligible starter, or the first starter when none fits.
+     * first mono-eligible starter, or the easiest one for the type when none
+     * fits.
      */
     nemonaStarter: 'auto' | (typeof STARTER_NAMES)[number];
 }
