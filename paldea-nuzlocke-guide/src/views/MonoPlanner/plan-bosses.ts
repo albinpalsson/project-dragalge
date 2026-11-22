@@ -8,6 +8,7 @@ import { PROGRESSION_ITEMS } from '../Game/progression/progression-items';
 import type { BossConfig } from './boss-config';
 import {
     ASSUMED_EVOLUTIONS,
+    getFormChangeAvailableAfter,
     getStoneAvailableAfter,
 } from './evolution-assumptions';
 import type {
@@ -405,7 +406,7 @@ function buildBossMembers(
  * form and every descendant reachable by plain "level N" evolutions up to the
  * level cap, by friendship or the Let's Go! feature at any level, or by an
  * evolution stone available
- * before this fight, plus the
+ * before this fight, or by a form change into the mono type, plus the
  * evolutions in ASSUMED_EVOLUTIONS that are available by this fight. Only
  * forms allowed in the run count. That is the mono type, or, with future
  * evolutions on, a Pokémon that will evolve into it, which may be fielded with
@@ -489,6 +490,22 @@ export function getUsableForms(
                 pending.push({ ...next, requiredLevel: current.requiredLevel });
                 continue;
             }
+            const formChangeAfter = getFormChangeAvailableAfter(edge.method);
+            if (formChangeAfter) {
+                // Forms switch both ways, so only change into the mono type.
+                const changeTarget = context.typesByName.get(edge.pokemonName);
+                if (
+                    isUnlocked(formChangeAfter) &&
+                    !hasMonoType(context, entry) &&
+                    hasMonoType(context, changeTarget)
+                ) {
+                    pending.push({
+                        ...next,
+                        requiredLevel: current.requiredLevel,
+                    });
+                }
+                continue;
+            }
             if (
                 (FRIENDSHIP_EDGE.test(edge.method) ||
                     LETS_GO_EDGE.test(edge.method)) &&
@@ -552,6 +569,16 @@ export function getUsableForms(
         forms: forms.filter(keep),
         assumedForms: assumedForms.filter(keep),
     };
+}
+
+function hasMonoType(
+    context: PlanContext,
+    entry: { primaryType: string; secondaryType: string } | undefined,
+): boolean {
+    return (
+        entry?.primaryType === context.inputs.monoType ||
+        entry?.secondaryType === context.inputs.monoType
+    );
 }
 
 /**

@@ -46,6 +46,21 @@ export function getStoneAvailableAfter(method: string): string | undefined {
     return stone ? STONE_AVAILABLE_AFTER[stone] : undefined;
 }
 
+/**
+ * Progression key after which a form-change item can be had, keyed by the
+ * evolution method it appears as.
+ */
+const FORM_CHANGE_AVAILABLE_AFTER: Record<string, string> = {
+    Nectar: 'iono-electric-gym',
+    'Rotom Catalog': 'orthworm-lurking-steel-titan',
+};
+
+export function getFormChangeAvailableAfter(
+    method: string,
+): string | undefined {
+    return FORM_CHANGE_AVAILABLE_AFTER[method];
+}
+
 /** Keyed by the Pokémon that evolves. */
 export const ASSUMED_EVOLUTIONS: Record<string, readonly AssumedEvolution[]> = {
     // Espeon and Umbreon are friendship evolutions (day/night level-up): a
