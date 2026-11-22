@@ -20,6 +20,11 @@ const ICON_SLUG_OVERRIDES = {
     'Oricorio (PomPom Style)': 'oricorio-pom-pom',
     "Oricorio (Pa'u Style)": 'oricorio-pau',
     'Oricorio (Sensu Style)': 'oricorio-sensu',
+    'Rotom (Heat Form)': 'rotom-heat',
+    'Rotom (Wash Form)': 'rotom-wash',
+    'Rotom (Frost Form)': 'rotom-frost',
+    'Rotom (Fan Form)': 'rotom-fan',
+    'Rotom (Mow Form)': 'rotom-mow',
     'Nidoran\u2640': 'nidoran-f',
     'Nidoran\u2642': 'nidoran-m',
 };

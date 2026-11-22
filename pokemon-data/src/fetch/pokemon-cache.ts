@@ -137,6 +137,14 @@ export const POKEMON_CACHE: Record<string, CachedPokemonData | undefined> = {
         base_speed: 91,
     },
 
+    // Rotom appliance forms: shared stats, different secondary type. Listed explicitly because
+    // the scraper only knows Bulbapedia's "Heat Rotom" names and would fall back to base Rotom.
+    'Rotom (Heat Form)': rotomApplianceForm('fire'),
+    'Rotom (Wash Form)': rotomApplianceForm('water'),
+    'Rotom (Frost Form)': rotomApplianceForm('ice'),
+    'Rotom (Fan Form)': rotomApplianceForm('flying'),
+    'Rotom (Mow Form)': rotomApplianceForm('grass'),
+
     // Oricorio: styles share stats; only type differs. Listed explicitly because the
     // scraper can't map "PomPom Style" to Bulbapedia's "Pom-Pom Style" and would
     // fall back to the base Fire/Flying typing.
@@ -252,7 +260,8 @@ export const POKEMON_CACHE: Record<string, CachedPokemonData | undefined> = {
 // Manual evolution edges for pokemon whose Bulbapedia prose names ('Paldean Wooper') don't
 // match the encounter/cache key ('Wooper (Paldean Form)'), so narrative parsing drops the edge.
 // Also pins base Wooper's edge, since narrative parsing elsewhere spuriously links it to Clodsire too.
-// Oricorio changes style with a nectar, so every style "evolves" into every other style.
+// Oricorio changes style with a nectar and Rotom changes form with the Rotom Catalog, so every
+// form "evolves" into every other form (see formChangeEdges).
 const ORICORIO_STYLES = [
     'Oricorio (Baile Style)',
     'Oricorio (PomPom Style)',
@@ -260,23 +269,21 @@ const ORICORIO_STYLES = [
     'Oricorio (Sensu Style)',
 ] as const;
 
-const ORICORIO_NECTAR_EDGES: Record<string, EvolutionEdge[]> =
-    Object.fromEntries(
-        ORICORIO_STYLES.map((from) => [
-            from,
-            ORICORIO_STYLES.filter((to) => to !== from).map((to) => ({
-                from,
-                to,
-                method: 'Nectar',
-            })),
-        ]),
-    );
+const ROTOM_FORMS = [
+    'Rotom',
+    'Rotom (Heat Form)',
+    'Rotom (Wash Form)',
+    'Rotom (Frost Form)',
+    'Rotom (Fan Form)',
+    'Rotom (Mow Form)',
+] as const;
 
 export const POKEMON_EVOLUTION_OVERRIDES: Record<
     string,
     EvolutionEdge[] | undefined
 > = {
-    ...ORICORIO_NECTAR_EDGES,
+    ...formChangeEdges(ORICORIO_STYLES, 'Nectar'),
+    ...formChangeEdges(ROTOM_FORMS, 'Rotom Catalog'),
     Wooper: [{ from: 'Wooper', to: 'Quagsire', method: 'level 20' }],
     'Wooper (Paldean Form)': [
         { from: 'Wooper (Paldean Form)', to: 'Clodsire', method: 'level 20' },
@@ -286,3 +293,32 @@ export const POKEMON_EVOLUTION_OVERRIDES: Record<
     // Clodsire is fully evolved, so this is always an empty list.
     Clodsire: [],
 };
+
+function rotomApplianceForm(secondaryType: string): CachedPokemonData {
+    return {
+        primary_type: 'electric',
+        secondary_type: secondaryType,
+        base_hp: 50,
+        base_attack: 65,
+        base_defense: 107,
+        base_sp_attack: 105,
+        base_sp_defense: 107,
+        base_speed: 86,
+    };
+}
+
+// Edges for a species that switches freely between forms with an item: each form gets an edge
+// to every other form, so the box offers each one as an evolution path.
+function formChangeEdges(
+    forms: readonly string[],
+    method: string,
+): Record<string, EvolutionEdge[]> {
+    return Object.fromEntries(
+        forms.map((from) => [
+            from,
+            forms
+                .filter((to) => to !== from)
+                .map((to) => ({ from, to, method })),
+        ]),
+    );
+}

@@ -25,9 +25,7 @@ export function PokemonEvolutionSection({
         return null;
     }
 
-    const hasNectar = evolutions.some((evolution) =>
-        isNectarEvolutionMethod(evolution.method),
-    );
+    const methodNote = getMethodNote(evolutions);
 
     if (evolutions.length === 1) {
         return (
@@ -45,7 +43,7 @@ export function PokemonEvolutionSection({
         <section className={section} aria-label="Evolution">
             <span className={summary}>
                 {evolutions.length} evolution paths available
-                {hasNectar && ` - ${NECTAR_NOTE}`}
+                {methodNote && ` - ${methodNote}`}
             </span>
             <Button variant="secondary" onClick={() => setIsOpen(true)}>
                 View paths
@@ -71,12 +69,22 @@ export function PokemonEvolutionSection({
     );
 }
 
-function isNectarEvolutionMethod(method: string): boolean {
-    return /^nectar$/i.test(method);
-}
+const METHOD_NOTES: readonly (readonly [RegExp, string])[] = [
+    [
+        /^nectar$/i,
+        'Nectar is available at the Delibird Presents store after defeating Iono.',
+    ],
+    [
+        /^rotom catalog$/i,
+        'The Rotom Catalog can be bought at the Porto Marinada Market once you finish the Cascarrafa Gym\'s test.',
+    ],
+];
 
-const NECTAR_NOTE =
-    'Nectar is available at the Delibird Presents store after defeating Iono.';
+function getMethodNote(evolutions: EvolutionTarget[]): string | undefined {
+    return METHOD_NOTES.find(([pattern]) =>
+        evolutions.some((evolution) => pattern.test(evolution.method)),
+    )?.[1];
+}
 
 interface EvolutionOptionProps {
     evolution: EvolutionTarget;

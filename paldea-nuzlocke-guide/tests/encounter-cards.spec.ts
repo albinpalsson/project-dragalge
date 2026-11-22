@@ -325,6 +325,46 @@ test('Oricorio can change style with a nectar and keeps its encounter', async ({
     ).toBeVisible();
 });
 
+test('Rotom can change form with the Rotom Catalog and keeps its encounter', async ({
+    page,
+}) => {
+    await page.goto('/');
+    await createGame(page, 'catalog-run', { preset: 'Clean' });
+    const location = 'East Province (A2)';
+    await expandCollapsedSummary(page, location);
+
+    const card = cardFor(page, location).first();
+    await card.getByRole('button', { name: 'Show encounters' }).click();
+    await card
+        .getByRole('button', { name: 'Pick Rotom', exact: true })
+        .first()
+        .click();
+    await card.getByRole('button', { name: 'Hide encounters' }).click();
+    await resolveEncounter(page, location, 'Caught');
+
+    await openBox(page);
+    await selectBoxPokemon(page, 'Party', 'Rotom');
+    const evolution = page.getByRole('region', {
+        name: 'Evolution',
+        exact: true,
+    });
+    await expect(evolution).toContainText(
+        "5 evolution paths available - The Rotom Catalog can be bought at the Porto Marinada Market once you finish the Cascarrafa Gym's test.",
+    );
+    await evolution.getByRole('button', { name: 'View paths' }).click();
+    const paths = page.getByRole('dialog', { name: 'Evolution paths' });
+    await paths
+        .getByRole('button', { name: 'Evolve', exact: true })
+        .first()
+        .click();
+
+    await expect(
+        boxSection(page, 'Party').getByRole('img', {
+            name: /^Rotom \(\w+ Form\)/,
+        }),
+    ).toBeVisible();
+});
+
 test('available Paldea trade offers replace and restore the current encounter Pokemon', async ({
     page,
 }) => {
