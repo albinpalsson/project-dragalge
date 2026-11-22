@@ -52,6 +52,7 @@ export const PROGRESSION_INDEX: ReadonlyMap<string, number> = new Map(
 
 const LEVEL_EDGE = /^level (\d+)$/i;
 const FRIENDSHIP_EDGE = /^level up with high friendship\b/i;
+const LETS_GO_EDGE = /\busing the let's go! feature\b/i;
 
 export function scoreBoss(
     context: PlanContext,
@@ -402,7 +403,8 @@ function buildBossMembers(
 /**
  * The forms of a species the player can field at the boss: the encountered
  * form and every descendant reachable by plain "level N" evolutions up to the
- * level cap, by friendship at any level, or by an evolution stone available
+ * level cap, by friendship or the Let's Go! feature at any level, or by an
+ * evolution stone available
  * before this fight, plus the
  * evolutions in ASSUMED_EVOLUTIONS that are available by this fight. Only
  * forms allowed in the run count. That is the mono type, or, with future
@@ -487,7 +489,11 @@ export function getUsableForms(
                 pending.push({ ...next, requiredLevel: current.requiredLevel });
                 continue;
             }
-            if (FRIENDSHIP_EDGE.test(edge.method) && !assumed) {
+            if (
+                (FRIENDSHIP_EDGE.test(edge.method) ||
+                    LETS_GO_EDGE.test(edge.method)) &&
+                !assumed
+            ) {
                 pending.push({ ...next, requiredLevel: current.requiredLevel });
                 continue;
             }
