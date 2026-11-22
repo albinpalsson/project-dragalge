@@ -1,5 +1,6 @@
 import { getNemonaBattleName } from '../../db/pokemon-data/starter-battles';
 import { STARTER_NAMES } from '../../utils/starter-choices';
+import type { DifficultyLevel } from './plan-types';
 
 /**
  * The boss fights the planner scores, keyed by progression item key (see
@@ -37,6 +38,11 @@ export interface BossConfig {
     fullyEvolved?: boolean;
     /** Great Tusk and Iron Treads share a roster; keep the version's one. */
     versionPokemon?: { s: string; v: string };
+    /**
+     * The hardest this fight is ever rated, for fights that are easier than
+     * their team suggests (weak AI, a helpful partner).
+     */
+    maxLevel?: DifficultyLevel;
 }
 
 /**
@@ -79,6 +85,7 @@ export const BOSS_CONFIGS: Readonly<Record<string, BossConfig>> = {
         battleName: 'Klawf (Stony Cliff Titan)',
         group: 'main',
         titan: true,
+        maxLevel: 'orange',
     },
     'brassius-grass-gym': {
         label: 'Brassius (Grass Gym)',

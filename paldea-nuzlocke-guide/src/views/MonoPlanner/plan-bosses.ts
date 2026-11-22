@@ -46,6 +46,7 @@ export const BASE_STAT_TIERS: readonly { atLeast: number; factor: number }[] = [
     { atLeast: 0, factor: 0.3 },
 ];
 const EPSILON = 1e-9;
+const LEVEL_ORDER: readonly DifficultyLevel[] = ['ok', 'orange', 'red'];
 
 /** Position of every progression item, to compare when things unlock. */
 export const PROGRESSION_INDEX: ReadonlyMap<string, number> = new Map(
@@ -180,6 +181,12 @@ export function scoreBoss(
         level = 'red';
     } else if (score < required - EPSILON) {
         level = 'orange';
+    }
+    if (
+        config.maxLevel &&
+        LEVEL_ORDER.indexOf(level) > LEVEL_ORDER.indexOf(config.maxLevel)
+    ) {
+        level = config.maxLevel;
     }
 
     return {
