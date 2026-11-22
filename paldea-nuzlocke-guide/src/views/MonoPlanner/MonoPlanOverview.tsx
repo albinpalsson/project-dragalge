@@ -3,7 +3,7 @@ import { type CSSProperties, useMemo } from 'react';
 import { PokemonIcon } from '../../components/PokemonIcon';
 import { getPokemonTypeColor } from '../../utils/pokemon-type-colors';
 import type { RunDifficulty, RunRating } from './difficulty-rating';
-import { hashSeed, pickShowcase, SHOWCASE_SIZE } from './pick-showcase';
+import { pickShowcase, SHOWCASE_SIZE } from './pick-showcase';
 import type { MilestoneEntry, MilestoneSnapshot, MonoPlan } from './plan-types';
 
 interface MonoPlanOverviewProps {
@@ -28,27 +28,9 @@ function describeRank(rating: RunRating): string {
         : `the ${rating.end} type`;
 }
 
-/**
- * What decides the picks: who is possible and how many are in the box at each
- * milestone. The seed comes from this alone, so a setting that changes nothing
- * here (like Team Star battles) keeps the icons as they were.
- */
-function getShowcaseSeed(milestones: readonly MilestoneSnapshot[]): number {
-    return hashSeed(
-        milestones
-            .map(
-                (milestone) =>
-                    `${milestone.id}:${milestone.boxCount}:${milestone.entries
-                        .map((entry) => `${entry.speciesKey}>${entry.formName}`)
-                        .join(',')}`,
-            )
-            .join('|'),
-    );
-}
-
 export function MonoPlanOverview({ plan, rating }: MonoPlanOverviewProps) {
     const showcases = useMemo(
-        () => pickShowcase(plan.milestones, getShowcaseSeed(plan.milestones)),
+        () => pickShowcase(plan.milestones),
         [plan.milestones],
     );
     const { summary } = plan;
