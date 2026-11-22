@@ -17,21 +17,20 @@ export interface AssumedEvolution {
 }
 
 /**
- * Progression key after which each evolution stone can be had. Most are sold
- * by Delibird Presents after the 3rd badge. The Ice Stone is found on
- * Glaseado Mountain. A Pokémon evolves by stone as soon as its stone is
- * available, like a level-up evolution.
+ * Progression key after which each evolution stone can be had. A Pokémon
+ * evolves by stone as soon as its stone is available, like a level-up
+ * evolution.
  */
 const STONE_AVAILABLE_AFTER: Record<string, string> = {
     Fire: 'iono-electric-gym',
     Water: 'iono-electric-gym',
     Thunder: 'iono-electric-gym',
-    Leaf: 'iono-electric-gym',
-    Moon: 'iono-electric-gym',
-    Sun: 'iono-electric-gym',
-    Shiny: 'iono-electric-gym',
-    Dusk: 'iono-electric-gym',
-    Dawn: 'iono-electric-gym',
+    Leaf: 'klawf-stony-cliff-titan',
+    Moon: 'klawf-stony-cliff-titan',
+    Sun: 'klawf-stony-cliff-titan',
+    Shiny: 'great-tusk-quaking-earth-titan',
+    Dusk: 'larry-normal-gym',
+    Dawn: 'dalizapa-passage',
     Ice: 'glaseado-mountain',
 };
 
