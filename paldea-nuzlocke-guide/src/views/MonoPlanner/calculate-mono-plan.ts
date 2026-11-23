@@ -124,15 +124,19 @@ export function calculateMonoPlan(
         const bossStep = scoreBoss(context, state, item.key, config);
         steps.push(bossStep);
         if (MILESTONE_KEYS.has(item.key)) {
+            const entries = snapshotTeam(context, state, {
+                levelCap: bossStep.levelCap,
+                bossIndex:
+                    PROGRESSION_INDEX.get(item.key) ?? Number.POSITIVE_INFINITY,
+                fullyEvolved: config.fullyEvolved,
+            });
             rawMilestones.set(item.key, {
-                boxCount: state.slots.length,
-                entries: snapshotTeam(context, state, {
-                    levelCap: bossStep.levelCap,
-                    bossIndex:
-                        PROGRESSION_INDEX.get(item.key) ??
-                        Number.POSITIVE_INFINITY,
-                    fullyEvolved: config.fullyEvolved,
-                }),
+                // With the dupes clause, a catch needs a Pokémon not caught
+                // yet, and the entries are the distinct ones.
+                boxCount: inputs.dupesClause
+                    ? Math.min(state.slots.length, entries.length)
+                    : state.slots.length,
+                entries,
             });
         }
     }

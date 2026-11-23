@@ -225,7 +225,10 @@ export interface MilestoneSnapshot {
     key: string;
     /** The first gym had too little to show, so the second one is used. */
     usedFallback: boolean;
-    /** Pokémon in the box at this point: one catch per usable location. */
+    /**
+     * Pokémon in the box at this point: one catch per usable location, and
+     * with the dupes clause at most one per distinct Pokémon.
+     */
     boxCount: number;
     /** Empty means nothing is available yet. */
     entries: MilestoneEntry[];
