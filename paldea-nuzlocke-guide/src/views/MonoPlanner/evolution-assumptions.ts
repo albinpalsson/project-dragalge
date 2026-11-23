@@ -73,4 +73,5 @@ export const ASSUMED_EVOLUTIONS: Record<string, readonly AssumedEvolution[]> = {
         { to: 'Umbreon', level: 0 },
         { to: 'Sylveon', level: 15 },
     ],
+    Primeape: [{ to: 'Annihilape', level: 35 }],
 };
