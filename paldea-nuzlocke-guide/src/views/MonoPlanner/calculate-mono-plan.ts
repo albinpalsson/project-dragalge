@@ -4,6 +4,7 @@ import { getMonoRunEligibleNames } from '../../utils/mono-run';
 import { STARTER_NAMES } from '../../utils/starter-choices';
 import { PROGRESSION_ITEMS } from '../Game/progression/progression-items';
 import { BOSS_CONFIGS, EASIEST_STARTER_BY_MONO_TYPE } from './boss-config';
+import { countCatches } from './count-catches';
 import { MILESTONE_KEYS, MILESTONES } from './milestone-config';
 import { getUsableForms, PROGRESSION_INDEX, scoreBoss } from './plan-bosses';
 import { planLocation, planStarter } from './plan-locations';
@@ -131,23 +132,11 @@ export function calculateMonoPlan(
                 fullyEvolved: config.fullyEvolved,
             });
             rawMilestones.set(item.key, {
-                // With the dupes clause, a catch needs a Pokémon not caught
-                // yet, and the entries are the distinct ones.
-                boxCount: inputs.dupesClause
-                    ? Math.min(state.slots.length, entries.length)
-                    : state.slots.length,
+                boxCount: countCatches(context, state.slots),
                 entries,
             });
         }
     }
-
-    // The end of the game: every slot, and every item unlocked. `fullyEvolved`
-    // ignores the level cap.
-    const totalSpecies = snapshotTeam(context, state, {
-        levelCap: 0,
-        bossIndex: Number.POSITIVE_INFINITY,
-        fullyEvolved: true,
-    }).length;
 
     const locations = steps.filter(
         (step): step is LocationStep => step.kind === 'location',
@@ -160,10 +149,7 @@ export function calculateMonoPlan(
         milestones: buildMilestones(rawMilestones),
         monoEligibleCount: monoEligible.size,
         summary: {
-            // With the dupes clause, a catch needs a Pokémon not caught yet.
-            totalEncounters: inputs.dupesClause
-                ? Math.min(state.slots.length, totalSpecies)
-                : state.slots.length,
+            totalEncounters: countCatches(context, state.slots),
             bosses: bosses.length,
             ok: bosses.filter((boss) => boss.level === 'ok').length,
             orange: bosses.filter((boss) => boss.level === 'orange').length,

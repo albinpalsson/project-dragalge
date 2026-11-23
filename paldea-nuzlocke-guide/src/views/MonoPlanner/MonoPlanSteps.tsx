@@ -304,9 +304,18 @@ function BossEntry({ step }: { step: BossStep }) {
                     <div>
                         You will have <strong>{step.locationsWalked}</strong>{' '}
                         Pokémon at this point:{' '}
-                        {step.locationsWalked - step.optionalSlots} guaranteed
-                        and {step.optionalSlots} from optional encounters, each
-                        one rolling a single species from its pool.{' '}
+                        {step.guaranteedSlots} guaranteed and{' '}
+                        {step.locationsWalked - step.guaranteedSlots} from
+                        optional encounters, each one rolling a single species
+                        from its pool.{' '}
+                        {step.locationsWalked - step.guaranteedSlots <
+                            step.optionalSlots && (
+                            <>
+                                The {step.optionalSlots} optional locations
+                                give fewer because their pools overlap and the
+                                dupes clause allows one per evolution line.{' '}
+                            </>
+                        )}
                         <span className={muted}>
                             Tera Raids and trades are not counted.
                         </span>

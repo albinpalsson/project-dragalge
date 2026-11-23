@@ -7,6 +7,7 @@ import { getNemonaBattleName } from '../../db/pokemon-data/starter-battles';
 import { defensiveEffectiveness } from '../../utils/type-effectiveness';
 import { PROGRESSION_ITEMS } from '../Game/progression/progression-items';
 import type { BossConfig } from './boss-config';
+import { countCatches } from './count-catches';
 import {
     ASSUMED_EVOLUTIONS,
     getFormChangeAvailableAfter,
@@ -203,7 +204,8 @@ export function scoreBoss(
         required,
         orangeAt,
         members,
-        locationsWalked: state.slots.length,
+        locationsWalked: countCatches(context, state.slots),
+        guaranteedSlots: state.slots.length - optionalSlots,
         optionalSlots,
         guaranteed: guaranteedForms,
         optional,

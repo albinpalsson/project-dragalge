@@ -181,7 +181,12 @@ export interface BossStep {
     required: number;
     orangeAt: number;
     members: BossMemberTrace[];
+    /**
+     * Pokémon you can have at this point (see `countCatches`): one per
+     * location, and with the dupes clause one per evolution family.
+     */
     locationsWalked: number;
+    guaranteedSlots: number;
     optionalSlots: number;
     guaranteed: BossCandidate[];
     optional: BossCandidate[];
@@ -227,7 +232,7 @@ export interface MilestoneSnapshot {
     usedFallback: boolean;
     /**
      * Pokémon in the box at this point: one catch per usable location, and
-     * with the dupes clause at most one per distinct Pokémon.
+     * with the dupes clause at most one per evolution family (`countCatches`).
      */
     boxCount: number;
     /** Empty means nothing is available yet. */
@@ -241,7 +246,7 @@ export interface MonoPlan {
     summary: {
         /**
          * Catches by the end of the game: one per usable location, and with
-         * the dupes clause at most one per distinct Pokémon.
+         * the dupes clause at most one per evolution family (`countCatches`).
          */
         totalEncounters: number;
         bosses: number;
