@@ -1,3 +1,4 @@
+import { getEncounterGroupKey } from '../../pokemon-species';
 import type { PlanContext, Slot } from './plan-types';
 
 /**
@@ -17,9 +18,13 @@ export function countCatches(
         return slots.length;
     }
     const { getEvolutionFamily } = context.data.evolutionGraph;
-    // One id per family: its alphabetically first member.
+    // One id per family: its alphabetically first member. Members go through
+    // their species group, or Deerling's four seasonal lines would count as
+    // four families.
     const familyOf = (name: string): string =>
-        [...getEvolutionFamily(name)].sort()[0] ?? name;
+        getEvolutionFamily(name)
+            .map(getEncounterGroupKey)
+            .sort()[0] ?? getEncounterGroupKey(name);
     const options = slots.map((slot) => [
         ...new Set(slot.pool.map((species) => familyOf(species.memberNames[0]))),
     ]);
