@@ -28,7 +28,7 @@ const HARD_SHARE = 0.3;
 const MEDIUM_SHARE = 0.35;
 
 /** Fewer encounters than this make a run at least Medium, or Hard below the second. */
-const GOOD_ENCOUNTERS = 15;
+const GOOD_ENCOUNTERS = 14;
 const TRICKY_ENCOUNTERS = 10;
 
 const LEVEL_ORDER: readonly RunDifficulty[] = ['ok', 'medium', 'hard'];
