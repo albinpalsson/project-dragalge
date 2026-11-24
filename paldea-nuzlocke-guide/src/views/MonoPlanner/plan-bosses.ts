@@ -54,7 +54,7 @@ export const PROGRESSION_INDEX: ReadonlyMap<string, number> = new Map(
     PROGRESSION_ITEMS.map((item, index) => [item.key, index]),
 );
 
-const LEVEL_EDGE = /^level (\d+)$/i;
+const LEVEL_EDGE = /^level (\d+)\b/i;
 const FRIENDSHIP_EDGE = /^level up with high friendship\b/i;
 const LETS_GO_EDGE = /\busing the let's go! feature\b/i;
 
