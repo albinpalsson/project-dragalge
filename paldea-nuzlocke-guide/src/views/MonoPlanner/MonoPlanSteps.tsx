@@ -164,22 +164,22 @@ const LEVEL_LABELS = {
 
 function BossEntry({ step }: { step: BossStep }) {
     const candidates = [...step.guaranteed, ...step.optional];
-    const fullAnswerAt =
+    const goodAnswerAt =
         step.unanswered.length > 0 ? Number.POSITIVE_INFINITY : 1;
     const groups = [
         {
-            label: 'Full answer (holds and trades evenly against at least half the team)',
-            short: 'full',
+            label: 'Good answer (holds and trades evenly against at least half the team)',
+            short: 'good',
             items: candidates.filter(
-                (candidate) => candidate.answer >= fullAnswerAt,
+                (candidate) => candidate.answer >= goodAnswerAt,
             ),
         },
         {
-            label: 'Partial answer',
+            label: 'Partial answer (holds against some of the team)',
             short: 'partial',
             items: candidates.filter(
                 (candidate) =>
-                    candidate.answer > 0 && candidate.answer < fullAnswerAt,
+                    candidate.answer > 0 && candidate.answer < goodAnswerAt,
             ),
         },
         {
