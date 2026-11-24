@@ -14,6 +14,8 @@ export interface AssumedEvolution {
      * available at every boss after that item. Omitted means always available.
      */
     availableAfter?: string;
+    /** Game version this evolution is limited to. Omitted means both. */
+    variant?: 's' | 'v';
 }
 
 /**
@@ -63,15 +65,34 @@ export function getFormChangeAvailableAfter(
 
 /** Keyed by the Pokémon that evolves. */
 export const ASSUMED_EVOLUTIONS: Record<string, readonly AssumedEvolution[]> = {
-    // Espeon and Umbreon are friendship evolutions (day/night level-up): a
-    // picnic gets friendship to 160 early, so Eevee evolves at its next
-    // level-up, before it can learn a Fairy move. Sylveon needs a known Fairy
-    // move; Eevee learns Baby-Doll Eyes at level 15, which is available from
-    // the first Gym fight.
     Eevee: [
         { to: 'Espeon', level: 0 },
         { to: 'Umbreon', level: 0 },
         { to: 'Sylveon', level: 15 },
     ],
     Primeape: [{ to: 'Annihilape', level: 35 }],
+    Bonsly: [{ to: 'Sudowoodo', level: 17 }],
+    Steenee: [{ to: 'Tsareena', level: 29 }],
+    Dunsparce: [{ to: 'Dudunsparce', level: 33 }],
+    Girafarig: [{ to: 'Farigiraf', level: 33 }],
+    Applin: [
+        { to: 'Flapple', level: 0, availableAfter: 'iono-electric-gym' },
+        { to: 'Appletun', level: 0, availableAfter: 'iono-electric-gym' },
+    ],
+    Sneasel: [{ to: 'Weavile', level: 0, availableAfter: 'kofu-water-gym' }],
+    Happiny: [{ to: 'Chansey', level: 0, availableAfter: 'casseroya-lake' }],
+    Charcadet: [
+        {
+            to: 'Armarouge',
+            level: 0,
+            availableAfter: 'east-province-area-three',
+            variant: 's',
+        },
+        {
+            to: 'Ceruledge',
+            level: 0,
+            availableAfter: 'east-province-area-three',
+            variant: 'v',
+        },
+    ],
 };

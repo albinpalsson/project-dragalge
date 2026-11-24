@@ -483,6 +483,9 @@ export function getUsableForms(
             const assumed = ASSUMED_EVOLUTIONS[current.name]?.find(
                 (candidate) => candidate.to === edge.pokemonName,
             );
+            if (assumed?.variant && assumed.variant !== context.inputs.variant) {
+                continue;
+            }
             const next = {
                 name: edge.pokemonName,
                 stage: current.stage + 1,
