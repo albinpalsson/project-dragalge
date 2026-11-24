@@ -292,6 +292,14 @@ export const POKEMON_EVOLUTION_OVERRIDES: Record<
     // ignores the form param, so fetching Clodsire's page spuriously yields a Wooper->Clodsire edge.
     // Clodsire is fully evolved, so this is always an empty list.
     Clodsire: [],
+    // Applin's page uses a bespoke {{Evobox/Applin}} (evo1a/evo1b/evo1c params, no name params) that
+    // parseEvolutionEdges doesn't recognize; the narrative fallback only finds Flapple. Without these
+    // edges Appletun and Dipplin (and so Hydrapple) are never discovered or fetched.
+    Applin: [
+        { from: 'Applin', to: 'Flapple', method: 'Tart Apple' },
+        { from: 'Applin', to: 'Appletun', method: 'Sweet Apple' },
+        { from: 'Applin', to: 'Dipplin', method: 'Syrupy Apple' },
+    ],
 };
 
 function rotomApplianceForm(secondaryType: string): CachedPokemonData {

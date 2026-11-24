@@ -13,9 +13,15 @@ const OUTSIDE_OTHER_REGION = /\s+outside of (Alola|Hisui)\b/gi;
 
 /**
  * Other evolutions the base game does not offer: their items (Peat Block,
- * Black Augurite) or moves (Psyshield Bash) are DLC-only.
+ * Black Augurite), moves (Psyshield Bash) or apples (Syrupy Apple) are DLC-only.
  */
-const NOT_IN_BASE_GAME = new Set(['Ursaluna', 'Kleavor', 'Wyrdeer']);
+const NOT_IN_BASE_GAME = new Set([
+    'Ursaluna',
+    'Kleavor',
+    'Wyrdeer',
+    'Dipplin',
+    'Hydrapple',
+]);
 
 function isUnavailable(pokemonName: string): boolean {
     return (
