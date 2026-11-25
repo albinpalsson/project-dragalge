@@ -184,7 +184,7 @@ test('caught encounters update dupes and preserve manual, dupes, and mono reason
     ).toBeDisabled();
 
     await page.getByRole('button', { name: 'Game settings' }).click();
-    await page.getByLabel('Mono run').check();
+    await page.getByLabel('Mono type run').check();
     await page
         .getByRole('combobox', { name: 'Mono type', exact: true })
         .selectOption('normal');

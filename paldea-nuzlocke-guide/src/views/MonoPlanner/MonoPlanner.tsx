@@ -171,7 +171,7 @@ export function MonoPlanner() {
             </div>
             <div className={checks}>
                 <Checkbox
-                    label="Include future evolutions"
+                    label="Allow Pokémon evolving into the mono type"
                     checked={futureEvolutions}
                     onChange={(value) => update({ futureEvolutions: value })}
                 />

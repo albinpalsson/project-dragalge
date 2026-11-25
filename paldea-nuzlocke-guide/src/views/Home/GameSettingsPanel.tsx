@@ -88,7 +88,7 @@ export function GameSettingsPanel({
                 }
             >
                 <Checkbox
-                    label="Mono run"
+                    label="Mono type run"
                     checked={value.monoRunEnabled}
                     title="Only Pokémon of the selected type can be used."
                     onChange={(monoRunEnabled) =>

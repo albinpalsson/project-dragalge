@@ -16,7 +16,7 @@ async function createMonoGame(
     await page.getByRole('button', { name: 'Start New Game' }).click();
     await page.getByLabel('Name (optional)').fill(name);
     await page.getByRole('button', { name: 'Next', exact: true }).click();
-    await page.getByLabel('Mono run').check();
+    await page.getByLabel('Mono type run').check();
     await page
         .getByRole('combobox', { name: 'Mono type', exact: true })
         .selectOption(type);
@@ -93,12 +93,12 @@ test('Mono settings update encounter pools while starters honor manual bans', as
     await expect(card.getByRole('button', { name: 'Confirm' })).toHaveCount(0);
 
     await page.getByRole('button', { name: 'Game settings' }).click();
-    await page.getByLabel('Mono run').uncheck();
+    await page.getByLabel('Mono type run').uncheck();
     await expect(lechonkRow.getByRole('button')).toBeEnabled();
     await page.getByRole('button', { name: 'Close dialog' }).click();
     await expect(lechonkRow).not.toContainText('Not allowed in mono run');
     await page.getByRole('button', { name: 'Game settings' }).click();
-    await page.getByLabel('Mono run', { exact: true }).check();
+    await page.getByLabel('Mono type run', { exact: true }).check();
     await page
         .getByRole('combobox', { name: 'Mono type', exact: true })
         .selectOption('fire');

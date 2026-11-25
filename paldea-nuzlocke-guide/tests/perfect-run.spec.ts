@@ -316,7 +316,7 @@ test('Mono Electric run plays through the available progression', async ({
         preset: 'Clean',
         variant: 'v',
         custom: async (settings) => {
-            await settings.getByLabel('Mono run', { exact: true }).check();
+            await settings.getByLabel('Mono type run', { exact: true }).check();
             await settings
                 .getByRole('combobox', { name: 'Mono type', exact: true })
                 .selectOption('electric');
